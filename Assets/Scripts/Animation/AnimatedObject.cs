@@ -27,6 +27,7 @@ public class AnimatedObject : MonoBehaviour {
 
 
 		bool isContinue = PlayMove();
+		isContinue = PlayIdle() || isContinue;
 
 		if(!isContinue) {
 			currentPlayAnimation = null;
@@ -84,8 +85,18 @@ public class AnimatedObject : MonoBehaviour {
 		return this;
 	}
 
-	public AnimatedObject SetMoveTime(float time) {
-		getCurrentAnimation().setMoveTime(time);
+	public AnimatedObject AddMoveByTime(Vector3 end, float time) {
+		getCurrentAnimation().AddMoveByTime(transform.position, end, time);
+		return this;
+	}
+
+	public AnimatedObject AddMoveByTime(Vector3 start, Vector3 end, float time) {
+		getCurrentAnimation().AddMoveByTime(start, end, time);
+		return this;
+	}
+
+	public AnimatedObject AddIdle(float time) {
+		getCurrentAnimation().AddIdle(time);
 		return this;
 	}
 
@@ -108,5 +119,20 @@ public class AnimatedObject : MonoBehaviour {
 
 
 		return move.Move(gameObject);
+	}
+
+	private bool PlayIdle() {
+		Animation animation = getCurrentPlayAnimation();
+		if(animation == null) {
+			return false;
+		}
+
+		AIdle idle = animation.GetIdle();
+		if(idle == null) {
+			return false;
+		}
+
+
+		return idle.Idle();
 	}
 }

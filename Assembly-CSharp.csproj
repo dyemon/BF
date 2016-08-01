@@ -45,15 +45,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\Animation\AIdle.cs" />
      <Compile Include="Assets\Scripts\Animation\AMove.cs" />
      <Compile Include="Assets\Scripts\Animation\AnimatedObject.cs" />
      <Compile Include="Assets\Scripts\Animation\Animation.cs" />
+     <Compile Include="Assets\Scripts\Animation\AnimationGroup.cs" />
      <Compile Include="Assets\Scripts\App.cs" />
      <Compile Include="Assets\Scripts\GameController.cs" />
      <Compile Include="Assets\Scripts\Input\InputController.cs" />
      <Compile Include="Assets\Scripts\Moveable.cs" />
      <Compile Include="Assets\Scripts\MovingGroup.cs" />
      <Compile Include="Assets\Scripts\Sprites\Background.cs" />
+     <Compile Include="Assets\Scripts\Tile\Tile.cs" />
+     <Compile Include="Assets\Scripts\Tile\TileItem.cs" />
+     <Compile Include="Assets\Scripts\Tile\TileItemType.cs" />
+     <Compile Include="Assets\Scripts\Tile\TileType.cs" />
      <Compile Include="Assets\Scripts\Util\Predicates.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>/opt/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

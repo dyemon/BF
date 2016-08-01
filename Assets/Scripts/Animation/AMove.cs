@@ -18,12 +18,28 @@ public class AMove {
 		time = CalcTime(startPos, movePos, speed);
 	}
 
+	public AMove(Vector3 startPos, Vector3 movePos) {
+		this.startPos = startPos;
+		this.movePos = movePos;
+	}
+
 	public static float CalcTime(Vector3 startPos, Vector3 movePos, float speed) {
 		return Vector3.Distance(startPos, movePos) / speed;
 	}
 
-	public void setTime(float time) {
+	public void SetTime(float time) {
 		this.time = time;
+	}
+	public float GetTime() {
+		return time;
+	}
+
+	public void SetSpeed(float speed) {
+		this.speed = speed;
+		time = CalcTime(startPos, movePos, speed);		
+	}
+	public float GetSpeed() {
+		return speed;
 	}
 
 	public void Start() {

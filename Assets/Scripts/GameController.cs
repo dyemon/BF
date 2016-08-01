@@ -1,16 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(AnimationGroup))]
 public class GameController : MonoBehaviour {
 
 	public int numColumns = 7;
 	public int numRows = 7;
 	public GameObject tileItem;
-	public Vector3 prevPos;
+
+	private AnimationGroup animationGroup;
+
+	private Tile[,] tiles;
+	private Tile[,] tmpTiles;
 
 	void Start() {
-		//       SpawnTileItems();
-		prevPos = tileItem.transform.position;
+		animationGroup = GetComponent<AnimationGroup>();
+		tiles = new Tile[numColumns, numRows];
+		tmpTiles = new Tile[numColumns, numRows];
+
+		UpdateTiles();
 	}
 	// Update is called once per frame
 	void Update() {
@@ -31,12 +39,39 @@ public class GameController : MonoBehaviour {
 			if(touch.phase == TouchPhase.Began) {
 				Ray ray = InputController.TouchToRay(touches[0]);
 				Debug.Log(touches[0]);
-			
-				AnimatedObject aObj = Predicates.NotNull( tileItem.GetComponent<AnimatedObject>() );
-				aObj.AddMove(prevPos, ray.origin, App.moveSpeed)
-					.Build().Run();
 
-				prevPos = ray.origin;
+			}
+		}
+	}
+
+	private void UpdateTiles() {
+		CreateTmpTiles();
+		UpdateTilesColumns();
+	}
+
+	private void CreateTmpTiles() {
+		for(int x = 0; x < numColumns; x++) {
+			for(int y = 0; y < numRows; y++) {
+				if(tiles[x, y] == null) {
+					tiles[x, y] = new Tile();
+				}
+
+				tmpTiles[x, y] = (Tile)tiles[x, y].Clone();
+			}
+		}
+	}
+
+	private void UpdateTilesColumns() {
+		for(int x = 0;x < numColumns; x++) {
+			UpdateTilesColumn(x);
+		}
+	}
+
+	private void UpdateTilesColumn(int x) {
+		for(int y = 0; y < numRows;y++) {
+			Tile tile = tmpTiles[x, y];
+			if(!tile.IsEmpty()) {
+				continue;
 			}
 		}
 	}

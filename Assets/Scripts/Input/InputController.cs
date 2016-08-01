@@ -27,9 +27,13 @@ public class InputController : MonoBehaviour {
 	private static Vector3? lastMousePosition;
 	private static float? lastTime;
 
+	private static bool mouseButtonDown = false;
+	private static bool mouseButtonUp = false;
+
 	public void Awake () {
 		Debug.Log(Application.platform);
 		useTouch = (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer);
+	//	useTouch = false;
 	}
 	
 	public void Update() {
@@ -37,11 +41,16 @@ public class InputController : MonoBehaviour {
 			return;
 		}
 
+		mouseButtonDown = false;
+		mouseButtonUp = false;
+
 		if(Input.GetMouseButtonDown(0)) {
 			mousePress = true;
+			mouseButtonDown = true;
 		}
 		if(Input.GetMouseButtonUp(0)) {
 			mousePress = false;
+			mouseButtonUp = true;
 		}
 	}
 
@@ -166,10 +175,10 @@ public class InputController : MonoBehaviour {
 			touch.deltaPosition = new Vector2(delta.x, delta.y);
 		}
 
-		if(Input.GetMouseButtonDown(0)) {
+		if(Input.GetMouseButtonDown(0) || mouseButtonDown) {
 			touch.phase = TouchPhase.Began;
 		}
-		else if(Input.GetMouseButtonUp(0)) {
+		else if(Input.GetMouseButtonUp(0) || mouseButtonUp) {
 			touch.phase = TouchPhase.Ended;
 		}
 		else if(mousePress) {
