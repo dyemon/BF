@@ -1,7 +1,3 @@
-/home/dm/unity/BF/Temp/bin/Debug/Assembly-CSharp.dll.mdb
-/home/dm/unity/BF/Temp/bin/Debug/Assembly-CSharp.dll
-/home/dm/unity/BF/obj/Debug/Assembly-CSharp.dll
-/home/dm/unity/BF/obj/Debug/Assembly-CSharp.dll.mdb
 /home/dm/unity/BF/Temp/bin/Debug/UnityEngine.dll
 /home/dm/unity/BF/Temp/bin/Debug/UnityEditor.dll
 /home/dm/unity/BF/Temp/bin/Debug/UnityEngine.UI.dll
@@ -15,3 +11,7 @@
 /home/dm/unity/BF/Temp/bin/Debug/Unity.CecilTools.dll
 /home/dm/unity/BF/Temp/bin/Debug/Mono.Cecil.Pdb.dll
 /home/dm/unity/BF/Temp/bin/Debug/Mono.Cecil.Mdb.dll
+/home/dm/unity/BF/Temp/bin/Debug/Assembly-CSharp.dll.mdb
+/home/dm/unity/BF/Temp/bin/Debug/Assembly-CSharp.dll
+/home/dm/unity/BF/obj/Debug/Assembly-CSharp.dll
+/home/dm/unity/BF/obj/Debug/Assembly-CSharp.dll.mdb

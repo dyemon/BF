@@ -2,9 +2,25 @@
 using System.Collections;
 
 public class TileItem {
-	TileItemType type;
+	private TileItemType type;
+	private TileItemTypeGroup typeGroup;
+	private GameObject tileItemGO;
 
-	public TileItem(TileItemType type) {
-		this.type = type;
+	public TileItem(TileItemTypeGroup typeGroup, int index, GameObject go) {
+		SetType(typeGroup, index);
+		tileItemGO = go;
+	}
+
+	public bool IsAvaliable() {
+		return typeGroup != TileItemTypeGroup.NotAvaliable;
+	}
+
+	private void SetType(TileItemTypeGroup typeGroup, int index) {
+		this.typeGroup = typeGroup;
+		type = (TileItemType)(typeGroup + index);
+	}
+
+	public GameObject GetGameObject() {
+		return tileItemGO;
 	}
 }

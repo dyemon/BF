@@ -65,6 +65,10 @@ public class AnimatedObject : MonoBehaviour {
 	}
 
 	public void Run() {
+		if(animations.Count == 0) {
+			return;
+		}
+
 		isPlay = true;
 	}
 
@@ -73,6 +77,10 @@ public class AnimatedObject : MonoBehaviour {
 		if(currentPlayAnimation != null) {
 			animations.Insert(0, currentPlayAnimation);
 		}
+	}
+
+	public bool IsAnimationExist() {
+		return animations.Count > 0;
 	}
 
 	public AnimatedObject AddMove(Vector3 end, float speed) {
