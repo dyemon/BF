@@ -42,7 +42,7 @@ public class AMove {
 		return speed;
 	}
 
-	public void Start() {
+	public void Run() {
 		startTime = UnityEngine.Time.time;
 		startDurationTime = time;
 	}

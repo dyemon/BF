@@ -2,11 +2,17 @@
 using System.Collections;
 
 public enum TileItemTypeGroup {
-	Normal = 0, NotAvaliable = 20, NotInteract = 40, Special = 60
+	Red = 0, Green = 20, Blue = 40, Yellow = 60, Purple = 80,
+	NotAvaliable = 400, MovedNotInteract = 420, Special = 500
 }
 
 public enum TileItemType {
-	Red = 0, Green = 1, Blue = 2, Yellow = 3, Purple = 4,
+	Red = TileItemTypeGroup.Red,
+	Green = TileItemTypeGroup.Green, 
+	Blue = TileItemTypeGroup.Blue, 
+	Yellow = TileItemTypeGroup.Yellow, 
+	Purple = TileItemTypeGroup.Purple,
+
 	NotAvaliable_1 = TileItemTypeGroup.NotAvaliable
 		
 }

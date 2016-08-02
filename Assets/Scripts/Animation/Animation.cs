@@ -31,12 +31,12 @@ public class Animation {
 		return idle;
 	}
 
-	public void Start() {
+	public void Run() {
 		if(move != null) {
-			move.Start();
+			move.Run();
 		}
 		if(idle != null) {
-			idle.Start();
+			idle.Run();
 		}
 	}
 

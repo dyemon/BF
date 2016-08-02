@@ -53,6 +53,7 @@
      <Compile Include="Assets\Scripts\App.cs" />
      <Compile Include="Assets\Scripts\GameController.cs" />
      <Compile Include="Assets\Scripts\Input\InputController.cs" />
+     <Compile Include="Assets\Scripts\Model\TileItemData.cs" />
      <Compile Include="Assets\Scripts\Moveable.cs" />
      <Compile Include="Assets\Scripts\MovingGroup.cs" />
      <Compile Include="Assets\Scripts\Sprites\Background.cs" />

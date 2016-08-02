@@ -11,13 +11,14 @@ public class AIdle {
 		this.time = time;
 	}
 
-	public void Start() {
+	public void Run() {
 		startTime = Time.time;
 		startDurationTime = time;
 	}
 
 	public bool Idle() {
 		time = startDurationTime - (Time.time - startTime);
+		Debug.Log(time);
 		return (time > 0);
 	}
 }

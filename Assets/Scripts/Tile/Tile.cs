@@ -3,23 +3,19 @@ using System.Collections;
 using System;
 
 public class Tile : ICloneable {
-	private TileType type = TileType.Avaliable;
 	public TileType Type { get; set;}
-
-	private int x;
-	public int X { get; set;}
-	private int y;
-	public int Y { get; set;}
+	public int X { get; set; }
+	public int Y { get; set; }
 
 	private TileItem tileItem;
 
 	public Tile(int x, int y) {
-		this.x = x;
-		this.y = y;
+		this.X = x;
+		this.Y = y;
 	}
 
 	public bool IsAvaliable() {
-		return type != TileType.NotAvaliable && (tileItem == null || tileItem.IsAvaliable());
+		return Type != TileType.NotAvaliable && (tileItem == null || tileItem.IsAvaliable());
 	}
 
 	public bool IsEmpty() {

@@ -51,7 +51,7 @@ public class AnimatedObject : MonoBehaviour {
 				return null;
 			}
 			currentPlayAnimation = animations[0];
-			currentPlayAnimation.Start();
+			currentPlayAnimation.Run();
 			animations.RemoveAt(0);
 		}
 
