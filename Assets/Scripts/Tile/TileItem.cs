@@ -7,6 +7,7 @@ public class TileItem {
 	private GameObject tileItemGO;
 	private Color startColor;
 	private bool selected = false;
+	private bool moved = false;
 
 	public TileItem(TileItemTypeGroup typeGroup, int index, GameObject go) {
 		SetType(typeGroup, index);
@@ -20,7 +21,7 @@ public class TileItem {
 	}
 
 	public bool IsAvaliable() {
-		return typeGroup != TileItemTypeGroup.NotAvaliable;
+		return typeGroup != TileItemTypeGroup.Unavaliable;
 	}
 
 	private void SetType(TileItemTypeGroup typeGroup, int index) {
@@ -45,4 +46,12 @@ public class TileItem {
 	public static TileItemTypeGroup TypeToGroupType( TileItemType type) {
 		return (TileItemTypeGroup)(type - (int)type % 20);
 	}
+
+	public void SetMoved(bool moved) {
+		this.moved = moved;
+	}
+	public bool IsMoved() {
+		return moved;
+	}
+
 }

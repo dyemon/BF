@@ -2,5 +2,5 @@
 using System.Collections;
 
 public enum TileType {
-	Avaliable, NotAvaliable
+	Avaliable, Unavaliable
 }

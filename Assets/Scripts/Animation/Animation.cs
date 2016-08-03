@@ -4,8 +4,10 @@ using System.Collections.Generic;
 
 public class Animation {
 
-	AMove move;
-	AIdle idle;
+	private AMove move;
+	private AIdle idle;
+
+	public int? LayerSortingOrder { get; set;}
 
 	public void AddMove(Vector3 startPos, Vector3 movePos, float speed) {
 		Predicates.Null(move, "Move animation already exist for this animation object");
@@ -39,7 +41,7 @@ public class Animation {
 			idle.Run();
 		}
 	}
-
+		
 
 }
 

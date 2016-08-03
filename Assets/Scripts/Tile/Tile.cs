@@ -14,12 +14,16 @@ public class Tile : ICloneable {
 		this.Y = y;
 	}
 
-	public bool IsAvaliable() {
-		return Type != TileType.NotAvaliable && (tileItem == null || tileItem.IsAvaliable());
+	public bool IsAvaliable {
+		get {
+			return Type != TileType.Unavaliable && (tileItem == null || tileItem.IsAvaliable());
+		}
 	}
 
-	public bool IsEmpty() {
-		return IsAvaliable() && tileItem == null;
+	public bool IsEmpty {
+		get {
+			return IsAvaliable && tileItem == null;
+		}
 	}
 
 	public void SetTileItem(TileItem ti) {

@@ -3,7 +3,7 @@ using System.Collections;
 
 public enum TileItemTypeGroup {
 	Red = 0, Green = 20, Blue = 40, Yellow = 60, Purple = 80,
-	NotAvaliable = 400, MovedNotInteract = 420, Special = 500
+	Unavaliable = 400, Special = 500
 }
 
 public enum TileItemType {
@@ -13,6 +13,7 @@ public enum TileItemType {
 	Yellow = TileItemTypeGroup.Yellow, 
 	Purple = TileItemTypeGroup.Purple,
 
-	NotAvaliable_1 = TileItemTypeGroup.NotAvaliable
+	Unavaliable_1 = TileItemTypeGroup.Unavaliable,
+	Unavaliable_2 = TileItemTypeGroup.Unavaliable + 1
 		
 }

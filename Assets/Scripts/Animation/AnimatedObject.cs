@@ -10,6 +10,8 @@ public class AnimatedObject : MonoBehaviour {
 	private Animation currentAnimation;
 	private Animation currentPlayAnimation;
 
+	private int? sourceLayerSortingOrder = null;
+
 	public bool IsDone {
 		get {return !isPlay;}
 	} 
@@ -30,6 +32,9 @@ public class AnimatedObject : MonoBehaviour {
 		isContinue = PlayIdle() || isContinue;
 
 		if(!isContinue) {
+			if(sourceLayerSortingOrder != null) {
+				GetComponent<SpriteRenderer>().sortingOrder = sourceLayerSortingOrder.Value;
+			}
 			currentPlayAnimation = null;
 			if(getCurrentPlayAnimation() == null) {
 				Stop();
@@ -52,6 +57,13 @@ public class AnimatedObject : MonoBehaviour {
 			}
 			currentPlayAnimation = animations[0];
 			currentPlayAnimation.Run();
+			if(currentPlayAnimation.LayerSortingOrder != null) {
+				SpriteRenderer render = GetComponent<SpriteRenderer>();
+				if(render != null) {
+					sourceLayerSortingOrder = render.sortingOrder;
+					render.sortingOrder = currentPlayAnimation.LayerSortingOrder.Value;
+				}
+			}
 			animations.RemoveAt(0);
 		}
 
@@ -62,6 +74,9 @@ public class AnimatedObject : MonoBehaviour {
 		animations.Clear();
 		currentAnimation = null;
 		currentPlayAnimation = null;
+		if(sourceLayerSortingOrder != null) {
+			GetComponent<SpriteRenderer>().sortingOrder = sourceLayerSortingOrder.Value;
+		}
 	}
 
 	public void Run() {
@@ -85,6 +100,11 @@ public class AnimatedObject : MonoBehaviour {
 
 	public AnimatedObject AddMove(Vector3 end, float speed) {
 		getCurrentAnimation().AddMove(transform.position, end, speed);
+		return this;
+	}
+
+	public AnimatedObject LayerSortingOrder(int order) {
+		getCurrentAnimation().LayerSortingOrder = order;
 		return this;
 	}
 
