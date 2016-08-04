@@ -11,4 +11,6 @@ public class TileItemData {
 		this.y = y;
 		this.type = type;
 	}
+
+
 }

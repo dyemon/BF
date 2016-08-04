@@ -25,8 +25,16 @@ public class AnimationGroup : MonoBehaviour {
 			o.Run();
 		}
 
-		foreach(AnimatedObject o in objects) {
-			if(!o.IsDone) {
+		bool done = false;
+		while(!done) {
+			done = true;
+			foreach(AnimatedObject o in objects) {
+				if(!o.IsDone) {
+					done = false;
+					break;
+				}
+			}
+			if(!done) {
 				yield return null;
 			}
 		}

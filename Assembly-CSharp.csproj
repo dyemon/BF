@@ -51,8 +51,11 @@
      <Compile Include="Assets\Scripts\Animation\Animation.cs" />
      <Compile Include="Assets\Scripts\Animation\AnimationGroup.cs" />
      <Compile Include="Assets\Scripts\App.cs" />
+     <Compile Include="Assets\Scripts\Barrier\Barrier.cs" />
+     <Compile Include="Assets\Scripts\Barrier\BarrierType.cs" />
      <Compile Include="Assets\Scripts\GameController.cs" />
      <Compile Include="Assets\Scripts\Input\InputController.cs" />
+     <Compile Include="Assets\Scripts\Model\BarrierData.cs" />
      <Compile Include="Assets\Scripts\Model\TileItemData.cs" />
      <Compile Include="Assets\Scripts\Moveable.cs" />
      <Compile Include="Assets\Scripts\MovingGroup.cs" />

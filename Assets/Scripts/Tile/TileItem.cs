@@ -34,6 +34,8 @@ public class TileItem {
 		this.typeGroup = TypeToGroupType(type);
 	}
 		
+
+
 	public GameObject GetGameObject() {
 		return tileItemGO;
 	}
@@ -46,12 +48,15 @@ public class TileItem {
 	public static TileItemTypeGroup TypeToGroupType( TileItemType type) {
 		return (TileItemTypeGroup)(type - (int)type % 20);
 	}
+		
+	public bool IsMoved { get; set;}
 
-	public void SetMoved(bool moved) {
-		this.moved = moved;
-	}
-	public bool IsMoved() {
-		return moved;
+	public bool IsColor {
+		get { return (int)type < (int)TileItemTypeGroup.Unavaliable; }
 	}
 
+	public TileItemTypeGroup TypeGroup {
+		get { return typeGroup; }
+	}
+		
 }

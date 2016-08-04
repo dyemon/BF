@@ -18,7 +18,6 @@ public class AIdle {
 
 	public bool Idle() {
 		time = startDurationTime - (Time.time - startTime);
-		Debug.Log(time);
 		return (time > 0);
 	}
 }

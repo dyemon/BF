@@ -26,6 +26,12 @@ public class Tile : ICloneable {
 		}
 	}
 
+	public bool IsColor {
+		get {
+			return IsAvaliable && tileItem != null && tileItem.IsColor;
+		}
+	}
+
 	public void SetTileItem(TileItem ti) {
 		tileItem = ti;
 	}
@@ -44,5 +50,9 @@ public class Tile : ICloneable {
 	public AnimatedObject GetAnimatedObject() {
 		Predicates.NotNull(tileItem, "Can not get Animatedobject for null object");
 		return GetTileItemGO().GetComponent<AnimatedObject>();
+	}
+
+	public override string ToString() {
+		return string.Format("[Tile: Type={0}, X={1}, Y={2}, IsAvaliable={3}, IsEmpty={4}]", Type, X, Y, IsAvaliable, IsEmpty);
 	}
 }

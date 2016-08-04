@@ -12,6 +12,7 @@ public class GameController : MonoBehaviour {
 
 	public GameObject[] tileItemsColor;
 	public GameObject[] tileItemsUnavaliable;
+	public GameObject[] barrierItems;
 
 	private AnimationGroup animationGroup;
 
@@ -19,10 +20,15 @@ public class GameController : MonoBehaviour {
 	private IList<Tile> selectedTiles = new List<Tile>();
 	private Tile[,] tmpTiles;
 
+	private IDictionary<BarrierData, Barrier> barriers = new Dictionary<BarrierData, Barrier>();
+
 	private int[] tileItemSpawnDelay;
 	private bool[] tileColumnAvalibleForOffset;
 
 	private IList<TileItemData> tileData = new List<TileItemData>();
+	private IList<BarrierData> barrierData = new List<BarrierData>();
+
+	private int successCount = 20;
 
 	void Start() {
 		animationGroup = GetComponent<AnimationGroup>();
@@ -30,23 +36,37 @@ public class GameController : MonoBehaviour {
 		tileItemSpawnDelay = new int[numColumns];
 		tileColumnAvalibleForOffset = new bool[numColumns];
 
-		tileData.Add(new TileItemData(0, numRows - 1, TileItemType.Unavaliable_2));
+	//	tileData.Add(new TileItemData(0, numRows - 1, TileItemType.Unavaliable_2));
 		tileData.Add(new TileItemData(1, numRows - 2, TileItemType.Unavaliable_1));
 		tileData.Add(new TileItemData(2, 1, TileItemType.Unavaliable_1));
-		tileData.Add(new TileItemData(5, 4, TileItemType.Unavaliable_1));
+	//	tileData.Add(new TileItemData(5, 2, TileItemType.Unavaliable_1));
+		tileData.Add(new TileItemData(5, 3, TileItemType.Unavaliable_1));
 		tileData.Add(new TileItemData(2, numRows - 1, TileItemType.Unavaliable_2));
 	//	tileData.Add(new TileItemData(3, numRows - 1, TileItemType.Unavaliable_1));
 		tileData.Add(new TileItemData(4, numRows - 1, TileItemType.Unavaliable_2));
 	//	tileData.Add(new TileItemData(5, numRows - 1, TileItemType.Unavaliable_1));
 		tileData.Add(new TileItemData(6, numRows - 1, TileItemType.Unavaliable_2));
-		/*
+
 		tileData.Add(new TileItemData(0, 4, TileItemType.Red));
 		tileData.Add(new TileItemData(1, 3, TileItemType.Green));
 		tileData.Add(new TileItemData(2, 5, TileItemType.Blue));
-		tileData.Add(new TileItemData(5, 3, TileItemType.Yellow));
 		tileData.Add(new TileItemData(5, 6, TileItemType.Purple));
-		*/
+
+
+		barrierData.Add(new BarrierData(0, 0, 1, 0, BarrierType.Wood));
+		barrierData.Add(new BarrierData(0, 0, 0, 1, BarrierType.Iron));
+
+		barrierData.Add(new BarrierData(1, 2, 1, 3, BarrierType.Wood));
+		barrierData.Add(new BarrierData(2, 2, 3, 2, BarrierType.Wood));
+		barrierData.Add(new BarrierData(2, 2, 2, 3, BarrierType.Iron));
+		barrierData.Add(new BarrierData(3, 2, 3, 3, BarrierType.Wood));
+		barrierData.Add(new BarrierData(2, 3, 3, 3, BarrierType.Iron));
+		barrierData.Add(new BarrierData(4, 2, 4, 3, BarrierType.Iron));
+		barrierData.Add(new BarrierData(5, 2, 5, 3, BarrierType.Iron));
+
+		barrierData.Add(new BarrierData(3, 4, 3, 5, BarrierType.Wood));
 		InitTiles();
+		InitBarriers();
 		DetectUnavaliableTiles();
 		UpdateTiles();
 	}
@@ -71,13 +91,13 @@ public class GameController : MonoBehaviour {
 			for(int y = 0; y < numRows; y++) {
 				TileItem ti = tiles[x, y].GetTileItem();
 				if(ti != null) {
-					ti.SetMoved(false);
+					ti.IsMoved = false;
 				}
 			}
 		}
 	}
 
-	public static Vector3 IndexToPosition(int x, int y) {
+	public static Vector3 IndexToPosition(float x, float y) {
 		return new Vector3(x - numColumns / 2f + 0.5f, y + 0.5f, 0);
 	}
 	public static Vector2 PositionToIndex(Vector3 pos) {
@@ -87,6 +107,17 @@ public class GameController : MonoBehaviour {
 	private TileItem InstantiateColorTileItem() {
 		int index = Random.Range(0, tileItemsColor.Length);
 		return InstantiateTileItem(tileItemsColor, index, (TileItemType)(index*20), 0, -10);
+	}
+
+	private Barrier InstantiateBarrier(BarrierData data) {
+		GameObject go = (GameObject)Instantiate(barrierItems[(int)data.Type], 
+			IndexToPosition(0.5f*(data.X1 + data.X2), 0.5f*(data.Y1 + data.Y2)), Quaternion.identity);
+
+		if(data.Isvertical) {
+			go.transform.Rotate(new Vector3(0, 0, 90));
+		}
+
+		return new Barrier(data, go);
 	}
 
 	private TileItem InstantiateTileItem(TileItemType type, int x, int y) {
@@ -153,6 +184,12 @@ public class GameController : MonoBehaviour {
 		return null;
 	}
 
+	private Barrier GetBarrier(int x1, int y1, int x2, int y2) {
+		Barrier val;
+		barriers.TryGetValue(new BarrierData(x1, y1, x2, y2, BarrierType.Wood), out val);
+		return val;
+	}
+
 	private void DetectUnavaliableTiles() {
 		for(int y = numRows - 1; y >= 0; y--) {
 			for(int x = 0; x < numColumns; x++) {
@@ -165,6 +202,16 @@ public class GameController : MonoBehaviour {
 				Tile left = GetTile(x - 1, y + 1);
 				Tile center = GetTile(x, y + 1);
 				Tile right = GetTile(x + 1, y + 1);
+
+				bool av1 = CheckAvailabilityWithBarriers(tile, left);
+				bool av2 = CheckAvailabilityWithBarriers(tile, center);
+				bool av3 = CheckAvailabilityWithBarriers(tile, right);
+
+				if(!av1 && !av2 && !av3) {
+					tile.Type = TileType.Unavaliable;
+			//		InstantiateTileItem(TileItemType.Red, x, y);
+					continue;
+				}
 
 				if((x == 0 || (left != null && !left.IsAvaliable) )
 					&& (center != null && !center.IsAvaliable ) 
@@ -179,10 +226,43 @@ public class GameController : MonoBehaviour {
 		}	
 	}
 
+	private bool CheckAvailabilityWithBarriers(Tile from, Tile to) {
+		if(from == null ) {
+			throw new System.ArgumentException("Tile from can not be null");
+		}
+
+		if(to == null) {
+			return from.Y == numRows - 1;
+		}
+
+		if(!to.IsAvaliable || !from.IsAvaliable) {
+			return false;
+		}
+
+		if(Mathf.Abs(from.X - to.X) > 1 || Mathf.Abs(from.Y - to.Y) > 1) {
+			throw new System.ArgumentException("Can not check availability from " + from + " to " + to);
+		}
+
+		if(from.X == to.X || from.Y == to.Y) {
+			return GetBarrier(from.X, from.Y, to.X, to.Y) == null;
+		}
+
+	
+		bool b1 = GetBarrier(from.X, from.Y, to.X, from.Y) != null;
+		bool b2 = GetBarrier(to.X, from.Y, to.X, to.Y) != null;
+		bool b3 = GetBarrier(to.X, to.Y, from.X, to.Y) != null;
+		bool b4 = GetBarrier(from.X, to.Y, from.X, from.Y) != null;
+
+		if(b1 && b3 || b1 && b4 || b2 && b3 || b2 && b4) {
+			return false;
+		}
+
+		return true;
+	}
+
 	public void DropTileItems() {
 		foreach(Tile tile in selectedTiles) {
-			Destroy(tile.GetTileItemGO());
-			tile.SetTileItem(null);
+			ClearTile(tile);
 		}
 		selectedTiles.Clear();
 		UpdateTiles();
@@ -206,6 +286,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void OnTileItemUpdateComplete() {
+		CheckTileItemSameColorCount();
 		Debug.Log("dddddddddddddd");
 	}
 
@@ -217,7 +298,7 @@ public class GameController : MonoBehaviour {
 			UpdateTilesWithOffset();
 			ResetTileItemMoved();
 		}
-
+			
 		RunAnimation();
 	}
 
@@ -231,7 +312,20 @@ public class GameController : MonoBehaviour {
 		}
 
 		foreach(TileItemData item in tileData) {
+			if(tiles[item.x, item.y].GetTileItem() != null) {
+				throw new System.Exception("Invalid configuration for tile " + tiles[item.x, item.y] + ". Tile is configured twice");
+			}
 			tiles[item.x, item.y].SetTileItem(InstantiateTileItem(item.type, item.x, item.y));
+		}
+	}
+
+	private void InitBarriers() {
+		foreach(BarrierData data in barrierData) {
+			if(!barriers.ContainsKey(data)) {
+				barriers.Add(data, InstantiateBarrier(data));
+			} else {
+				throw new System.Exception("Invalid configuration for Barrier " + data + ". Barrier is configured twice");
+			}
 		}
 	}
 
@@ -257,16 +351,20 @@ public class GameController : MonoBehaviour {
 				tEmpty.Clear();
 				continue;
 			}
+
 			if(tile.IsEmpty) {
 				tEmpty.Add(tile);
 				res = true;
-				continue;
 			}
 
-			if(tEmpty.Count > 0) {
+			if(tEmpty.Count > 0 && !tile.IsEmpty) {
 				MoveTileItem(tile, tEmpty[0], false);
 				tEmpty.RemoveAt(0);
 				tEmpty.Add(tile);
+			}
+
+			if(y < numRows - 1 && !CheckAvailabilityWithBarriers(tile, tiles[x, y + 1] )) {
+				tEmpty.Clear();
 			}
 		}
 			
@@ -316,10 +414,14 @@ public class GameController : MonoBehaviour {
 			Tile chosen = null;
 			suitables.Clear();
 
-			if(left != null && left.IsAvaliable && !left.IsEmpty && tileColumnAvalibleForOffset[left.X]) {
+			if(left != null && left.IsAvaliable && !left.IsEmpty && tileColumnAvalibleForOffset[left.X]
+				&& CheckAvailabilityWithBarriers(tile, left)) 
+			{
 				suitables.Add(left);
 			}
-			if(right != null && right.IsAvaliable && !right.IsEmpty && tileColumnAvalibleForOffset[right.X]) {
+			if(right != null && right.IsAvaliable && !right.IsEmpty && tileColumnAvalibleForOffset[right.X]
+				&& CheckAvailabilityWithBarriers(tile, right)) 
+			{
 				suitables.Add(right);
 			}
 
@@ -328,9 +430,9 @@ public class GameController : MonoBehaviour {
 			} else if(suitables.Count == 1) {
 				chosen = suitables[0];
 			} else {
-				if(suitables[0].GetTileItem().IsMoved() && !suitables[1].GetTileItem().IsMoved()) {
+				if(suitables[0].GetTileItem().IsMoved && !suitables[1].GetTileItem().IsMoved) {
 					chosen = suitables[1];
-				} else if(suitables[1].GetTileItem().IsMoved() && !suitables[0].GetTileItem().IsMoved()) {
+				} else if(suitables[1].GetTileItem().IsMoved && !suitables[0].GetTileItem().IsMoved) {
 					chosen = suitables[0];
 				} else {
 					chosen = suitables[Random.Range(0, 2)];
@@ -358,7 +460,7 @@ public class GameController : MonoBehaviour {
 		to.SetTileItem(from.GetTileItem());
 
 		if(!isOffset) {
-			from.GetTileItem().SetMoved(true);
+			from.GetTileItem().IsMoved = true;
 		} else {
 			ao.LayerSortingOrder(TILEITEM_SORTING_ORDER - 3);
 		}
@@ -368,5 +470,67 @@ public class GameController : MonoBehaviour {
 		if(from != to) {
 			from.SetTileItem(null);
 		}
+	}
+
+	private bool CheckTileItemSameColorCount() {
+		IDictionary<TileItemTypeGroup, int> items = new Dictionary<TileItemTypeGroup, int>();
+		TileItemTypeGroup? maxCountType = null;
+		int maxCount = 0;
+
+		for(int x = 0; x < numColumns; x++) {
+			for(int y = 0; y < numRows; y++) {
+				Tile tile = tiles[x, y];
+				if(!tile.IsColor) {
+					continue;
+				}
+
+				TileItemTypeGroup tg = tile.GetTileItem().TypeGroup;
+				if(!items.ContainsKey(tg)) {
+					items.Add(tg, 0);
+				}
+				items[tg]++;
+				if(items[tg] >= successCount) {
+					return true;
+				}
+				if(items[tg] > maxCount) {
+					maxCount = items[tg];
+					maxCountType = tg;
+				}
+			}
+		}
+
+		if(maxCountType == null) {
+			maxCountType = TileItemTypeGroup.Red;
+		}
+
+		int success = successCount - maxCount;
+		for(int x = 0; x < numColumns; x++) {
+			for(int y = 0; y < numRows; y++) {
+				Tile tile = tiles[x, y];
+				if(!tile.IsAvaliable) {
+					continue;
+				}
+
+				if(!tile.IsEmpty && tile.GetTileItem().TypeGroup == maxCountType) {
+					continue;
+				}
+
+				ClearTile(tile);
+				tile.SetTileItem(InstantiateTileItem((TileItemType)maxCountType, tile.X, tile.Y));
+				success--;
+				if(success == 0) {
+					return false;
+				}
+			}
+		}
+
+		throw new System.Exception("Can not instantiate " + successCount + " items");
+	}
+
+	private void ClearTile(Tile tile) {
+		if(tile.GetTileItemGO() != null) {
+			Destroy(tile.GetTileItemGO());
+		}
+		tile.SetTileItem(null);
 	}
 }
