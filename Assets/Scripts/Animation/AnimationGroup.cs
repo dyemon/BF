@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class AnimationGroup : MonoBehaviour {
-	public delegate void CompleteAnimation();
+	public delegate void CompleteAnimation<T>(T param);
 
 	private IList<AnimatedObject> objects = new List<AnimatedObject>();
 
@@ -15,11 +15,15 @@ public class AnimationGroup : MonoBehaviour {
 		objects.Clear();
 	}
 
-	public void Run(CompleteAnimation complete) {
-		StartCoroutine(RunAnimation(complete));
+	public void Run<T>(CompleteAnimation<T> complete, T param) {
+		StartCoroutine(RunAnimation(complete, param));
 	}
 
-	private IEnumerator RunAnimation(CompleteAnimation complete) {
+	public void Run() {
+		StartCoroutine(RunAnimation(DoNothing, 5));
+	}
+
+	private IEnumerator RunAnimation<T>(CompleteAnimation<T> complete, T param) {
 		yield return null;
 		foreach(AnimatedObject o in objects) {
 			o.Run();
@@ -40,7 +44,12 @@ public class AnimationGroup : MonoBehaviour {
 		}
 
 		if(complete != null) {
-			complete();
+			complete(param);
 		}
 	}
+
+	private void DoNothing(int param) {
+
+	}
+
 }

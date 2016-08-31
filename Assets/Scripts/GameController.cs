@@ -283,16 +283,19 @@ public class GameController : MonoBehaviour {
 			}
 		}
 
-		animationGroup.Run(OnTileItemUpdateComplete);
+		animationGroup.Run(OnTileItemUpdateComplete, true);
 	}
 
-	private void OnTileItemUpdateComplete() {
-		TileItemData data = GetHeroItemData();
-		if(data != null) {
-			RunHeroItemAnimation(data);
-		} else {
-			CheckTileItemSameColorCount();
+	private void OnTileItemUpdateComplete(bool getHeroItem) {
+		if(getHeroItem) {
+			TileItemData data = GetHeroItemData();
+			if(data != null) {
+				RunHeroItemAnimation(data);
+				return;
+			}
 		}
+
+		CheckTileItemSameColorCount();
 	}
 
 	private void UpdateTiles() {
@@ -482,6 +485,7 @@ public class GameController : MonoBehaviour {
 			from.SetTileItem(null);
 		}
 	}
+	
 
 	private bool CheckTileItemSameColorCount() {
 		IDictionary<TileItemTypeGroup, int> items = new Dictionary<TileItemTypeGroup, int>();
@@ -557,8 +561,34 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void RunHeroItemAnimation(TileItemData itemData) {
+		IList<Tile> avaliableTiles = new List<Tile>();
+
+		for(int x = 0;x < numColumns;x++) {
+			Tile tile = tiles[x, numRows - 1];
+			if(tile.IsColor) {
+				avaliableTiles.Add(tile);
+			}
+		}
+
+		if(avaliableTiles.Count == 0) {
+			CheckTileItemSameColorCount();
+			return;
+		}
+
 		TileItem ti = InstantiateTileItem(itemData.type, itemData.x, itemData.y, false);
+		Tile dest = avaliableTiles[Random.Range(0, avaliableTiles.Count)];
+
+		AnimatedObject ao = ti.GetGameObject().GetComponent<AnimatedObject>();
+		ao.AddMove(ti.GetGameObject().transform.position, dest.GetTileItemGO().transform.position, App.moveHeroItemSpeed);
+		ao.Build();
+
+		ClearTile(dest);
+		dest.SetTileItem(ti);
+		animationGroup.Add(ao);
+
+		animationGroup.Run(OnTileItemUpdateComplete, false);
 	}
+	
 }
 
 

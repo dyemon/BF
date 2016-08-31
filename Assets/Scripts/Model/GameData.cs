@@ -8,7 +8,7 @@ public class GameData {
 
 	public void Init() {
 		HeroData["red"] = new HeroData(TileItemTypeGroup.Red, 2, 2);
-		HeroData["green"] = new HeroData(TileItemTypeGroup.Green, 2, 0);
+		HeroData["green"] = new HeroData(TileItemTypeGroup.Green, 1, 0);
 		HeroData["blue"] = new HeroData(TileItemTypeGroup.Blue, 0, 2);
 
 

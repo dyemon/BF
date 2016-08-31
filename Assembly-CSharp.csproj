@@ -50,6 +50,7 @@
      <Compile Include="Assets\Scripts\Animation\AnimatedObject.cs" />
      <Compile Include="Assets\Scripts\Animation\Animation.cs" />
      <Compile Include="Assets\Scripts\Animation\AnimationGroup.cs" />
+     <Compile Include="Assets\Scripts\Animation\AnimationParam.cs" />
      <Compile Include="Assets\Scripts\App.cs" />
      <Compile Include="Assets\Scripts\Barrier\Barrier.cs" />
      <Compile Include="Assets\Scripts\Barrier\BarrierType.cs" />
