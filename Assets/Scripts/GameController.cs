@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -26,6 +26,9 @@ public class GameController : MonoBehaviour {
 	private IDictionary<BarrierData, Barrier> barriers = new Dictionary<BarrierData, Barrier>();
 
 	private IDictionary<string, Hero> heroes = new Dictionary<string, Hero>();
+
+	private IDictionary<Vector2, List<TileItemData>> replacedItems = new Dictionary<Vector2, List<TileItemData>>();
+
 
 	private int[] tileItemSpawnDelay;
 	private bool[] tileColumnAvalibleForOffset;
@@ -157,9 +160,18 @@ public class GameController : MonoBehaviour {
 					Tile tile = GetTile(hit.collider.gameObject);
 					if(tile != null) {
 						tile.GetTileItem().ToggleSelect();
+						Vector2 index = new Vector2(tile.X, tile.Y);
 						if(selectedTiles.Contains(tile)) {
+							if(replacedItems.ContainsKey(index)) {
+								ReplaceTileItems(replacedItems[index]);
+								replacedItems.Remove(index);
+							}
 							selectedTiles.Remove(tile);
 						} else {
+							IList<TileItemData> replaceData = GetTileItemDataForEnvelopReplace(tile);
+							if(replaceData != null) {
+								replacedItems[index] = ReplaceTileItems(replaceData);
+							}
 							selectedTiles.Add(tile);
 						}
 					}
@@ -169,6 +181,7 @@ public class GameController : MonoBehaviour {
 			}
 		}
 	}
+
 
 	private Tile GetTile(GameObject go) {
 		for(int x = 0; x < numColumns; x++) {
@@ -320,10 +333,10 @@ public class GameController : MonoBehaviour {
 		}
 
 		foreach(TileItemData item in levelData.TileData) {
-			if(tiles[item.x, item.y].GetTileItem() != null) {
-				throw new System.Exception("Invalid configuration for tile " + tiles[item.x, item.y] + ". Tile is configured twice");
+			if(tiles[item.X, item.Y].GetTileItem() != null) {
+				throw new System.Exception("Invalid configuration for tile " + tiles[item.X, item.Y] + ". Tile is configured twice");
 			}
-			tiles[item.x, item.y].SetTileItem(InstantiateTileItem(item.type, item.x, item.y, true));
+			tiles[item.X, item.Y].SetTileItem(InstantiateTileItem(item.Type, item.X, item.Y, true));
 		}
 	}
 
@@ -530,8 +543,9 @@ public class GameController : MonoBehaviour {
 					continue;
 				}
 
+				int tileItemIndex = TileItem.TypeToIndex(tile.GetTileItem().Type);
 				ClearTile(tile);
-				tile.SetTileItem(InstantiateTileItem((TileItemType)maxCountType, tile.X, tile.Y, true));
+				tile.SetTileItem(InstantiateTileItem((TileItemType)(maxCountType + tileItemIndex), tile.X, tile.Y, true));
 				success--;
 				if(success == 0) {
 					return false;
@@ -575,7 +589,7 @@ public class GameController : MonoBehaviour {
 			return;
 		}
 
-		TileItem ti = InstantiateTileItem(itemData.type, itemData.x, itemData.y, false);
+		TileItem ti = InstantiateTileItem(itemData.Type, itemData.X, itemData.Y, false);
 		Tile dest = avaliableTiles[Random.Range(0, avaliableTiles.Count)];
 
 		AnimatedObject ao = ti.GetGameObject().GetComponent<AnimatedObject>();
@@ -588,7 +602,54 @@ public class GameController : MonoBehaviour {
 
 		animationGroup.Run(OnTileItemUpdateComplete, false);
 	}
-	
+
+	private IList<TileItemData> GetTileItemDataForEnvelopReplace(Tile tile) {
+		if(!tile.GetTileItem().IsEnvelop) {
+			return null;
+		}
+
+		bool reachable = false;
+		IList<TileItemData> res = null;
+
+		for(int x = tile.X -1; x <= tile.X + 1; x++) {
+			for(int y = tile.Y - 1; y <= tile.Y + 1; y++) {
+				Tile curTile = GetTile(x, y);
+				if(x == y || curTile == null || !curTile.IsColor) {
+					continue;
+				}
+				if(curTile.GetTileItem().TypeGroup == tile.GetTileItem().TypeGroup) {
+					reachable = true;
+				}
+				if(curTile.GetTileItem().TypeGroup != tile.GetTileItem().TypeGroup) {
+					if(res == null) {
+						res = new List<TileItemData>();
+					}
+					TileItemData data = new TileItemData(curTile.X, curTile.Y, (TileItemType)curTile.GetTileItem().TypeGroup);
+					res.Add(data);
+				}
+			}
+		}
+
+		return (reachable)? res : null;
+	}
+
+
+	List<TileItemData> ReplaceTileItems(IList<TileItemData> replaceData) {
+		List<TileItemData> oldItems = new List<TileItemData>();
+
+		foreach(TileItemData itemData in replaceData) {
+			Tile tile = GetTile(itemData.X, itemData.Y);
+			if(tile == null) {
+				throw new System.ArgumentException("Can not replace tile item for x=" + itemData.X + " y=" + itemData.Y);
+			}
+			TileItemData old = new TileItemData(tile.X, tile.Y, tile.GetTileItem().Type);
+			oldItems.Add(old);
+			ClearTile(tile);
+			tile.SetTileItem(InstantiateTileItem(itemData.Type, itemData.X, itemData.Y, true));
+		}
+
+		return oldItems;
+	}
 }
 
 

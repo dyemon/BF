@@ -2,14 +2,14 @@
 using System.Collections;
 
 public class TileItemData {
-	public int x;
-	public int y;
-	public TileItemType type;
+	public int X;
+	public int Y;
+	public TileItemType Type;
 
 	public TileItemData(int x, int y, TileItemType type) {
-		this.x = x;
-		this.y = y;
-		this.type = type;
+		this.X = x;
+		this.Y = y;
+		this.Type = type;
 	}
 
 

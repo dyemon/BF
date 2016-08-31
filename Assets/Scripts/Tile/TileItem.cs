@@ -62,9 +62,42 @@ public class TileItem {
 	public bool IsColor {
 		get { return (int)type < (int)TileItemTypeGroup.Unavaliable; }
 	}
+	public bool IsSpecial {
+		get { return (int)type >= (int)TileItemTypeGroup.Special; }
+	}
 
 	public TileItemTypeGroup TypeGroup {
 		get { return typeGroup; }
+	}
+	public TileItemType Type {
+		get { return type; }
+	}
+
+	public bool IsEnvelop {
+		get { 
+			if(!IsColor) {
+				return false;
+			}
+			return TypeToIndex(type) == ENVELOP_OFFSET;
+		}
+	}
+
+	public bool IsBomb {
+		get { 
+			if(!IsColor) {
+				return false;
+			}
+			return TypeToIndex(type) == BOMB_OFFSET;
+		}
+	}
+
+	public bool IsBrilliant {
+		get { 
+			if(!IsSpecial) {
+				return false;
+			}
+			return TypeToIndex(type) == BRILLIANT_OFFSET;
+		}
 	}
 		
 }
