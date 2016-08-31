@@ -57,6 +57,8 @@
      <Compile Include="Assets\Scripts\Hero\Hero.cs" />
      <Compile Include="Assets\Scripts\Input\InputController.cs" />
      <Compile Include="Assets\Scripts\Model\BarrierData.cs" />
+     <Compile Include="Assets\Scripts\Model\GameData.cs" />
+     <Compile Include="Assets\Scripts\Model\HeroData.cs" />
      <Compile Include="Assets\Scripts\Model\LevelData.cs" />
      <Compile Include="Assets\Scripts\Model\TileItemData.cs" />
      <Compile Include="Assets\Scripts\Model\UserData.cs" />

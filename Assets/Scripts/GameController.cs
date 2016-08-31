@@ -25,11 +25,14 @@ public class GameController : MonoBehaviour {
 
 	private IDictionary<BarrierData, Barrier> barriers = new Dictionary<BarrierData, Barrier>();
 
+	private IDictionary<string, Hero> heroes = new Dictionary<string, Hero>();
+
 	private int[] tileItemSpawnDelay;
 	private bool[] tileColumnAvalibleForOffset;
 
 	private LevelData levelData;
 	private UserData userData;
+	private GameData gameData;
 
 	void Start() {
 		animationGroup = GetComponent<AnimationGroup>();
@@ -41,9 +44,13 @@ public class GameController : MonoBehaviour {
 		levelData.Init(numRows);
 		userData = new UserData();
 		userData.Init();
+		gameData = new GameData();
+		gameData.Init();
 
 		InitTiles();
 		InitBarriers();
+		InitHeroes();
+
 		DetectUnavaliableTiles();
 		UpdateTiles();
 	}
@@ -280,8 +287,12 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void OnTileItemUpdateComplete() {
-		CheckTileItemSameColorCount();
-		Debug.Log("dddddddddddddd");
+		TileItemData data = GetHeroItemData();
+		if(data != null) {
+			RunHeroItemAnimation(data);
+		} else {
+			CheckTileItemSameColorCount();
+		}
 	}
 
 	private void UpdateTiles() {
@@ -320,6 +331,12 @@ public class GameController : MonoBehaviour {
 			} else {
 				throw new System.Exception("Invalid configuration for Barrier " + data + ". Barrier is configured twice");
 			}
+		}
+	}
+
+	private void InitHeroes() {
+		foreach(string id in userData.HeroeIds) {
+			heroes[id] = new Hero(gameData.HeroData[id]);
 		}
 	}
 
@@ -527,4 +544,27 @@ public class GameController : MonoBehaviour {
 		}
 		tile.SetTileItem(null);
 	}
+
+	private TileItemData GetHeroItemData() {
+		foreach(Hero hero in heroes.Values) {
+			TileItemData data = hero.GetHeroItemData();
+			if(data != null) {
+				return data;
+			}
+		}
+
+		return null;
+	}
+
+	private void RunHeroItemAnimation(TileItemData itemData) {
+		TileItem ti = InstantiateTileItem(itemData.type, itemData.x, itemData.y, false);
+	}
 }
+
+
+
+
+
+
+
+

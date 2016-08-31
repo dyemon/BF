@@ -3,8 +3,8 @@ using System.Collections;
 
 public class App {
 
-	public static readonly float moveTileItemSpeed = 2f;
-	public static readonly float moveTileItemOffsetSpeed = 2f;
+	public static readonly float moveTileItemSpeed = 10f;
+	public static readonly float moveTileItemOffsetSpeed = 10f;
 	public static readonly float moveTileItemDelay = 0.0f;
 
 	private static float moveTileItemTimeUnit = 0f;
