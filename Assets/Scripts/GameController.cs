@@ -91,7 +91,10 @@ public class GameController : MonoBehaviour {
 		return new Vector2(pos.x + numColumns / 2f - 0.5f, pos.y - 0.5f);
 	}
 
-	private TileItem InstantiateColorTileItem() {
+	private TileItem InstantiateColorOrSpecialTileItem() {
+		if(levelData.BrilliantDropRatio > 0 && Random.Range(0, levelData.BrilliantDropRatio) == 0) {
+			return InstantiateTileItem(tileItemsSpecial, 0, TileItemType.Brilliant, 0, -10, true);
+		}
 		int index = Random.Range(0, tileItemsColor.Length);
 		return InstantiateTileItem(tileItemsColor, index, (TileItemType)(index*20), 0, -10, true);
 	}
@@ -169,6 +172,7 @@ public class GameController : MonoBehaviour {
 							selectedTiles.Remove(tile);
 						} else {
 							IList<TileItemData> replaceData = GetTileItemDataForEnvelopReplace(tile);
+							Debug.Log(replaceData);
 							if(replaceData != null) {
 								replacedItems[index] = ReplaceTileItems(replaceData);
 							}
@@ -311,6 +315,16 @@ public class GameController : MonoBehaviour {
 		CheckTileItemSameColorCount();
 	}
 
+	private void OnTileItemUpdateComplete(System.Object[] param) {
+		TileItem ti = (TileItem)param[0];
+		Tile tile = (Tile)param[1];
+
+		ClearTile(tile);
+		tile.SetTileItem(ti);
+
+		OnTileItemUpdateComplete(false);
+	}
+
 	private void UpdateTiles() {
 		ResetTileItemSpawnDelay();
 
@@ -400,7 +414,7 @@ public class GameController : MonoBehaviour {
 		}
 
 		foreach(Tile tile in tEmpty) {
-			TileItem tileItem = InstantiateColorTileItem();
+			TileItem tileItem = InstantiateColorOrSpecialTileItem();
 			tileItem.GetGameObject().GetComponent<AnimatedObject>().AddIdle((App.MoveTileItemTimeUnit + App.moveTileItemDelay) * tileItemSpawnDelay[x]).Build();
 			spawnTile.SetTileItem(tileItem);
 			MoveTileItem(spawnTile, tile, false);
@@ -579,7 +593,7 @@ public class GameController : MonoBehaviour {
 
 		for(int x = 0;x < numColumns;x++) {
 			Tile tile = tiles[x, numRows - 1];
-			if(tile.IsColor) {
+			if(tile.IsSimple) {
 				avaliableTiles.Add(tile);
 			}
 		}
@@ -596,11 +610,9 @@ public class GameController : MonoBehaviour {
 		ao.AddMove(ti.GetGameObject().transform.position, dest.GetTileItemGO().transform.position, App.moveHeroItemSpeed);
 		ao.Build();
 
-		ClearTile(dest);
-		dest.SetTileItem(ti);
 		animationGroup.Add(ao);
 
-		animationGroup.Run(OnTileItemUpdateComplete, false);
+		animationGroup.Run(OnTileItemUpdateComplete, new System.Object[] {ti, dest});
 	}
 
 	private IList<TileItemData> GetTileItemDataForEnvelopReplace(Tile tile) {
@@ -614,17 +626,17 @@ public class GameController : MonoBehaviour {
 		for(int x = tile.X -1; x <= tile.X + 1; x++) {
 			for(int y = tile.Y - 1; y <= tile.Y + 1; y++) {
 				Tile curTile = GetTile(x, y);
-				if(x == y || curTile == null || !curTile.IsColor) {
+				if((x == tile.X && y == tile.Y) || curTile == null || !curTile.IsColor) {
 					continue;
 				}
 				if(curTile.GetTileItem().TypeGroup == tile.GetTileItem().TypeGroup) {
 					reachable = true;
 				}
-				if(curTile.GetTileItem().TypeGroup != tile.GetTileItem().TypeGroup) {
+				if(curTile.GetTileItem().TypeGroup != tile.GetTileItem().TypeGroup && CheckAvailabilityWithBarriers(tile, curTile)) {
 					if(res == null) {
 						res = new List<TileItemData>();
 					}
-					TileItemData data = new TileItemData(curTile.X, curTile.Y, (TileItemType)curTile.GetTileItem().TypeGroup);
+					TileItemData data = new TileItemData(curTile.X, curTile.Y, (TileItemType)tile.GetTileItem().TypeGroup);
 					res.Add(data);
 				}
 			}

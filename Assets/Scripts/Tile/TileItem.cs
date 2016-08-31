@@ -82,6 +82,15 @@ public class TileItem {
 		}
 	}
 
+	public bool IsSimple {
+		get { 
+			if(!IsColor) {
+				return false;
+			}
+			return TypeToIndex(type) == 0;
+		}
+	}
+
 	public bool IsBomb {
 		get { 
 			if(!IsColor) {

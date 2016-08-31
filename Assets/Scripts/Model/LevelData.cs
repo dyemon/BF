@@ -9,7 +9,7 @@ public class LevelData {
 
 	public int SuccessCount = 20;
 
-	public int BrilliantDropRatio = 10;
+	public int BrilliantDropRatio = 20;
 
 	public void Init(int numRows) {
 		//	tileData.Add(new TileItemData(0, numRows - 1, TileItemType.Unavaliable_2));

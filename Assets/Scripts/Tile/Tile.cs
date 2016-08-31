@@ -31,6 +31,11 @@ public class Tile : ICloneable {
 			return IsAvaliable && tileItem != null && tileItem.IsColor;
 		}
 	}
+	public bool IsSimple {
+		get {
+			return IsAvaliable && tileItem != null && tileItem.IsSimple;
+		}
+	}
 
 	public void SetTileItem(TileItem ti) {
 		tileItem = ti;
