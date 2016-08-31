@@ -11,6 +11,9 @@ public class GameController : MonoBehaviour {
 	public LayerMask tilesItemLayer = -1;
 
 	public GameObject[] tileItemsColor;
+	public GameObject[] tileItemsColorBomb;
+	public GameObject[] tileItemsColorEnvelop;
+	public GameObject[] tileItemsSpecial;
 	public GameObject[] tileItemsUnavaliable;
 	public GameObject[] barrierItems;
 
@@ -25,10 +28,8 @@ public class GameController : MonoBehaviour {
 	private int[] tileItemSpawnDelay;
 	private bool[] tileColumnAvalibleForOffset;
 
-	private IList<TileItemData> tileData = new List<TileItemData>();
-	private IList<BarrierData> barrierData = new List<BarrierData>();
-
-	private int successCount = 20;
+	private LevelData levelData;
+	private UserData userData;
 
 	void Start() {
 		animationGroup = GetComponent<AnimationGroup>();
@@ -36,35 +37,11 @@ public class GameController : MonoBehaviour {
 		tileItemSpawnDelay = new int[numColumns];
 		tileColumnAvalibleForOffset = new bool[numColumns];
 
-	//	tileData.Add(new TileItemData(0, numRows - 1, TileItemType.Unavaliable_2));
-		tileData.Add(new TileItemData(1, numRows - 2, TileItemType.Unavaliable_1));
-		tileData.Add(new TileItemData(2, 1, TileItemType.Unavaliable_1));
-	//	tileData.Add(new TileItemData(5, 2, TileItemType.Unavaliable_1));
-		tileData.Add(new TileItemData(5, 3, TileItemType.Unavaliable_1));
-		tileData.Add(new TileItemData(2, numRows - 1, TileItemType.Unavaliable_2));
-	//	tileData.Add(new TileItemData(3, numRows - 1, TileItemType.Unavaliable_1));
-		tileData.Add(new TileItemData(4, numRows - 1, TileItemType.Unavaliable_2));
-	//	tileData.Add(new TileItemData(5, numRows - 1, TileItemType.Unavaliable_1));
-		tileData.Add(new TileItemData(6, numRows - 1, TileItemType.Unavaliable_2));
+		levelData = new LevelData();
+		levelData.Init(numRows);
+		userData = new UserData();
+		userData.Init();
 
-		tileData.Add(new TileItemData(0, 4, TileItemType.Red));
-		tileData.Add(new TileItemData(1, 3, TileItemType.Green));
-		tileData.Add(new TileItemData(2, 5, TileItemType.Blue));
-		tileData.Add(new TileItemData(5, 6, TileItemType.Purple));
-
-
-		barrierData.Add(new BarrierData(0, 0, 1, 0, BarrierType.Wood));
-		barrierData.Add(new BarrierData(0, 0, 0, 1, BarrierType.Iron));
-
-		barrierData.Add(new BarrierData(1, 2, 1, 3, BarrierType.Wood));
-		barrierData.Add(new BarrierData(2, 2, 3, 2, BarrierType.Wood));
-		barrierData.Add(new BarrierData(2, 2, 2, 3, BarrierType.Iron));
-		barrierData.Add(new BarrierData(3, 2, 3, 3, BarrierType.Wood));
-		barrierData.Add(new BarrierData(2, 3, 3, 3, BarrierType.Iron));
-		barrierData.Add(new BarrierData(4, 2, 4, 3, BarrierType.Iron));
-		barrierData.Add(new BarrierData(5, 2, 5, 3, BarrierType.Iron));
-
-		barrierData.Add(new BarrierData(3, 4, 3, 5, BarrierType.Wood));
 		InitTiles();
 		InitBarriers();
 		DetectUnavaliableTiles();
@@ -106,7 +83,7 @@ public class GameController : MonoBehaviour {
 
 	private TileItem InstantiateColorTileItem() {
 		int index = Random.Range(0, tileItemsColor.Length);
-		return InstantiateTileItem(tileItemsColor, index, (TileItemType)(index*20), 0, -10);
+		return InstantiateTileItem(tileItemsColor, index, (TileItemType)(index*20), 0, -10, true);
 	}
 
 	private Barrier InstantiateBarrier(BarrierData data) {
@@ -120,7 +97,7 @@ public class GameController : MonoBehaviour {
 		return new Barrier(data, go);
 	}
 
-	private TileItem InstantiateTileItem(TileItemType type, int x, int y) {
+	private TileItem InstantiateTileItem(TileItemType type, int x, int y, bool convertIndexToPos) {
 		TileItemTypeGroup group = TileItem.TypeToGroupType(type);
 		switch(group) {
 			case TileItemTypeGroup.Red:
@@ -128,16 +105,33 @@ public class GameController : MonoBehaviour {
 			case TileItemTypeGroup.Blue:
 			case TileItemTypeGroup.Yellow:
 			case TileItemTypeGroup.Purple:	
-				return InstantiateTileItem(tileItemsColor,  (int)group/20, type, x, y);
+				return InstantiateTileItem(GetColorGameObjectsByTileItemType(type),  (int)group/20, type, x, y, convertIndexToPos);
 			case TileItemTypeGroup.Unavaliable:
-				return InstantiateTileItem(tileItemsUnavaliable, (int)(type) - (int)group, type, x, y);
+				return InstantiateTileItem(tileItemsUnavaliable, (int)(type) - (int)group, type, x, y, convertIndexToPos);
+			case TileItemTypeGroup.Special:
+				return InstantiateTileItem(tileItemsSpecial, (int)(type) - (int)group, type, x, y, convertIndexToPos);
 		}
 
 		throw new System.NotImplementedException("Can not instantient tile item with type " + type.ToString());
 	}
 
-	private TileItem InstantiateTileItem(GameObject[] items, int index, TileItemType type, int x, int y) {
-		GameObject go = (GameObject)Instantiate(items[index], IndexToPosition(x, y), Quaternion.identity);
+	private GameObject[] GetColorGameObjectsByTileItemType(TileItemType type) {
+		int index = TileItem.TypeToIndex(type);
+		switch(index) {
+			case 0:
+				return tileItemsColor;
+			case TileItem.BOMB_OFFSET:
+				return tileItemsColorBomb;
+			case TileItem.ENVELOP_OFFSET:
+				return tileItemsColorEnvelop;
+		}
+
+		throw new System.NotImplementedException("Can not get tile item game objects for type " + type.ToString());
+
+	}
+
+	private TileItem InstantiateTileItem(GameObject[] items, int index, TileItemType type, int x, int y, bool convertIndexToPos) {
+		GameObject go = (GameObject)Instantiate(items[index], (!convertIndexToPos)? new Vector3(x, y, 0) : IndexToPosition(x, y), Quaternion.identity);
 		TileItem ti = new TileItem(type, go);
 		go.GetComponent<SpriteRenderer>().sortingOrder = TILEITEM_SORTING_ORDER;
 
@@ -311,16 +305,16 @@ public class GameController : MonoBehaviour {
 			}
 		}
 
-		foreach(TileItemData item in tileData) {
+		foreach(TileItemData item in levelData.TileData) {
 			if(tiles[item.x, item.y].GetTileItem() != null) {
 				throw new System.Exception("Invalid configuration for tile " + tiles[item.x, item.y] + ". Tile is configured twice");
 			}
-			tiles[item.x, item.y].SetTileItem(InstantiateTileItem(item.type, item.x, item.y));
+			tiles[item.x, item.y].SetTileItem(InstantiateTileItem(item.type, item.x, item.y, true));
 		}
 	}
 
 	private void InitBarriers() {
-		foreach(BarrierData data in barrierData) {
+		foreach(BarrierData data in levelData.BarrierData) {
 			if(!barriers.ContainsKey(data)) {
 				barriers.Add(data, InstantiateBarrier(data));
 			} else {
@@ -489,7 +483,7 @@ public class GameController : MonoBehaviour {
 					items.Add(tg, 0);
 				}
 				items[tg]++;
-				if(items[tg] >= successCount) {
+				if(items[tg] >= levelData.SuccessCount) {
 					return true;
 				}
 				if(items[tg] > maxCount) {
@@ -503,7 +497,7 @@ public class GameController : MonoBehaviour {
 			maxCountType = TileItemTypeGroup.Red;
 		}
 
-		int success = successCount - maxCount;
+		int success = levelData.SuccessCount - maxCount;
 		for(int x = 0; x < numColumns; x++) {
 			for(int y = 0; y < numRows; y++) {
 				Tile tile = tiles[x, y];
@@ -516,7 +510,7 @@ public class GameController : MonoBehaviour {
 				}
 
 				ClearTile(tile);
-				tile.SetTileItem(InstantiateTileItem((TileItemType)maxCountType, tile.X, tile.Y));
+				tile.SetTileItem(InstantiateTileItem((TileItemType)maxCountType, tile.X, tile.Y, true));
 				success--;
 				if(success == 0) {
 					return false;
@@ -524,7 +518,7 @@ public class GameController : MonoBehaviour {
 			}
 		}
 
-		throw new System.Exception("Can not instantiate " + successCount + " items");
+		throw new System.Exception("Can not instantiate " + levelData.SuccessCount + " items");
 	}
 
 	private void ClearTile(Tile tile) {

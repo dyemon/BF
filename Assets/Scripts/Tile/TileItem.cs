@@ -2,6 +2,10 @@
 using System.Collections;
 
 public class TileItem {
+	public const int BOMB_OFFSET = 1;
+	public const int ENVELOP_OFFSET = 2;
+	public const int BRILLIANT_OFFSET = 0;
+
 	private TileItemType type;
 	private TileItemTypeGroup typeGroup;
 	private GameObject tileItemGO;
@@ -49,6 +53,10 @@ public class TileItem {
 		return (TileItemTypeGroup)(type - (int)type % 20);
 	}
 		
+	public static int TypeToIndex( TileItemType type) {
+		return (int)type % 20;
+	}
+
 	public bool IsMoved { get; set;}
 
 	public bool IsColor {
