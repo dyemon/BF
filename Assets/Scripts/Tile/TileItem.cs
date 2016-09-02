@@ -59,8 +59,12 @@ public class TileItem {
 
 	public bool IsMoved { get; set;}
 
+	public static bool IsColorItem(TileItemType type) {
+		return (int)type < (int)TileItemTypeGroup.Unavaliable; 
+	}
+
 	public bool IsColor {
-		get { return (int)type < (int)TileItemTypeGroup.Unavaliable; }
+		get { return TileItem.IsColorItem(type);}
 	}
 	public bool IsSpecial {
 		get { return (int)type >= (int)TileItemTypeGroup.Special; }

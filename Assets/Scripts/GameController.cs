@@ -315,7 +315,7 @@ public class GameController : MonoBehaviour {
 			}
 		}
 
-		CheckTileItemSameColorCount();
+		CheckConsistency();
 	}
 
 	private void OnTileItemUpdateComplete(System.Object[] param) {
@@ -517,65 +517,7 @@ public class GameController : MonoBehaviour {
 	}
 	
 
-	private bool CheckTileItemSameColorCount() {
-		IDictionary<TileItemTypeGroup, TileItemSameColorCount> items = new Dictionary<TileItemTypeGroup, TileItemSameColorCount>();
-		TileItemTypeGroup maxCountType = TileItemTypeGroup.Red;
-		int maxCount = 0;
 
-		for(int x = 0; x < numColumns; x++) {
-			for(int y = 0; y < numRows; y++) {
-				Tile tile = tiles[x, y];
-				if(!tile.IsColor) {
-					continue;
-				}
-
-				TileItemTypeGroup tg = tile.GetTileItem().TypeGroup;
-				if(!items.ContainsKey(tg)) {
-					items.Add(tg, new TileItemSameColorCount(tg));
-				}
-				int count = items[tg].Increment();
-				if(tile.GetTileItem().IsEnvelop) {
-					count = items[tg].AddPositions(GetTileItemDataForEnvelopReplace(tile));
-				}
-
-				if(count >= levelData.SuccessCount) {
-					return true;
-				}
-
-				if(count > maxCount) {
-					maxCount = count;
-					maxCountType = tg;
-				}
-			}
-		}
-
-		Debug.Log("************** " + maxCount + " " + maxCountType);
-
-		maxCount = items.ContainsKey(maxCountType) ? items[maxCountType].GetItemCount() : 0;
-		int success = levelData.SuccessCount - maxCount;
-		for(int x = 0; x < numColumns; x++) {
-			for(int y = 0; y < numRows; y++) {
-				Tile tile = tiles[x, y];
-				if(!tile.IsAvaliable) {
-					continue;
-				}
-
-				if(!tile.IsEmpty && tile.GetTileItem().TypeGroup == maxCountType) {
-					continue;
-				}
-
-				int tileItemIndex = TileItem.TypeToIndex(tile.GetTileItem().Type);
-				ClearTile(tile);
-				tile.SetTileItem(InstantiateTileItem((TileItemType)(maxCountType + tileItemIndex), tile.X, tile.Y, true));
-				success--;
-				if(success == 0) {
-					return false;
-				}
-			}
-		}
-
-		throw new System.Exception("Can not instantiate " + levelData.SuccessCount + " items");
-	}
 
 	private void ClearTile(Tile tile) {
 		if(tile.GetTileItemGO() != null) {
@@ -606,7 +548,7 @@ public class GameController : MonoBehaviour {
 		}
 
 		if(avaliableTiles.Count == 0) {
-			CheckTileItemSameColorCount();
+			CheckConsistency();
 			return;
 		}
 
@@ -668,6 +610,81 @@ public class GameController : MonoBehaviour {
 		}
 
 		return oldItems;
+	}
+
+	private void CheckConsistency() {
+		bool validCount = CheckTileItemSameColorCount();
+	}
+
+	private bool CheckTileItemSameColorCount() {
+		IDictionary<TileItemTypeGroup, TileItemSameColorCount> items = new Dictionary<TileItemTypeGroup, TileItemSameColorCount>();
+		TileItemTypeGroup maxCountType = TileItemTypeGroup.Red;
+		int maxCount = 0;
+
+		for(int x = 0; x < numColumns; x++) {
+			for(int y = 0; y < numRows; y++) {
+				Tile tile = tiles[x, y];
+				if(!tile.IsColor) {
+					continue;
+				}
+
+				TileItemTypeGroup tg = tile.GetTileItem().TypeGroup;
+				if(!items.ContainsKey(tg)) {
+					items.Add(tg, new TileItemSameColorCount(tg));
+				}
+				int count = items[tg].Increment();
+				if(tile.GetTileItem().IsEnvelop) {
+					count = items[tg].AddPositions(GetTileItemDataForEnvelopReplace(tile));
+				}
+
+				if(count >= levelData.SuccessCount) {
+					return true;
+				}
+
+				if(count > maxCount) {
+					maxCount = count;
+					maxCountType = tg;
+				}
+			}
+		}
+
+		Debug.Log("CheckTileItemSameColorCount " + maxCount + " " + maxCountType);
+
+		maxCount = items.ContainsKey(maxCountType) ? items[maxCountType].GetItemCount() : 0;
+		int success = levelData.SuccessCount - maxCount;
+		for(int x = 0; x < numColumns; x++) {
+			for(int y = 0; y < numRows; y++) {
+				Tile tile = tiles[x, y];
+				if(!tile.IsAvaliable) {
+					continue;
+				}
+
+				if(!tile.IsEmpty && tile.GetTileItem().TypeGroup == maxCountType) {
+					continue;
+				}
+
+				int tileItemIndex = TileItem.TypeToIndex(tile.GetTileItem().Type);
+				ClearTile(tile);
+				tile.SetTileItem(InstantiateTileItem((TileItemType)(maxCountType + tileItemIndex), tile.X, tile.Y, true));
+				success--;
+				if(success == 0) {
+					return false;
+				}
+			}
+		}
+
+		throw new System.Exception("Can not instantiate " + levelData.SuccessCount + " items");
+	}
+
+	private TileItemData[][] GenerateTileItemDataFromCurrentTiles() {
+		TileItemData[,] res = new TileItemData[numColumns, numRows];
+
+		for(int x = 0; x < numColumns; x++) {
+			for(int y = 0; y < numRows; y++) {
+				Tile tile = tiles[x, y];
+				res[x, y] = new TileItemData()
+			}
+		}
 	}
 }
 
