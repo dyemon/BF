@@ -623,7 +623,12 @@ public class GameController : MonoBehaviour {
 			isFirst = false;
 		}
 
+		int i = 0;
 		while(!CheckTileItemsPosition(data)) {
+			if(i++ > 100) {
+				throw new System.Exception("Can not to position " + levelData.SuccessCount + " items");
+			}
+
 			validPosition = false;
 			if(!isFirst) {
 				data = GenerateTileItemDataFromCurrentTiles();
