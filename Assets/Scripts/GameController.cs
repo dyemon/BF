@@ -682,9 +682,13 @@ public class GameController : MonoBehaviour {
 		for(int x = 0; x < numColumns; x++) {
 			for(int y = 0; y < numRows; y++) {
 				Tile tile = tiles[x, y];
-				res[x, y] = new TileItemData()
+				TileItem tileItem = tile.GetTileItem();
+				TileItemType type = (tile.Type == TileType.Avaliable && tileItem != null) ? tileItem.Type : TileItemType.Unavaliable_1;
+				res[x, y] = new TileItemData(tile.X, tile.Y, type);
 			}
 		}
+
+		return res;
 	}
 }
 
