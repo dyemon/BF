@@ -614,6 +614,28 @@ public class GameController : MonoBehaviour {
 
 	private void CheckConsistency() {
 		bool validCount = CheckTileItemSameColorCount();
+		TileItemData[,] data = GenerateTileItemDataFromCurrentTiles();
+		bool validPosition = true;
+		bool isFirst = true;
+
+		if(!validCount) {
+			data = MixTileItemData(data);
+			isFirst = false;
+		}
+
+		while(!CheckTileItemsPosition(data)) {
+			validPosition = false;
+			if(!isFirst) {
+				data = GenerateTileItemDataFromCurrentTiles();
+			} else {
+				isFirst = false;
+			}
+			data = MixTileItemData(data);
+		}
+
+		if(!validCount || !validPosition) {
+			RepositionTileItems(data);
+		}
 	}
 
 	private bool CheckTileItemSameColorCount() {
@@ -676,7 +698,7 @@ public class GameController : MonoBehaviour {
 		throw new System.Exception("Can not instantiate " + levelData.SuccessCount + " items");
 	}
 
-	private TileItemData[][] GenerateTileItemDataFromCurrentTiles() {
+	private TileItemData[,] GenerateTileItemDataFromCurrentTiles() {
 		TileItemData[,] res = new TileItemData[numColumns, numRows];
 
 		for(int x = 0; x < numColumns; x++) {
@@ -689,6 +711,17 @@ public class GameController : MonoBehaviour {
 		}
 
 		return res;
+	}
+
+	bool CheckTileItemsPosition(TileItemData[,] data) {
+		return true;
+	}
+
+	TileItemData[,] MixTileItemData(TileItemData[,] data) {
+		return data;
+	}
+
+	void RepositionTileItems(TileItemData[,] data) {
 	}
 }
 
