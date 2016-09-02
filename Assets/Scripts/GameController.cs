@@ -616,11 +616,9 @@ public class GameController : MonoBehaviour {
 		bool validCount = CheckTileItemSameColorCount();
 		TileItemData[,] data = GenerateTileItemDataFromCurrentTiles();
 		bool validPosition = true;
-		bool isFirst = true;
 
 		if(!validCount) {
 			data = MixTileItemData(data);
-			isFirst = false;
 		}
 
 		int i = 0;
@@ -630,11 +628,6 @@ public class GameController : MonoBehaviour {
 			}
 
 			validPosition = false;
-			if(!isFirst) {
-				data = GenerateTileItemDataFromCurrentTiles();
-			} else {
-				isFirst = false;
-			}
 			data = MixTileItemData(data);
 		}
 
