@@ -7,6 +7,6 @@ public class UserData {
 	public IList<string> HeroeIds = new List<string>();
 
 	public void Init() {
-		HeroeIds.Add("blue");
+	//	HeroeIds.Add("blue");
 	}
 }

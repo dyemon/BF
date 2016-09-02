@@ -6,8 +6,8 @@ using System.Collections.Generic;
 public class GameController : MonoBehaviour {
 	public static readonly int TILEITEM_SORTING_ORDER = 10;
 
-	public static int numColumns = 7;
-	public static int numRows = 8;
+	private int numColumns;
+	private int numRows;
 	public LayerMask tilesItemLayer = -1;
 
 	public GameObject[] tileItemsColor;
@@ -38,17 +38,20 @@ public class GameController : MonoBehaviour {
 	private GameData gameData;
 
 	void Start() {
-		animationGroup = GetComponent<AnimationGroup>();
-		tiles = new Tile[numColumns, numRows];
-		tileItemSpawnDelay = new int[numColumns];
-		tileColumnAvalibleForOffset = new bool[numColumns];
-
 		levelData = new LevelData();
-		levelData.Init(numRows);
+		levelData.Init();
 		userData = new UserData();
 		userData.Init();
 		gameData = new GameData();
 		gameData.Init();
+
+		numColumns = LevelData.NumColumns;
+		numRows = LevelData.NumRows;
+
+		animationGroup = GetComponent<AnimationGroup>();
+		tiles = new Tile[numColumns, numRows];
+		tileItemSpawnDelay = new int[numColumns];
+		tileColumnAvalibleForOffset = new bool[numColumns];
 
 		InitTiles();
 		InitBarriers();
@@ -85,10 +88,10 @@ public class GameController : MonoBehaviour {
 	}
 
 	public static Vector3 IndexToPosition(float x, float y) {
-		return new Vector3(x - numColumns / 2f + 0.5f, y + 0.5f, 0);
+		return new Vector3(x - LevelData.NumColumns / 2f + 0.5f, y + 0.5f, 0);
 	}
 	public static Vector2 PositionToIndex(Vector3 pos) {
-		return new Vector2(pos.x + numColumns / 2f - 0.5f, pos.y - 0.5f);
+		return new Vector2(pos.x + LevelData.NumColumns / 2f - 0.5f, pos.y - 0.5f);
 	}
 
 	private TileItem InstantiateColorOrSpecialTileItem() {
@@ -515,8 +518,8 @@ public class GameController : MonoBehaviour {
 	
 
 	private bool CheckTileItemSameColorCount() {
-		IDictionary<TileItemTypeGroup, int> items = new Dictionary<TileItemTypeGroup, int>();
-		TileItemTypeGroup? maxCountType = null;
+		IDictionary<TileItemTypeGroup, TileItemSameColorCount> items = new Dictionary<TileItemTypeGroup, TileItemSameColorCount>();
+		TileItemTypeGroup maxCountType = TileItemTypeGroup.Red;
 		int maxCount = 0;
 
 		for(int x = 0; x < numColumns; x++) {
@@ -528,23 +531,27 @@ public class GameController : MonoBehaviour {
 
 				TileItemTypeGroup tg = tile.GetTileItem().TypeGroup;
 				if(!items.ContainsKey(tg)) {
-					items.Add(tg, 0);
+					items.Add(tg, new TileItemSameColorCount(tg));
 				}
-				items[tg]++;
-				if(items[tg] >= levelData.SuccessCount) {
+				int count = items[tg].Increment();
+				if(tile.GetTileItem().IsEnvelop) {
+					count = items[tg].AddPositions(GetTileItemDataForEnvelopReplace(tile));
+				}
+
+				if(count >= levelData.SuccessCount) {
 					return true;
 				}
-				if(items[tg] > maxCount) {
-					maxCount = items[tg];
+
+				if(count > maxCount) {
+					maxCount = count;
 					maxCountType = tg;
 				}
 			}
 		}
 
-		if(maxCountType == null) {
-			maxCountType = TileItemTypeGroup.Red;
-		}
+		Debug.Log("************** " + maxCount + " " + maxCountType);
 
+		maxCount = items.ContainsKey(maxCountType) ? items[maxCountType].GetItemCount() : 0;
 		int success = levelData.SuccessCount - maxCount;
 		for(int x = 0; x < numColumns; x++) {
 			for(int y = 0; y < numRows; y++) {

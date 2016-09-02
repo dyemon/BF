@@ -67,6 +67,7 @@
      <Compile Include="Assets\Scripts\Sprites\Background.cs" />
      <Compile Include="Assets\Scripts\Tile\Tile.cs" />
      <Compile Include="Assets\Scripts\Tile\TileItem.cs" />
+     <Compile Include="Assets\Scripts\Tile\TileItemSameColorCount.cs" />
      <Compile Include="Assets\Scripts\Tile\TileItemType.cs" />
      <Compile Include="Assets\Scripts\Tile\TileType.cs" />
      <Compile Include="Assets\Scripts\Util\Predicates.cs" />
