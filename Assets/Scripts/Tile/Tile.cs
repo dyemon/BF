@@ -14,9 +14,13 @@ public class Tile : ICloneable {
 		this.Y = y;
 	}
 
+	public static bool IsAvaliableTile(TileType type) {
+		return type != TileType.Unavaliable;
+	}
+
 	public bool IsAvaliable {
 		get {
-			return Type != TileType.Unavaliable && (tileItem == null || tileItem.IsAvaliable());
+			return IsAvaliableTile(Type) && (tileItem == null || tileItem.IsAvaliable());
 		}
 	}
 
@@ -53,11 +57,17 @@ public class Tile : ICloneable {
 	}
 
 	public AnimatedObject GetAnimatedObject() {
-		Predicates.NotNull(tileItem, "Can not get Animatedobject for null object");
+		Preconditions.NotNull(tileItem, "Can not get Animatedobject for null object");
 		return GetTileItemGO().GetComponent<AnimatedObject>();
 	}
 
 	public override string ToString() {
 		return string.Format("[Tile: Type={0}, X={1}, Y={2}, IsAvaliable={3}, IsEmpty={4}]", Type, X, Y, IsAvaliable, IsEmpty);
+	}
+
+	public TileItemType TileItemType {
+		get {
+			return (IsAvaliableTile(Type) && tileItem != null) ? tileItem.Type : TileItemType.Unavaliable_1;
+		}
 	}
 }

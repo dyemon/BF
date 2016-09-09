@@ -24,8 +24,15 @@ public class TileItem {
 		startColor = go.GetComponent<SpriteRenderer>().color;
 	}
 
-	public bool IsAvaliable() {
+	public static bool IsAvaliableItem(TileItemType type) {
+		return IsAvaliableItem(TypeToTypeGroup(type));
+	}
+	public static bool IsAvaliableItem(TileItemTypeGroup typeGroup) {
 		return typeGroup != TileItemTypeGroup.Unavaliable;
+	}
+
+	public bool IsAvaliable() {
+		return IsAvaliableItem(TypeGroup);
 	}
 
 	private void SetType(TileItemTypeGroup typeGroup, int index) {
@@ -35,7 +42,7 @@ public class TileItem {
 
 	private void SetType(TileItemType type) {
 		this.type = type;
-		this.typeGroup = TypeToGroupType(type);
+		this.typeGroup = TypeToTypeGroup(type);
 	}
 		
 
@@ -49,7 +56,7 @@ public class TileItem {
 		tileItemGO.GetComponent<SpriteRenderer>().color = (selected) ? Color.white : startColor;
 	}
 
-	public static TileItemTypeGroup TypeToGroupType( TileItemType type) {
+	public static TileItemTypeGroup TypeToTypeGroup( TileItemType type) {
 		return (TileItemTypeGroup)(type - (int)type % 20);
 	}
 		
@@ -77,13 +84,15 @@ public class TileItem {
 		get { return type; }
 	}
 
-	public bool IsEnvelop {
-		get { 
-			if(!IsColor) {
-				return false;
-			}
-			return TypeToIndex(type) == ENVELOP_OFFSET;
+	public static bool IsEnvelopItem(TileItemType type) {
+		if(!IsColorItem(type)) {
+			return false;
 		}
+		return TypeToIndex(type) == ENVELOP_OFFSET;
+	}
+
+	public bool IsEnvelop {
+		get { return IsEnvelopItem(Type); }
 	}
 
 	public bool IsSimple {

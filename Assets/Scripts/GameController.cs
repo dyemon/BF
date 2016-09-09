@@ -29,13 +29,16 @@ public class GameController : MonoBehaviour {
 
 	private IDictionary<Vector2, List<TileItemData>> replacedItems = new Dictionary<Vector2, List<TileItemData>>();
 
-
 	private int[] tileItemSpawnDelay;
 	private bool[] tileColumnAvalibleForOffset;
 
 	private LevelData levelData;
 	private UserData userData;
 	private GameData gameData;
+
+	int bestRes = 1;
+	Vector2 bestPos;
+	Vector2 startPos;
 
 	void Start() {
 		levelData = new LevelData();
@@ -114,7 +117,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	private TileItem InstantiateTileItem(TileItemType type, int x, int y, bool convertIndexToPos) {
-		TileItemTypeGroup group = TileItem.TypeToGroupType(type);
+		TileItemTypeGroup group = TileItem.TypeToTypeGroup(type);
 		switch(group) {
 			case TileItemTypeGroup.Red:
 			case TileItemTypeGroup.Green:
@@ -175,7 +178,6 @@ public class GameController : MonoBehaviour {
 							selectedTiles.Remove(tile);
 						} else {
 							IList<TileItemData> replaceData = GetTileItemDataForEnvelopReplace(tile);
-							Debug.Log(replaceData);
 							if(replaceData != null) {
 								replacedItems[index] = ReplaceTileItems(replaceData);
 							}
@@ -248,9 +250,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	private bool CheckAvailabilityWithBarriers(Tile from, Tile to) {
-		if(from == null ) {
-			throw new System.ArgumentException("Tile from can not be null");
-		}
+		Preconditions.NotNull(from, "Tile from can not be null");
 
 		if(to == null) {
 			return from.Y == numRows - 1;
@@ -260,19 +260,22 @@ public class GameController : MonoBehaviour {
 			return false;
 		}
 
-		if(Mathf.Abs(from.X - to.X) > 1 || Mathf.Abs(from.Y - to.Y) > 1) {
-			throw new System.ArgumentException("Can not check availability from " + from + " to " + to);
+		return CheckAvailabilityWithBarriers(from.X, from.Y, to.X, to.Y);
+	}
+
+	private bool CheckAvailabilityWithBarriers(int fromX, int fromY, int toX, int toY) {
+		if(Mathf.Abs(fromX - toX) > 1 || Mathf.Abs(fromY - toY) > 1) {
+			throw new System.ArgumentException("Can not check availability from " + fromX + " " + fromY + " to " + toX + " " + toY);
 		}
 
-		if(from.X == to.X || from.Y == to.Y) {
-			return GetBarrier(from.X, from.Y, to.X, to.Y) == null;
+		if(fromX == toX || fromY == toY) {
+			return GetBarrier(fromX, fromY, toX, toY) == null;
 		}
-
-	
-		bool b1 = GetBarrier(from.X, from.Y, to.X, from.Y) != null;
-		bool b2 = GetBarrier(to.X, from.Y, to.X, to.Y) != null;
-		bool b3 = GetBarrier(to.X, to.Y, from.X, to.Y) != null;
-		bool b4 = GetBarrier(from.X, to.Y, from.X, from.Y) != null;
+				
+		bool b1 = GetBarrier(fromX, fromY, toX, fromY) != null;
+		bool b2 = GetBarrier(toX, fromY, toX, toY) != null;
+		bool b3 = GetBarrier(toX, toY, fromX, toY) != null;
+		bool b4 = GetBarrier(fromX, toY, fromX, fromY) != null;
 
 		if(b1 && b3 || b1 && b4 || b2 && b3 || b2 && b4) {
 			return false;
@@ -289,7 +292,9 @@ public class GameController : MonoBehaviour {
 		UpdateTiles();
 	}
 
-	private void RunAnimation() {
+	private void RunTileItemsAnimation<T>(AnimationGroup.CompleteAnimation<T> complete, T param) {
+		animationGroup.Clear();
+
 		for(int x = 0; x < numColumns; x++) {
 			for(int y = 0; y < numRows; y++) {
 				if(!tiles[x, y].IsAvaliable || tiles[x, y].IsEmpty){
@@ -303,7 +308,7 @@ public class GameController : MonoBehaviour {
 			}
 		}
 
-		animationGroup.Run(OnTileItemUpdateComplete, true);
+		animationGroup.Run(complete, param);
 	}
 
 	private void OnTileItemUpdateComplete(bool getHeroItem) {
@@ -337,7 +342,7 @@ public class GameController : MonoBehaviour {
 			ResetTileItemMoved();
 		}
 			
-		RunAnimation();
+		RunTileItemsAnimation(OnTileItemUpdateComplete, true);
 	}
 
 	private void InitTiles() {
@@ -402,7 +407,7 @@ public class GameController : MonoBehaviour {
 			}
 
 			if(tEmpty.Count > 0 && !tile.IsEmpty) {
-				MoveTileItem(tile, tEmpty[0], false);
+				MoveTileItem(tile, tEmpty[0], TileItemMoveType.DOWN);
 				tEmpty.RemoveAt(0);
 				tEmpty.Add(tile);
 			}
@@ -420,7 +425,7 @@ public class GameController : MonoBehaviour {
 			TileItem tileItem = InstantiateColorOrSpecialTileItem();
 			tileItem.GetGameObject().GetComponent<AnimatedObject>().AddIdle((App.MoveTileItemTimeUnit + App.moveTileItemDelay) * tileItemSpawnDelay[x]).Build();
 			spawnTile.SetTileItem(tileItem);
-			MoveTileItem(spawnTile, tile, false);
+			MoveTileItem(spawnTile, tile, TileItemMoveType.DOWN);
 			tileItemSpawnDelay[x]++;
 		}
 
@@ -483,7 +488,7 @@ public class GameController : MonoBehaviour {
 				}
 			}
 				
-			MoveTileItem(chosen, tile, true);
+			MoveTileItem(chosen, tile, TileItemMoveType.OFFSET);
 			tileColumnAvalibleForOffset[chosen.X] = false;
 
 			if(chosen.Y == numRows -1) {
@@ -496,16 +501,20 @@ public class GameController : MonoBehaviour {
 		return (x < 0 || y < 0 || x >= numColumns || y >= numRows) ? null : tiles[x, y];
 	}
 
-	private void MoveTileItem(Tile from, Tile to, bool isOffset) {
+	private TileItemData GetTileItemData(int x, int y, TileItemData[,] data) {
+		return (x < 0 || y < 0 || x >= numColumns || y >= numRows) ? null : data[x, y];
+	}
+
+	private void MoveTileItem(Tile from, Tile to, TileItemMoveType moveType) {
 		AnimatedObject ao = from.GetTileItemGO().GetComponent<AnimatedObject>();
 
-		float speed = (isOffset) ? App.moveTileItemOffsetSpeed : App.moveTileItemSpeed;
+		float speed = App.GetTileItemSpeed(moveType);
 		ao.AddMove(IndexToPosition(from.X, from.Y), IndexToPosition(to.X, to.Y), speed);
 		to.SetTileItem(from.GetTileItem());
 
-		if(!isOffset) {
+		if(moveType == TileItemMoveType.DOWN) {
 			from.GetTileItem().IsMoved = true;
-		} else {
+		} else if(moveType == TileItemMoveType.OFFSET) {
 			ao.LayerSortingOrder(TILEITEM_SORTING_ORDER - 3);
 		}
 
@@ -515,9 +524,6 @@ public class GameController : MonoBehaviour {
 			from.SetTileItem(null);
 		}
 	}
-	
-
-
 
 	private void ClearTile(Tile tile) {
 		if(tile.GetTileItemGO() != null) {
@@ -552,11 +558,13 @@ public class GameController : MonoBehaviour {
 			return;
 		}
 
+		animationGroup.Clear();
+
 		TileItem ti = InstantiateTileItem(itemData.Type, itemData.X, itemData.Y, false);
 		Tile dest = avaliableTiles[Random.Range(0, avaliableTiles.Count)];
 
 		AnimatedObject ao = ti.GetGameObject().GetComponent<AnimatedObject>();
-		ao.AddMove(ti.GetGameObject().transform.position, dest.GetTileItemGO().transform.position, App.moveHeroItemSpeed);
+		ao.AddMove(ti.GetGameObject().transform.position, dest.GetTileItemGO().transform.position, App.GetTileItemSpeed(TileItemMoveType.HERO_DROP));
 		ao.Build();
 
 		animationGroup.Add(ao);
@@ -565,27 +573,53 @@ public class GameController : MonoBehaviour {
 	}
 
 	private IList<TileItemData> GetTileItemDataForEnvelopReplace(Tile tile) {
-		if(!tile.GetTileItem().IsEnvelop) {
+		return GetTileItemDataForEnvelopReplace(tile.X, tile.Y, tile.TileItemType, null);
+	}
+		
+	private IList<TileItemData> GetTileItemDataForEnvelopReplace(int tileX, int tileY, TileItemType type, TileItemData[,] tileData) {
+		if(!TileItem.IsEnvelopItem(type)) {
 			return null;
 		}
 
+		TileItemTypeGroup typeGroup = TileItem.TypeToTypeGroup(type);
 		bool reachable = false;
 		IList<TileItemData> res = null;
+		TileItemType curTileType;
 
-		for(int x = tile.X -1; x <= tile.X + 1; x++) {
-			for(int y = tile.Y - 1; y <= tile.Y + 1; y++) {
-				Tile curTile = GetTile(x, y);
-				if((x == tile.X && y == tile.Y) || curTile == null || !curTile.IsColor) {
+		for(int x = tileX -1; x <= tileX + 1; x++) {
+			for(int y = tileY - 1; y <= tileY + 1; y++) {
+				if(x == tileX && y == tileY) {
 					continue;
 				}
-				if(curTile.GetTileItem().TypeGroup == tile.GetTileItem().TypeGroup) {
+
+				if(tileData == null) {
+					Tile curTile = GetTile(x, y);
+					if(curTile == null) {
+						continue;
+					}
+					curTileType = curTile.TileItemType;
+				} else {
+					TileItemData curTile = GetTileItemData(x, y, tileData);
+					if(curTile == null) {
+						continue;
+					}
+					curTileType = curTile.Type;
+				}
+				
+				if(!TileItem.IsColorItem(curTileType)) {
+						continue;
+				}
+
+				TileItemTypeGroup curTypeGroup = TileItem.TypeToTypeGroup(curTileType);
+
+				if(curTypeGroup == typeGroup && CheckAvailabilityWithBarriers(tileX, tileY, x, y)) {
 					reachable = true;
 				}
-				if(curTile.GetTileItem().TypeGroup != tile.GetTileItem().TypeGroup && CheckAvailabilityWithBarriers(tile, curTile)) {
+				if(curTypeGroup != typeGroup && CheckAvailabilityWithBarriers(tileX, tileY, x, y)) {
 					if(res == null) {
 						res = new List<TileItemData>();
 					}
-					TileItemData data = new TileItemData(curTile.X, curTile.Y, (TileItemType)tile.GetTileItem().TypeGroup);
+					TileItemData data = new TileItemData(x, y, (TileItemType)typeGroup);
 					res.Add(data);
 				}
 			}
@@ -600,13 +634,24 @@ public class GameController : MonoBehaviour {
 
 		foreach(TileItemData itemData in replaceData) {
 			Tile tile = GetTile(itemData.X, itemData.Y);
-			if(tile == null) {
-				throw new System.ArgumentException("Can not replace tile item for x=" + itemData.X + " y=" + itemData.Y);
-			}
+			Preconditions.NotNull(tile, "Can not replace tile item for x={0} y={1}", itemData.X, itemData.Y);
 			TileItemData old = new TileItemData(tile.X, tile.Y, tile.GetTileItem().Type);
 			oldItems.Add(old);
 			ClearTile(tile);
 			tile.SetTileItem(InstantiateTileItem(itemData.Type, itemData.X, itemData.Y, true));
+		}
+
+		return oldItems;
+	}
+
+	List<TileItemData> ReplaceTileItemsData(IList<TileItemData> replaceData, TileItemData[,] data) {
+		List<TileItemData> oldItems = new List<TileItemData>();
+
+		foreach(TileItemData itemData in replaceData) {
+			TileItemData tile = GetTileItemData(itemData.X, itemData.Y, data);
+			Preconditions.NotNull(tile, "Can not replace tile item for x={0} y={1}", itemData.X, itemData.Y);
+			oldItems.Add(tile);
+			data[itemData.X, itemData.Y] = itemData;//new TileItemData(itemData.X, itemData.Y, itemData.Type);
 		}
 
 		return oldItems;
@@ -623,13 +668,15 @@ public class GameController : MonoBehaviour {
 
 		int i = 0;
 		while(!CheckTileItemsPosition(data)) {
-			if(i++ > 100) {
+			if(i++ > 500) {
 				throw new System.Exception("Can not to position " + levelData.SuccessCount + " items");
 			}
 
 			validPosition = false;
 			data = MixTileItemData(data);
 		}
+
+		Debug.Log("i=" + i);
 
 		if(!validCount || !validPosition) {
 			RepositionTileItems(data);
@@ -693,7 +740,7 @@ public class GameController : MonoBehaviour {
 			}
 		}
 
-		throw new System.Exception("Can not instantiate " + levelData.SuccessCount + " items");
+		throw new LevelConfigException("Can not instantiate " + levelData.SuccessCount + " items same color");
 	}
 
 	private TileItemData[,] GenerateTileItemDataFromCurrentTiles() {
@@ -702,24 +749,159 @@ public class GameController : MonoBehaviour {
 		for(int x = 0; x < numColumns; x++) {
 			for(int y = 0; y < numRows; y++) {
 				Tile tile = tiles[x, y];
-				TileItem tileItem = tile.GetTileItem();
-				TileItemType type = (tile.Type == TileType.Avaliable && tileItem != null) ? tileItem.Type : TileItemType.Unavaliable_1;
-				res[x, y] = new TileItemData(tile.X, tile.Y, type);
+				res[x, y] = new TileItemData(tile.X, tile.Y, tile.TileItemType);
 			}
 		}
 
 		return res;
 	}
 
-	bool CheckTileItemsPosition(TileItemData[,] data) {
-		return true;
-	}
-
 	TileItemData[,] MixTileItemData(TileItemData[,] data) {
+		IList<TileItemData> avaliableItems = new List<TileItemData>();
+		IList<Vector2> positions = new List<Vector2>();
+
+		for(int x = 0; x < numColumns; x++) {
+			for(int y = 0; y < numRows; y++) {
+				if(TileItem.IsAvaliableItem(data[x, y].Type)) {
+					avaliableItems.Add(data[x, y]);
+					positions.Add(new Vector2(x, y));
+				}
+			}
+		}
+
+		int i = 0;
+		while(avaliableItems.Count > 0) {
+			int index = Random.Range(0, avaliableItems.Count);
+			TileItemData itemData = avaliableItems[index];
+			Vector2 pos = positions[i++];
+			data[(int)pos.x, (int)pos.y] = itemData;
+			avaliableItems.RemoveAt(index);
+		}
+
 		return data;
 	}
 
 	void RepositionTileItems(TileItemData[,] data) {
+		Tile[,] tilesSave = new Tile[numColumns, numRows];
+
+		for(int x = 0; x < numColumns; x++) {
+			for(int y = 0; y < numRows; y++) {
+				TileItemData itemData = data[x, y];
+				if(!TileItem.IsAvaliableItem(itemData.Type) || (x == itemData.X && y == itemData.Y)) {
+					continue;
+				}
+
+				Tile from = tiles[itemData.X, itemData.Y];
+				if(tilesSave[itemData.X, itemData.Y] != null) {
+					from = tilesSave[itemData.X, itemData.Y];
+				}
+				if(tilesSave[x, y] != null) {
+					throw new System.Exception("Can not reposition tile item " + itemData.X + " " + itemData.Y);
+				}
+
+				tilesSave[x, y] = new Tile(x, y);
+				tilesSave[x, y].SetTileItem(tiles[x, y].GetTileItem());
+
+				try {
+					MoveTileItem(from, tiles[x, y], TileItemMoveType.MIX);
+				} catch(System.Exception e) {
+					Debug.Log(from.X + " " + from.Y);
+					throw e;
+				}
+			}
+		}
+
+		RunTileItemsAnimation(null, 0);
+
+	}
+
+	private bool CheckTileItemsPosition(TileItemData[,] data) {
+		IDictionary<Vector2, Object> chain = new Dictionary<Vector2, Object>();
+		IDictionary<Vector2, int> debug = new Dictionary<Vector2, int>();
+		bestRes = 1;
+
+		for(int x = 0; x < numColumns; x++) {
+			for(int y = 0; y < numRows; y++) {	
+				TileItemData itemData = data[x, y];
+				if(!TileItem.IsColorItem(itemData.Type)) {
+					continue;
+				}
+
+				Vector2 pos = new Vector2(x, y);
+
+				chain.Clear();
+				chain.Add(pos, null);
+				startPos = pos;
+
+				if(CheckTileItemsPositionChain(pos, chain, data)) {
+					return true;
+				}
+					
+			}
+		}
+
+		Debug.Log(bestPos.x + " " + bestPos.y + " " +bestRes);
+	//	return true;
+		return false;
+	}
+
+	private bool CheckTileItemsPositionChain(Vector2 pos, IDictionary<Vector2, Object> chain, TileItemData[,] data) {
+		TileItemType type = data[(int)pos.x, (int)pos.y].Type;
+		TileItemTypeGroup typeGroup = TileItem.TypeToTypeGroup(type);
+
+		for(int x = (int)pos.x - 1; x <= pos.x + 1; x++) {
+			for(int y = (int)pos.y - 1; y <= pos.y + 1; y++) {
+				TileItemData itemData = GetTileItemData(x, y, data);
+				if(itemData == null || !TileItem.IsColorItem(itemData.Type)) {
+					continue;
+				}
+				Vector2 curPos = new Vector2(x, y);
+				if(chain.ContainsKey(curPos) || TileItem.TypeToTypeGroup(itemData.Type) != typeGroup) {
+					continue;
+				}
+
+				if(!CheckAvailabilityWithBarriers((int)pos.x, (int)pos.y, x, y)) {
+					continue;
+				}
+
+				if(chain.Count + 1 >= levelData.SuccessCount) {
+					return true;
+				}
+
+				IDictionary<Vector2, Object> chainNew = new Dictionary<Vector2, Object>(chain);
+				chainNew.Add(curPos, null);
+
+				if(CheckTileItemsPositionChain(curPos, chainNew, data)) {
+					return true;
+				}
+					
+				if(chainNew.Count > bestRes) {
+					bestRes = chainNew.Count;
+					bestPos = startPos;
+				}
+
+				if(TileItem.IsEnvelopItem(itemData.Type)) {
+					IList<TileItemData> replace = GetTileItemDataForEnvelopReplace(x, y, itemData.Type, data);
+					if(replace != null && replace.Count > 0) {
+						IList<TileItemData> old = ReplaceTileItemsData(replace, data);
+						chainNew = new Dictionary<Vector2, Object>(chain);
+						chainNew.Add(curPos, null);
+						if(CheckTileItemsPositionChain(curPos, chainNew, data)) {
+							ReplaceTileItemsData(old, data);
+							return true;
+						}
+						ReplaceTileItemsData(old, data);
+
+						if(chainNew.Count > bestRes) {
+							bestRes = chainNew.Count;
+							bestPos = startPos;
+						}
+					}
+				}
+			}
+		}
+			
+		return false;
 	}
 }
 

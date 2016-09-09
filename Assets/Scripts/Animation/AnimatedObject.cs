@@ -14,7 +14,7 @@ public class AnimatedObject : MonoBehaviour {
 
 	public bool IsDone {
 		get {return !isPlay;}
-	} 
+	}
 
 
 	void Start () {
@@ -22,7 +22,7 @@ public class AnimatedObject : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void LateUpdate () {
 		if(!isPlay) {
 			return;
 		}

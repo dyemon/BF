@@ -193,6 +193,6 @@ public class InputController : MonoBehaviour {
 			camera = Camera.main;
 		}
 
-		return camera.ScreenPointToRay(Predicates.NotNull(touch.position)); 
+		return camera.ScreenPointToRay(Preconditions.NotNull(touch.position)); 
 	}
 }

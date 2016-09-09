@@ -48,7 +48,7 @@ public class AnimationGroup : MonoBehaviour {
 		}
 	}
 
-	private void DoNothing(int param) {
+	public static void DoNothing(int param) {
 
 	}
 
