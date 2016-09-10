@@ -35,10 +35,7 @@ public class GameController : MonoBehaviour {
 	private LevelData levelData;
 	private UserData userData;
 	private GameData gameData;
-
-	int bestRes = 1;
-	Vector2 bestPos;
-	Vector2 startPos;
+	
 
 	void Start() {
 		levelData = new LevelData();
@@ -585,6 +582,7 @@ public class GameController : MonoBehaviour {
 		bool reachable = false;
 		IList<TileItemData> res = null;
 		TileItemType curTileType;
+		int dataX, dataY;
 
 		for(int x = tileX -1; x <= tileX + 1; x++) {
 			for(int y = tileY - 1; y <= tileY + 1; y++) {
@@ -598,12 +596,16 @@ public class GameController : MonoBehaviour {
 						continue;
 					}
 					curTileType = curTile.TileItemType;
+					dataX = x;
+					dataY = y;
 				} else {
 					TileItemData curTile = GetTileItemData(x, y, tileData);
 					if(curTile == null) {
 						continue;
 					}
 					curTileType = curTile.Type;
+					dataX = curTile.X;
+					dataY = curTile.Y;
 				}
 				
 				if(!TileItem.IsColorItem(curTileType)) {
@@ -612,14 +614,14 @@ public class GameController : MonoBehaviour {
 
 				TileItemTypeGroup curTypeGroup = TileItem.TypeToTypeGroup(curTileType);
 
-				if(curTypeGroup == typeGroup && CheckAvailabilityWithBarriers(tileX, tileY, x, y)) {
+				if(curTypeGroup == typeGroup && TileItem.IsSimpleItem(curTileType) && CheckAvailabilityWithBarriers(tileX, tileY, x, y)) {
 					reachable = true;
 				}
 				if(curTypeGroup != typeGroup && CheckAvailabilityWithBarriers(tileX, tileY, x, y)) {
 					if(res == null) {
 						res = new List<TileItemData>();
 					}
-					TileItemData data = new TileItemData(x, y, (TileItemType)typeGroup);
+					TileItemData data = new TileItemData(dataX, dataY, (TileItemType)typeGroup);
 					res.Add(data);
 				}
 			}
@@ -646,23 +648,43 @@ public class GameController : MonoBehaviour {
 
 	List<TileItemData> ReplaceTileItemsData(IList<TileItemData> replaceData, TileItemData[,] data) {
 		List<TileItemData> oldItems = new List<TileItemData>();
+		IDictionary<Vector2, TileItemData> dataMap = new Dictionary<Vector2, TileItemData>();
+		Vector2 pos = new Vector2(0, 0);
 
 		foreach(TileItemData itemData in replaceData) {
-			TileItemData tile = GetTileItemData(itemData.X, itemData.Y, data);
-			Preconditions.NotNull(tile, "Can not replace tile item for x={0} y={1}", itemData.X, itemData.Y);
-			oldItems.Add(tile);
-			data[itemData.X, itemData.Y] = itemData;//new TileItemData(itemData.X, itemData.Y, itemData.Type);
+			dataMap.Add(new Vector2(itemData.X, itemData.Y), itemData);
 		}
+
+		for(int x = 0; x < numColumns; x++) {
+			for(int y = 0; y < numRows; y++) {
+				pos.x = data[x, y].X;
+				pos.y = data[x, y].Y;
+				if(dataMap.ContainsKey(pos)) {
+					oldItems.Add(data[x, y]);
+					data[x, y] = dataMap[pos];
+				}
+			}
+		}
+
 
 		return oldItems;
 	}
 
 	private void CheckConsistency() {
-		bool validCount = CheckTileItemSameColorCount();
+		int k = 1;
+		if(k == 1) {
+			RecolorTileItemsBySuccessPath();
+			return;
+		}
+		bool? validCount = CheckTileItemSameColorCount(true);
+		if(validCount == null) {
+			validCount = CheckTileItemSameColorCount(false);
+		}
+
 		TileItemData[,] data = GenerateTileItemDataFromCurrentTiles();
 		bool validPosition = true;
 
-		if(!validCount) {
+		if(!validCount.Value) {
 			data = MixTileItemData(data);
 		}
 
@@ -678,12 +700,12 @@ public class GameController : MonoBehaviour {
 
 		Debug.Log("i=" + i);
 
-		if(!validCount || !validPosition) {
+		if(!validCount.Value || !validPosition) {
 			RepositionTileItems(data);
 		}
 	}
 
-	private bool CheckTileItemSameColorCount() {
+	private bool? CheckTileItemSameColorCount(bool colorOnly) {
 		IDictionary<TileItemTypeGroup, TileItemSameColorCount> items = new Dictionary<TileItemTypeGroup, TileItemSameColorCount>();
 		TileItemTypeGroup maxCountType = TileItemTypeGroup.Red;
 		int maxCount = 0;
@@ -722,7 +744,8 @@ public class GameController : MonoBehaviour {
 		for(int x = 0; x < numColumns; x++) {
 			for(int y = 0; y < numRows; y++) {
 				Tile tile = tiles[x, y];
-				if(!tile.IsAvaliable) {
+				bool avaliable = (colorOnly) ? tile.IsColor : tile.IsAvaliable;
+				if(!avaliable) {
 					continue;
 				}
 
@@ -738,6 +761,10 @@ public class GameController : MonoBehaviour {
 					return false;
 				}
 			}
+		}
+
+		if(colorOnly) {
+			return null;
 		}
 
 		throw new LevelConfigException("Can not instantiate " + levelData.SuccessCount + " items same color");
@@ -817,13 +844,11 @@ public class GameController : MonoBehaviour {
 
 	private bool CheckTileItemsPosition(TileItemData[,] data) {
 		IDictionary<Vector2, Object> chain = new Dictionary<Vector2, Object>();
-		IDictionary<Vector2, int> debug = new Dictionary<Vector2, int>();
-		bestRes = 1;
 
 		for(int x = 0; x < numColumns; x++) {
 			for(int y = 0; y < numRows; y++) {	
 				TileItemData itemData = data[x, y];
-				if(!TileItem.IsColorItem(itemData.Type)) {
+				if(!TileItem.IsSimpleItem(itemData.Type)) {
 					continue;
 				}
 
@@ -831,19 +856,21 @@ public class GameController : MonoBehaviour {
 
 				chain.Clear();
 				chain.Add(pos, null);
-				startPos = pos;
 
 				if(CheckTileItemsPositionChain(pos, chain, data)) {
+
+					DebugUtill.Log(bestChain);
+					Debug.Log("Check position success " +pos);
 					return true;
 				}
 					
 			}
 		}
 
-		Debug.Log(bestPos.x + " " + bestPos.y + " " +bestRes);
-	//	return true;
 		return false;
 	}
+
+	IDictionary<Vector2, Object> bestChain;
 
 	private bool CheckTileItemsPositionChain(Vector2 pos, IDictionary<Vector2, Object> chain, TileItemData[,] data) {
 		TileItemType type = data[(int)pos.x, (int)pos.y].Type;
@@ -865,6 +892,8 @@ public class GameController : MonoBehaviour {
 				}
 
 				if(chain.Count + 1 >= levelData.SuccessCount) {
+					bestChain = chain;
+					bestChain.Add(curPos, null);
 					return true;
 				}
 
@@ -874,11 +903,7 @@ public class GameController : MonoBehaviour {
 				if(CheckTileItemsPositionChain(curPos, chainNew, data)) {
 					return true;
 				}
-					
-				if(chainNew.Count > bestRes) {
-					bestRes = chainNew.Count;
-					bestPos = startPos;
-				}
+
 
 				if(TileItem.IsEnvelopItem(itemData.Type)) {
 					IList<TileItemData> replace = GetTileItemDataForEnvelopReplace(x, y, itemData.Type, data);
@@ -892,16 +917,89 @@ public class GameController : MonoBehaviour {
 						}
 						ReplaceTileItemsData(old, data);
 
-						if(chainNew.Count > bestRes) {
-							bestRes = chainNew.Count;
-							bestPos = startPos;
-						}
 					}
 				}
 			}
 		}
 			
 		return false;
+	}
+
+	void RecolorTileItemsBySuccessPath() {
+		IDictionary<Vector2, Object> path = FindSuccessPath(true);
+		if(path == null) {
+			path = FindSuccessPath(false);
+		}
+	}
+
+	IDictionary<Vector2, Object> FindSuccessPath(bool colorOnly) {
+		IDictionary<Vector2, Object> chain = new Dictionary<Vector2, Object>();
+
+		int hDirection = (Random.Range(0, 2) == 0)? 1 : -1;
+		int vDirection = (Random.Range(0, 2) == 0)? 1 : -1;
+
+		for(int x = (hDirection > 0)? 0 : numColumns - 1; x < numColumns && x >= 0; x += hDirection) {
+			for(int y = (vDirection > 0)? 0 : numRows - 1; y < numRows && y >= 0; y += vDirection) {
+				Tile tile = tiles[x, y];
+
+				bool avaliable = (colorOnly) ? tile.IsColor : tile.IsAvaliable;
+				if(!avaliable) {
+					continue;
+				}
+
+				Vector2 pos = new Vector2(x, y);
+
+				chain.Clear();
+				chain.Add(pos, null);
+
+				if(FindSuccessPathChain(pos, chain, colorOnly)) {
+					DebugUtill.Log(bestChain);
+					Debug.Log("Success path " +pos);
+					return bestChain;
+				}
+			}
+		}
+
+		if(colorOnly) {
+			return null;
+		}
+
+		throw new LevelConfigException("Can not detect sucess path");
+	}
+
+	bool FindSuccessPathChain(Vector2 pos, IDictionary<Vector2, Object> chain, bool colorOnly) {
+		for(int x = (int)pos.x - 1; x <= pos.x + 1; x++) {
+			for(int y = (int)pos.y - 1; y <= pos.y + 1; y++) {
+				Tile tile = GetTile(x, y);
+				if(tile == null) {
+					continue;
+				}
+				bool avaliable = (colorOnly) ? tile.IsColor : tile.IsAvaliable;
+				if(!avaliable) {
+					continue;
+				}
+
+				Vector2 curPos = new Vector2(x, y);
+				if(chain.ContainsKey(curPos) || !CheckAvailabilityWithBarriers((int)pos.x, (int)pos.y, x, y)) {
+					continue;
+				}
+
+				if(chain.Count + 1 >= levelData.SuccessCount) {
+					bestChain = chain;
+					bestChain.Add(curPos, null);
+					return true;
+				}
+
+				IDictionary<Vector2, Object> chainNew = new Dictionary<Vector2, Object>(chain);
+				chainNew.Add(curPos, null);
+
+				if(FindSuccessPathChain(curPos, chainNew, colorOnly)) {
+					return true;
+				}
+			}
+		}
+
+		return false;	
 	}
 }
 

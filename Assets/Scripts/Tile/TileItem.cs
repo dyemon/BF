@@ -95,13 +95,15 @@ public class TileItem {
 		get { return IsEnvelopItem(Type); }
 	}
 
-	public bool IsSimple {
-		get { 
-			if(!IsColor) {
-				return false;
-			}
-			return TypeToIndex(type) == 0;
+	public static bool IsSimpleItem(TileItemType type) {
+		if(!IsColorItem(type)) {
+			return false;
 		}
+		return TypeToIndex(type) == 0;
+	}
+
+	public bool IsSimple {
+		get { return IsSimpleItem(Type); }
 	}
 
 	public bool IsBomb {
