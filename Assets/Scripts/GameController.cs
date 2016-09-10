@@ -770,6 +770,7 @@ public class GameController : MonoBehaviour {
 		throw new LevelConfigException("Can not instantiate " + levelData.SuccessCount + " items same color");
 	}
 
+	private RecolorTileItem(Tile tile, TileItemType)
 	private TileItemData[,] GenerateTileItemDataFromCurrentTiles() {
 		TileItemData[,] res = new TileItemData[numColumns, numRows];
 
@@ -929,6 +930,36 @@ public class GameController : MonoBehaviour {
 		IDictionary<Vector2, Object> path = FindSuccessPath(true);
 		if(path == null) {
 			path = FindSuccessPath(false);
+		}
+
+		IDictionary<TileItemTypeGroup, int> colorCount = new Dictionary<TileItemTypeGroup, int>();
+		int maxCount = 0;
+		TileItemTypeGroup maxTypeGroup = TileItemTypeGroup.Red;
+
+		foreach(Vector2 pos in path.Keys) {
+			Tile tile = tiles[(int)pos.x, (int)pos.y];
+			if(!Tile.IsColor) {
+				continue;
+			}
+
+			TileItemTypeGroup tg = tile.GetTileItem().TypeGroup;
+			if(colorCount.ContainsKey(tg)) {
+				colorCount.Add(tg, 1);
+			}
+
+			if(colorCount[tg] > maxCount) {
+				maxCount = colorCount;
+				maxTypeGroup = tg;
+			}
+		}
+
+		foreach(Vector2 pos in path.Keys) {
+			Tile tile = tiles[(int)pos.x, (int)pos.y];
+			if(!Tile.IsColor) {
+				continue;
+			}
+
+
 		}
 	}
 
