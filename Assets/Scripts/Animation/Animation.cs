@@ -10,18 +10,18 @@ public class Animation {
 	public int? LayerSortingOrder { get; set;}
 
 	public void AddMove(Vector3 startPos, Vector3 movePos, float speed) {
-		Preconditions.Null(move, "Move animation already exist for this animation object");
+		Preconditions.IsNull(move, "Move animation already exist for this animation object");
 		move = new AMove(startPos, movePos, speed);
 	}
 
 	public void AddMoveByTime(Vector3 startPos, Vector3 movePos, float time) {
-		Preconditions.Null(move, "Move animation already exist for this animation object");
+		Preconditions.IsNull(move, "Move animation already exist for this animation object");
 		move = new AMove(startPos, movePos);
 		move.SetTime(time);
 	}
 
 	public void AddIdle(float time) {
-		Preconditions.Null(move, "Idle animation already exist for this animation object");
+		Preconditions.IsNull(move, "Idle animation already exist for this animation object");
 		idle = new AIdle(time);
 	}
 

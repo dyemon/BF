@@ -14,7 +14,7 @@ public static class Preconditions {
 		return NotNull(obj, String.Format(error, param));
 	} 
 
-	public static T Null<T>(T obj, string error = null) {
+	public static T IsNull<T>(T obj, string error = null) {
 		if(obj != null) {
 			throw new System.ArgumentException((error == null)? String.Format("Object %s must be null", obj) : error);
 		}
@@ -22,8 +22,8 @@ public static class Preconditions {
 		return obj;
 	} 
 
-	public static T Null<T>(T obj, string error, params Object[] param) {
-		return Null<T>(obj, String.Format(error, param));
+	public static T IsNull<T>(T obj, string error, params Object[] param) {
+		return IsNull<T>(obj, String.Format(error, param));
 	}
 
 	public static void Check(bool exp, string error = null) {

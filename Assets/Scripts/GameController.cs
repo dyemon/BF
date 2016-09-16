@@ -20,7 +20,7 @@ public class GameController : MonoBehaviour {
 	private AnimationGroup animationGroup;
 
 	private Tile[,] tiles;
-	private IList<Tile> selectedTiles = new List<Tile>();
+	private LinkedList<Tile> selectedTiles = new LinkedList<Tile>();
 	private Tile[,] tmpTiles;
 
 	private IDictionary<BarrierData, Barrier> barriers = new Dictionary<BarrierData, Barrier>();
@@ -35,7 +35,12 @@ public class GameController : MonoBehaviour {
 	private LevelData levelData;
 	private UserData userData;
 	private GameData gameData;
-	
+
+	private Rect tilesArea;
+
+	bool IsTileInputAvaliable { get; set;}
+
+	Tile prevSelectedTile;
 
 	void Start() {
 		levelData = new LevelData();
@@ -47,6 +52,9 @@ public class GameController : MonoBehaviour {
 
 		numColumns = LevelData.NumColumns;
 		numRows = LevelData.NumRows;
+
+		float areaOffset = 0.1f;
+		tilesArea = new Rect(-numColumns / 2f - areaOffset, 0 - areaOffset, numColumns + 2*areaOffset, numRows + 2*areaOffset);
 
 		animationGroup = GetComponent<AnimationGroup>();
 		tiles = new Tile[numColumns, numRows];
@@ -159,35 +167,116 @@ public class GameController : MonoBehaviour {
 
 		if(touches.Length > 0) {
 			InputController.Touch touch = touches[0];
-			if(touch.phase == TouchPhase.Began) {
-				Ray ray = InputController.TouchToRay(touches[0]);
-				RaycastHit2D hit = Physics2D.Raycast( ray.origin, Vector2.zero, Mathf.Infinity, tilesItemLayer );
-				if(hit.collider != null) {
-					Tile tile = GetTile(hit.collider.gameObject);
-					if(tile != null) {
-						tile.GetTileItem().ToggleSelect();
-						Vector2 index = new Vector2(tile.X, tile.Y);
+			if(!IsTileInputAvaliable) {
+				return;
+			}
+
+			Tile tile = null;
+			Ray ray = InputController.TouchToRay(touches[0]);
+			if(IsExitFromTilesArea(ray.origin)) {
+				ResetSelected();
+				return;
+			} 
+			RaycastHit2D hit = Physics2D.Raycast( ray.origin, Vector2.zero, Mathf.Infinity, tilesItemLayer );
+			if(hit.collider != null) {		
+				tile = GetTile(hit.collider.gameObject);
+				if(tile != null) {
+
+					/*	Vector2 index = new Vector2(tile.X, tile.Y);
 						if(selectedTiles.Contains(tile)) {
 							if(replacedItems.ContainsKey(index)) {
-								ReplaceTileItems(replacedItems[index]);
+								ReplaceTileItems(replacedItems[index], false);
 								replacedItems.Remove(index);
 							}
-							selectedTiles.Remove(tile);
+							SelectTileItem(tile, false);
+
 						} else {
 							IList<TileItemData> replaceData = GetTileItemDataForEnvelopReplace(tile);
 							if(replaceData != null) {
-								replacedItems[index] = ReplaceTileItems(replaceData);
+								replacedItems[index] = ReplaceTileItems(replaceData, true);
 							}
-							selectedTiles.Add(tile);
-						}
-					}
-
+							SelectTileItem(tile, true);
+						}*/
 				}
-			
+
+			}
+			if(touch.phase == TouchPhase.Began) {
+				BeganTouch(tile);
+			} else if(touch.phase == TouchPhase.Moved) {
+				MoveTouch(tile);
+			} else if(touch.phase == TouchPhase.Ended) {
+				EndTouch(tile);
+			} else if(touch.phase == TouchPhase.Canceled) {
+				ResetSelected();
 			}
 		}
+		
 	}
 
+	private void BeganTouch(Tile tile) {
+		if(tile == null) {
+			return;
+		}
+		Preconditions.Check(replacedItems.Count == 0, "replacedItems count must be 0 {0}", replacedItems.Count);
+		Preconditions.Check(selectedTiles.Count == 0, "selectedTiles count must be 0 {0}", selectedTiles.Count);
+
+		SelectTileItem(tile, true);
+		prevSelectedTile = tile;
+	}
+
+	private void MoveTouch(Tile tile) {
+		if(tile == null || selectedTiles.Count == 0 || prevSelectedTile == tile) {
+			return;
+		}
+
+		Tile lastTile = selectedTiles.Last.Value;
+		Tile predLastTile = null;
+		if(selectedTiles.Count > 2) {
+//			predLastTile = selectedTiles[2];
+		}
+		if(selectedTiles.Contains(tile)) {
+			return;
+		}
+
+		SelectTileItem(tile, true);
+		prevSelectedTile = tile;
+	}
+
+	private void EndTouch(Tile tile) {
+		ResetSelected();
+	}
+
+	private void ResetSelected() {
+		foreach(Tile tile in selectedTiles) {
+			tile.GetTileItem().Select(false);
+		}
+		selectedTiles.Clear();
+		replacedItems.Clear();
+		prevSelectedTile = null;
+	}
+
+	public void CollectTileItems() {
+		foreach(Tile tile in selectedTiles) {
+			ClearTile(tile);
+		}
+		selectedTiles.Clear();
+		replacedItems.Clear();
+		UpdateTiles();
+	}
+
+	private void SelectTileItem(Tile tile, bool isSelect) {
+		Preconditions.NotNull(tile, "Tile {0} {1} can not be null", tile.X, tile.Y);
+		Preconditions.NotNull(tile.GetTileItem(), "Tile Item {0} {1} can not be null", tile.X, tile.Y).Select(isSelect);
+		if(isSelect) {
+			selectedTiles.AddLast(tile);
+		} else {
+			selectedTiles.Remove(tile);
+		}
+	}
+		
+	private bool IsExitFromTilesArea(Vector3 pos) {
+		return !tilesArea.Contains(new Vector2(pos.x, pos.y));
+	}
 
 	private Tile GetTile(GameObject go) {
 		for(int x = 0; x < numColumns; x++) {
@@ -281,13 +370,7 @@ public class GameController : MonoBehaviour {
 		return true;
 	}
 
-	public void DropTileItems() {
-		foreach(Tile tile in selectedTiles) {
-			ClearTile(tile);
-		}
-		selectedTiles.Clear();
-		UpdateTiles();
-	}
+
 
 	private void RunTileItemsAnimation<T>(AnimationGroup.CompleteAnimation<T> complete, T param) {
 		animationGroup.Clear();
@@ -331,6 +414,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void UpdateTiles() {
+		IsTileInputAvaliable = false;
 		ResetTileItemSpawnDelay();
 
 		while(UpdateTilesColumns()) {
@@ -497,6 +581,9 @@ public class GameController : MonoBehaviour {
 	private Tile GetTile(int x, int y) {
 		return (x < 0 || y < 0 || x >= numColumns || y >= numRows) ? null : tiles[x, y];
 	}
+	private Tile GetTile(Vector2 index) {
+		return GetTile((int)index.x, (int)index.y);
+	}
 
 	private TileItemData GetTileItemData(int x, int y, TileItemData[,] data) {
 		return (x < 0 || y < 0 || x >= numColumns || y >= numRows) ? null : data[x, y];
@@ -583,12 +670,16 @@ public class GameController : MonoBehaviour {
 		IList<TileItemData> res = null;
 		TileItemType curTileType;
 		int dataX, dataY;
+		Vector2 pos = new Vector2(0, 0);
 
 		for(int x = tileX -1; x <= tileX + 1; x++) {
 			for(int y = tileY - 1; y <= tileY + 1; y++) {
 				if(x == tileX && y == tileY) {
 					continue;
 				}
+				pos.x = x;
+				pos.y = y;
+			//	bool isSelected = selectedTiles.ContainsKey(pos);
 
 				if(tileData == null) {
 					Tile curTile = GetTile(x, y);
@@ -599,6 +690,7 @@ public class GameController : MonoBehaviour {
 					dataX = x;
 					dataY = y;
 				} else {
+			//		Preconditions.Check(!isSelected, "Tile {0} {1} can not be selected (check tiledata)", x, y);
 					TileItemData curTile = GetTileItemData(x, y, tileData);
 					if(curTile == null) {
 						continue;
@@ -631,14 +723,23 @@ public class GameController : MonoBehaviour {
 	}
 
 
-	List<TileItemData> ReplaceTileItems(IList<TileItemData> replaceData) {
+	List<TileItemData> ReplaceTileItems(IList<TileItemData> replaceData, bool saveOld) {
 		List<TileItemData> oldItems = new List<TileItemData>();
+		Vector2 index = new Vector2(0, 0);
 
 		foreach(TileItemData itemData in replaceData) {
 			Tile tile = GetTile(itemData.X, itemData.Y);
 			Preconditions.NotNull(tile, "Can not replace tile item for x={0} y={1}", itemData.X, itemData.Y);
-			TileItemData old = new TileItemData(tile.X, tile.Y, tile.GetTileItem().Type);
-			oldItems.Add(old);
+
+			if(saveOld) {
+				index.x = itemData.X; index.y = itemData.Y;
+				TileItemData old = new TileItemData(tile.X, tile.Y, tile.GetTileItem().Type);
+				oldItems.Add(old);
+				if(selectedTiles.Contains(tile)) {
+					SelectTileItem(tile, false);
+				}
+			}
+
 			ClearTile(tile);
 			tile.SetTileItem(InstantiateTileItem(itemData.Type, itemData.X, itemData.Y, true));
 		}
@@ -671,11 +772,6 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void CheckConsistency() {
-		int k = 1;
-		if(k == 1) {
-			RecolorTileItemsBySuccessPath();
-			return;
-		}
 		bool? validCount = CheckTileItemSameColorCount(true);
 		if(validCount == null) {
 			validCount = CheckTileItemSameColorCount(false);
@@ -690,10 +786,11 @@ public class GameController : MonoBehaviour {
 
 		int i = 0;
 		while(!CheckTileItemsPosition(data)) {
-			if(i++ > 500) {
-				throw new System.Exception("Can not to position " + levelData.SuccessCount + " items");
+			if(i++ > 50) {
+				RecolorTileItemsBySuccessPath();
+				return;
 			}
-
+		
 			validPosition = false;
 			data = MixTileItemData(data);
 		}
@@ -703,6 +800,8 @@ public class GameController : MonoBehaviour {
 		if(!validCount.Value || !validPosition) {
 			RepositionTileItems(data);
 		}
+
+		IsTileInputAvaliable = true;
 	}
 
 	private bool? CheckTileItemSameColorCount(bool colorOnly) {
@@ -753,9 +852,7 @@ public class GameController : MonoBehaviour {
 					continue;
 				}
 
-				int tileItemIndex = TileItem.TypeToIndex(tile.GetTileItem().Type);
-				ClearTile(tile);
-				tile.SetTileItem(InstantiateTileItem((TileItemType)(maxCountType + tileItemIndex), tile.X, tile.Y, true));
+				RecolorTileItem(tile, maxCountType);
 				success--;
 				if(success == 0) {
 					return false;
@@ -770,7 +867,12 @@ public class GameController : MonoBehaviour {
 		throw new LevelConfigException("Can not instantiate " + levelData.SuccessCount + " items same color");
 	}
 
-	private RecolorTileItem(Tile tile, TileItemType)
+	private void RecolorTileItem(Tile tile, TileItemTypeGroup type) {
+		int tileItemIndex = TileItem.TypeToIndex(tile.GetTileItem().Type);
+		ClearTile(tile);
+		tile.SetTileItem(InstantiateTileItem((TileItemType)(type + tileItemIndex), tile.X, tile.Y, true));
+	}
+
 	private TileItemData[,] GenerateTileItemDataFromCurrentTiles() {
 		TileItemData[,] res = new TileItemData[numColumns, numRows];
 
@@ -840,9 +942,8 @@ public class GameController : MonoBehaviour {
 		}
 
 		RunTileItemsAnimation(null, 0);
-
 	}
-
+		
 	private bool CheckTileItemsPosition(TileItemData[,] data) {
 		IDictionary<Vector2, Object> chain = new Dictionary<Vector2, Object>();
 
@@ -904,8 +1005,7 @@ public class GameController : MonoBehaviour {
 				if(CheckTileItemsPositionChain(curPos, chainNew, data)) {
 					return true;
 				}
-
-
+					
 				if(TileItem.IsEnvelopItem(itemData.Type)) {
 					IList<TileItemData> replace = GetTileItemDataForEnvelopReplace(x, y, itemData.Type, data);
 					if(replace != null && replace.Count > 0) {
@@ -938,28 +1038,24 @@ public class GameController : MonoBehaviour {
 
 		foreach(Vector2 pos in path.Keys) {
 			Tile tile = tiles[(int)pos.x, (int)pos.y];
-			if(!Tile.IsColor) {
+			if(!tile.IsColor) {
 				continue;
 			}
 
 			TileItemTypeGroup tg = tile.GetTileItem().TypeGroup;
-			if(colorCount.ContainsKey(tg)) {
+			if(!colorCount.ContainsKey(tg)) {
 				colorCount.Add(tg, 1);
 			}
 
 			if(colorCount[tg] > maxCount) {
-				maxCount = colorCount;
+				maxCount = colorCount[tg];
 				maxTypeGroup = tg;
 			}
 		}
 
 		foreach(Vector2 pos in path.Keys) {
 			Tile tile = tiles[(int)pos.x, (int)pos.y];
-			if(!Tile.IsColor) {
-				continue;
-			}
-
-
+			RecolorTileItem(tile, maxTypeGroup);
 		}
 	}
 
@@ -1032,6 +1128,8 @@ public class GameController : MonoBehaviour {
 
 		return false;	
 	}
+
+
 }
 
 

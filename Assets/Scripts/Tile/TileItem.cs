@@ -51,8 +51,8 @@ public class TileItem {
 		return tileItemGO;
 	}
 
-	public void ToggleSelect() {
-		selected = !selected;
+	public void Select(bool isSelect) {
+		selected = isSelect;
 		tileItemGO.GetComponent<SpriteRenderer>().color = (selected) ? Color.white : startColor;
 	}
 
