@@ -6,6 +6,8 @@ public class TileItem {
 	public const int ENVELOP_OFFSET = 2;
 	public const int BRILLIANT_OFFSET = 0;
 
+	private TileItemState state;
+
 	private TileItemType type;
 	private TileItemTypeGroup typeGroup;
 	private GameObject tileItemGO;
@@ -51,9 +53,13 @@ public class TileItem {
 		return tileItemGO;
 	}
 
-	public void Select(bool isSelect) {
-		selected = isSelect;
-		tileItemGO.GetComponent<SpriteRenderer>().color = (selected) ? Color.white : startColor;
+	public void Select() {
+		selected = true;
+		SetState(TileItemState.HighLight);
+	}
+	public void UnSelect(TileItemState state) {
+		selected = false;
+		SetState(state);
 	}
 
 	public static TileItemTypeGroup TypeToTypeGroup( TileItemType type) {
@@ -95,6 +101,23 @@ public class TileItem {
 		get { return IsEnvelopItem(Type); }
 	}
 
+	public static bool MayBeFirstItem(TileItemType type) {
+		if(!IsColorItem(type)) {
+			return false;
+		}
+		return TypeToIndex(type) != ENVELOP_OFFSET;
+	}
+	public bool MayBeFirst {
+		get { return MayBeFirstItem(Type); }
+	}
+
+	public static bool IsSpecialCollectItem(TileItemType type) {
+		return type == TileItemType.Brilliant;
+	}
+	public bool IsSpecialCollect {
+		get { return IsSpecialCollectItem(Type); }
+	}
+
 	public static bool IsSimpleItem(TileItemType type) {
 		if(!IsColorItem(type)) {
 			return false;
@@ -124,4 +147,28 @@ public class TileItem {
 		}
 	}
 		
+	virtual public int Damage(int damage) {
+		return 1;
+	}
+
+	public void SetState(TileItemState state) {
+		this.state = state;
+
+		if(state == TileItemState.Normal) {
+			tileItemGO.GetComponent<SpriteRenderer>().color = startColor;
+		} else if(state == TileItemState.HighLight) {
+			tileItemGO.GetComponent<SpriteRenderer>().color = Color.white;
+		} else if(state == TileItemState.Dark) {
+			tileItemGO.GetComponent<SpriteRenderer>().color = Color.black;
+		}
+	}
+
+	public static TileItem Instantiate(TileItemType type, GameObject go) {
+		switch(type) {
+			case TileItemType.Unavaliable_2:
+				return new BreakableTileItem(type, go, 1);
+		}
+
+		return new TileItem(type, go);
+	}
 }

@@ -53,6 +53,7 @@
      <Compile Include="Assets\Scripts\App.cs" />
      <Compile Include="Assets\Scripts\Barrier\Barrier.cs" />
      <Compile Include="Assets\Scripts\Barrier\BarrierType.cs" />
+     <Compile Include="Assets\Scripts\Barrier\BreakableBarrier.cs" />
      <Compile Include="Assets\Scripts\Exception\LevelConfigException.cs" />
      <Compile Include="Assets\Scripts\GameController.cs" />
      <Compile Include="Assets\Scripts\Hero\Hero.cs" />
@@ -66,10 +67,12 @@
      <Compile Include="Assets\Scripts\Moveable.cs" />
      <Compile Include="Assets\Scripts\MovingGroup.cs" />
      <Compile Include="Assets\Scripts\Sprite\Background.cs" />
+     <Compile Include="Assets\Scripts\Tile\BreakableTileItem.cs" />
      <Compile Include="Assets\Scripts\Tile\Tile.cs" />
      <Compile Include="Assets\Scripts\Tile\TileItem.cs" />
      <Compile Include="Assets\Scripts\Tile\TileItemMoveType.cs" />
      <Compile Include="Assets\Scripts\Tile\TileItemSameColorCount.cs" />
+     <Compile Include="Assets\Scripts\Tile\TileItemState.cs" />
      <Compile Include="Assets\Scripts\Tile\TileItemType.cs" />
      <Compile Include="Assets\Scripts\Tile\TileType.cs" />
      <Compile Include="Assets\Scripts\Util\DebugUtill.cs" />

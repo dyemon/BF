@@ -7,9 +7,9 @@ public class LevelData {
 	public IList<TileItemData> TileData = new List<TileItemData>();
 	public IList<BarrierData> BarrierData = new List<BarrierData>();
 
-	public int SuccessCount = 10;
+	public int SuccessCount = 3;
 
-	public int BrilliantDropRatio = 20;
+	public int BrilliantDropRatio = 10;
 
 	public static int NumColumns = 7;
 	public static int NumRows = 8;

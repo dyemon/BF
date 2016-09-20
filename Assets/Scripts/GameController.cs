@@ -21,6 +21,7 @@ public class GameController : MonoBehaviour {
 
 	private Tile[,] tiles;
 	private LinkedList<Tile> selectedTiles = new LinkedList<Tile>();
+	private LinkedList<Tile> specialSelectedTiles = new LinkedList<Tile>();
 	private Tile[,] tmpTiles;
 
 	private IDictionary<BarrierData, Barrier> barriers = new Dictionary<BarrierData, Barrier>();
@@ -39,8 +40,6 @@ public class GameController : MonoBehaviour {
 	private Rect tilesArea;
 
 	bool IsTileInputAvaliable { get; set;}
-
-	Tile prevSelectedTile;
 
 	void Start() {
 		levelData = new LevelData();
@@ -118,7 +117,7 @@ public class GameController : MonoBehaviour {
 			go.transform.Rotate(new Vector3(0, 0, 90));
 		}
 
-		return new Barrier(data, go);
+		return Barrier.Instantiate(data, go);
 	}
 
 	private TileItem InstantiateTileItem(TileItemType type, int x, int y, bool convertIndexToPos) {
@@ -156,7 +155,7 @@ public class GameController : MonoBehaviour {
 
 	private TileItem InstantiateTileItem(GameObject[] items, int index, TileItemType type, int x, int y, bool convertIndexToPos) {
 		GameObject go = (GameObject)Instantiate(items[index], (!convertIndexToPos)? new Vector3(x, y, 0) : IndexToPosition(x, y), Quaternion.identity);
-		TileItem ti = new TileItem(type, go);
+		TileItem ti = TileItem.Instantiate(type, go);
 		go.GetComponent<SpriteRenderer>().sortingOrder = TILEITEM_SORTING_ORDER;
 
 		return ti;
@@ -173,32 +172,10 @@ public class GameController : MonoBehaviour {
 
 			Tile tile = null;
 			Ray ray = InputController.TouchToRay(touches[0]);
-			if(IsExitFromTilesArea(ray.origin)) {
-				ResetSelected();
-				return;
-			} 
+
 			RaycastHit2D hit = Physics2D.Raycast( ray.origin, Vector2.zero, Mathf.Infinity, tilesItemLayer );
 			if(hit.collider != null) {		
 				tile = GetTile(hit.collider.gameObject);
-				if(tile != null) {
-
-					/*	Vector2 index = new Vector2(tile.X, tile.Y);
-						if(selectedTiles.Contains(tile)) {
-							if(replacedItems.ContainsKey(index)) {
-								ReplaceTileItems(replacedItems[index], false);
-								replacedItems.Remove(index);
-							}
-							SelectTileItem(tile, false);
-
-						} else {
-							IList<TileItemData> replaceData = GetTileItemDataForEnvelopReplace(tile);
-							if(replaceData != null) {
-								replacedItems[index] = ReplaceTileItems(replaceData, true);
-							}
-							SelectTileItem(tile, true);
-						}*/
-				}
-
 			}
 			if(touch.phase == TouchPhase.Began) {
 				BeganTouch(tile);
@@ -214,63 +191,234 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void BeganTouch(Tile tile) {
-		if(tile == null) {
+		if(tile == null || tile.GetTileItem() == null || !tile.GetTileItem().MayBeFirst) {
 			return;
 		}
 		Preconditions.Check(replacedItems.Count == 0, "replacedItems count must be 0 {0}", replacedItems.Count);
 		Preconditions.Check(selectedTiles.Count == 0, "selectedTiles count must be 0 {0}", selectedTiles.Count);
 
+		SetTileItemsState(TileItemState.Dark, tile.GetTileItem().TypeGroup);
 		SelectTileItem(tile, true);
-		prevSelectedTile = tile;
 	}
 
 	private void MoveTouch(Tile tile) {
-		if(tile == null || selectedTiles.Count == 0 || prevSelectedTile == tile) {
+		if(tile == null || tile.GetTileItem() == null || selectedTiles.Count == 0) {
 			return;
 		}
 
 		Tile lastTile = selectedTiles.Last.Value;
-		Tile predLastTile = null;
-		if(selectedTiles.Count > 2) {
-//			predLastTile = selectedTiles[2];
-		}
-		if(selectedTiles.Contains(tile)) {
+		if(lastTile == tile || tile.GetTileItem().TypeGroup != lastTile.GetTileItem().TypeGroup) {
 			return;
 		}
 
-		SelectTileItem(tile, true);
-		prevSelectedTile = tile;
+		Tile predLastTile = null;
+		if(selectedTiles.Count > 1) {
+			predLastTile = selectedTiles.Last.Previous.Value;
+			if(predLastTile == tile) {
+				Vector2 index = new Vector2(lastTile.X, lastTile.Y);
+				if(replacedItems.ContainsKey(index)) {
+					ReplaceTileItems(replacedItems[index], TileItemState.Dark, false);
+					replacedItems.Remove(index);
+				}
+				SelectTileItem(lastTile, false);
+				return;
+			}
+		}
+		if(selectedTiles.Contains(tile)) {
+
+		} else if(CheckAvailabilityTransition(lastTile.X, lastTile.Y, tile.X, tile.Y)){
+			IList<TileItemData> replaceData = GetTileItemDataForEnvelopReplace(tile);
+			if(replaceData != null) {
+				Vector2 index = new Vector2(tile.X, tile.Y);
+				replacedItems[index] = ReplaceTileItems(replaceData, TileItemState.Normal, true);
+			}
+			SelectTileItem(tile, true);
+		}
+
 	}
 
 	private void EndTouch(Tile tile) {
-		ResetSelected();
+		if(selectedTiles.Count >= levelData.SuccessCount) {
+			CollectTileItems();
+		} else {
+			ResetSelected();
+		}
 	}
 
 	private void ResetSelected() {
-		foreach(Tile tile in selectedTiles) {
-			tile.GetTileItem().Select(false);
+		SetTileItemsState(TileItemState.Normal, null);
+		foreach(Vector2 index in replacedItems.Keys) {
+			ReplaceTileItems(replacedItems[index], TileItemState.Normal, false);
 		}
+
+		specialSelectedTiles.Clear();
 		selectedTiles.Clear();
 		replacedItems.Clear();
-		prevSelectedTile = null;
 	}
 
 	public void CollectTileItems() {
+		bool isDetectAvaliable = false;
+		SetTileItemsState(TileItemState.Normal, null);
+
 		foreach(Tile tile in selectedTiles) {
-			ClearTile(tile);
+			CollectTileItem(tile);
+			if(BreakTileItems(tile.X, tile.Y)) {
+				isDetectAvaliable = true;
+			}
+
+			if(BreakBarriers(tile.X, tile.Y)) {
+				isDetectAvaliable = true;
+			}
 		}
+		foreach(Tile tile in specialSelectedTiles) {
+			CollectTileItem(tile);
+		}
+
+		specialSelectedTiles.Clear();
 		selectedTiles.Clear();
 		replacedItems.Clear();
+
+		if(isDetectAvaliable) {
+			DetectUnavaliableTiles();
+		}
+
 		UpdateTiles();
 	}
 
-	private void SelectTileItem(Tile tile, bool isSelect) {
+	private void CollectTileItem(Tile tile) {
+		ClearTile(tile);
+	}
+
+	private void SelectTileItem(Tile tile, bool isSelect, TileItemState unSelectedState = TileItemState.Normal) {
 		Preconditions.NotNull(tile, "Tile {0} {1} can not be null", tile.X, tile.Y);
-		Preconditions.NotNull(tile.GetTileItem(), "Tile Item {0} {1} can not be null", tile.X, tile.Y).Select(isSelect);
+		TileItem tileItem = Preconditions.NotNull(tile.GetTileItem(), "Tile Item {0} {1} can not be null", tile.X, tile.Y);
+
 		if(isSelect) {
-			selectedTiles.AddLast(tile);
+			tileItem.Select();
+			if(!tile.GetTileItem().IsSpecialCollect) {
+				selectedTiles.AddLast(tile);
+				AddSpecialTileItems(tile.X, tile.Y);
+			} else {
+				specialSelectedTiles.AddLast(tile);
+			}
 		} else {
-			selectedTiles.Remove(tile);
+			tileItem.UnSelect(unSelectedState);
+			if(!tile.GetTileItem().IsSpecialCollect) {
+				selectedTiles.Remove(tile);
+				RemoveSpecialTileItems(tile.X, tile.Y);
+			} else {
+				specialSelectedTiles.Remove(tile);
+			}
+		}
+	}
+		
+	private void AddSpecialTileItems(int x, int y) {
+		Tile[] nearTiles = new Tile[4];
+		nearTiles[0] = GetTile(x - 1, y);
+		nearTiles[1] = GetTile(x + 1, y);
+		nearTiles[2] = GetTile(x, y - 1);
+		nearTiles[3] = GetTile(x, y + 1);
+
+		foreach(Tile tile in nearTiles) {
+			if(tile != null && tile.GetTileItem() != null && tile.GetTileItem().IsSpecialCollect && !specialSelectedTiles.Contains(tile)) {
+				SelectTileItem(tile, true);
+			}
+		}
+	}
+
+	private void RemoveSpecialTileItems(int x, int y) {
+		Tile[] nearTiles = new Tile[4];
+		IList<Tile> removed = new List<Tile>();
+
+		foreach(Tile tile in specialSelectedTiles) {
+			nearTiles[0] = GetTile(tile.X - 1, tile.Y);
+			nearTiles[1] = GetTile(tile.X + 1, tile.Y);
+			nearTiles[2] = GetTile(tile.X, tile.Y - 1);
+			nearTiles[3] = GetTile(tile.X, tile.Y + 1);
+			Tile findTile = null;
+
+			foreach(Tile checkTile in nearTiles) {
+				if(checkTile != null && selectedTiles.Contains(checkTile)) {
+					findTile = checkTile;
+					break;
+				}
+			}
+
+			if(findTile == null) {
+				removed.Add(tile);
+			}
+		}
+
+		foreach(Tile tile in removed) {
+			SelectTileItem(tile, false, TileItemState.Dark);
+		}
+	}
+		
+	private bool BreakTileItems(int x, int y) {
+		bool res = false;
+		Tile[] nearTiles = new Tile[4];
+		nearTiles[0] = GetTile(x - 1, y);
+		nearTiles[1] = GetTile(x + 1, y);
+		nearTiles[2] = GetTile(x, y - 1);
+		nearTiles[3] = GetTile(x, y + 1);
+
+		foreach(Tile tile in nearTiles) {
+			if(tile == null || tile.GetTileItem() == null) {
+				continue;
+			}
+
+			if(tile.GetTileItem().Damage(1) <= 0) {
+				res = true;
+				BreakTileItem(tile);
+			}
+		}
+
+		return res;
+	}
+
+	private void BreakTileItem(Tile tile) {
+		ClearTile(tile);
+	}
+
+	private bool BreakBarriers(int x, int y) {
+		bool res = false;
+		Barrier[] nearBarriers = new Barrier[4];
+		nearBarriers[0] = GetBarrier(x, y, x - 1, y);
+		nearBarriers[1] = GetBarrier(x, y, x + 1, y);
+		nearBarriers[2] = GetBarrier(x, y, x, y - 1);
+		nearBarriers[3] = GetBarrier(x, y, x, y + 1);
+
+		foreach(Barrier barrier in nearBarriers) {
+			if(barrier == null) {
+				continue;
+			}
+
+			if(barrier.Damage(1) <= 0) {
+				res = true;
+				BreakBarrier(barrier);
+			}
+		}
+
+		return res;
+	}
+
+	private void BreakBarrier(Barrier barrier) {
+		barriers.Remove(barrier.Data);
+		Destroy(barrier.BarrierGO);
+	}
+
+	private void SetTileItemsState(TileItemState state, TileItemTypeGroup? excludeTypeGroup ) {
+		for(int x = 0; x < numColumns; x++) {
+			for(int y = 0; y < numRows; y++) {
+				Tile tile = tiles[x, y];
+				if(!tile.IsAvaliable || tile.GetTileItem() == null) {
+					continue;
+				}
+
+				if(excludeTypeGroup == null || tile.GetTileItem().TypeGroup != excludeTypeGroup.Value) {
+					tile.GetTileItem().SetState(state);
+				}
+			}
 		}
 	}
 		
@@ -303,8 +451,12 @@ public class GameController : MonoBehaviour {
 		for(int y = numRows - 1; y >= 0; y--) {
 			for(int x = 0; x < numColumns; x++) {
 				Tile tile = tiles[x, y];
+				tile.Type = TileType.Avaliable;
 
-				if(!tile.IsAvaliable) {
+				if(x == 3 && y == 2) {
+					tile = tiles[x, y];
+				}
+				if(tile.GetTileItem() != null && !tile.GetTileItem().IsAvaliable()) {
 					continue;
 				}
 
@@ -318,7 +470,7 @@ public class GameController : MonoBehaviour {
 
 				if(!av1 && !av2 && !av3) {
 					tile.Type = TileType.Unavaliable;
-			//		InstantiateTileItem(TileItemType.Red, x, y);
+			//		InstantiateTileItem(TileItemType.Brilliant, x, y, true);
 					continue;
 				}
 
@@ -327,9 +479,12 @@ public class GameController : MonoBehaviour {
 					&& ((x == numColumns - 1) || right != null && !right.IsAvaliable)) 
 				{
 					tile.Type = TileType.Unavaliable;
-			//		InstantiateTileItem(TileItemType.Red, x, y);
+			//		InstantiateTileItem(TileItemType.Brilliant, x, y, true);
 				} else {
-					tile.Type = TileType.Avaliable;
+			//		tile.Type = TileType.Avaliable;
+			//		if(tile.GetTileItem() != null && tile.GetTileItem().Type == TileItemType.Brilliant) {
+			//			ClearTile(tile);
+			//		}
 				}
 			}
 		}	
@@ -351,7 +506,7 @@ public class GameController : MonoBehaviour {
 
 	private bool CheckAvailabilityWithBarriers(int fromX, int fromY, int toX, int toY) {
 		if(Mathf.Abs(fromX - toX) > 1 || Mathf.Abs(fromY - toY) > 1) {
-			throw new System.ArgumentException("Can not check availability from " + fromX + " " + fromY + " to " + toX + " " + toY);
+			return false;
 		}
 
 		if(fromX == toX || fromY == toY) {
@@ -370,7 +525,15 @@ public class GameController : MonoBehaviour {
 		return true;
 	}
 
+	private bool CheckAvailabilityTransition(int fromX, int fromY, int toX, int toY) {
+		bool res = false;
 
+		if(Mathf.Abs(fromX - toX) > 1 || Mathf.Abs(fromY - toY) > 1) {
+			return false;
+		}
+
+		return CheckAvailabilityWithBarriers(fromX, fromY, toX, toY);
+	}
 
 	private void RunTileItemsAnimation<T>(AnimationGroup.CompleteAnimation<T> complete, T param) {
 		animationGroup.Clear();
@@ -719,11 +882,17 @@ public class GameController : MonoBehaviour {
 			}
 		}
 
+		if(!reachable && selectedTiles.Count > 1) {
+			Tile lastTile = selectedTiles.Last.Value;
+			if(CheckAvailabilityTransition(lastTile.X, lastTile.Y, tileX, tileY)) {
+				reachable = true;
+			}
+		}
 		return (reachable)? res : null;
 	}
 
 
-	List<TileItemData> ReplaceTileItems(IList<TileItemData> replaceData, bool saveOld) {
+	List<TileItemData> ReplaceTileItems(IList<TileItemData> replaceData, TileItemState state, bool saveOld) {
 		List<TileItemData> oldItems = new List<TileItemData>();
 		Vector2 index = new Vector2(0, 0);
 
@@ -736,12 +905,14 @@ public class GameController : MonoBehaviour {
 				TileItemData old = new TileItemData(tile.X, tile.Y, tile.GetTileItem().Type);
 				oldItems.Add(old);
 				if(selectedTiles.Contains(tile)) {
-					SelectTileItem(tile, false);
+					SelectTileItem(tile, false, state);
 				}
 			}
 
 			ClearTile(tile);
-			tile.SetTileItem(InstantiateTileItem(itemData.Type, itemData.X, itemData.Y, true));
+			TileItem ti = InstantiateTileItem(itemData.Type, itemData.X, itemData.Y, true);
+			tile.SetTileItem(ti);
+			ti.SetState(state);
 		}
 
 		return oldItems;
@@ -788,6 +959,7 @@ public class GameController : MonoBehaviour {
 		while(!CheckTileItemsPosition(data)) {
 			if(i++ > 50) {
 				RecolorTileItemsBySuccessPath();
+				IsTileInputAvaliable = true;
 				return;
 			}
 		
@@ -950,7 +1122,7 @@ public class GameController : MonoBehaviour {
 		for(int x = 0; x < numColumns; x++) {
 			for(int y = 0; y < numRows; y++) {	
 				TileItemData itemData = data[x, y];
-				if(!TileItem.IsSimpleItem(itemData.Type)) {
+				if(!TileItem.MayBeFirstItem(itemData.Type)) {
 					continue;
 				}
 
