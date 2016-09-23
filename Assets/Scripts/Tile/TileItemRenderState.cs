@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public enum TileItemState {
+public enum TileItemRenderState {
 	Normal, HighLight, Dark
 }

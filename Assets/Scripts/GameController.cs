@@ -197,7 +197,7 @@ public class GameController : MonoBehaviour {
 		Preconditions.Check(replacedItems.Count == 0, "replacedItems count must be 0 {0}", replacedItems.Count);
 		Preconditions.Check(selectedTiles.Count == 0, "selectedTiles count must be 0 {0}", selectedTiles.Count);
 
-		SetTileItemsState(TileItemState.Dark, tile.GetTileItem().TypeGroup);
+		SetTileItemsRenderState(TileItemRenderState.Dark, tile.GetTileItem().TypeGroup);
 		SelectTileItem(tile, true);
 	}
 
@@ -217,7 +217,7 @@ public class GameController : MonoBehaviour {
 			if(predLastTile == tile) {
 				Vector2 index = new Vector2(lastTile.X, lastTile.Y);
 				if(replacedItems.ContainsKey(index)) {
-					ReplaceTileItems(replacedItems[index], TileItemState.Dark, false);
+					ReplaceTileItems(replacedItems[index], TileItemRenderState.Dark, false);
 					replacedItems.Remove(index);
 				}
 				SelectTileItem(lastTile, false);
@@ -230,9 +230,9 @@ public class GameController : MonoBehaviour {
 			IList<TileItemData> replaceData = GetTileItemDataForEnvelopReplace(tile);
 			if(replaceData != null) {
 				Vector2 index = new Vector2(tile.X, tile.Y);
-				replacedItems[index] = ReplaceTileItems(replaceData, TileItemState.Normal, true);
+				replacedItems[index] = ReplaceTileItems(replaceData, TileItemRenderState.Normal, true);
 			}
-			SelectTileItem(tile, true);
+			SelectTileItem(tile, true, TileItemRenderState.HighLight, lastTile.GetTileItem());
 		}
 
 	}
@@ -246,9 +246,15 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void ResetSelected() {
-		SetTileItemsState(TileItemState.Normal, null);
+		SetTileItemsRenderState(TileItemRenderState.Normal, null);
+		foreach(Tile tile in specialSelectedTiles) {
+			tile.GetTileItem().UnSelect(TileItemRenderState.Normal);
+		}
+		foreach(Tile tile in selectedTiles) {
+			tile.GetTileItem().UnSelect(TileItemRenderState.Normal);
+		}
 		foreach(Vector2 index in replacedItems.Keys) {
-			ReplaceTileItems(replacedItems[index], TileItemState.Normal, false);
+			ReplaceTileItems(replacedItems[index], TileItemRenderState.Normal, false);
 		}
 
 		specialSelectedTiles.Clear();
@@ -258,7 +264,7 @@ public class GameController : MonoBehaviour {
 
 	public void CollectTileItems() {
 		bool isDetectAvaliable = false;
-		SetTileItemsState(TileItemState.Normal, null);
+		SetTileItemsRenderState(TileItemRenderState.Normal, null);
 
 		foreach(Tile tile in selectedTiles) {
 			CollectTileItem(tile);
@@ -289,12 +295,12 @@ public class GameController : MonoBehaviour {
 		ClearTile(tile);
 	}
 
-	private void SelectTileItem(Tile tile, bool isSelect, TileItemState unSelectedState = TileItemState.Normal) {
+	private void SelectTileItem(Tile tile, bool isSelect, TileItemRenderState unSelectedState = TileItemRenderState.Normal, TileItem transitionTileItem = null) {
 		Preconditions.NotNull(tile, "Tile {0} {1} can not be null", tile.X, tile.Y);
 		TileItem tileItem = Preconditions.NotNull(tile.GetTileItem(), "Tile Item {0} {1} can not be null", tile.X, tile.Y);
 
 		if(isSelect) {
-			tileItem.Select();
+			tileItem.Select(transitionTileItem);
 			if(!tile.GetTileItem().IsSpecialCollect) {
 				selectedTiles.AddLast(tile);
 				AddSpecialTileItems(tile.X, tile.Y);
@@ -350,7 +356,7 @@ public class GameController : MonoBehaviour {
 		}
 
 		foreach(Tile tile in removed) {
-			SelectTileItem(tile, false, TileItemState.Dark);
+			SelectTileItem(tile, false, TileItemRenderState.Dark);
 		}
 	}
 		
@@ -407,7 +413,7 @@ public class GameController : MonoBehaviour {
 		Destroy(barrier.BarrierGO);
 	}
 
-	private void SetTileItemsState(TileItemState state, TileItemTypeGroup? excludeTypeGroup ) {
+	private void SetTileItemsRenderState(TileItemRenderState state, TileItemTypeGroup? excludeTypeGroup ) {
 		for(int x = 0; x < numColumns; x++) {
 			for(int y = 0; y < numRows; y++) {
 				Tile tile = tiles[x, y];
@@ -416,7 +422,7 @@ public class GameController : MonoBehaviour {
 				}
 
 				if(excludeTypeGroup == null || tile.GetTileItem().TypeGroup != excludeTypeGroup.Value) {
-					tile.GetTileItem().SetState(state);
+					tile.GetTileItem().SetRenderState(state);
 				}
 			}
 		}
@@ -863,13 +869,13 @@ public class GameController : MonoBehaviour {
 					dataY = curTile.Y;
 				}
 				
-				if(!TileItem.IsColorItem(curTileType)) {
+				if(!TileItem.IsSimpleItem(curTileType)) {
 						continue;
 				}
 
 				TileItemTypeGroup curTypeGroup = TileItem.TypeToTypeGroup(curTileType);
 
-				if(curTypeGroup == typeGroup && TileItem.IsSimpleItem(curTileType) && CheckAvailabilityWithBarriers(tileX, tileY, x, y)) {
+				if(curTypeGroup == typeGroup && TileItem.IsSimpleItem(curTileType)) {
 					reachable = true;
 				}
 				if(curTypeGroup != typeGroup && CheckAvailabilityWithBarriers(tileX, tileY, x, y)) {
@@ -892,7 +898,7 @@ public class GameController : MonoBehaviour {
 	}
 
 
-	List<TileItemData> ReplaceTileItems(IList<TileItemData> replaceData, TileItemState state, bool saveOld) {
+	List<TileItemData> ReplaceTileItems(IList<TileItemData> replaceData, TileItemRenderState state, bool saveOld) {
 		List<TileItemData> oldItems = new List<TileItemData>();
 		Vector2 index = new Vector2(0, 0);
 
@@ -912,7 +918,7 @@ public class GameController : MonoBehaviour {
 			ClearTile(tile);
 			TileItem ti = InstantiateTileItem(itemData.Type, itemData.X, itemData.Y, true);
 			tile.SetTileItem(ti);
-			ti.SetState(state);
+			ti.SetRenderState(state);
 		}
 
 		return oldItems;

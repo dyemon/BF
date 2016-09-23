@@ -6,7 +6,7 @@ public class TileItem {
 	public const int ENVELOP_OFFSET = 2;
 	public const int BRILLIANT_OFFSET = 0;
 
-	private TileItemState state;
+	private TileItemRenderState state;
 
 	private TileItemType type;
 	private TileItemTypeGroup typeGroup;
@@ -15,15 +15,22 @@ public class TileItem {
 	private bool selected = false;
 	private bool moved = false;
 
+	private TileItemController itemController;
+	private TileItem transitionTileItem;
+
 	public TileItem(TileItemTypeGroup typeGroup, int index, GameObject go) {
 		SetType(typeGroup, index);
-		tileItemGO = go;
-		startColor = go.GetComponent<SpriteRenderer>().color;
+		init(go);
 	}
 	public TileItem(TileItemType type, GameObject go) {
 		SetType(type);
+		init(go);
+	}
+
+	private void init(GameObject go) {
 		tileItemGO = go;
 		startColor = go.GetComponent<SpriteRenderer>().color;
+		itemController = go.GetComponent<TileItemController>();		
 	}
 
 	public static bool IsAvaliableItem(TileItemType type) {
@@ -53,13 +60,22 @@ public class TileItem {
 		return tileItemGO;
 	}
 
-	public void Select() {
+	public void Select(TileItem transitionTileItem) {
 		selected = true;
-		SetState(TileItemState.HighLight);
+		SetRenderState(TileItemRenderState.HighLight);
+
+		if(transitionTileItem != null && transitionTileItem.itemController != null) {
+			transitionTileItem.itemController.SetTransition(GetGameObject());
+			this.transitionTileItem = transitionTileItem;
+		}
 	}
-	public void UnSelect(TileItemState state) {
+	public void UnSelect(TileItemRenderState state) {
 		selected = false;
-		SetState(state);
+		SetRenderState(state);
+		if(transitionTileItem != null) {
+			transitionTileItem.itemController.UnsertTransition();
+			transitionTileItem = null;
+		}
 	}
 
 	public static TileItemTypeGroup TypeToTypeGroup( TileItemType type) {
@@ -151,16 +167,13 @@ public class TileItem {
 		return 1;
 	}
 
-	public void SetState(TileItemState state) {
+	public void SetRenderState(TileItemRenderState state) {
 		this.state = state;
 
-		if(state == TileItemState.Normal) {
-			tileItemGO.GetComponent<SpriteRenderer>().color = startColor;
-		} else if(state == TileItemState.HighLight) {
-			tileItemGO.GetComponent<SpriteRenderer>().color = Color.white;
-		} else if(state == TileItemState.Dark) {
-			tileItemGO.GetComponent<SpriteRenderer>().color = Color.black;
+		if(itemController != null) {
+			itemController.SetRenderState(state);
 		}
+
 	}
 
 	public static TileItem Instantiate(TileItemType type, GameObject go) {
@@ -171,4 +184,6 @@ public class TileItem {
 
 		return new TileItem(type, go);
 	}
+
+
 }

@@ -54,6 +54,7 @@
      <Compile Include="Assets\Scripts\Barrier\Barrier.cs" />
      <Compile Include="Assets\Scripts\Barrier\BarrierType.cs" />
      <Compile Include="Assets\Scripts\Barrier\BreakableBarrier.cs" />
+     <Compile Include="Assets\Scripts\Effect\SpriteOutline.cs" />
      <Compile Include="Assets\Scripts\Exception\LevelConfigException.cs" />
      <Compile Include="Assets\Scripts\GameController.cs" />
      <Compile Include="Assets\Scripts\Hero\Hero.cs" />
@@ -70,13 +71,16 @@
      <Compile Include="Assets\Scripts\Tile\BreakableTileItem.cs" />
      <Compile Include="Assets\Scripts\Tile\Tile.cs" />
      <Compile Include="Assets\Scripts\Tile\TileItem.cs" />
+     <Compile Include="Assets\Scripts\Tile\TileItemController.cs" />
      <Compile Include="Assets\Scripts\Tile\TileItemMoveType.cs" />
+     <Compile Include="Assets\Scripts\Tile\TileItemRenderState.cs" />
      <Compile Include="Assets\Scripts\Tile\TileItemSameColorCount.cs" />
-     <Compile Include="Assets\Scripts\Tile\TileItemState.cs" />
      <Compile Include="Assets\Scripts\Tile\TileItemType.cs" />
      <Compile Include="Assets\Scripts\Tile\TileType.cs" />
      <Compile Include="Assets\Scripts\Util\DebugUtill.cs" />
      <Compile Include="Assets\Scripts\Util\Preconditions.cs" />
+     <None Include="Assets\Shader\Bumped Reflection Clip.shader" />
+     <None Include="Assets\Shader\Sprote-Outline.shader" />
  <Reference Include="UnityEngine.UI">
  <HintPath>/opt/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
