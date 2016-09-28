@@ -11,7 +11,8 @@ public class GameController : MonoBehaviour {
 	public LayerMask tilesItemLayer = -1;
 
 	public GameObject[] tileItemsColor;
-	public GameObject[] tileItemsColorBomb;
+	public GameObject[] tileItemsColorBombH;
+	public GameObject[] tileItemsColorBombV;
 	public GameObject[] tileItemsColorEnvelop;
 	public GameObject[] tileItemsSpecial;
 	public GameObject[] tileItemsUnavaliable;
@@ -22,6 +23,8 @@ public class GameController : MonoBehaviour {
 	private Tile[,] tiles;
 	private LinkedList<Tile> selectedTiles = new LinkedList<Tile>();
 	private LinkedList<Tile> specialSelectedTiles = new LinkedList<Tile>();
+	private IList<Tile> bombMarkTiles = new List<Tile>();
+
 	private Tile[,] tmpTiles;
 
 	private IDictionary<BarrierData, Barrier> barriers = new Dictionary<BarrierData, Barrier>();
@@ -38,6 +41,8 @@ public class GameController : MonoBehaviour {
 	private GameData gameData;
 
 	private Rect tilesArea;
+	private Tile bombTile = null;
+
 
 	bool IsTileInputAvaliable { get; set;}
 
@@ -143,8 +148,10 @@ public class GameController : MonoBehaviour {
 		switch(index) {
 			case 0:
 				return tileItemsColor;
-			case TileItem.BOMB_OFFSET:
-				return tileItemsColorBomb;
+			case TileItem.BOMBH_OFFSET:
+				return tileItemsColorBombH;
+			case TileItem.BOMBV_OFFSET:
+				return tileItemsColorBombV;
 			case TileItem.ENVELOP_OFFSET:
 				return tileItemsColorEnvelop;
 		}
@@ -191,6 +198,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void BeganTouch(Tile tile) {
+		bombTile = null;
 		if(tile == null || tile.GetTileItem() == null || !tile.GetTileItem().MayBeFirst) {
 			return;
 		}
@@ -199,6 +207,11 @@ public class GameController : MonoBehaviour {
 
 		SetTileItemsRenderState(TileItemRenderState.Dark, tile.GetTileItem().TypeGroup);
 		SelectTileItem(tile, true);
+
+		if(tile.GetTileItem().IsBomb) {
+			bombTile = tile;
+			MarkBombTiles(tile);
+		}
 	}
 
 	private void MoveTouch(Tile tile) {
@@ -221,6 +234,21 @@ public class GameController : MonoBehaviour {
 					replacedItems.Remove(index);
 				}
 				SelectTileItem(lastTile, false);
+
+				if(bombTile != null && lastTile == bombTile) {
+					bombTile = null;
+					ResetBombMark();
+				} else if(bombTile != null) {
+					ExchangeTileItem(lastTile, tile);
+					tile.GetTileItem().Select(null);
+					lastTile.GetTileItem().UnSelect(TileItemRenderState.Normal);
+
+					if(selectedTiles.Count > 1) {
+						tile.GetTileItem().SetTransitionTileItem(selectedTiles.Last.Previous.Value.GetTileItem());
+					}
+					ResetBombMark();
+					MarkBombTiles(tile);
+				}
 				return;
 			}
 		}
@@ -232,7 +260,23 @@ public class GameController : MonoBehaviour {
 				Vector2 index = new Vector2(tile.X, tile.Y);
 				replacedItems[index] = ReplaceTileItems(replaceData, TileItemRenderState.Normal, true);
 			}
+
 			SelectTileItem(tile, true, TileItemRenderState.HighLight, lastTile.GetTileItem());
+
+			if(bombTile != null && bombTile != tile) {
+				ExchangeTileItem(lastTile, tile);
+				lastTile.GetTileItem().SetTransitionTileItem(null);
+				tile.GetTileItem().SetTransitionTileItem(lastTile.GetTileItem());
+				if(predLastTile != null) {
+					lastTile.GetTileItem().SetTransitionTileItem(predLastTile.GetTileItem());
+				} 
+				ResetBombMark();
+				MarkBombTiles(tile);
+			} else if(bombTile == null && tile.GetTileItem().IsBomb) {
+				bombTile = tile;
+				MarkBombTiles(tile);
+			}
+
 		}
 
 	}
@@ -245,21 +289,49 @@ public class GameController : MonoBehaviour {
 		}
 	}
 
+	private void ExchangeTileItem(Tile t1, Tile t2) {
+		TileItem ti1 = t1.GetTileItem();
+		TileItem ti2 = t2.GetTileItem();
+		Vector3 pos1 = new Vector3(ti1.GetGameObject().transform.position.x, ti1.GetGameObject().transform.position.y, ti1.GetGameObject().transform.position.z);
+		Vector3 pos2 = new Vector3(ti2.GetGameObject().transform.position.x, ti2.GetGameObject().transform.position.y, ti2.GetGameObject().transform.position.z);
+		t1.SetTileItem(ti2);
+		t2.SetTileItem(ti1);
+
+		ti1.GetGameObject().transform.position = pos2;
+		ti2.GetGameObject().transform.position = pos1;
+
+	}
+
 	private void ResetSelected() {
 		SetTileItemsRenderState(TileItemRenderState.Normal, null);
 		foreach(Tile tile in specialSelectedTiles) {
 			tile.GetTileItem().UnSelect(TileItemRenderState.Normal);
 		}
-		foreach(Tile tile in selectedTiles) {
-			tile.GetTileItem().UnSelect(TileItemRenderState.Normal);
+		;
+		for( LinkedListNode<Tile> node = selectedTiles.Last;node != null; node = node.Previous ) {
+			Tile curTile = node.Value;
+			curTile.GetTileItem().UnSelect(TileItemRenderState.Normal);
+
+			if(bombTile != null && curTile != bombTile ) {
+				Tile prevTile = node.Previous.Value;
+				if(prevTile != null) {
+					ExchangeTileItem(curTile, prevTile);
+					prevTile.GetTileItem().UnSelect(TileItemRenderState.Normal);
+				}
+			} else if(bombTile != null && curTile == bombTile ) {
+				bombTile = null;
+			}
 		}
 		foreach(Vector2 index in replacedItems.Keys) {
 			ReplaceTileItems(replacedItems[index], TileItemRenderState.Normal, false);
 		}
 
+		ResetBombMark();
+
 		specialSelectedTiles.Clear();
 		selectedTiles.Clear();
 		replacedItems.Clear();
+		bombTile = null;
 	}
 
 	public void CollectTileItems() {
@@ -276,6 +348,22 @@ public class GameController : MonoBehaviour {
 				isDetectAvaliable = true;
 			}
 		}
+		foreach(Tile tile in bombMarkTiles) {
+			if(tile.GetTileItem() == null) {
+				continue;
+			}
+			tile.GetTileItem().Mark(false);
+			if(tile.GetTileItem().IsColor || tile.GetTileItem().IsSpecialCollect) {
+				CollectTileItem(tile);
+			}
+			if(BreakTileItems(tile.X, tile.Y)) {
+				isDetectAvaliable = true;
+			}
+
+			if(BreakBarriers(tile.X, tile.Y)) {
+				isDetectAvaliable = true;
+			}
+		}
 		foreach(Tile tile in specialSelectedTiles) {
 			CollectTileItem(tile);
 		}
@@ -283,6 +371,8 @@ public class GameController : MonoBehaviour {
 		specialSelectedTiles.Clear();
 		selectedTiles.Clear();
 		replacedItems.Clear();
+		bombMarkTiles.Clear();
+		bombTile = null;
 
 		if(isDetectAvaliable) {
 			DetectUnavaliableTiles();
@@ -300,6 +390,10 @@ public class GameController : MonoBehaviour {
 		TileItem tileItem = Preconditions.NotNull(tile.GetTileItem(), "Tile Item {0} {1} can not be null", tile.X, tile.Y);
 
 		if(isSelect) {
+			if(bombMarkTiles.Contains(tile)) {
+				tileItem.Mark(false);
+				bombMarkTiles.Remove(tile);
+			}
 			tileItem.Select(transitionTileItem);
 			if(!tile.GetTileItem().IsSpecialCollect) {
 				selectedTiles.AddLast(tile);
@@ -362,11 +456,12 @@ public class GameController : MonoBehaviour {
 		
 	private bool BreakTileItems(int x, int y) {
 		bool res = false;
-		Tile[] nearTiles = new Tile[4];
+		Tile[] nearTiles = new Tile[5];
 		nearTiles[0] = GetTile(x - 1, y);
 		nearTiles[1] = GetTile(x + 1, y);
 		nearTiles[2] = GetTile(x, y - 1);
 		nearTiles[3] = GetTile(x, y + 1);
+		nearTiles[4] = GetTile(x, y);
 
 		foreach(Tile tile in nearTiles) {
 			if(tile == null || tile.GetTileItem() == null) {
@@ -532,8 +627,6 @@ public class GameController : MonoBehaviour {
 	}
 
 	private bool CheckAvailabilityTransition(int fromX, int fromY, int toX, int toY) {
-		bool res = false;
-
 		if(Mathf.Abs(fromX - toX) > 1 || Mathf.Abs(fromY - toY) > 1) {
 			return false;
 		}
@@ -623,7 +716,8 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void InitHeroes() {
-		foreach(string id in userData.HeroeIds) {
+		foreach(string id in userData.HeroeIds.Keys) {
+			gameData.HeroData[id].Level = userData.HeroeIds[id];
 			heroes[id] = new Hero(gameData.HeroData[id]);
 		}
 	}
@@ -814,6 +908,7 @@ public class GameController : MonoBehaviour {
 		animationGroup.Clear();
 
 		TileItem ti = InstantiateTileItem(itemData.Type, itemData.X, itemData.Y, false);
+		ti.Level = itemData.Level;
 		Tile dest = avaliableTiles[Random.Range(0, avaliableTiles.Count)];
 
 		AnimatedObject ao = ti.GetGameObject().GetComponent<AnimatedObject>();
@@ -839,54 +934,77 @@ public class GameController : MonoBehaviour {
 		IList<TileItemData> res = null;
 		TileItemType curTileType;
 		int dataX, dataY;
-		Vector2 pos = new Vector2(0, 0);
-
-		for(int x = tileX -1; x <= tileX + 1; x++) {
+		IList<Vector2> positions = new List<Vector2>();
+		int level = (tileData == null)? tiles[tileX, tileY].GetTileItem().Level : tileData[tileX, tileY].Level;
+			
+		for(int x = tileX - 1; x <= tileX + 1; x++) {
 			for(int y = tileY - 1; y <= tileY + 1; y++) {
 				if(x == tileX && y == tileY) {
 					continue;
 				}
-				pos.x = x;
-				pos.y = y;
-			//	bool isSelected = selectedTiles.ContainsKey(pos);
-
-				if(tileData == null) {
-					Tile curTile = GetTile(x, y);
-					if(curTile == null) {
-						continue;
-					}
-					curTileType = curTile.TileItemType;
-					dataX = x;
-					dataY = y;
-				} else {
-			//		Preconditions.Check(!isSelected, "Tile {0} {1} can not be selected (check tiledata)", x, y);
-					TileItemData curTile = GetTileItemData(x, y, tileData);
-					if(curTile == null) {
-						continue;
-					}
-					curTileType = curTile.Type;
-					dataX = curTile.X;
-					dataY = curTile.Y;
-				}
-				
-				if(!TileItem.IsSimpleItem(curTileType)) {
-						continue;
-				}
-
-				TileItemTypeGroup curTypeGroup = TileItem.TypeToTypeGroup(curTileType);
-
-				if(curTypeGroup == typeGroup && TileItem.IsSimpleItem(curTileType)) {
-					reachable = true;
-				}
-				if(curTypeGroup != typeGroup && CheckAvailabilityWithBarriers(tileX, tileY, x, y)) {
-					if(res == null) {
-						res = new List<TileItemData>();
-					}
-					TileItemData data = new TileItemData(dataX, dataY, (TileItemType)typeGroup);
-					res.Add(data);
-				}
+				positions.Add(new Vector2(x, y));
 			}
 		}
+
+		if(level > 1) {
+			positions.Add(new Vector2(tileX, tileY - 2));
+			positions.Add(new Vector2(tileX, tileY + 2));
+			positions.Add(new Vector2(tileX - 2, tileY));
+			positions.Add(new Vector2(tileX + 2, tileY));
+		}
+		if(level > 2) {
+			positions.Add(new Vector2(tileX - 1, tileY - 2));
+			positions.Add(new Vector2(tileX - 1, tileY + 2));
+			positions.Add(new Vector2(tileX + 1, tileY - 2));
+			positions.Add(new Vector2(tileX + 1, tileY + 2));
+		}
+		if(level > 3) {
+			positions.Add(new Vector2(tileX - 2, tileY - 1));
+			positions.Add(new Vector2(tileX - 2, tileY + 1));
+			positions.Add(new Vector2(tileX + 2, tileY - 1));
+			positions.Add(new Vector2(tileX + 2, tileY + 1));
+		}
+		if(level > 4) {
+			positions.Add(new Vector2(tileX - 2, tileY - 2));
+			positions.Add(new Vector2(tileX - 2, tileY + 2));
+			positions.Add(new Vector2(tileX + 2, tileY - 2));
+			positions.Add(new Vector2(tileX + 2, tileY + 2));
+		}
+
+		foreach(Vector2 pos in positions) {
+			if(tileData == null) {
+				Tile curTile = GetTile(pos);
+				if(curTile == null) {
+					continue;
+				}
+				curTileType = curTile.TileItemType;
+				dataX = (int)pos.x;
+				dataY = (int)pos.y;
+			} else {
+		//		Preconditions.Check(!isSelected, "Tile {0} {1} can not be selected (check tiledata)", x, y);
+				TileItemData curTile = GetTileItemData((int)pos.x, (int)pos.y, tileData);
+				if(curTile == null) {
+					continue;
+				}
+				curTileType = curTile.Type;
+				dataX = curTile.X;
+				dataY = curTile.Y;
+			}
+
+			TileItemTypeGroup curTypeGroup = TileItem.TypeToTypeGroup(curTileType);
+
+			if(curTypeGroup == typeGroup && TileItem.MayBeFirstItem(curTileType) && CheckAvailabilityTransition(tileX, tileY, (int)pos.x, (int)pos.y)) {
+				reachable = true;
+			}
+			if(curTypeGroup != typeGroup && TileItem.IsSimpleItem(curTileType)) {
+				if(res == null) {
+					res = new List<TileItemData>();
+				}
+				TileItemData data = new TileItemData(dataX, dataY, (TileItemType)typeGroup);
+				res.Add(data);
+			}
+		}
+
 
 		if(!reachable && selectedTiles.Count > 1) {
 			Tile lastTile = selectedTiles.Last.Value;
@@ -917,6 +1035,7 @@ public class GameController : MonoBehaviour {
 
 			ClearTile(tile);
 			TileItem ti = InstantiateTileItem(itemData.Type, itemData.X, itemData.Y, true);
+			ti.Level = itemData.Level;
 			tile.SetTileItem(ti);
 			ti.SetRenderState(state);
 		}
@@ -1058,6 +1177,9 @@ public class GameController : MonoBehaviour {
 			for(int y = 0; y < numRows; y++) {
 				Tile tile = tiles[x, y];
 				res[x, y] = new TileItemData(tile.X, tile.Y, tile.TileItemType);
+				if(tile.GetTileItem() != null) {
+					res[x, y].Level = tile.GetTileItem().Level;
+				}
 			}
 		}
 
@@ -1307,7 +1429,44 @@ public class GameController : MonoBehaviour {
 		return false;	
 	}
 
+	private void ResetBombMark() {
+		foreach(Tile tile in bombMarkTiles) {
+			tile.GetTileItem().Mark(false);
+		}
 
+		bombMarkTiles.Clear();
+	}
+
+	private void MarkBombTiles(Tile tile) {
+		TileItem tileItem = Preconditions.NotNull(tile.GetTileItem());
+		Preconditions.Check(tileItem.IsBomb, "Tile item must be bomb");
+
+		int ratio = gameData.GetBombRatio(tileItem.Level);
+		int start = tileItem.IsBombH ? tile.X : tile.Y;
+
+		for(int i = start - ratio; i <= start + ratio; i++) {
+			if(i == start) {
+				continue;
+			}
+
+			int x = tileItem.IsBombH ? i : tile.X;
+			int y = tileItem.IsBombV ? i : tile.Y;
+			Tile curTile = GetTile(x, y);
+
+			if(curTile == null || curTile.GetTileItem() == null) {
+				continue;
+			}
+				
+			if(!selectedTiles.Contains(curTile) && !bombMarkTiles.Contains(curTile) && !specialSelectedTiles.Contains(curTile)) {
+				bombMarkTiles.Add(curTile);
+				curTile.GetTileItem().Mark(true);
+
+				if(curTile.GetTileItem().IsBomb) {
+					MarkBombTiles(curTile);
+				}
+			}
+		}
+	}
 }
 
 

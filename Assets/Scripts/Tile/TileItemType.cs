@@ -13,11 +13,17 @@ public enum TileItemType {
 	Yellow = TileItemTypeGroup.Yellow, 
 	Purple = TileItemTypeGroup.Purple,
 
-	RedBomb = TileItemTypeGroup.Red + TileItem.BOMB_OFFSET,
-	GreenBomb = TileItemTypeGroup.Green + TileItem.BOMB_OFFSET, 
-	BlueBomb = TileItemTypeGroup.Blue + TileItem.BOMB_OFFSET, 
-	YellowBomb = TileItemTypeGroup.Yellow + TileItem.BOMB_OFFSET, 
-	PurpleBomb = TileItemTypeGroup.Purple + TileItem.BOMB_OFFSET,
+	RedBombH = TileItemTypeGroup.Red + TileItem.BOMBH_OFFSET,
+	GreenBombH = TileItemTypeGroup.Green + TileItem.BOMBH_OFFSET, 
+	BlueBombH = TileItemTypeGroup.Blue + TileItem.BOMBH_OFFSET, 
+	YellowBombH = TileItemTypeGroup.Yellow + TileItem.BOMBH_OFFSET, 
+	PurpleBombH = TileItemTypeGroup.Purple + TileItem.BOMBH_OFFSET,
+
+	RedBombV = TileItemTypeGroup.Red + TileItem.BOMBV_OFFSET,
+	GreenBombV = TileItemTypeGroup.Green + TileItem.BOMBV_OFFSET, 
+	BlueBombV = TileItemTypeGroup.Blue + TileItem.BOMBV_OFFSET, 
+	YellowBombV = TileItemTypeGroup.Yellow + TileItem.BOMBV_OFFSET, 
+	PurpleBombV = TileItemTypeGroup.Purple + TileItem.BOMBV_OFFSET,
 
 	RedEnvelop = TileItemTypeGroup.Red + TileItem.ENVELOP_OFFSET,
 	GreenEnvelop = TileItemTypeGroup.Green + TileItem.ENVELOP_OFFSET, 

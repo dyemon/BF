@@ -3,13 +3,14 @@ using System.Collections;
 
 public class HeroData  {
 
-	public TileItemTypeGroup TypeGroup;
+	public TileItemType Type;
 	public int[] HeroItemRatio;
+	public int Level;
 
-	public HeroData(TileItemTypeGroup typeGroup, int bombRatio, int envelopRatio) {
-		this.TypeGroup = typeGroup;
-		HeroItemRatio = new int[2];
-		HeroItemRatio[0] = bombRatio;
-		HeroItemRatio[1] = envelopRatio;
+	public HeroData(TileItemType type, int ration) {
+		this.Type = type;
+		HeroItemRatio = new int[1];
+		HeroItemRatio[0] = ration;
+		Level = 0;
 	}
 }

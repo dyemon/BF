@@ -9,17 +9,25 @@ public class TileItemController : MonoBehaviour {
 	private SpriteRenderer renderer;
 	private Sprite sourceSprite;
 	private Color sourceColor;
+	private Material sourceMaterial;
 	private Color darkColor = new Color(0.7f,0.7f,0.7f);
+	private Material markMaterial;
 	private TileItemRenderState currentRenderState = TileItemRenderState.Normal;
 	private ParticleSystem transitionPS;
+	private bool isMark = false;
 
 	void Start () {
 		renderer = GetComponent<SpriteRenderer>();
 		sourceSprite = renderer.sprite;
 		sourceColor = renderer.color;
+		sourceMaterial = renderer.material;
+		markMaterial = Resources.Load("Material/ShinyDefault", typeof(Material)) as Material;
 
 		if(currentRenderState != TileItemRenderState.Normal) {
 			SetRenderState(currentRenderState);
+		}
+		if(isMark) {
+			Mark(true);	
 		}
 
 		if(TransitionPS != null) {
@@ -27,8 +35,14 @@ public class TileItemController : MonoBehaviour {
 			transitionPS.transform.parent = transform;
 			transitionPS.transform.position = transform.position;
 		}
+
+		CheckLoadedResources();
 	}
-	
+
+	private void CheckLoadedResources() {
+		Preconditions.NotNull(markMaterial, "Can not load Mark material");
+	}
+
 	// Update is called once per frame
 	void Update () {
 	
@@ -58,6 +72,8 @@ public class TileItemController : MonoBehaviour {
 	}
 	public void UnsertTransition() {
 		if(transitionPS != null) {
+			transitionPS.transform.LookAt(transitionPS.transform);
+			transitionPS.Clear();
 			transitionPS.Stop();
 		}		
 	}
@@ -76,5 +92,17 @@ public class TileItemController : MonoBehaviour {
 			renderer.sprite = HighLightSprite;
 		}
 		renderer.color = sourceColor;
+	}
+
+	virtual public void Mark(bool isMark) {
+		this.isMark = isMark;
+			
+		if(renderer != null) {
+			renderer.material = (isMark) ? markMaterial : sourceMaterial;
+		}
+	}
+
+	virtual public int Damage(int damage) {
+		return 1;
 	}
 }

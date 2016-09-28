@@ -2,8 +2,9 @@
 using System.Collections;
 
 public class TileItem {
-	public const int BOMB_OFFSET = 1;
-	public const int ENVELOP_OFFSET = 2;
+	public const int BOMBH_OFFSET = 1;
+	public const int BOMBV_OFFSET = 2;
+	public const int ENVELOP_OFFSET = 3;
 	public const int BRILLIANT_OFFSET = 0;
 
 	private TileItemRenderState state;
@@ -18,6 +19,8 @@ public class TileItem {
 	private TileItemController itemController;
 	private TileItem transitionTileItem;
 
+	public int Level { get; set; }
+
 	public TileItem(TileItemTypeGroup typeGroup, int index, GameObject go) {
 		SetType(typeGroup, index);
 		init(go);
@@ -31,6 +34,7 @@ public class TileItem {
 		tileItemGO = go;
 		startColor = go.GetComponent<SpriteRenderer>().color;
 		itemController = go.GetComponent<TileItemController>();		
+		Level = 0;
 	}
 
 	public static bool IsAvaliableItem(TileItemType type) {
@@ -64,18 +68,25 @@ public class TileItem {
 		selected = true;
 		SetRenderState(TileItemRenderState.HighLight);
 
+		SetTransitionTileItem(transitionTileItem);
+	}
+
+	public void SetTransitionTileItem(TileItem transitionTileItem) {
 		if(transitionTileItem != null && transitionTileItem.itemController != null) {
 			transitionTileItem.itemController.SetTransition(GetGameObject());
 			this.transitionTileItem = transitionTileItem;
 		}
+
+		if(transitionTileItem == null && this.transitionTileItem != null) {
+			this.transitionTileItem.itemController.UnsertTransition();
+			this.transitionTileItem = null;
+		}
 	}
+
 	public void UnSelect(TileItemRenderState state) {
 		selected = false;
 		SetRenderState(state);
-		if(transitionTileItem != null) {
-			transitionTileItem.itemController.UnsertTransition();
-			transitionTileItem = null;
-		}
+		SetTransitionTileItem(null);
 	}
 
 	public static TileItemTypeGroup TypeToTypeGroup( TileItemType type) {
@@ -145,12 +156,27 @@ public class TileItem {
 		get { return IsSimpleItem(Type); }
 	}
 
-	public bool IsBomb {
+	public bool IsBombH {
 		get { 
 			if(!IsColor) {
 				return false;
 			}
-			return TypeToIndex(type) == BOMB_OFFSET;
+			return TypeToIndex(type) == BOMBH_OFFSET;
+		}
+	}
+
+	public bool IsBombV {
+		get { 
+			if(!IsColor) {
+				return false;
+			}
+			return TypeToIndex(type) == BOMBV_OFFSET;
+		}
+	}
+
+	public bool IsBomb {
+		get {
+			return IsBombH || IsBombV;
 		}
 	}
 
@@ -164,7 +190,7 @@ public class TileItem {
 	}
 		
 	virtual public int Damage(int damage) {
-		return 1;
+		return (itemController == null)? 1 : itemController.Damage(damage);
 	}
 
 	public void SetRenderState(TileItemRenderState state) {
@@ -177,13 +203,17 @@ public class TileItem {
 	}
 
 	public static TileItem Instantiate(TileItemType type, GameObject go) {
-		switch(type) {
+		/*switch(type) {
 			case TileItemType.Unavaliable_2:
 				return new BreakableTileItem(type, go, 1);
-		}
+		}*/
 
 		return new TileItem(type, go);
 	}
 
-
+	public void Mark(bool isMark) {
+		if(itemController != null) {
+			itemController.Mark(isMark);
+		}
+	}
 }

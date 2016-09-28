@@ -18,7 +18,7 @@ public class Hero {
 			if(heroData.HeroItemRatio[i] > 0) {
 				HeroItemRatio r = new HeroItemRatio();
 				r.ratio = heroData.HeroItemRatio[i];
-				r.type = (TileItemType)(heroData.TypeGroup + i + 1);
+				r.type = heroData.Type;
 				ratios.Add(r);
 			}
 		}
@@ -36,6 +36,11 @@ public class Hero {
 		}
 
 		TileItemData item = new TileItemData(0, 10, ratio.type );
+		item.Level = GetSkilLevel();
 		return item;
 	} 
+
+	public int GetSkilLevel() {
+		return (heroData.Level > 0)? (int)heroData.Level/5 + 1 : 0;
+	}
 }

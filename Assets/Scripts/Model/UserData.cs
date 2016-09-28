@@ -4,9 +4,13 @@ using System.Collections.Generic;
 
 public class UserData {
 
-	public IList<string> HeroeIds = new List<string>();
+	public IDictionary<string, int> HeroeIds = new Dictionary<string, int>();
 
 	public void Init() {
-		HeroeIds.Add("blue");
+	//	HeroeIds.Add("blueEnvelop", 3);
+		HeroeIds.Add("redHBomb", 1);
+	//	HeroeIds.Add("redEnvelop", 1);
+		HeroeIds.Add("greenVBomb", 5);
+
 	}
 }
