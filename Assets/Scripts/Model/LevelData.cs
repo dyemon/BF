@@ -33,37 +33,4 @@ public class LevelData {
 		}
 	}
 
-
-	private void Level3() {
-		TileData.Add(new TileItemData(0, NumRows - 1, TileItemType.Unavaliable_2));
-		TileData.Add(new TileItemData(NumColumns - 1, NumRows - 1, TileItemType.Unavaliable_2));
-
-		BarrierData.Add(new BarrierData(0, NumRows - 1, 1, NumRows - 1, BarrierType.Wood));
-		BarrierData.Add(new BarrierData(0, NumRows - 2, 1, NumRows - 2, BarrierType.Wood));
-		BarrierData.Add(new BarrierData(0, NumRows - 3, 1, NumRows - 3, BarrierType.Wood));
-
-		BarrierData.Add(new BarrierData(NumColumns - 1, NumRows - 1, NumColumns - 2, NumRows - 1, BarrierType.Wood));
-		BarrierData.Add(new BarrierData(NumColumns - 1, NumRows - 2, NumColumns - 2, NumRows - 2, BarrierType.Wood));
-		BarrierData.Add(new BarrierData(NumColumns - 1, NumRows - 3, NumColumns - 2, NumRows - 3, BarrierType.Wood));
-
-		BarrierData.Add(new BarrierData(1, NumRows - 2, 1, NumRows - 3, BarrierType.Wood));
-		BarrierData.Add(new BarrierData(2, NumRows - 2, 2, NumRows - 3, BarrierType.Wood));
-		BarrierData.Add(new BarrierData(3, NumRows - 2, 3, NumRows - 3, BarrierType.Wood));
-		BarrierData.Add(new BarrierData(4, NumRows - 2, 4, NumRows - 3, BarrierType.Wood));
-		BarrierData.Add(new BarrierData(5, NumRows - 2, 5, NumRows - 3, BarrierType.Wood));
-	 
-		TileData.Add(new TileItemData(1, 6, TileItemType.Red));
-		TileData.Add(new TileItemData(2, 6, TileItemType.Green));
-		TileData.Add(new TileItemData(3, 6, TileItemType.Blue));
-		TileData.Add(new TileItemData(4, 6, TileItemType.Purple));
-		TileData.Add(new TileItemData(5, 6, TileItemType.Yellow));
-		TileData.Add(new TileItemData(1, 7, TileItemType.Red));
-		TileData.Add(new TileItemData(2, 7, TileItemType.Green));
-		TileData.Add(new TileItemData(3, 7, TileItemType.Blue));
-		TileData.Add(new TileItemData(4, 7, TileItemType.PurpleEnvelops));
-		TileData.Add(new TileItemData(5, 7, TileItemType.Yellow));
- 
-
-	}
-*/
 }
