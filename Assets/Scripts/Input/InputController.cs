@@ -154,6 +154,7 @@ public class InputController : MonoBehaviour {
 		if(useTouch) {
 			InputController.Touch[] res = new InputController.Touch[Input.touchCount];
 			for(int i = 0; i < Input.touchCount; i++) {
+				res[i] = new InputController.Touch();
 				res[i].SetTouch(Input.touches[i]);
 			}
 			return res;
