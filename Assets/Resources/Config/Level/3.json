@@ -1,0 +1,72 @@
+{
+    "Id": "3", 
+    "Name": "Level 3", 
+    "Description": "", 
+    "SuccessCount": 3, 
+    "BrilliantDropRatio": 40, 
+    "TileData": [{
+            "X": 0, 
+            "Y": 7, 
+            "TypeAsString": "Unavaliable_2"
+        }, {
+            "X": 6, 
+            "Y": 7, 
+            "TypeAsString": "Unavaliable_2"
+        }], 
+
+    "BarrierData": [{
+            "X1": 0, 
+            "Y1": 7, 
+            "X2": 1, 
+            "Y2": 7, 
+            "TypeAsString": "Wood"
+        }, {
+            "X1": 0, 
+            "Y1": 6, 
+            "X2": 1, 
+            "Y2": 6, 
+            "TypeAsString": "Wood"
+        }, {
+            "X1": 6, 
+            "Y1": 7, 
+            "X2": 5, 
+            "Y2": 7, 
+            "TypeAsString": "Wood"
+        }, {
+            "X1": 6, 
+            "Y1": 6, 
+            "X2": 5, 
+            "Y2": 6, 
+            "TypeAsString": "Wood"
+        }, {
+            "X1": 1, 
+            "Y1": 6, 
+            "X2": 1, 
+            "Y2": 5, 
+            "TypeAsString": "Wood"
+        }, {
+            "X1": 2, 
+            "Y1": 6, 
+            "X2": 2, 
+            "Y2": 5, 
+            "TypeAsString": "Wood"
+        }, {
+            "X1": 3, 
+            "Y1": 6, 
+            "X2": 3, 
+            "Y2": 5, 
+            "TypeAsString": "Wood"
+        }, {
+            "X1": 4, 
+            "Y1": 6, 
+            "X2": 4, 
+            "Y2": 5, 
+            "TypeAsString": "Wood"
+        }, {
+            "X1": 5, 
+            "Y1": 6, 
+            "X2": 5, 
+            "Y2": 5, 
+            "TypeAsString": "Wood"
+        }]
+}

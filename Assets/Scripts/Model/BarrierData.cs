@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[System.Serializable]
 public class BarrierData {
-	public int X1 { get; set;}
-	public int Y1 { get; set;}
-	public int X2 { get; set;}
-	public int Y2 { get; set;}
-	public BarrierType Type { get; set; }
+	public int X1;
+	public int Y1;
+	public int X2;
+	public int Y2;
+	public BarrierType Type;
+	public string TypeAsString;
 
 	public BarrierData(int x1, int y1, int x2, int y2, BarrierType type) {
 		X1 = x1;
@@ -36,9 +38,9 @@ public class BarrierData {
 		return string.Format("[BarrierData: X1={0}, Y1={1}, X2={2}, Y2={3}, Type={4}]", X1, Y1, X2, Y2, Type);
 	}
 
-	private void Verify() {
+	public void Verify() {
 		if(Vector2.Distance(new Vector2(X1, Y1), new Vector2(X2, Y2)) != 1) {
-			throw new System.Exception("Invalid data for barrier " + this);
+			throw new LevelConfigException("Invalid data for barrier " + this);
 		}
 	}
 

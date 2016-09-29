@@ -47,7 +47,7 @@ public class GameController : MonoBehaviour {
 	bool IsTileInputAvaliable { get; set;}
 
 	void Start() {
-		levelData = new LevelData();
+		levelData = GameResources.LoadLevel(App.GetCurrentLevel());
 		levelData.Init();
 		userData = new UserData();
 		userData.Init();
@@ -706,6 +706,9 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void InitBarriers() {
+		if(levelData.BarrierData == null) {
+			return;
+		}
 		foreach(BarrierData data in levelData.BarrierData) {
 			if(!barriers.ContainsKey(data)) {
 				barriers.Add(data, InstantiateBarrier(data));

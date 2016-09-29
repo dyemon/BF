@@ -6,6 +6,7 @@ public enum TileItemTypeGroup {
 	Unavaliable = 400, Special = 500
 }
 
+[System.Serializable]
 public enum TileItemType {		
 	Red = TileItemTypeGroup.Red,
 	Green = TileItemTypeGroup.Green, 

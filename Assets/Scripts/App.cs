@@ -29,4 +29,8 @@ public class App {
 	public static float GetTileItemSpeed(TileItemMoveType type) {
 		return tileItemMoveType[type];
 	}
+
+	public static string GetCurrentLevel() {
+		return "3";
+	}
 }

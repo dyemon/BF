@@ -1,0 +1,114 @@
+{
+    "Id": "2", 
+    "Name": "Level 2", 
+    "Description": "", 
+    "SuccessCount": 3, 
+    "BrilliantDropRatio": 40, 
+    "TileData": [{
+            "X": 1, 
+            "Y": 6, 
+            "TypeAsString": "Unavaliable_1"
+        }, {
+            "X": 2, 
+            "Y": 1, 
+            "TypeAsString": "Unavaliable_1"
+        }, {
+            "X": 5, 
+            "Y": 2, 
+            "TypeAsString": "Unavaliable_1"
+        }, {
+            "X": 5, 
+            "Y": 3, 
+            "TypeAsString": "Unavaliable_1"
+        }, {
+            "X": 2, 
+            "Y": 7, 
+            "TypeAsString": "Unavaliable_2"
+        }, {
+            "X": 4, 
+            "Y": 7, 
+            "TypeAsString": "Unavaliable_2"
+        }, {
+            "X": 6, 
+            "Y": 7, 
+            "TypeAsString": "Unavaliable_2"
+        }, {
+            "X": 0, 
+            "Y": 4, 
+            "TypeAsString": "Red"
+        }, {
+            "X": 1, 
+            "Y": 3, 
+            "TypeAsString": "Green"
+        }, {
+            "X": 2, 
+            "Y": 5, 
+            "TypeAsString": "Blue"
+        }, {
+            "X": 5, 
+            "Y": 6, 
+            "TypeAsString": "Yellow"
+        }], 
+
+    "BarrierData": [{
+            "X1": 0, 
+            "Y1": 0, 
+            "X2": 1, 
+            "Y2": 0, 
+            "TypeAsString": "Wood"
+        },{
+            "X1": 0, 
+            "Y1": 0, 
+            "X2": 0, 
+            "Y2": 1, 
+            "TypeAsString": "Iron"
+        },{
+            "X1": 1, 
+            "Y1": 2, 
+            "X2": 1, 
+            "Y2": 3, 
+            "TypeAsString": "Wood"
+        },{
+            "X1": 2, 
+            "Y1": 2, 
+            "X2": 3, 
+            "Y2": 2, 
+            "TypeAsString": "Wood"
+        },{
+            "X1": 2, 
+            "Y1": 2, 
+            "X2": 2, 
+            "Y2": 3, 
+            "TypeAsString": "Iron"
+        },{
+            "X1": 3, 
+            "Y1": 2, 
+            "X2": 3, 
+            "Y2": 3, 
+            "TypeAsString": "Wood"
+        },{
+            "X1": 2, 
+            "Y1": 3, 
+            "X2": 3, 
+            "Y2": 3, 
+            "TypeAsString": "Iron"
+        },{
+            "X1": 4, 
+            "Y1": 2, 
+            "X2": 4, 
+            "Y2": 3, 
+            "TypeAsString": "Iron"
+        },{
+            "X1": 5, 
+            "Y1": 2, 
+            "X2": 5, 
+            "Y2": 3, 
+            "TypeAsString": "Iron"
+        },{
+            "X1": 3, 
+            "Y1": 4, 
+            "X2": 3, 
+            "Y2": 5, 
+            "TypeAsString": "Wood"
+        }]
+}
