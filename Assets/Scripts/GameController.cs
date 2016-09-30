@@ -15,7 +15,7 @@ public class GameController : MonoBehaviour {
 	public GameObject[] tileItemsColorBombV;
 	public GameObject[] tileItemsColorEnvelop;
 	public GameObject[] tileItemsSpecial;
-	public GameObject[] tileItemsUnavaliable;
+	public GameObject[] tileItemsStatic;
 	public GameObject[] barrierItems;
 
 	private AnimationGroup animationGroup;
@@ -134,8 +134,8 @@ public class GameController : MonoBehaviour {
 			case TileItemTypeGroup.Yellow:
 			case TileItemTypeGroup.Purple:	
 				return InstantiateTileItem(GetColorGameObjectsByTileItemType(type),  (int)group/20, type, x, y, convertIndexToPos);
-			case TileItemTypeGroup.Unavaliable:
-				return InstantiateTileItem(tileItemsUnavaliable, (int)(type) - (int)group, type, x, y, convertIndexToPos);
+			case TileItemTypeGroup.Static:
+				return InstantiateTileItem(tileItemsStatic, (int)(type) - (int)group, type, x, y, convertIndexToPos);
 			case TileItemTypeGroup.Special:
 				return InstantiateTileItem(tileItemsSpecial, (int)(type) - (int)group, type, x, y, convertIndexToPos);
 		}
@@ -557,7 +557,7 @@ public class GameController : MonoBehaviour {
 				if(x == 3 && y == 2) {
 					tile = tiles[x, y];
 				}
-				if(tile.GetTileItem() != null && !tile.GetTileItem().IsAvaliable()) {
+				if(tile.GetTileItem() != null && !tile.GetTileItem().IsNotStatic()) {
 					continue;
 				}
 
@@ -1195,7 +1195,7 @@ public class GameController : MonoBehaviour {
 
 		for(int x = 0; x < numColumns; x++) {
 			for(int y = 0; y < numRows; y++) {
-				if(TileItem.IsAvaliableItem(data[x, y].Type)) {
+				if(TileItem.IsNotStaticItem(data[x, y].Type)) {
 					avaliableItems.Add(data[x, y]);
 					positions.Add(new Vector2(x, y));
 				}
@@ -1220,7 +1220,7 @@ public class GameController : MonoBehaviour {
 		for(int x = 0; x < numColumns; x++) {
 			for(int y = 0; y < numRows; y++) {
 				TileItemData itemData = data[x, y];
-				if(!TileItem.IsAvaliableItem(itemData.Type) || (x == itemData.X && y == itemData.Y)) {
+				if(!TileItem.IsNotStaticItem(itemData.Type) || (x == itemData.X && y == itemData.Y)) {
 					continue;
 				}
 

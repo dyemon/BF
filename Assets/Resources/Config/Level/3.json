@@ -7,11 +7,11 @@
     "TileData": [{
             "X": 0, 
             "Y": 7, 
-            "TypeAsString": "Unavaliable_2"
+            "TypeAsString": "Static_2"
         }, {
             "X": 6, 
             "Y": 7, 
-            "TypeAsString": "Unavaliable_2"
+            "TypeAsString": "Static_2"
         }], 
 
     "BarrierData": [{

@@ -37,15 +37,15 @@ public class TileItem {
 		Level = 0;
 	}
 
-	public static bool IsAvaliableItem(TileItemType type) {
-		return IsAvaliableItem(TypeToTypeGroup(type));
+	public static bool IsNotStaticItem(TileItemType type) {
+		return IsNotStaticItem(TypeToTypeGroup(type));
 	}
-	public static bool IsAvaliableItem(TileItemTypeGroup typeGroup) {
-		return typeGroup != TileItemTypeGroup.Unavaliable;
+	public static bool IsNotStaticItem(TileItemTypeGroup typeGroup) {
+		return typeGroup != TileItemTypeGroup.Static;
 	}
 
-	public bool IsAvaliable() {
-		return IsAvaliableItem(TypeGroup);
+	public bool IsNotStatic() {
+		return IsNotStaticItem(TypeGroup);
 	}
 
 	private void SetType(TileItemTypeGroup typeGroup, int index) {
@@ -100,7 +100,7 @@ public class TileItem {
 	public bool IsMoved { get; set;}
 
 	public static bool IsColorItem(TileItemType type) {
-		return (int)type < (int)TileItemTypeGroup.Unavaliable; 
+		return (int)type < (int)TileItemTypeGroup.Static; 
 	}
 
 	public bool IsColor {

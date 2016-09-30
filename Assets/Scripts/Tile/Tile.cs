@@ -20,7 +20,7 @@ public class Tile : ICloneable {
 
 	public bool IsAvaliable {
 		get {
-			return IsAvaliableTile(Type) && (tileItem == null || tileItem.IsAvaliable());
+			return IsAvaliableTile(Type) && (tileItem == null || tileItem.IsNotStatic());
 		}
 	}
 
@@ -67,7 +67,7 @@ public class Tile : ICloneable {
 
 	public TileItemType TileItemType {
 		get {
-			return (IsAvaliableTile(Type) && tileItem != null) ? tileItem.Type : TileItemType.Unavaliable_1;
+			return (IsAvaliableTile(Type) && tileItem != null) ? tileItem.Type : TileItemType.Static_1;
 		}
 	}
 }

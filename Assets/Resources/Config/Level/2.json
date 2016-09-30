@@ -7,31 +7,31 @@
     "TileData": [{
             "X": 1, 
             "Y": 6, 
-            "TypeAsString": "Unavaliable_1"
+            "TypeAsString": "Static_1"
         }, {
             "X": 2, 
             "Y": 1, 
-            "TypeAsString": "Unavaliable_1"
+            "TypeAsString": "Static_1"
         }, {
             "X": 5, 
             "Y": 2, 
-            "TypeAsString": "Unavaliable_1"
+            "TypeAsString": "Static_1"
         }, {
             "X": 5, 
             "Y": 3, 
-            "TypeAsString": "Unavaliable_1"
+            "TypeAsString": "Static_1"
         }, {
             "X": 2, 
             "Y": 7, 
-            "TypeAsString": "Unavaliable_2"
+            "TypeAsString": "Static_2"
         }, {
             "X": 4, 
             "Y": 7, 
-            "TypeAsString": "Unavaliable_2"
+            "TypeAsString": "Static_2"
         }, {
             "X": 6, 
             "Y": 7, 
-            "TypeAsString": "Unavaliable_2"
+            "TypeAsString": "Static_2"
         }, {
             "X": 0, 
             "Y": 4, 
