@@ -43,6 +43,7 @@ public class GameController : MonoBehaviour {
 	private Rect tilesArea;
 	private Tile bombTile = null;
 
+	private TargetController targetController;
 
 	bool IsTileInputAvaliable { get; set;}
 
@@ -69,6 +70,8 @@ public class GameController : MonoBehaviour {
 		InitBarriers();
 		InitHeroes();
 
+		InitControllers();
+
 		DetectUnavaliableTiles();
 		UpdateTiles();
 	}
@@ -76,6 +79,12 @@ public class GameController : MonoBehaviour {
 	void Update() {
 		ProcessInput();
 	
+	}
+
+	private void InitControllers() {
+		GameObject go = Preconditions.NotNull(GameObject.Find("Target Panel"), "Can not find target panel");
+		targetController = Preconditions.NotNull(go.GetComponent<TargetController>(), "Can not get target controller");
+		targetController.Init();
 	}
 
 	private void ResetTileColumnAvalibleForOffset() {

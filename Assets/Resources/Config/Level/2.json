@@ -56,59 +56,70 @@
             "X2": 1, 
             "Y2": 0, 
             "TypeAsString": "Wood"
-        },{
+        }, {
             "X1": 0, 
             "Y1": 0, 
             "X2": 0, 
             "Y2": 1, 
             "TypeAsString": "Iron"
-        },{
+        }, {
             "X1": 1, 
             "Y1": 2, 
             "X2": 1, 
             "Y2": 3, 
             "TypeAsString": "Wood"
-        },{
+        }, {
             "X1": 2, 
             "Y1": 2, 
             "X2": 3, 
             "Y2": 2, 
             "TypeAsString": "Wood"
-        },{
+        }, {
             "X1": 2, 
             "Y1": 2, 
             "X2": 2, 
             "Y2": 3, 
             "TypeAsString": "Iron"
-        },{
+        }, {
             "X1": 3, 
             "Y1": 2, 
             "X2": 3, 
             "Y2": 3, 
             "TypeAsString": "Wood"
-        },{
+        }, {
             "X1": 2, 
             "Y1": 3, 
             "X2": 3, 
             "Y2": 3, 
             "TypeAsString": "Iron"
-        },{
+        }, {
             "X1": 4, 
             "Y1": 2, 
             "X2": 4, 
             "Y2": 3, 
             "TypeAsString": "Iron"
-        },{
+        }, {
             "X1": 5, 
             "Y1": 2, 
             "X2": 5, 
             "Y2": 3, 
             "TypeAsString": "Iron"
-        },{
+        }, {
             "X1": 3, 
             "Y1": 4, 
             "X2": 3, 
             "Y2": 5, 
             "TypeAsString": "Wood"
-        }]
+        }], 
+
+    "TargetData": [{
+        "Count": 20,
+        "TypeAsString": "Red"
+    },{
+        "Count": 30,
+        "TypeAsString": "Green"
+    },{
+        "Count": 40,
+        "TypeAsString": "Blue"
+    }]
 }

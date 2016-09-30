@@ -17,6 +17,7 @@ public class LevelData {
 
 	public TileItemData[] TileData;
 	public BarrierData[] BarrierData;
+	public TargetData[] TargetData;
 
 	public void Init() {
 		if(TileData != null) {
@@ -29,6 +30,12 @@ public class LevelData {
 			foreach(BarrierData item in BarrierData) {
 				item.Verify();
 				item.Type = (BarrierType)Enum.Parse(typeof(BarrierType), item.TypeAsString);
+			}
+		}
+
+		if(TargetData != null) {
+			foreach(TargetData item in TargetData) {
+				item.Type = (TargetType)Enum.Parse(typeof(TargetType), item.TypeAsString);
 			}
 		}
 	}
