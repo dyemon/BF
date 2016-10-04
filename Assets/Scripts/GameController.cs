@@ -44,6 +44,7 @@ public class GameController : MonoBehaviour {
 	private Tile bombTile = null;
 
 	private TargetController targetController;
+	private RestrictionsController restrictionsController;
 
 	bool IsTileInputAvaliable { get; set;}
 
@@ -84,7 +85,11 @@ public class GameController : MonoBehaviour {
 	private void InitControllers() {
 		GameObject go = Preconditions.NotNull(GameObject.Find("Target Panel"), "Can not find target panel");
 		targetController = Preconditions.NotNull(go.GetComponent<TargetController>(), "Can not get target controller");
-		targetController.Init();
+		targetController.LoadCurrentLevel();
+
+		go = Preconditions.NotNull(GameObject.Find("Restrictions Panel"), "Can not find restrictions panel");
+		restrictionsController = Preconditions.NotNull(go.GetComponent<RestrictionsController>(), "Can not get restrictions controller");
+		restrictionsController.LoadCurrentLevel();
 	}
 
 	private void ResetTileColumnAvalibleForOffset() {
@@ -387,10 +392,19 @@ public class GameController : MonoBehaviour {
 			DetectUnavaliableTiles();
 		}
 
+		restrictionsController.DecrementMoveScore();
+
+		if(targetController.CheckSuccess()) {
+			LevelSuccess();
+		} else if (!restrictionsController.CheckRestrictions()){
+			LevelFailure();
+		}
+
 		UpdateTiles();
 	}
 
 	private void CollectTileItem(Tile tile) {
+		targetController.CollectTileItem(tile.GetTileItem());
 		ClearTile(tile);
 	}
 
@@ -1478,6 +1492,14 @@ public class GameController : MonoBehaviour {
 				}
 			}
 		}
+	}
+
+	private void LevelSuccess() {
+		targetController.LevelSuccess();
+	}
+
+	private void LevelFailure() {
+		targetController.LevelFailure();
 	}
 }
 

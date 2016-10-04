@@ -66,6 +66,7 @@
      <Compile Include="Assets\Scripts\Model\GameData.cs" />
      <Compile Include="Assets\Scripts\Model\HeroData.cs" />
      <Compile Include="Assets\Scripts\Model\LevelData.cs" />
+     <Compile Include="Assets\Scripts\Model\Restrictions.cs" />
      <Compile Include="Assets\Scripts\Model\TargetData.cs" />
      <Compile Include="Assets\Scripts\Model\TileItemData.cs" />
      <Compile Include="Assets\Scripts\Model\UserData.cs" />
@@ -73,6 +74,7 @@
      <Compile Include="Assets\Scripts\MovingGroup.cs" />
      <Compile Include="Assets\Scripts\Resource\GameResources.cs" />
      <Compile Include="Assets\Scripts\Sprite\Background.cs" />
+     <Compile Include="Assets\Scripts\Target\RestrictionsController.cs" />
      <Compile Include="Assets\Scripts\Target\TargetController.cs" />
      <Compile Include="Assets\Scripts\Target\TargetType.cs" />
      <Compile Include="Assets\Scripts\Tile\BreakableTileItemController.cs" />

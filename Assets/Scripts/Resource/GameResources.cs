@@ -11,6 +11,7 @@ public class GameResources {
 			TextAsset aText = Resources.Load(Path.Combine(Path.Combine("Config", "Level"), id)) as TextAsset;
 			Preconditions.NotNull(aText, "Can not load level {0}", id);
 			currentLevelData = JsonUtility.FromJson<LevelData>(aText.text);
+			currentLevelData.Init();
 		}
 	
 		return currentLevelData;
