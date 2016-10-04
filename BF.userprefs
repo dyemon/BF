@@ -1,21 +1,6 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Target/TargetController.cs">
-    <Files>
-      <File FileName="Assets/Scripts/Target/TargetType.cs" Line="3" Column="1" />
-      <File FileName="Assets/Scripts/GameController.cs" Line="87" Column="27" />
-      <File FileName="Assets/Scripts/Model/LevelData.cs" Line="36" Column="27" />
-      <File FileName="Assets/Scripts/Tile/TileItemType.cs" Line="9" Column="1" />
-      <File FileName="Assets/Scripts/Resource/GameResources.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Model/TileItemData.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Model/BarrierData.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/App.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Tile/TileItem.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Tile/Tile.cs" Line="71" Column="4" />
-      <File FileName="Assets/Scripts/Model/TargetData.cs" Line="5" Column="24" />
-      <File FileName="Assets/Scripts/Target/TargetController.cs" Line="8" Column="19" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

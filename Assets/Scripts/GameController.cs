@@ -124,7 +124,17 @@ public class GameController : MonoBehaviour {
 		if(levelData.BrilliantDropRatio > 0 && Random.Range(0, levelData.BrilliantDropRatio) == 0) {
 			return InstantiateTileItem(tileItemsSpecial, 0, TileItemType.Brilliant, 0, -10, true);
 		}
-		int index = Random.Range(0, tileItemsColor.Length);
+
+		int rand = Random.Range(1, 101);
+		int sum = 0;
+		int index = 0;
+		for(int i = 0;i < levelData.TileItemDropPercent.Length;i++) {
+			sum += levelData.TileItemDropPercent[i];
+			if(rand <= sum) {
+				index = i;
+				break;
+			}
+		}
 		return InstantiateTileItem(tileItemsColor, index, (TileItemType)(index*20), 0, -10, true);
 	}
 

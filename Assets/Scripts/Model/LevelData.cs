@@ -13,7 +13,7 @@ public class LevelData {
 	public string Description;
 	public int SuccessCount = 3;
 	public int BrilliantDropRatio;
-
+	public int[] TileItemDropPercent;
 
 	public TileItemData[] TileData;
 	public BarrierData[] BarrierData;
@@ -43,6 +43,22 @@ public class LevelData {
 
 		if(RestrictionData == null) {
 			RestrictionData = new Restrictions();
+		}
+
+		if(TileItemDropPercent == null) {
+			TileItemDropPercent = new int[5];
+			for(int i = 0;i < TileItemDropPercent.Length;i++) {
+				TileItemDropPercent[i] = 20;
+			}
+		}
+
+		int sum = 0;
+		for(int i = 0;i < TileItemDropPercent.Length;i++) {
+			sum += TileItemDropPercent[i];
+		}
+
+		if(sum != 100) {
+			throw new LevelConfigException("Sum of tile item drop percent must be 100. Now it is " + sum );
 		}
 	}
 

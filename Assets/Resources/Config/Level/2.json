@@ -3,7 +3,9 @@
     "Name": "Level 2", 
     "Description": "", 
     "SuccessCount": 3, 
-    "BrilliantDropRatio": 40, 
+    "BrilliantDropRatio": 90, 
+    "TileItemDropPercent": [20, 20, 20, 20, 20], 
+
     "TileData": [{
             "X": 1, 
             "Y": 6, 
