@@ -88,6 +88,16 @@
      <Compile Include="Assets\Scripts\Tile\TileType.cs" />
      <Compile Include="Assets\Scripts\Util\DebugUtill.cs" />
      <Compile Include="Assets\Scripts\Util\Preconditions.cs" />
+     <Compile Include="Assets\Scripts\Window\CloseWindow.cs" />
+     <Compile Include="Assets\Scripts\Window\LoadWindow.cs" />
+     <Compile Include="Assets\Scripts\Window\OpenWindow.cs" />
+     <Compile Include="Assets\Scripts\Window\Slash.Unity.UI.Windows\DisableWithWindowManager.cs" />
+     <Compile Include="Assets\Scripts\Window\Slash.Unity.UI.Windows\IWindowClosingHandler.cs" />
+     <Compile Include="Assets\Scripts\Window\Slash.Unity.UI.Windows\IWindowManager.cs" />
+     <Compile Include="Assets\Scripts\Window\Slash.Unity.UI.Windows\Window.cs" />
+     <Compile Include="Assets\Scripts\Window\Slash.Unity.UI.Windows\WindowAnimator.cs" />
+     <Compile Include="Assets\Scripts\Window\Slash.Unity.UI.Windows\WindowManager.cs" />
+     <Compile Include="Assets\Scripts\Window\WindowId.cs" />
      <None Include="Assets\Shader\Bumped Reflection Clip.shader" />
      <None Include="Assets\Shader\Sprote-Outline.shader" />
      <None Include="Assets\Shader\ShinyDefault.shader" />

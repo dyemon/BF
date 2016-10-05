@@ -14,6 +14,7 @@ public class GameController : MonoBehaviour {
 	public GameObject[] tileItemsColorBombH;
 	public GameObject[] tileItemsColorBombV;
 	public GameObject[] tileItemsColorEnvelop;
+	public GameObject[] tileItemsColorBombHV;
 	public GameObject[] tileItemsSpecial;
 	public GameObject[] tileItemsStatic;
 	public GameObject[] barrierItems;
@@ -47,6 +48,9 @@ public class GameController : MonoBehaviour {
 	private RestrictionsController restrictionsController;
 
 	bool IsTileInputAvaliable { get; set;}
+
+	private IDictionary<Tile, object> damagedTiles = new Dictionary<Tile, object>();
+	private IDictionary<Barrier, object> damagedBarriers = new Dictionary<Barrier, object>();
 
 	void Start() {
 		levelData = GameResources.LoadLevel(App.GetCurrentLevel());
@@ -178,6 +182,8 @@ public class GameController : MonoBehaviour {
 				return tileItemsColorBombV;
 			case TileItem.ENVELOP_OFFSET:
 				return tileItemsColorEnvelop;
+			case TileItem.BOMBHV_OFFSET:
+				return tileItemsColorBombHV;
 		}
 
 		throw new System.NotImplementedException("Can not get tile item game objects for type " + type.ToString());
@@ -359,35 +365,43 @@ public class GameController : MonoBehaviour {
 	}
 
 	public void CollectTileItems() {
+		damagedBarriers.Clear();
+		damagedTiles.Clear();
+
 		bool isDetectAvaliable = false;
 		SetTileItemsRenderState(TileItemRenderState.Normal, null);
 
-		foreach(Tile tile in selectedTiles) {
-			CollectTileItem(tile);
-			if(BreakTileItems(tile.X, tile.Y)) {
-				isDetectAvaliable = true;
-			}
 
-			if(BreakBarriers(tile.X, tile.Y)) {
-				isDetectAvaliable = true;
-			}
-		}
 		foreach(Tile tile in bombMarkTiles) {
 			if(tile.GetTileItem() == null) {
 				continue;
 			}
 			tile.GetTileItem().Mark(false);
-			if(tile.GetTileItem().IsColor || tile.GetTileItem().IsSpecialCollect) {
+			if(tile.GetTileItem().IsColor || tile.GetTileItem().IsSpecialCollect || tile.GetTileItem().IsBreakableOnlyByBomb) {
 				CollectTileItem(tile);
 			}
-			if(BreakTileItems(tile.X, tile.Y)) {
+			if(BreakTileItems(tile.X, tile.Y, 5)) {
 				isDetectAvaliable = true;
 			}
 
-			if(BreakBarriers(tile.X, tile.Y)) {
+			if(BreakBarriers(tile.X, tile.Y, 5)) {
 				isDetectAvaliable = true;
 			}
 		}
+		foreach(Tile tile in selectedTiles) {
+			if(tile.GetTileItem() == null) {
+				continue;
+			}
+			CollectTileItem(tile);
+			if(BreakTileItems(tile.X, tile.Y, 1)) {
+				isDetectAvaliable = true;
+			}
+
+			if(BreakBarriers(tile.X, tile.Y, 1)) {
+				isDetectAvaliable = true;
+			}
+		}
+
 		foreach(Tile tile in specialSelectedTiles) {
 			CollectTileItem(tile);
 		}
@@ -487,7 +501,7 @@ public class GameController : MonoBehaviour {
 		}
 	}
 		
-	private bool BreakTileItems(int x, int y) {
+	private bool BreakTileItems(int x, int y, int damage) {
 		bool res = false;
 		Tile[] nearTiles = new Tile[5];
 		nearTiles[0] = GetTile(x - 1, y);
@@ -501,7 +515,12 @@ public class GameController : MonoBehaviour {
 				continue;
 			}
 
-			if(tile.GetTileItem().Damage(1) <= 0) {
+			if(damagedTiles.ContainsKey(tile)) {
+				continue;
+			}
+
+			damagedTiles.Add(tile, null);
+			if(tile.GetTileItem().Damage(damage) <= 0) {
 				res = true;
 				BreakTileItem(tile);
 			}
@@ -514,7 +533,7 @@ public class GameController : MonoBehaviour {
 		ClearTile(tile);
 	}
 
-	private bool BreakBarriers(int x, int y) {
+	private bool BreakBarriers(int x, int y, int damage) {
 		bool res = false;
 		Barrier[] nearBarriers = new Barrier[4];
 		nearBarriers[0] = GetBarrier(x, y, x - 1, y);
@@ -527,7 +546,12 @@ public class GameController : MonoBehaviour {
 				continue;
 			}
 
-			if(barrier.Damage(1) <= 0) {
+			if(damagedBarriers.ContainsKey(barrier)) {
+				continue;
+			}
+
+			damagedBarriers.Add(barrier, null);
+			if(barrier.Damage(damage) <= 0) {
 				res = true;
 				BreakBarrier(barrier);
 			}
@@ -1475,19 +1499,56 @@ public class GameController : MonoBehaviour {
 
 	private void MarkBombTiles(Tile tile) {
 		TileItem tileItem = Preconditions.NotNull(tile.GetTileItem());
-		Preconditions.Check(tileItem.IsBomb, "Tile item must be bomb");
+		Preconditions.Check(tileItem.IsBomb || tileItem.IsStaticBomb, "Tile item must be bomb");
 
-		int ratio = gameData.GetBombRatio(tileItem.Level);
-		int start = tileItem.IsBombH ? tile.X : tile.Y;
+		IList<Vector2> positions = new List<Vector2>();
 
-		for(int i = start - ratio; i <= start + ratio; i++) {
-			if(i == start) {
-				continue;
+		if(tileItem.IsBombH || tileItem.IsBombV) {
+			int ratio = gameData.GetBombRatio(tileItem.Level);
+			int start = tileItem.IsBombH ? tile.X : tile.Y;
+
+			for(int i = start - ratio; i <= start + ratio; i++) {
+				if(i == start) {
+					continue;
+				}
+
+				int x = tileItem.IsBombH ? i : tile.X;
+				int y = tileItem.IsBombV ? i : tile.Y;
+				positions.Add(new Vector2(x, y));
 			}
+		} else if(tileItem.IsBombHV) {
+			positions.Add(new Vector2(tile.X - 1, tile.Y));
+			positions.Add(new Vector2(tile.X + 1, tile.Y));
+			positions.Add(new Vector2(tile.X, tile.Y - 1));
+			positions.Add(new Vector2(tile.X, tile.Y + 1));
 
-			int x = tileItem.IsBombH ? i : tile.X;
-			int y = tileItem.IsBombV ? i : tile.Y;
-			Tile curTile = GetTile(x, y);
+			if(tileItem.Level > 1) {
+				positions.Add(new Vector2(tile.X - 1, tile.Y + 1));
+				positions.Add(new Vector2(tile.X + 1, tile.Y - 1));
+			}
+			if(tileItem.Level > 2) {
+				positions.Add(new Vector2(tile.X + 1, tile.Y + 1));
+				positions.Add(new Vector2(tile.X - 1, tile.Y - 1));
+			}
+			if(tileItem.Level > 3) {
+				positions.Add(new Vector2(tile.X, tile.Y + 2));
+				positions.Add(new Vector2(tile.X, tile.Y - 2));
+			}
+			if(tileItem.Level > 4) {
+				positions.Add(new Vector2(tile.X - 2, tile.Y));
+				positions.Add(new Vector2(tile.X + 2, tile.Y));
+			}
+		} else if(tileItem.IsStaticBomb) {
+			for(int x = 0; x < numColumns; x++) {
+				for(int y = 0; y < numRows; y++) {
+					positions.Add(new Vector2(x, y));
+				}
+			}
+		}
+	
+
+		foreach(Vector2 pos in positions) {
+			Tile curTile = GetTile(pos);
 
 			if(curTile == null || curTile.GetTileItem() == null) {
 				continue;
@@ -1497,7 +1558,7 @@ public class GameController : MonoBehaviour {
 				bombMarkTiles.Add(curTile);
 				curTile.GetTileItem().Mark(true);
 
-				if(curTile.GetTileItem().IsBomb) {
+				if((curTile.GetTileItem().IsBomb || curTile.GetTileItem().IsStaticBomb) && !tileItem.IsStaticBomb) {
 					MarkBombTiles(curTile);
 				}
 			}

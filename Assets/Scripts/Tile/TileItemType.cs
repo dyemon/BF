@@ -32,8 +32,15 @@ public enum TileItemType {
 	YellowEnvelop = TileItemTypeGroup.Yellow + TileItem.ENVELOP_OFFSET, 
 	PurpleEnvelop = TileItemTypeGroup.Purple + TileItem.ENVELOP_OFFSET,
 
+	RedBombHV = TileItemTypeGroup.Red + TileItem.BOMBHV_OFFSET,
+	GreenBombHV = TileItemTypeGroup.Green + TileItem.BOMBHV_OFFSET, 
+	BlueBombHV = TileItemTypeGroup.Blue + TileItem.BOMBHV_OFFSET, 
+	YellowBombHV = TileItemTypeGroup.Yellow + TileItem.BOMBHV_OFFSET, 
+	PurpleBombHV = TileItemTypeGroup.Purple + TileItem.BOMBHV_OFFSET,
+
 	Static_1 = TileItemTypeGroup.Static,
 	Static_2 = TileItemTypeGroup.Static + 1,
+	Static_BombAll = TileItemTypeGroup.Static + TileItem.STATIC_BOMBALL_OFFSET,
 
 	Brilliant = TileItemTypeGroup.Special + TileItem.BRILLIANT_OFFSET
 		

@@ -5,16 +5,17 @@ public class TileItem {
 	public const int BOMBH_OFFSET = 1;
 	public const int BOMBV_OFFSET = 2;
 	public const int ENVELOP_OFFSET = 3;
+	public const int BOMBHV_OFFSET = 4;
+
+	public const int STATIC_BOMBALL_OFFSET = 2;
+
 	public const int BRILLIANT_OFFSET = 0;
 
-	private TileItemRenderState state;
 
 	private TileItemType type;
 	private TileItemTypeGroup typeGroup;
 	private GameObject tileItemGO;
-	private Color startColor;
-	private bool selected = false;
-	private bool moved = false;
+
 
 	private TileItemController itemController;
 	private TileItem transitionTileItem;
@@ -32,7 +33,6 @@ public class TileItem {
 
 	private void init(GameObject go) {
 		tileItemGO = go;
-		startColor = go.GetComponent<SpriteRenderer>().color;
 		itemController = go.GetComponent<TileItemController>();		
 		Level = 0;
 	}
@@ -65,7 +65,6 @@ public class TileItem {
 	}
 
 	public void Select(TileItem transitionTileItem) {
-		selected = true;
 		SetRenderState(TileItemRenderState.HighLight);
 
 		SetTransitionTileItem(transitionTileItem);
@@ -84,7 +83,6 @@ public class TileItem {
 	}
 
 	public void UnSelect(TileItemRenderState state) {
-		selected = false;
 		SetRenderState(state);
 		SetTransitionTileItem(null);
 	}
@@ -174,12 +172,36 @@ public class TileItem {
 		}
 	}
 
-	public bool IsBomb {
-		get {
-			return IsBombH || IsBombV;
+	public bool IsBombHV {
+		get { 
+			if(!IsColor) {
+				return false;
+			}
+			return TypeToIndex(type) == BOMBHV_OFFSET;
 		}
 	}
 
+	public bool IsStaticBombAll {
+		get {
+			return type == TileItemType.Static_BombAll;
+		}
+	}
+
+	public bool IsBomb {
+		get {
+			return IsBombH || IsBombV || IsBombHV;
+		}
+	}
+	public bool IsStaticBomb {
+		get {
+			return IsStaticBombAll;
+		}
+	}
+	public bool IsBreakableOnlyByBomb {
+		get {
+			return IsStaticBombAll;
+		}
+	}
 	public bool IsBrilliant {
 		get { 
 			if(!IsSpecial) {
@@ -194,8 +216,6 @@ public class TileItem {
 	}
 
 	public void SetRenderState(TileItemRenderState state) {
-		this.state = state;
-
 		if(itemController != null) {
 			itemController.SetRenderState(state);
 		}
