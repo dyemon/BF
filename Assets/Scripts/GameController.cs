@@ -4,6 +4,12 @@ using System.Collections.Generic;
 
 [RequireComponent(typeof(AnimationGroup))]
 public class GameController : MonoBehaviour {
+	
+	public delegate void OnCollectTileItem(TileItem tileItem);
+	public event OnCollectTileItem onCollectTileItem;
+	public delegate void OnMoveComplete();
+	public event OnMoveComplete onMoveComplete;
+
 	public static readonly int TILEITEM_SORTING_ORDER = 10;
 
 	private int numColumns;
@@ -90,10 +96,12 @@ public class GameController : MonoBehaviour {
 		GameObject go = Preconditions.NotNull(GameObject.Find("Target Panel"), "Can not find target panel");
 		targetController = Preconditions.NotNull(go.GetComponent<TargetController>(), "Can not get target controller");
 		targetController.LoadCurrentLevel();
+		onCollectTileItem += targetController.OnCollectTileItem;
 
 		go = Preconditions.NotNull(GameObject.Find("Restrictions Panel"), "Can not find restrictions panel");
 		restrictionsController = Preconditions.NotNull(go.GetComponent<RestrictionsController>(), "Can not get restrictions controller");
 		restrictionsController.LoadCurrentLevel();
+		onMoveComplete += restrictionsController.DecrementMoveScore;
 	}
 
 	private void ResetTileColumnAvalibleForOffset() {
@@ -416,7 +424,9 @@ public class GameController : MonoBehaviour {
 			DetectUnavaliableTiles();
 		}
 
-		restrictionsController.DecrementMoveScore();
+		if(onMoveComplete != null) {
+			onMoveComplete();
+		}
 
 		if(targetController.CheckSuccess()) {
 			LevelSuccess();
@@ -428,7 +438,9 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void CollectTileItem(Tile tile) {
-		targetController.CollectTileItem(tile.GetTileItem());
+		if(onCollectTileItem != null) {
+			onCollectTileItem(tile.GetTileItem());
+		}
 		ClearTile(tile);
 	}
 
@@ -1566,11 +1578,15 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void LevelSuccess() {
-		targetController.LevelSuccess();
+		SceneController.Instance.LoadScene("LevelSuccess");
+	//	WindowManager.Instance.OpenWindow("LevelSuccess", true);
+		//targetController.LevelSuccess();
 	}
 
 	private void LevelFailure() {
-		targetController.LevelFailure();
+		SceneController.Instance.LoadScene("LevelFailure");
+	//	targetController.LevelFailure();
+	//	WindowManager.Instance.OpenWindow("LevelFailure", true);
 	}
 }
 

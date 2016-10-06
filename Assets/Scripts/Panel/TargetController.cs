@@ -32,13 +32,13 @@ public class TargetController : MonoBehaviour {
 			icone.sprite = targetIcons[data.Type];
 			Text text = target.transform.Find("Text").gameObject.GetComponent<Text>();
 			text.text = data.Count.ToString();
-			success[index++] = false;
+			success[index++] = (data.Count > 0)? false : true;
 		}
 
 		levelLoaded = true;
 	}
 	
-	public void CollectTileItem(TileItem tileItem) {
+	public void OnCollectTileItem(TileItem tileItem) {
 		Preconditions.NotNull(tileItem, "Collected tile item can not be null");
 		int index = 1;
 
