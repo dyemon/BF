@@ -78,7 +78,10 @@
      <Compile Include="Assets\Scripts\Resource\GameResources.cs" />
      <Compile Include="Assets\Scripts\Scene\PreloadScene.cs" />
      <Compile Include="Assets\Scripts\Scene\SceneController.cs" />
+     <Compile Include="Assets\Scripts\Scene\SceneControllerHelper.cs" />
      <Compile Include="Assets\Scripts\Sprite\Background.cs" />
+     <Compile Include="Assets\Scripts\Sprite\FadeSprite.cs" />
+     <Compile Include="Assets\Scripts\Sprite\FillScreen.cs" />
      <Compile Include="Assets\Scripts\Tile\BreakableTileItemController.cs" />
      <Compile Include="Assets\Scripts\Tile\Tile.cs" />
      <Compile Include="Assets\Scripts\Tile\TileItem.cs" />
@@ -88,8 +91,11 @@
      <Compile Include="Assets\Scripts\Tile\TileItemSameColorCount.cs" />
      <Compile Include="Assets\Scripts\Tile\TileItemType.cs" />
      <Compile Include="Assets\Scripts\Tile\TileType.cs" />
+     <Compile Include="Assets\Scripts\UI\FadePanel.cs" />
      <Compile Include="Assets\Scripts\Util\DebugUtill.cs" />
+     <Compile Include="Assets\Scripts\Util\DontDestroyOnLoad.cs" />
      <Compile Include="Assets\Scripts\Util\Preconditions.cs" />
+     <Compile Include="Assets\Scripts\Util\Singleton.cs" />
      <None Include="Assets\Shader\Bumped Reflection Clip.shader" />
      <None Include="Assets\Shader\Sprote-Outline.shader" />
      <None Include="Assets\Shader\ShinyDefault.shader" />

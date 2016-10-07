@@ -11,7 +11,7 @@ public class RestrictionsController : MonoBehaviour {
 		levelData = GameResources.LoadLevel(App.GetCurrentLevel());
 		currentMovesCount = levelData.RestrictionData.Movies;
 
-		textMovesScore = Preconditions.NotNull(transform.Find("Moves Score").gameObject.GetComponent<Text>(),"Can not get moves score");
+		textMovesScore = Preconditions.NotNull(transform.Find("Image").Find("Moves Score").gameObject.GetComponent<Text>(),"Can not get moves score");
 		textMovesScore.text = currentMovesCount.ToString();
 	}
 

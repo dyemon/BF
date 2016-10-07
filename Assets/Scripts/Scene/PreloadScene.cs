@@ -2,9 +2,9 @@
 using System.Collections;
 
 public class PreloadScene : MonoBehaviour {
-	public string nextLevel = "Start";
+	public string StartScene = "Start";
 
 	void Start() {
-		SceneController.Instance.LoadScene(nextLevel);
+		SceneController.Instance.LoadScene(StartScene);
 	}
 }

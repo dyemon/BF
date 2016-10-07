@@ -6,7 +6,7 @@ public class TileItemController : MonoBehaviour {
 	public Sprite HighLightSprite;
 	public ParticleSystem TransitionPS;
 
-	private SpriteRenderer renderer;
+	private SpriteRenderer render;
 	private Sprite sourceSprite;
 	private Color sourceColor;
 	private Material sourceMaterial;
@@ -17,10 +17,10 @@ public class TileItemController : MonoBehaviour {
 	private bool isMark = false;
 
 	void Start () {
-		renderer = GetComponent<SpriteRenderer>();
-		sourceSprite = renderer.sprite;
-		sourceColor = renderer.color;
-		sourceMaterial = renderer.material;
+		render = GetComponent<SpriteRenderer>();
+		sourceSprite = render.sprite;
+		sourceColor = render.color;
+		sourceMaterial = render.material;
 		markMaterial = Resources.Load("Material/ShinyDefault", typeof(Material)) as Material;
 
 		if(currentRenderState != TileItemRenderState.Normal) {
@@ -51,7 +51,7 @@ public class TileItemController : MonoBehaviour {
 	public void SetRenderState(TileItemRenderState state) {
 		currentRenderState = state;
 
-		if(renderer == null) {
+		if(render == null) {
 			return;
 		}
 
@@ -79,26 +79,26 @@ public class TileItemController : MonoBehaviour {
 	}
 
 	virtual protected void renderNormal() {
-		renderer.color = sourceColor;
-		renderer.sprite = sourceSprite;
+		render.color = sourceColor;
+		render.sprite = sourceSprite;
 	}
 
 	virtual protected void renderDark() {
-		renderer.color = darkColor;
+		render.color = darkColor;
 	}
 
 	virtual protected void renderHighLight() {
 		if(HighLightSprite != null) {
-			renderer.sprite = HighLightSprite;
+			render.sprite = HighLightSprite;
 		}
-		renderer.color = sourceColor;
+		render.color = sourceColor;
 	}
 
 	virtual public void Mark(bool isMark) {
 		this.isMark = isMark;
 			
-		if(renderer != null) {
-			renderer.material = (isMark) ? markMaterial : sourceMaterial;
+		if(render != null) {
+			render.material = (isMark) ? markMaterial : sourceMaterial;
 		}
 	}
 

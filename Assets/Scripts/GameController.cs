@@ -1578,15 +1578,11 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void LevelSuccess() {
-		SceneController.Instance.LoadScene("LevelSuccess");
-	//	WindowManager.Instance.OpenWindow("LevelSuccess", true);
-		//targetController.LevelSuccess();
+		SceneController.Instance.LoadSceneAsync("LevelSuccess");
 	}
 
 	private void LevelFailure() {
-		SceneController.Instance.LoadScene("LevelFailure");
-	//	targetController.LevelFailure();
-	//	WindowManager.Instance.OpenWindow("LevelFailure", true);
+		SceneController.Instance.LoadSceneAsync("LevelFailure");
 	}
 }
 

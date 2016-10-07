@@ -115,17 +115,17 @@
         }], 
 
     "TargetData": [{
-            "Count": 3, 
+            "Count": 15, 
             "TypeAsString": "Red"
         }, {
-            "Count": 0, 
+            "Count": 20, 
             "TypeAsString": "Green"
         }, {
-            "Count": 0, 
+            "Count": 30, 
             "TypeAsString": "Blue"
         }], 
 
     "RestrictionData": {
-        "Movies": 3
+        "Movies": 25
     }
 }

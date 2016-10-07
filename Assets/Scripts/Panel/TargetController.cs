@@ -40,7 +40,7 @@ public class TargetController : MonoBehaviour {
 	
 	public void OnCollectTileItem(TileItem tileItem) {
 		Preconditions.NotNull(tileItem, "Collected tile item can not be null");
-		int index = 1;
+		int index = 0;
 
 		if(!levelLoaded) {
 			return;
@@ -50,7 +50,7 @@ public class TargetController : MonoBehaviour {
 			if((int)data.Type == (int)tileItem.Type) {
 				GameObject targetGO = Preconditions.NotNull(transform.GetChild(index).gameObject, "Can not get target game object for index {0}", index);
 				Text text = targetGO.transform.Find("Text").gameObject.GetComponent<Text>();
-				if(text == null || success[index - 1]) {
+				if(text == null || success[index]) {
 					break;
 				}
 				int count = Int32.Parse(text.text);
@@ -61,9 +61,9 @@ public class TargetController : MonoBehaviour {
 				if(--count == 0) {					
 					Image sImage = Instantiate(successImage);
 					sImage.transform.SetParent(targetGO.transform);
-					sImage.transform.position = new Vector3(text.transform.position.x - 2, text.transform.position.y, text.transform.position.z);
+					sImage.transform.position = new Vector3(text.transform.position.x, text.transform.position.y, text.transform.position.z);
 					Destroy(text);
-					success[index - 1] = true;;
+					success[index] = true;;
 				} else {
 					text.text = count.ToString();
 				}
