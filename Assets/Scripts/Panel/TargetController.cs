@@ -28,6 +28,7 @@ public class TargetController : MonoBehaviour {
 		foreach(TargetData data in levelData.TargetData) {
 			GameObject target = Instantiate(TargetGO);
 			target.transform.SetParent(gameObject.transform);
+			target.transform.localScale = new Vector3(1, 1, 1);
 			Image icone = target.transform.Find("Image").gameObject.GetComponent<Image>();
 			icone.sprite = targetIcons[data.Type];
 			Text text = target.transform.Find("Text").gameObject.GetComponent<Text>();
@@ -61,6 +62,7 @@ public class TargetController : MonoBehaviour {
 				if(--count == 0) {					
 					Image sImage = Instantiate(successImage);
 					sImage.transform.SetParent(targetGO.transform);
+					sImage.transform.localScale = new Vector3(1, 1, 1);
 					sImage.transform.position = new Vector3(text.transform.position.x, text.transform.position.y, text.transform.position.z);
 					Destroy(text);
 					success[index] = true;;
