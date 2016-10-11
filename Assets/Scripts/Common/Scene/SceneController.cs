@@ -20,7 +20,7 @@ public class SceneController : MonoBehaviour {
 	float changeRate = 0;
 	float timeSoFar = 0;
 	bool fading = false;
-	CanvasGroup canvasGroup;
+	public CanvasGroup canvasGroup;
 
 	public Image LoadImage;
 
@@ -31,7 +31,10 @@ public class SceneController : MonoBehaviour {
 	}
 
 	void Start() {
-		canvasGroup = GetComponent<CanvasGroup>();
+		if(canvasGroup == null) {
+			canvasGroup = GetComponent<CanvasGroup>();
+		}
+
 		if(canvasGroup == null) {
 			Debug.Log("Must have canvas group attached!");
 			this.enabled = false;

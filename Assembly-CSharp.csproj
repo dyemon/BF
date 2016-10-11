@@ -63,12 +63,15 @@
      <Compile Include="Assets\Scripts\Common\Net\Http\HttpRequest.cs" />
      <Compile Include="Assets\Scripts\Common\Net\Http\HttpResponse.cs" />
      <Compile Include="Assets\Scripts\Common\Resource\GameResources.cs" />
-     <Compile Include="Assets\Scripts\Common\Scene\PreloadScene.cs" />
      <Compile Include="Assets\Scripts\Common\Scene\SceneController.cs" />
      <Compile Include="Assets\Scripts\Common\Scene\SceneControllerHelper.cs" />
      <Compile Include="Assets\Scripts\Common\Sprite\Background.cs" />
      <Compile Include="Assets\Scripts\Common\Sprite\FadeSprite.cs" />
      <Compile Include="Assets\Scripts\Common\Sprite\FillScreen.cs" />
+     <Compile Include="Assets\Scripts\Common\UI\Message\DisplayManager.cs" />
+     <Compile Include="Assets\Scripts\Common\UI\Window\BringToFront.cs" />
+     <Compile Include="Assets\Scripts\Common\UI\Window\ModalPanel.cs" />
+     <Compile Include="Assets\Scripts\Common\UI\Window\TestModalWindow.cs" />
      <Compile Include="Assets\Scripts\Common\Util\DebugUtill.cs" />
      <Compile Include="Assets\Scripts\Common\Util\DontDestroyOnLoad.cs" />
      <Compile Include="Assets\Scripts\Common\Util\Preconditions.cs" />
@@ -88,6 +91,8 @@
      <Compile Include="Assets\Scripts\Panel\RestrictionsController.cs" />
      <Compile Include="Assets\Scripts\Panel\TargetController.cs" />
      <Compile Include="Assets\Scripts\Panel\TargetType.cs" />
+     <Compile Include="Assets\Scripts\Scene\LevelSettingsScene.cs" />
+     <Compile Include="Assets\Scripts\Scene\PreloadScene.cs" />
      <Compile Include="Assets\Scripts\Tile\BreakableTileItemController.cs" />
      <Compile Include="Assets\Scripts\Tile\Tile.cs" />
      <Compile Include="Assets\Scripts\Tile\TileItem.cs" />
