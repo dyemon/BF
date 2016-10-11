@@ -147,6 +147,7 @@ public class GameController : MonoBehaviour {
 				break;
 			}
 		}
+	//	Debug.Log(rand + " " + index);
 		return InstantiateTileItem(tileItemsColor, index, (TileItemType)(index*20), 0, -10, true);
 	}
 
