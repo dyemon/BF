@@ -38,6 +38,7 @@ public class FBController : MonoBehaviour {
 			Time.timeScale = 1;
 		}
 	}
+
 	public void OnClickFB() {
 		List<string> perms = new List<string>(){"public_profile", "email", "user_friends"};
 		FB.LogInWithReadPermissions(perms, AuthCallback);
