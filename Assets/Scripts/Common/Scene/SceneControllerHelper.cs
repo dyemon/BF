@@ -7,8 +7,8 @@ public class SceneControllerHelper : Singleton<SceneController>  {
 		instance.LoadSceneAsync(name);
 	}
 
-	public void LoadSceneAdditive(string name) {
-		instance.LoadSceneAdditive(name);
+	public void LoadSceneAdditive(string name, bool unloadOther = false) {
+		instance.LoadSceneAdditive(name, unloadOther);
 	}
 
 	public void UnloadScene(string name) {

@@ -25,7 +25,7 @@ public class Background : MonoBehaviour {
 			float wCf = screenWidth / lSize.x;
 			float hCf = screenHeight / lSize.y;
 
-			Debug.Log(wCf + " " + hCf);
+			//Debug.Log(wCf + " " + hCf);
 			//Debug.Log(size);  
 			if(wCf > hCf) {
 				//    render.bounds.size = new Vector3(render.bounds.size.x * wCf, render.bounds.size.y * wCf, render.bounds.size.z);

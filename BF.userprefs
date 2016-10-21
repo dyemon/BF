@@ -1,23 +1,22 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/FB/FBController.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Common/Scene/SceneController.cs">
     <Files>
-      <File FileName="Assets/Scripts/Common/Scene/SceneController.cs" Line="69" Column="3" />
-      <File FileName="Assets/Scripts/GameController.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Tile/TileItem.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Tile/TileItemType.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Tile/TileType.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Model/GameData.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Model/UserData.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Panel/TargetController.cs" Line="65" Column="13" />
-      <File FileName="Assets/Scripts/Panel/RestrictionsController.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Common/Scene/SceneControllerHelper.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/FB/FBController.cs" Line="47" Column="3" />
+      <File FileName="Assets/Scripts/Scene/PreloadScene.cs" Line="8" Column="2" />
+      <File FileName="Assets/Scripts/Scene/LevelSettingsScene.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/GameController.cs" Line="222" Column="1" />
+      <File FileName="Assets/Scripts/Panel/TargetController.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Common/UI/Message/DisplayMessageController.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Common/Util/Preconditions.cs" Line="10" Column="1" />
+      <File FileName="Assets/Scripts/Common/Scene/SceneController.cs" Line="72" Column="5" />
+      <File FileName="Assets/Scripts/Common/Effect/Rotate.cs" Line="7" Column="2" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="/home/dm/unity/BF/Assets/Scripts/GameController.cs" line="1514" column="1" />
+      <Breakpoint file="/home/dm/unity/BF/Assets/Scripts/GameController.cs" line="1516" column="1" />
+      <Breakpoint file="/home/dm/unity/BF/Assets/Scripts/Common/UI/Message/DisplayMessageController.cs" line="24" column="1" />
+      <Breakpoint file="/home/dm/unity/BF/Assets/Scripts/Common/Util/Preconditions.cs" line="6" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>

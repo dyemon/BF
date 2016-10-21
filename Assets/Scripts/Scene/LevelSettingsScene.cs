@@ -5,14 +5,12 @@ using System.Collections;
 public class LevelSettingsScene : MonoBehaviour {
 
 	private ModalPanel modalPanel;
-	private DisplayManager displayManager;
 
 	private UnityAction yesAction;
 	private UnityAction cancelAction;
 
 	void Awake () {
 		modalPanel = ModalPanel.Instance ();
-		displayManager = DisplayManager.Instance ();
 
 		yesAction = new UnityAction (OnCapitulateYes);
 		cancelAction = new UnityAction (OnCapitulateCancel);
@@ -23,7 +21,7 @@ public class LevelSettingsScene : MonoBehaviour {
 	}
 
 	public void OnCapitulateYes () {
-		SceneController.Instance.LoadSceneAsync("Start");
+		SceneController.Instance.LoadSceneAsync("Map");
 	}
 		
 	public void OnCapitulateCancel () {

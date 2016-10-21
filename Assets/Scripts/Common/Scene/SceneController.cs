@@ -22,8 +22,6 @@ public class SceneController : MonoBehaviour {
 	bool fading = false;
 	public CanvasGroup canvasGroup;
 
-	public Image LoadImage;
-
 	private IList<string> loaddedScenes = new List<string>();
 
 	void Awake() {
@@ -48,9 +46,23 @@ public class SceneController : MonoBehaviour {
 		SceneManager.LoadSceneAsync(name, LoadSceneMode.Single);
 	}
 
-	public void LoadSceneAdditive(string name) {
+	public void LoadSceneAdditive(string name, bool unloadOther = false) {
+		if(unloadOther) {
+			foreach(string scene in loaddedScenes) {
+				if(name != scene) {
+					SceneManager.UnloadScene(scene);
+				}
+			}
+		}
+
 		if(!loaddedScenes.Contains(name)) {
 			SceneManager.LoadSceneAsync(name, LoadSceneMode.Additive);
+			if(unloadOther) {
+				loaddedScenes.Clear();
+			}
+			loaddedScenes.Add(name);
+		}else if(unloadOther) {
+			loaddedScenes.Clear();
 			loaddedScenes.Add(name);
 		}
 	}
@@ -71,9 +83,9 @@ public class SceneController : MonoBehaviour {
 		}
 		*/
 
-		if(LoadImage != null && canvasGroup.alpha > 0) {
-			LoadImage.transform.Rotate(loadRotateAngles);
-		}
+//		if(LoadImage != null && canvasGroup.alpha > 0) {
+//			LoadImage.transform.Rotate(loadRotateAngles);
+//		}
 	}
 
 	private IEnumerator LoadSceneAsyncInternal(string sceneName) {
