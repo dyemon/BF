@@ -18,6 +18,7 @@ public class FBNotLoggedScene : MonoBehaviour, IFBCallback {
 	public void OnFBLoginFail(string error) {
 		if(error != null) {
 			Debug.Log(error);
+			ModalPanels.Show(ModalPanelName.ErrorPanel, "Ошибка при установки соединения \n" +error);
 		}
 
 	}

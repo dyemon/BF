@@ -84,8 +84,10 @@
      <Compile Include="Assets\Scripts\Common\Sprite\FadeSprite.cs" />
      <Compile Include="Assets\Scripts\Common\Sprite\FillScreen.cs" />
      <Compile Include="Assets\Scripts\Common\UI\Message\DisplayMessageController.cs" />
-     <Compile Include="Assets\Scripts\Common\UI\Window\BringToFront.cs" />
-     <Compile Include="Assets\Scripts\Common\UI\Window\ModalPanel.cs" />
+     <Compile Include="Assets\Scripts\Common\UI\Panel\BringToFront.cs" />
+     <Compile Include="Assets\Scripts\Common\UI\Panel\ModalPanel.cs" />
+     <Compile Include="Assets\Scripts\Common\UI\Panel\ModalPanelName.cs" />
+     <Compile Include="Assets\Scripts\Common\UI\Panel\ModalPanels.cs" />
      <Compile Include="Assets\Scripts\Common\Util\DebugUtill.cs" />
      <Compile Include="Assets\Scripts\Common\Util\DontDestroyOnLoad.cs" />
      <Compile Include="Assets\Scripts\Common\Util\Preconditions.cs" />

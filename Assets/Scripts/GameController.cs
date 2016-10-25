@@ -244,15 +244,15 @@ public class GameController : MonoBehaviour {
 		Preconditions.Check(replacedItems.Count == 0, "replacedItems count must be 0 {0}", replacedItems.Count);
 		Preconditions.Check(selectedTiles.Count == 0, "selectedTiles count must be 0 {0}", selectedTiles.Count);
 
-		DisplayMessageController.DisplayMessage(tile.GetTileItem().GetGameObject().ToString());
-	/*	SetTileItemsRenderState(TileItemRenderState.Dark, tile.GetTileItem().TypeGroup);
+	//	DisplayMessageController.DisplayMessage(tile.GetTileItem().GetGameObject().ToString());
+		SetTileItemsRenderState(TileItemRenderState.Dark, tile.GetTileItem().TypeGroup);
 		SelectTileItem(tile, true);
 
 		if(tile.GetTileItem().IsBomb) {
 			bombTile = tile;
 			MarkBombTiles(tile);
 		}
-		*/
+
 	}
 
 	private void MoveTouch(Tile tile) {

@@ -4,20 +4,8 @@ using System.Collections;
 
 public class LevelSettingsScene : MonoBehaviour {
 
-	private ModalPanel modalPanel;
-
-	private UnityAction yesAction;
-	private UnityAction cancelAction;
-
-	void Awake () {
-		modalPanel = ModalPanel.Instance ();
-
-		yesAction = new UnityAction (OnCapitulateYes);
-		cancelAction = new UnityAction (OnCapitulateCancel);
-	}
-
 	public void OnCapitulate () {
-		modalPanel.Choice ("Вы действительно хотите сдаться?", OnCapitulateYes, OnCapitulateCancel);
+		ModalPanels.Show(ModalPanelName.ConfirmPanel, "Вы действительно хотите сдаться?", OnCapitulateYes, null, null);
 	}
 
 	public void OnCapitulateYes () {
@@ -25,7 +13,7 @@ public class LevelSettingsScene : MonoBehaviour {
 	}
 		
 	public void OnCapitulateCancel () {
-		modalPanel.ClosePanel();
+		ModalPanels.ClosePanel(ModalPanelName.ConfirmPanel);
 	}
 
 }
