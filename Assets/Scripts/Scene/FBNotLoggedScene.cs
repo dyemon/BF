@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Common.Net.Http;
 
 public class FBNotLoggedScene : MonoBehaviour, IFBCallback {
 
@@ -7,7 +8,17 @@ public class FBNotLoggedScene : MonoBehaviour, IFBCallback {
 	}
 
 	public void OnFBLoginSuccess() {
-		SceneController.Instance.LoadSceneAdditive("FBLogged", true);
+		if(Account.Instance.AccessToken != null) {
+			HttpRequest request = new HttpRequest().Url(HttpRequester.URL_USER_SAVE)
+				.ShowWaitPanel(true)
+				.Param("userId", Account.Instance.AccessToken.UserId);
+
+			HttpRequester.Instance.Send(request);
+ 
+		} else {
+			ModalPanels.Show(ModalPanelName.ErrorPanel, "Не удалось авторизоваться в FaceBook");
+		}
+		//SceneController.Instance.LoadSceneAdditive("FBLogged", true);
 	}
 
 	public void OnFBLogout() {

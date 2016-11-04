@@ -2,5 +2,5 @@
 using System.Collections;
 
 public enum ModalPanelName {
-	ConfirmPanel, ErrorPanel
+	ConfirmPanel, ErrorPanel, NetRequestPanel
 }

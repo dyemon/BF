@@ -44,7 +44,9 @@ public class ModalPanel : MonoBehaviour {
 			cancelButton.onClick.AddListener(ClosePanel);
 		}
 
-		this.question.text = text;
+		if(this.question != null && text != null) {
+			this.question.text = text;
+		}
 
 	}
 

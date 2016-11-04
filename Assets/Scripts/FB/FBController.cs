@@ -28,6 +28,7 @@ public class FBController : MonoBehaviour {
 			// Continue with Facebook SDK
 			// ...
 			Account.Instance.AccessToken = GetAccessToken();
+
 		} else {
 			Debug.Log("Failed to Initialize the Facebook SDK");
 		}

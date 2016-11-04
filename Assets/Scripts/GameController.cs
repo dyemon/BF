@@ -61,8 +61,7 @@ public class GameController : MonoBehaviour {
 	void Start() {
 		levelData = GameResources.LoadLevel(App.GetCurrentLevel());
 		levelData.Init();
-		userData = new UserData();
-		userData.Init();
+		userData = GameResources.LoadUserData();
 		gameData = new GameData();
 		gameData.Init();
 
@@ -791,9 +790,9 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void InitHeroes() {
-		foreach(string id in userData.HeroeIds.Keys) {
-			gameData.HeroData[id].Level = userData.HeroeIds[id];
-			heroes[id] = new Hero(gameData.HeroData[id]);
+		foreach(UserHeroData data in userData.HeroesData) {
+			gameData.HeroData[data.Id].Level = data.Level;
+			heroes[data.Id] = new Hero(gameData.HeroData[data.Id]);
 		}
 	}
 

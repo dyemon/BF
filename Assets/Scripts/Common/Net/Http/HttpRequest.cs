@@ -5,18 +5,25 @@ using System.Linq;
 
 namespace Common.Net.Http {
 	
-	public class HttpRequest : MonoBehaviour {
+	public class HttpRequest {
 		public delegate void OnSuccess (HttpResponse response);
 		public delegate void OnError (HttpResponse response);
 
 		private Dictionary<string, string> requestParams = new Dictionary<string, string>();
-		private static string baseUrl;
-		private string url;
-		private OnSuccess onSuccess;
-		private OnError onError;
 
-		public static void BaseUrl(string url) {
+		private string baseUrl = null;
+		private string url = null;
+		private OnSuccess onSuccess = null;
+		private OnError onError = null;
+		private bool showWaitPanel = false;
+		private bool showErrorMessage = false;
+
+		public HttpRequest BaseUrl(string url) {
 			baseUrl = url;
+			return this;
+		}
+		public string getBaseUrl() {
+			return baseUrl;
 		}
 
 		public HttpRequest Param(string key, string value) {
@@ -49,51 +56,47 @@ namespace Common.Net.Http {
 			this.url = url;
 			return this;
 		}
+		public string getUrl() {
+			return url;
+		}
+
+		public HttpRequest ShowWaitPanel(bool showWaitPanel) {
+			this.showWaitPanel = showWaitPanel;
+			return this;
+		}
+		public bool IsShowWaitPanel() {
+			return showWaitPanel;
+		}
+
+		public HttpRequest ShowErrorMessage(bool showErrorMessage) {
+			this.showErrorMessage = showErrorMessage;
+			return this;
+		}
+		public bool IsShowErrorMessage() {
+			return showErrorMessage;
+		}
 
 		public HttpRequest Success(OnSuccess onSuccess) {
 			this.onSuccess = onSuccess;
 			return this;
+		}
+		public OnSuccess getSuccess() {
+			return onSuccess;
 		}
 
 		public HttpRequest Error(OnError onError) {
 			this.onError = onError;
 			return this;
 		}
+		public OnError getError() {
+			return onError;
+		}
 
 		public string GetParamsString() {
-			return string.Join("&", requestParams.Select(n => n.Key + "=" + n.Value).ToArray());
+			return string.Join("&", requestParams.Select(n => WWW.EscapeURL(n.Key) + "=" + WWW.EscapeURL(n.Value)).ToArray());
 		}
 	
 
-		private IEnumerator SendInternal() {
-			WWW www = new WWW(WWW.EscapeURL(string.Concat(baseUrl, url, "?", GetParamsString())));
-
-			while(!www.isDone) {
-				yield return null;
-			}
-
-			if (!string.IsNullOrEmpty(www.error)) {
-				Debug.LogError("[Network] SendRequest ERROR:" + www.error);
-				if(onError != null) {
-					onError(new HttpResponse(www.text, www.error));
-				}
-			} else {
-				if(onSuccess != null) {
-					onSuccess(new HttpResponse(www.text, www.error));
-				}
-			}
-		}
-
-		public void Send(string url, OnSuccess onSuccess, OnError onError) {
-			this.Success(onSuccess).Error(onError).Url(url).Send();
-		}
-
-		public void Send(string url, OnSuccess onSuccess) {
-			this.Success(onSuccess).Url(url).Send();
-		}
-
-		public void Send() {
-			StartCoroutine(SendInternal());
-		}
+	
 	}
 }
