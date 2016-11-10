@@ -15,7 +15,7 @@ public class TargetController : MonoBehaviour {
 	private bool levelLoaded = false;
 
 	public void LoadCurrentLevel () {
-		levelData = GameResources.LoadLevel(App.GetCurrentLevel());
+		levelData = GameResources.Instance.LoadLevel(App.GetCurrentLevel());
 		success = new bool[levelData.TargetData.Length];
 
 		foreach(TargetType type in Enum.GetValues(typeof(TargetType))) {

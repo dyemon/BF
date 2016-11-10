@@ -73,6 +73,8 @@
      <Compile Include="Assets\Scripts\Common\Effect\ExampleGL.cs" />
      <Compile Include="Assets\Scripts\Common\Effect\Rotate.cs" />
      <Compile Include="Assets\Scripts\Common\Effect\SpriteOutline.cs" />
+     <Compile Include="Assets\Scripts\Common\Encrypt\B64X.cs" />
+     <Compile Include="Assets\Scripts\Common\Encrypt\StringCipher.cs" />
      <Compile Include="Assets\Scripts\Common\Exception\LevelConfigException.cs" />
      <Compile Include="Assets\Scripts\Common\Input\InputController.cs" />
      <Compile Include="Assets\Scripts\Common\Net\Http\HttpRequest.cs" />
@@ -114,7 +116,9 @@
      <Compile Include="Assets\Scripts\Resource\GameResources.cs" />
      <Compile Include="Assets\Scripts\Scene\FBLoggedScene.cs" />
      <Compile Include="Assets\Scripts\Scene\FBNotLoggedScene.cs" />
+     <Compile Include="Assets\Scripts\Scene\LevelFailureScene.cs" />
      <Compile Include="Assets\Scripts\Scene\LevelSettingsScene.cs" />
+     <Compile Include="Assets\Scripts\Scene\LevelSuccessScene.cs" />
      <Compile Include="Assets\Scripts\Scene\LoadScene.cs" />
      <Compile Include="Assets\Scripts\Scene\MapScene.cs" />
      <Compile Include="Assets\Scripts\Scene\PreloadScene.cs" />

@@ -9,6 +9,7 @@ public class LevelSettingsScene : MonoBehaviour {
 	}
 
 	public void OnCapitulateYes () {
+		GameResources.Instance.SaveUserData(true);
 		SceneController.Instance.LoadSceneAsync("Map");
 	}
 		

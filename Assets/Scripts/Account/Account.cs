@@ -20,4 +20,8 @@ public class Account {
 		get {return AccessToken != null;}
 	}
 
+	public string GetUserId() {
+		Preconditions.NotNull(fbToken, "Access token is null");
+		return fbToken.UserId;
+	}
 }

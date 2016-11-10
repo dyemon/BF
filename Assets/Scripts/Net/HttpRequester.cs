@@ -3,8 +3,8 @@ using System.Collections;
 using Common.Net.Http;
 
 public class HttpRequester : MonoBehaviour {
-	public static string URL_USER_SAVE = "/user/load";
-
+	public static string URL_USER_LOAD = "/user/load";
+	public static string URL_USER_SAVE = "/user/save";
 
 
 	public static HttpRequester Instance;

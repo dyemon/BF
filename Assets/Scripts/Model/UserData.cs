@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[System.Serializable]
 public class UserData {
 	public string UserId;
 	public long Version;
@@ -10,6 +11,7 @@ public class UserData {
 	public QuestData[] QuestsData;
 
 	public void Init() {
+		
 		HeroesData = new UserHeroData[20];
 
 		HeroesData[0] = new UserHeroData("redVBomb", 2);
@@ -36,5 +38,21 @@ public class UserData {
 		HeroesData[17] = new UserHeroData("purpleHBomb", 1);
 		HeroesData[18] = new UserHeroData("purpleEnvelop", 2);
 		HeroesData[19] = new UserHeroData("purpleHVBomb", 20);
+
+	}
+
+	public void InitDefalt() {
+		Version = 1;
+		main = new MainUserData();
+		main.Level = 1;
+		main.Brilliants = 0;
+		main.GoldCoins = 0;
+		main.SilverCoins = 100;
+		main.Energy = 20;
+		main.Keys = 0;
+		main.Gold = 0;
+
+		HeroesData = new UserHeroData[0];
+		QuestsData = new QuestData[0];
 	}
 }

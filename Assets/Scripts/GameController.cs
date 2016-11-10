@@ -44,7 +44,6 @@ public class GameController : MonoBehaviour {
 	private bool[] tileColumnAvalibleForOffset;
 
 	private LevelData levelData;
-	private UserData userData;
 	private GameData gameData;
 
 	private Rect tilesArea;
@@ -59,9 +58,8 @@ public class GameController : MonoBehaviour {
 	private IDictionary<Barrier, object> damagedBarriers = new Dictionary<Barrier, object>();
 
 	void Start() {
-		levelData = GameResources.LoadLevel(App.GetCurrentLevel());
+		levelData = GameResources.Instance.LoadLevel(App.GetCurrentLevel());
 		levelData.Init();
-		userData = GameResources.LoadUserData();
 		gameData = new GameData();
 		gameData.Init();
 
@@ -790,7 +788,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void InitHeroes() {
-		foreach(UserHeroData data in userData.HeroesData) {
+		foreach(UserHeroData data in GameResources.Instance.GetUserData().HeroesData) {
 			gameData.HeroData[data.Id].Level = data.Level;
 			heroes[data.Id] = new Hero(gameData.HeroData[data.Id]);
 		}

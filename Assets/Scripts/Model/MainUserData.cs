@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[System.Serializable]
 public class MainUserData {
 	public int Level;
-	public long GoldCoins;
-	public long SilverCoins;
+	public int GoldCoins;
+	public int SilverCoins;
 	public int Energy;
 	public int Brilliants;
 	public int Keys;
-	public long Version;
+	public int Gold;
 }
