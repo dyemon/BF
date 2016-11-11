@@ -17,6 +17,7 @@ namespace Common.Net.Http {
 		private OnError onError = null;
 		private bool showWaitPanel = false;
 		private bool showErrorMessage = false;
+		private string postData = null;
 
 		public HttpRequest BaseUrl(string url) {
 			baseUrl = url;
@@ -58,6 +59,14 @@ namespace Common.Net.Http {
 		}
 		public string getUrl() {
 			return url;
+		}
+
+		public HttpRequest PostData(string data) {
+			this.postData = data;
+			return this;
+		}
+		public string getPostData() {
+			return postData;
 		}
 
 		public HttpRequest ShowWaitPanel(bool showWaitPanel) {

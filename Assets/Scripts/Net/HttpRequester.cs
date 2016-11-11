@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Common.Net.Http;
+using System.Text;
+using System.Collections.Generic;
 
 public class HttpRequester : MonoBehaviour {
 	public static string URL_USER_LOAD = "/user/load";
@@ -23,11 +25,25 @@ public class HttpRequester : MonoBehaviour {
 		string baseUrl = (request.getBaseUrl() == null) ? this.baseUrl : request.getBaseUrl();
 		string url = string.Concat(baseUrl, request.getUrl(), "?", request.GetParamsString());
 		Debug.Log("Send request " + url);
-		WWW www = new WWW(url);
+
+		Dictionary<string, string> headers = new Dictionary<string, string>();
+	//	Hashtable headers = new Hashtable();
+
+		WWW www = null;
+
+		if(request.getPostData() != null) {
+			headers.Add("Content-Type", "application/json");
+
+			www = new WWW(url, Encoding.UTF8.GetBytes(request.getPostData()), headers );
+		} else {
+			www = new WWW(url);
+		} 
+
+		 
 
 		ModalPanel panel = null;
 		if(request.IsShowWaitPanel()) {
-			panel = ModalPanels.Show(ModalPanelName.NetRequestPanel);
+			panel = ModalPanels.Show(ModalPanelName.WaitPanel);
 		}
 
 		while(!www.isDone) {

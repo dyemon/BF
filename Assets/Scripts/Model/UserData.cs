@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 [System.Serializable]
 public class UserData {
-	public string UserId;
 	public long Version;
 	public MainUserData main;
 	public UserHeroData[] HeroesData;

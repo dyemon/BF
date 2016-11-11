@@ -9,7 +9,7 @@ public class FBNotLoggedScene : MonoBehaviour, IFBCallback {
 
 	public void OnFBLoginSuccess() {
 		if(Account.Instance.IsLogged) {
-			GameResources.Instance.LoadUserDataFromServer(Account.Instance.GetUserId(), OnSuccessLoadUserData, OnErrorLoadUserData);
+			GameResources.Instance.LoadUserDataFromServer(Account.Instance.GetUserId(), true, OnSuccessLoadUserData, OnErrorLoadUserData);
 		} else {
 			ModalPanels.Show(ModalPanelName.ErrorPanel, "Не удалось авторизоваться в FaceBook");
 		}

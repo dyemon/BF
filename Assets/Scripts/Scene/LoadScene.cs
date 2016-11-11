@@ -16,7 +16,7 @@ public class LoadScene : MonoBehaviour, IFBCallback {
 
 	public void OnFBInit() {
 		if(Account.Instance.IsLogged) {
-			GameResources.Instance.LoadUserDataFromServer(Account.Instance.GetUserId(), OnSuccessLoadUserData, OnErrorLoadUserData);
+			GameResources.Instance.LoadUserDataFromServer(Account.Instance.GetUserId(), false, OnSuccessLoadUserData, OnErrorLoadUserData);
 		} else {
 			SceneController.Instance.LoadScene(NextScene);	
 		}

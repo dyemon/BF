@@ -80,16 +80,17 @@ public class GameResources {
 			this.userData = B64X.Encode((JsonUtility.ToJson(data)));
 			SaveUserData(false);
 		} else if(data.Version < userData.Version) {
-			SaveUserDataToServer();
+			SaveUserDataToServer(userData);
 		}
 	}	
 
 	public void SaveUserData(bool saveToServer) {
-		if(saveToServer) {
-			SaveUserDataToServer();
-		}
-
 		UserData data = GetUserData();
+
+		if(saveToServer) {
+			SaveUserDataToServer(data);
+		}
+			
 		data.Version++;
 		string json = JsonUtility.ToJson(data);
 		string encData = StringCipher.Encrypt(json, getKey());
@@ -98,21 +99,24 @@ public class GameResources {
 	}
 
 
-	public void SaveUserDataToServer() {
-		Preconditions.NotNull(userData, "Can not save user data. User data is null");
-		/*
-		if(Account.Instance.AccessToken != null) {
-			HttpRequest request = new HttpRequest().Url(HttpRequester.URL_USER_SAVE)
-				.Param("userId", Account.Instance.AccessToken.UserId);
-
-			HttpRequester.Instance.Send(request);
+	public void SaveUserDataToServer(UserData data) {
+		if(!Account.Instance.IsLogged) {
+			return;
 		}
-		*/
+
+		Preconditions.NotNull(data, "Can not save user data. User data is null");
+
+		HttpRequest request = new HttpRequest().Url(HttpRequester.URL_USER_SAVE)
+			.PostData(JsonUtility.ToJson(data));
+
+		HttpRequester.Instance.Send(request);
+		
 	}
 
-	public void LoadUserDataFromServer(string userId, HttpRequest.OnSuccess onSuccess, HttpRequest.OnError onError) {
+	public void LoadUserDataFromServer(string userId, bool showWaitPanel, HttpRequest.OnSuccess onSuccess, HttpRequest.OnError onError) {
 		HttpRequest request = new HttpRequest().Url(HttpRequester.URL_USER_LOAD)
 			.Success(onSuccess).Error(onError)
+			.ShowWaitPanel(showWaitPanel)
 			.Param("userId", userId);
 
 		HttpRequester.Instance.Send(request);
