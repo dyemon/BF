@@ -117,8 +117,8 @@
      <Compile Include="Assets\Scripts\Panel\RestrictionsController.cs" />
      <Compile Include="Assets\Scripts\Panel\TargetController.cs" />
      <Compile Include="Assets\Scripts\Panel\TargetType.cs" />
-     <Compile Include="Assets\Scripts\Resource\EmptyEnumeration.cs" />
      <Compile Include="Assets\Scripts\Resource\GameResources.cs" />
+     <Compile Include="Assets\Scripts\Resource\UserAssetType.cs" />
      <Compile Include="Assets\Scripts\Scene\FBLoggedScene.cs" />
      <Compile Include="Assets\Scripts\Scene\FBNotLoggedScene.cs" />
      <Compile Include="Assets\Scripts\Scene\LevelFailureScene.cs" />

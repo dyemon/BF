@@ -139,4 +139,66 @@ public class GameResources {
 
 		return settings;
 	}
+
+	public bool SetUserLevel(int level) {
+		UserData data = GetUserData();
+
+		if(level != data.Level + 1) {
+			return false;
+		}
+
+		data.Level++;
+		saveUserDataLocal(data);
+
+		return true;
+	}
+
+	public bool ChangeUserAssets(UserAssetData[] assets) {
+		UserData userData = GetUserData();
+
+		foreach(UserAssetData asset in assets) {
+			if(!CanChangeAsset(userData, asset.Type, asset.Value)) {
+				return false;
+			}
+		}
+		foreach(UserAssetData asset in assets) {
+			ChangeUserAsset(userData, asset);
+		}
+		saveUserDataLocal(userData);
+
+		return true;
+	}
+
+	public bool ChangeUserAsset(UserAssetData asset) {
+		return ChangeUserAsset(asset.Type, asset.Value);
+	}
+
+	public bool ChangeUserAsset(UserAssetType type, int value) {
+		UserData userData = GetUserData();
+		if(!ChangeUserAsset(userData, type, value)) {
+			return false;
+		}
+		saveUserDataLocal(userData);
+		return true;
+	}
+
+	public bool ChangeUserAsset(UserData userData, UserAssetData asset) {
+		return ChangeUserAsset(userData, asset.Type, asset.Value);
+	}
+
+	public bool ChangeUserAsset(UserData data, UserAssetType type, int value) {
+		UserAssetData asset = data.GetAsset(type);
+		int newVal = asset.Value + value;
+		if(newVal < 0) {
+			return false;
+		}
+		asset.Value = newVal;
+
+		return true;
+	}
+
+	public bool CanChangeAsset(UserData data, UserAssetType type, int value) {
+		UserAssetData asset = data.GetAsset(type);
+		return asset.Value + value >= 0;
+	}
 }
