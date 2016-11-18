@@ -7,20 +7,23 @@ public class AMove {
 	private Vector3 movePos;
 	private float time;
 	private float speed;
+	private bool ui;
 
 	private float startTime;
 	private float startDurationTime;
 
-	public AMove(Vector3 startPos, Vector3 movePos, float speed) {
+	public AMove(Vector3 startPos, Vector3 movePos, float speed, bool ui) {
 		this.startPos = startPos;
 		this.movePos = movePos;
 		this.speed = speed;
+		this.ui = ui;
 		time = CalcTime(startPos, movePos, speed);
 	}
 
-	public AMove(Vector3 startPos, Vector3 movePos) {
+	public AMove(Vector3 startPos, Vector3 movePos, bool ui) {
 		this.startPos = startPos;
 		this.movePos = movePos;
+		this.ui = ui;
 	}
 
 	public static float CalcTime(Vector3 startPos, Vector3 movePos, float speed) {
@@ -52,7 +55,12 @@ public class AMove {
 		time = startDurationTime - delta;
 		float t = (time <= 0)? 1f : delta/startDurationTime;
 
-		gameObject.transform.position = Vector3.Lerp(startPos, movePos, t);
+		if(ui) {
+			RectTransform rt = gameObject.GetComponent<RectTransform>();
+			rt.localPosition = Vector3.Lerp(startPos, movePos, t);
+		} else {
+			gameObject.transform.position = Vector3.Lerp(startPos, movePos, t);
+		}
 
 		return (time > 0);
 	}

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class AnimatedObject : MonoBehaviour {
 
@@ -11,6 +12,8 @@ public class AnimatedObject : MonoBehaviour {
 	private Animation currentPlayAnimation;
 
 	private int? sourceLayerSortingOrder = null;
+
+	private bool destroyOnStop = false;
 
 	public bool IsDone {
 		get {return !isPlay;}
@@ -26,10 +29,10 @@ public class AnimatedObject : MonoBehaviour {
 		if(!isPlay) {
 			return;
 		}
-
-
+			
 		bool isContinue = PlayMove();
 		isContinue = PlayIdle() || isContinue;
+		isContinue = PlayFade() || isContinue;
 
 		if(!isContinue) {
 			if(sourceLayerSortingOrder != null) {
@@ -92,14 +95,18 @@ public class AnimatedObject : MonoBehaviour {
 		if(currentPlayAnimation != null) {
 			animations.Insert(0, currentPlayAnimation);
 		}
+
+		if(destroyOnStop) {
+			Destroy(gameObject);
+		}
 	}
 
 	public bool IsAnimationExist() {
 		return animations.Count > 0;
 	}
 
-	public AnimatedObject AddMove(Vector3 end, float speed) {
-		getCurrentAnimation().AddMove(transform.position, end, speed);
+	public AnimatedObject AddMove(Vector3 end, float speed, bool ui = false) {
+		getCurrentAnimation().AddMove(transform.position, end, speed, ui);
 		return this;
 	}
 
@@ -108,18 +115,18 @@ public class AnimatedObject : MonoBehaviour {
 		return this;
 	}
 
-	public AnimatedObject AddMove(Vector3 start, Vector3 end, float speed) {
-		getCurrentAnimation().AddMove(start, end, speed);
+	public AnimatedObject AddMove(Vector3 start, Vector3 end, float speed, bool ui = false) {
+		getCurrentAnimation().AddMove(start, end, speed, ui);
 		return this;
 	}
 
-	public AnimatedObject AddMoveByTime(Vector3 end, float time) {
-		getCurrentAnimation().AddMoveByTime(transform.position, end, time);
+	public AnimatedObject AddMoveByTime(Vector3 end, float time, bool ui = false ) {
+		getCurrentAnimation().AddMoveByTime(transform.position, end, time, ui);
 		return this;
 	}
 
-	public AnimatedObject AddMoveByTime(Vector3 start, Vector3 end, float time) {
-		getCurrentAnimation().AddMoveByTime(start, end, time);
+	public AnimatedObject AddMoveByTime(Vector3 start, Vector3 end, float time, bool ui = false) {
+		getCurrentAnimation().AddMoveByTime(start, end, time, ui);
 		return this;
 	}
 
@@ -128,9 +135,34 @@ public class AnimatedObject : MonoBehaviour {
 		return this;
 	}
 
+	public AnimatedObject AddFade(float startAlpha, float endAlpha, float time) {
+		getCurrentAnimation().AddFade(startAlpha, endAlpha, time);
+		return this;
+	}
+
+	public AnimatedObject AddFade(float endAlpha, float time) {
+		SpriteRenderer renderer = Preconditions.NotNull(gameObject.GetComponent<SpriteRenderer>(), "There is no 'SpriteRenderer' attached to the {0}", gameObject.name);
+		return AddFade(renderer.material.color.a, endAlpha, time);
+	}
+
+	public AnimatedObject AddFadeUIText(float startAlpha, float endAlpha, float time) {
+		getCurrentAnimation().AddFadeUIText(startAlpha, endAlpha, time);
+		return this;
+	}
+
+	public AnimatedObject AddFadeUIText(float endAlpha, float time) {
+		Text text = Preconditions.NotNull(gameObject.GetComponent<Text>(), "There is no 'Text' attached to the {0}", gameObject.name);
+		return AddFadeUIText(text.color.a, endAlpha, time);
+	}
+
 	public AnimatedObject Build() {
 		animations.Add(currentAnimation);
 		currentAnimation = null;
+		return this;
+	}
+
+	public AnimatedObject DestroyOnStop(bool destroyOnStop) {
+		this.destroyOnStop = destroyOnStop;
 		return this;
 	}
 
@@ -162,5 +194,19 @@ public class AnimatedObject : MonoBehaviour {
 
 
 		return idle.Idle();
+	}
+
+	private bool PlayFade() {
+		Animation animation = getCurrentPlayAnimation();
+		if(animation == null) {
+			return false;
+		}
+
+		AFade fade = animation.GetFade();
+		if(fade == null) {
+			return false;
+		}
+			
+		return fade.Fade(gameObject);
 	}
 }

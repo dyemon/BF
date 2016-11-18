@@ -15,11 +15,13 @@ public class LevelData {
 	public int BrilliantDropRatio;
 	public int[] TileItemDropPercent;
 
-	public TileItemData[] TileData;
-	public BarrierData[] BarrierData;
-	public TargetData[] TargetData;
+	public TileItemData[] TileData = new TileItemData[0];
+	public BarrierData[] BarrierData = new BarrierData[0];
+	public TargetData[] TargetData = new TargetData[0];
 
 	public Restrictions RestrictionData;
+
+	public TileItemData[] AutoDropOnCollectData = new TileItemData[0];
 
 	public void Init() {
 		if(TileData != null) {
@@ -39,7 +41,7 @@ public class LevelData {
 			foreach(TargetData item in TargetData) {
 				item.Type = (TargetType)Enum.Parse(typeof(TargetType), item.TypeAsString);
 			}
-		}
+		} 
 
 		if(RestrictionData == null) {
 			RestrictionData = new Restrictions();
@@ -59,6 +61,12 @@ public class LevelData {
 
 		if(sum != 100) {
 			throw new LevelConfigException("Sum of tile item drop percent must be 100. Now it is " + sum );
+		}
+
+		if(AutoDropOnCollectData != null) {
+			foreach(TileItemData item in AutoDropOnCollectData) {
+				item.Type = (TileItemType)Enum.Parse(typeof(TileItemType), item.TypeAsString);
+			}
 		}
 	}
 

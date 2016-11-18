@@ -7,7 +7,7 @@ public class TileItem {
 	public const int ENVELOP_OFFSET = 3;
 	public const int BOMBHV_OFFSET = 4;
 
-	public const int STATIC_BOMBALL_OFFSET = 2;
+	public const int BOMBALL_OFFSET = 5;
 
 	public const int BRILLIANT_OFFSET = 0;
 
@@ -44,8 +44,8 @@ public class TileItem {
 		return typeGroup != TileItemTypeGroup.Static;
 	}
 
-	public bool IsNotStatic() {
-		return IsNotStaticItem(TypeGroup);
+	public bool IsNotStatic {
+		get {return IsNotStaticItem(TypeGroup);}
 	}
 
 	private void SetType(TileItemTypeGroup typeGroup, int index) {
@@ -181,9 +181,9 @@ public class TileItem {
 		}
 	}
 
-	public bool IsStaticBombAll {
+	public bool IsBombAll {
 		get {
-			return type == TileItemType.Static_BombAll;
+			return type == TileItemType.BombAll;
 		}
 	}
 
@@ -192,16 +192,23 @@ public class TileItem {
 			return IsBombH || IsBombV || IsBombHV;
 		}
 	}
-	public bool IsStaticBomb {
-		get {
-			return IsStaticBombAll;
-		}
-	}
+
 	public bool IsBreakableOnlyByBomb {
 		get {
-			return IsStaticBombAll;
+			return IsBombAll;
 		}
 	}
+
+	public static bool IsRepositionItem(TileItemType type) {
+		return IsNotStaticItem(type) && type != TileItemType.BombAll;
+	} 
+
+	public bool IsReposition {
+		get {
+			return IsRepositionItem(type);
+		}
+	}
+
 	public bool IsBrilliant {
 		get { 
 			if(!IsSpecial) {
@@ -235,5 +242,10 @@ public class TileItem {
 		if(itemController != null) {
 			itemController.Mark(isMark);
 		}
+	}
+
+	public int GetEnvelopReplaceItemCount() {
+		Preconditions.Check(Level > 0, "Level of envelop must be greater zero");
+		return Level * 4 + 4;
 	}
 }

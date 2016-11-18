@@ -4,45 +4,54 @@ using System.Collections;
 
 public class DisplayMessageController : MonoBehaviour {
 
-	public GameObject DisplayText;
-	public float StartY;
-	public float EndY;
+	public Text DisplayText;
+	public float MoveSpeed;
+	public float FadeTime;
+	public GameObject EndDispalyMessagePosition;
 
-	private static DisplayMessageController displayMessageController;
+	public static DisplayMessageController Instance;
 
-	private Vector3 startPos;
 	private Vector3 endPos;
 
+	private Canvas c;
 
-	private void init() {
-		startPos = new Vector3(0, StartY, displayMessageController.DisplayText.transform.position.z);
-		endPos = new Vector3(0, EndY, displayMessageController.DisplayText.transform.position.z);
+	void Awake () {
+		Instance = this;
+		c = Preconditions.NotNull(DisplayText.transform.GetComponentInParent<Canvas>(), "Can not get canvas");
 	}
 
-	public static DisplayMessageController Instance () {
-		if (!displayMessageController) {
-			displayMessageController = FindObjectOfType(typeof (DisplayMessageController)) as DisplayMessageController;
-			Preconditions.NotNull(displayMessageController, "There needs to be one active DisplayMessageManager script on a GameObject in your scene.");
-			Preconditions.NotNull(displayMessageController.DisplayText, "Text control can not be null");
-			displayMessageController.init();
-		}
+	void Start() {
+		DisplayText.enabled = false;
+		Instance.init();
+	}
 
-		return displayMessageController;
+	private void init() {
+		Vector3 pos = DisplayText.GetComponent<RectTransform>().localPosition;
+		endPos = new Vector3(pos.x, EndDispalyMessagePosition.GetComponent<RectTransform>().localPosition.y, pos.z);
+	}
+
+	public static void DisplayMessage(string message, Color color) {
+		Instance.displayMessageInternal(message, color);
 	}
 
 	public static void DisplayMessage (string message) {
-		DisplayMessage(message, Color.white);
+		Instance.displayMessageInternal(message, Color.white);
 	}
 
-	public static void DisplayMessage (string message, Color color) {
-		DisplayMessageController instance = Instance();
+	private void displayMessageInternal (string message, Color color) {
+		Text text = (Text)Instantiate(DisplayText);
+		text.enabled = true;
 
-		GameObject textGO = (GameObject)Instantiate(instance.DisplayText, instance.startPos, Quaternion.identity);
-		Text text = textGO.transform.Find("Text").gameObject.GetComponent<Text>();
+		text.transform.SetParent(c.transform);
+		text.transform.localScale = new Vector3(1, 1, 1);
+		text.transform.position = DisplayText.GetComponent<RectTransform>().localPosition;
 
 		text.text = message;
 		text.color = color;
 
-
+		AnimatedObject ao = text.GetComponent<AnimatedObject>();
+		ao.AddMove(endPos, MoveSpeed, true).Build()
+			.AddFadeUIText(0f, FadeTime).Build()
+			.DestroyOnStop(true).Run();
 	}
 }

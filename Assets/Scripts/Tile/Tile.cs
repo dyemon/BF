@@ -14,30 +14,41 @@ public class Tile : ICloneable {
 		this.Y = y;
 	}
 
-	public static bool IsAvaliableTile(TileType type) {
-		return type != TileType.Unavaliable;
+	public static bool IsAvaliableForDropTile(TileType type) {
+		return type != TileType.UnavaliableForDrop;
 	}
 
 	public bool IsAvaliable {
 		get {
-			return IsAvaliableTile(Type) && (tileItem == null || tileItem.IsNotStatic());
+			return IsAvaliableForDropTile(Type) && (tileItem == null || tileItem.IsNotStatic);
+		}
+	}
+	public bool IsAvaliableForDrop {
+		get {
+			return IsAvaliableForDropTile(Type);
 		}
 	}
 
 	public bool IsEmpty {
 		get {
-			return IsAvaliable && tileItem == null;
+			return tileItem == null;
+		}
+	}
+
+	public bool IsNotStatic {
+		get {
+			return tileItem == null || tileItem.IsNotStatic;
 		}
 	}
 
 	public bool IsColor {
 		get {
-			return IsAvaliable && tileItem != null && tileItem.IsColor;
+			return tileItem != null && tileItem.IsColor;
 		}
 	}
 	public bool IsSimple {
 		get {
-			return IsAvaliable && tileItem != null && tileItem.IsSimple;
+			return tileItem != null && tileItem.IsSimple;
 		}
 	}
 
@@ -62,12 +73,12 @@ public class Tile : ICloneable {
 	}
 
 	public override string ToString() {
-		return string.Format("[Tile: Type={0}, X={1}, Y={2}, IsAvaliable={3}, IsEmpty={4}]", Type, X, Y, IsAvaliable, IsEmpty);
+		return string.Format("[Tile: Type={0}, X={1}, Y={2}, IsAvaliableFordrop={3}, IsEmpty={4}]", Type, X, Y, IsAvaliableForDrop, IsEmpty);
 	}
 
 	public TileItemType TileItemType {
 		get {
-			return (IsAvaliableTile(Type) && tileItem != null) ? tileItem.Type : TileItemType.Static_1;
+			return (tileItem != null) ? tileItem.Type : TileItemType.Static_Iron;
 		}
 	}
 }

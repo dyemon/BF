@@ -63,6 +63,8 @@
      <Compile Include="Assets\Scripts\Barrier\Barrier.cs" />
      <Compile Include="Assets\Scripts\Barrier\BarrierType.cs" />
      <Compile Include="Assets\Scripts\Barrier\BreakableBarrier.cs" />
+     <Compile Include="Assets\Scripts\Common\Animation\AFade.cs" />
+     <Compile Include="Assets\Scripts\Common\Animation\AFadeUIText.cs" />
      <Compile Include="Assets\Scripts\Common\Animation\AIdle.cs" />
      <Compile Include="Assets\Scripts\Common\Animation\AMove.cs" />
      <Compile Include="Assets\Scripts\Common\Animation\AnimatedObject.cs" />

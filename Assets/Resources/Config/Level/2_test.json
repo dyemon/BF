@@ -2,54 +2,42 @@
     "Id": "2", 
     "Name": "Level 2", 
     "Description": "", 
-    "SuccessCount": 3, 
+    "SuccessCount": 10, 
     "BrilliantDropRatio": 90, 
     "TileItemDropPercent": [20, 20, 20, 20, 20], 
 
     "TileData": [{
             "X": 1, 
             "Y": 6, 
-            "TypeAsString": "Static_1"
+            "TypeAsString": "Static_Iron"
         }, {
             "X": 2, 
             "Y": 1, 
-            "TypeAsString": "Static_1"
+            "TypeAsString": "Static_Iron"
         }, {
             "X": 5, 
             "Y": 2, 
-            "TypeAsString": "Static_1"
+            "TypeAsString": "Static_Iron"
         }, {
             "X": 5, 
             "Y": 3, 
-            "TypeAsString": "Static_1"
+            "TypeAsString": "Static_Iron"
         }, {
             "X": 2, 
             "Y": 7, 
-            "TypeAsString": "Static_2"
+            "TypeAsString": "Static_Wood"
         }, {
             "X": 4, 
             "Y": 7, 
-            "TypeAsString": "Static_2"
+            "TypeAsString": "Static_Wood"
         }, {
             "X": 6, 
             "Y": 7, 
-            "TypeAsString": "Static_2"
+            "TypeAsString": "Static_Wood"
         }, {
-            "X": 0, 
-            "Y": 4, 
-            "TypeAsString": "Red"
-        }, {
-            "X": 1, 
+            "X": 6, 
             "Y": 3, 
-            "TypeAsString": "Green"
-        }, {
-            "X": 2, 
-            "Y": 5, 
-            "TypeAsString": "Blue"
-        }, {
-            "X": 5, 
-            "Y": 6, 
-            "TypeAsString": "Yellow"
+            "TypeAsString": "BombAll"
         }], 
 
     "BarrierData": [{
