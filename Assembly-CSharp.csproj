@@ -94,6 +94,7 @@
      <Compile Include="Assets\Scripts\Common\Util\DebugUtill.cs" />
      <Compile Include="Assets\Scripts\Common\Util\DontDestroyOnLoad.cs" />
      <Compile Include="Assets\Scripts\Common\Util\INIParser.cs" />
+     <Compile Include="Assets\Scripts\Common\Util\Json.cs" />
      <Compile Include="Assets\Scripts\Common\Util\Preconditions.cs" />
      <Compile Include="Assets\Scripts\Common\Util\Singleton.cs" />
      <Compile Include="Assets\Scripts\FB\FBController.cs" />
@@ -109,12 +110,14 @@
      <Compile Include="Assets\Scripts\Model\Restrictions.cs" />
      <Compile Include="Assets\Scripts\Model\TargetData.cs" />
      <Compile Include="Assets\Scripts\Model\TileItemData.cs" />
+     <Compile Include="Assets\Scripts\Model\UserAssetData.cs" />
      <Compile Include="Assets\Scripts\Model\UserData.cs" />
      <Compile Include="Assets\Scripts\Model\UserHeroData.cs" />
      <Compile Include="Assets\Scripts\Net\HttpRequester.cs" />
      <Compile Include="Assets\Scripts\Panel\RestrictionsController.cs" />
      <Compile Include="Assets\Scripts\Panel\TargetController.cs" />
      <Compile Include="Assets\Scripts\Panel\TargetType.cs" />
+     <Compile Include="Assets\Scripts\Resource\EmptyEnumeration.cs" />
      <Compile Include="Assets\Scripts\Resource\GameResources.cs" />
      <Compile Include="Assets\Scripts\Scene\FBLoggedScene.cs" />
      <Compile Include="Assets\Scripts\Scene\FBNotLoggedScene.cs" />

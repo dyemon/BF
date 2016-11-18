@@ -1,22 +1,34 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/GameController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Model/UserData.cs">
     <Files>
-      <File FileName="Assets/Scripts/GameController.cs" Line="1494" Column="3" />
-      <File FileName="Assets/Scripts/Tile/TileItemType.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Model/LevelData.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/App.cs" Line="35" Column="12" />
-      <File FileName="Assets/Resources/Config/Level/2_test.json" Line="37" Column="10" />
-      <File FileName="Assets/Scripts/Tile/TileItem.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/GameController.cs" Line="1705" Column="1" />
+      <File FileName="Assets/Scripts/Common/Util/Json.cs" Line="10" Column="16" />
+      <File FileName="Assets/Scripts/Model/UserData.cs" Line="98" Column="91" />
+      <File FileName="Assets/Scripts/Model/QuestData.cs" Line="4" Column="1" />
+      <File FileName="Assets/Scripts/Resource/GameResources.cs" Line="97" Column="4" />
+      <File FileName="Assets/Scripts/Model/MainUserData.cs" Line="10" Column="23" />
+      <File FileName="Assets/Scripts/Resource/EmptyEnumeration.cs" Line="5" Column="56" />
+      <File FileName="Assets/Scripts/Model/UserAssetData.cs" Line="6" Column="27" />
     </Files>
+    <Pads>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State>
+          <Value> data[(int)movePos.x, (int)movePos.y]</Value>
+          <Value>data[(int)pos.x, (int)pos.y]</Value>
+          <Value>data</Value>
+        </State>
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="/home/dm/unity/BF/Assets/Scripts/GameController.cs" line="1463" column="1" />
-      <Breakpoint file="/home/dm/unity/BF/Assets/Scripts/GameController.cs" line="1493" column="1" />
+      <Breakpoint file="/home/dm/unity/BF/Assets/Scripts/GameController.cs" line="1718" column="1" />
+      <Breakpoint traceExpression="{json}" file="/home/dm/unity/BF/Assets/Scripts/Resource/GameResources.cs" line="100" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>
     <Watch file="Assets/Scripts/Resource/GameResources.cs" line="13" offsetX="822" offsetY="264" expression="aText.text" liveUpdate="False" />
+    <Watch file="Assets/Scripts/Resource/GameResources.cs" line="100" offsetX="542" offsetY="2178" expression="json" liveUpdate="True" />
   </MonoDevelop.Ide.DebuggingService.PinnedWatches>
 </Properties>

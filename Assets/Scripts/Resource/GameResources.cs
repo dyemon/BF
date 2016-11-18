@@ -44,11 +44,17 @@ public class GameResources {
 				string json = StringCipher.Decrypt(data, getKey());
 				uData = JsonUtility.FromJson<UserData>(json);
 			}
+			uData.Init();
 			if(Application.isEditor) {
-				uData.Init();
+				uData.InitTest();
 			}
-			this.userData = B64X.Encode((JsonUtility.ToJson(uData)));
+			saveUserDataLocal(uData);
 		}
+	}
+
+	private void saveUserDataLocal(UserData userData) {
+		string json = JsonUtility.ToJson(userData);
+		this.userData = B64X.Encode(json);
 	}
 
 	private UserData initDefaltUserData() {
@@ -74,8 +80,9 @@ public class GameResources {
 		UserData userData = GetUserData();
 
 		if(data.Version > userData.Version) {
+			data.Init();
 			if(Application.isEditor) {
-				data.Init();
+				data.InitTest();
 			}
 			this.userData = B64X.Encode((JsonUtility.ToJson(data)));
 			SaveUserData(false);
