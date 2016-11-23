@@ -16,7 +16,7 @@ public class TileItemController : MonoBehaviour {
 	private ParticleSystem transitionPS;
 	private bool isMark = false;
 
-	void Start () {
+	protected virtual void Start () {
 		render = GetComponent<SpriteRenderer>();
 		sourceSprite = render.sprite;
 		sourceColor = render.color;

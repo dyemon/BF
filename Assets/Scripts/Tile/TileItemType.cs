@@ -40,7 +40,8 @@ public enum TileItemType {
 
 	Static_1 = TileItemTypeGroup.Static,
 	Static_2 = TileItemTypeGroup.Static + 1,
-
+	Static_3 = TileItemTypeGroup.Static + 2,
+	Static_4 = TileItemTypeGroup.Static + 3,
 
 	Brilliant = TileItemTypeGroup.Special + TileItem.BRILLIANT_OFFSET,
 	Key = TileItemTypeGroup.Special + TileItem.KEY_OFFSET,

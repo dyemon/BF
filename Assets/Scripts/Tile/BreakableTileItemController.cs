@@ -2,9 +2,22 @@
 using System.Collections;
 
 public class BreakableTileItemController : TileItemController {
-	public int health = 1;
+	private int health = 1;
+	public Sprite[] StateSprites;
+
+	protected override void Start() {
+		base.Start();
+		health = StateSprites == null? 1 : StateSprites.Length + 1;
+	}
 
 	override public int Damage(int damage) {
-		return health -= damage;
+		health -= damage;
+
+		if(health > 0) {
+			SpriteRenderer renderer = GetComponent<SpriteRenderer>();
+			renderer.sprite = StateSprites[health - 1];
+		}
+
+		return health;
 	}
 }
