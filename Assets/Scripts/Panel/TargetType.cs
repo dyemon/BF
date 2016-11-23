@@ -6,5 +6,8 @@ public enum TargetType {
 	Green = TileItemType.Green,
 	Blue = TileItemType.Blue,
 	Yellow = TileItemType.Yellow,
-	Purple = TileItemType.Purple
+	Purple = TileItemType.Purple,
+	Brilliant = TileItemType.Brilliant,
+	Key = TileItemType.Key,
+	BombAll = TileItemType.BombAll
 }

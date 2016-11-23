@@ -19,10 +19,14 @@ public class TargetController : MonoBehaviour {
 		success = new bool[levelData.TargetData.Length];
 
 		foreach(TargetType type in Enum.GetValues(typeof(TargetType))) {
-			if(Icons.Length > ((int)type)/20) {
+			if(TileItem.IsColorItem((TileItemType)type)) {
 				targetIcons.Add(type, Icons[((int)type)/20]);
-			}
+			} else if(TileItem.IsSpecialCollectItem((TileItemType)type)) {
+				targetIcons.Add(type, Icons[5 + (int)type - (int)TileItemTypeGroup.Special]);
+			} 
 		}
+
+		targetIcons.Add(TargetType.BombAll, Icons[7]);
 
 		int index = 0;
 		foreach(TargetData data in levelData.TargetData) {

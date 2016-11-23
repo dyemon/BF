@@ -100,12 +100,15 @@ public class TileItem {
 	public static bool IsColorItem(TileItemType type) {
 		return (int)type < (int)TileItemTypeGroup.Static; 
 	}
-
 	public bool IsColor {
 		get { return TileItem.IsColorItem(type);}
 	}
+
+	public static bool IsSpecialItem(TileItemType type) {
+		return (int)type >= (int)TileItemTypeGroup.Special; 
+	}
 	public bool IsSpecial {
-		get { return (int)type >= (int)TileItemTypeGroup.Special; }
+		get { return TileItem.IsSpecialItem(type);}
 	}
 
 	public TileItemTypeGroup TypeGroup {

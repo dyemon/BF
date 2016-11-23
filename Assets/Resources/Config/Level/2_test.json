@@ -37,6 +37,16 @@
             "X": 6, 
             "Y": 3, 
             "TypeAsString": "BombAll"
+        }, {
+            "X": 6, 
+            "Y": 4, 
+			"Level": 2,
+            "TypeAsString": "RedBombH"
+        }, {
+            "X": 5, 
+            "Y": 4, 
+			"Level": 2,
+            "TypeAsString": "Red"
         }], 
 
     "BarrierData": [{
@@ -110,6 +120,15 @@
         }, {
             "Count": 30, 
             "TypeAsString": "Blue"
+        }, {
+            "Count": 2, 
+            "TypeAsString": "Brilliant"
+        }, {
+            "Count": 2, 
+            "TypeAsString": "Key"
+        }, {
+            "Count": 1, 
+            "TypeAsString": "BombAll"
         }], 
 
     "RestrictionData": {
@@ -123,11 +142,11 @@
 
 	"AutoDropData" : [
 	{
-		"Ratio": 1,
+		"Ratio": 20,
 		"TileItem" : { "TypeAsString": "Brilliant" }
 	},
 	{
-		"Ratio": 1,
+		"Ratio": 20,
 		"TileItem" : { "TypeAsString": "Key" }
 	}
 	]

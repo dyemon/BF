@@ -3,7 +3,6 @@
     "Name": "Level 3", 
     "Description": "", 
     "SuccessCount": 3, 
-    "BrilliantDropRatio": 40, 
     "TileData": [  {
             "X": 0, 
             "Y": 6, 
