@@ -2,8 +2,7 @@
     "Id": "2", 
     "Name": "Level 2", 
     "Description": "", 
-    "SuccessCount": 10, 
-    "BrilliantDropRatio": 90, 
+    "SuccessCount": 3, 
     "TileItemDropPercent": [20, 20, 20, 20, 20], 
 
     "TileData": [{
@@ -115,5 +114,21 @@
 
     "RestrictionData": {
         "Movies": 25
-    }
+    },
+
+	"AutoDropOnCollectData" : [
+	{
+        "TypeAsString": "BombAll"
+    }],
+
+	"AutoDropData" : [
+	{
+		"Ratio": 1,
+		"TileItem" : { "TypeAsString": "Brilliant" }
+	},
+	{
+		"Ratio": 1,
+		"TileItem" : { "TypeAsString": "Key" }
+	}
+	]
 }

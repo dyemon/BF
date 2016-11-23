@@ -10,7 +10,7 @@ public class TileItem {
 	public const int BOMBALL_OFFSET = 5;
 
 	public const int BRILLIANT_OFFSET = 0;
-
+	public const int KEY_OFFSET = 1;
 
 	private TileItemType type;
 	private TileItemTypeGroup typeGroup;
@@ -137,7 +137,7 @@ public class TileItem {
 	}
 
 	public static bool IsSpecialCollectItem(TileItemType type) {
-		return type == TileItemType.Brilliant;
+		return type == TileItemType.Brilliant || type == TileItemType.Key;
 	}
 	public bool IsSpecialCollect {
 		get { return IsSpecialCollectItem(Type); }

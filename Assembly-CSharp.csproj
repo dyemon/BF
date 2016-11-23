@@ -101,6 +101,7 @@
      <Compile Include="Assets\Scripts\FB\IFBCallback.cs" />
      <Compile Include="Assets\Scripts\GameController.cs" />
      <Compile Include="Assets\Scripts\Hero\Hero.cs" />
+     <Compile Include="Assets\Scripts\Model\AutoDropData.cs" />
      <Compile Include="Assets\Scripts\Model\BarrierData.cs" />
      <Compile Include="Assets\Scripts\Model\GameData.cs" />
      <Compile Include="Assets\Scripts\Model\HeroData.cs" />
@@ -127,6 +128,7 @@
      <Compile Include="Assets\Scripts\Scene\LoadScene.cs" />
      <Compile Include="Assets\Scripts\Scene\MapScene.cs" />
      <Compile Include="Assets\Scripts\Scene\PreloadScene.cs" />
+     <Compile Include="Assets\Scripts\Tile\AutoDropTileItems.cs" />
      <Compile Include="Assets\Scripts\Tile\BreakableTileItemController.cs" />
      <Compile Include="Assets\Scripts\Tile\Tile.cs" />
      <Compile Include="Assets\Scripts\Tile\TileItem.cs" />

@@ -3,7 +3,7 @@ using System.Collections;
 
 public enum TileItemTypeGroup {
 	Red = 0, Green = 20, Blue = 40, Yellow = 60, Purple = 80,
-	Static = 400, Special = 500
+	Static = 300, Special = 500
 }
 
 [System.Serializable]
@@ -43,5 +43,6 @@ public enum TileItemType {
 
 
 	Brilliant = TileItemTypeGroup.Special + TileItem.BRILLIANT_OFFSET,
+	Key = TileItemTypeGroup.Special + TileItem.KEY_OFFSET,
 	BombAll = TileItemTypeGroup.Special + TileItem.BOMBALL_OFFSET	
 }

@@ -63,6 +63,8 @@ public class GameController : MonoBehaviour {
 	int collectedTileItemsCount;
 	int dropedTileItemsCount;
 
+	AutoDropTileItems autoDropTileItems;
+
 	void Start() {
 		levelData = GameResources.Instance.LoadLevel(App.GetCurrentLevel());
 		levelData.Init();
@@ -71,6 +73,8 @@ public class GameController : MonoBehaviour {
 
 		numColumns = LevelData.NumColumns;
 		numRows = LevelData.NumRows;
+
+		autoDropTileItems = new AutoDropTileItems(levelData.AutoDropData);
 
 		float areaOffset = 0.1f;
 		tilesArea = new Rect(-numColumns / 2f - areaOffset, 0 - areaOffset, numColumns + 2*areaOffset, numRows + 2*areaOffset);
@@ -139,14 +143,17 @@ public class GameController : MonoBehaviour {
 
 	private TileItem InstantiateColorOrSpecialTileItem(int column) {
 		dropedTileItemsCount++;
+		TileItemData itemData = null;
+
 		if(dropRequire.Count > 0 && autoDropOnCollectIndex == dropedTileItemsCount) {
-			TileItemData itemData = dropRequire[0];
+			itemData = dropRequire[0];
 			dropRequire.Remove(itemData);
 			return InstantiateTileItem(itemData.Type, 0, -10, true);
 		}
 
-		if(levelData.BrilliantDropRatio > 0 && Random.Range(0, levelData.BrilliantDropRatio) == 0) {
-			return InstantiateTileItem(tileItemsSpecial, 0, TileItemType.Brilliant, 0, -10, true);
+		itemData = autoDropTileItems.GetDropeItem();
+		if(itemData != null) {
+			return InstantiateTileItem(itemData.Type, 0, -10, true);
 		}
 
 		int rand = Random.Range(1, 101);
@@ -235,6 +242,7 @@ public class GameController : MonoBehaviour {
 			if(hit.collider != null) {		
 				tile = GetTile(hit.collider.gameObject);
 			}
+	
 			if(touch.phase == TouchPhase.Began) {
 				BeganTouch(tile);
 			} else if(touch.phase == TouchPhase.Moved) {
@@ -524,7 +532,8 @@ public class GameController : MonoBehaviour {
 		nearTiles[3] = GetTile(x, y + 1);
 
 		foreach(Tile tile in nearTiles) {
-			if(tile != null && tile.GetTileItem() != null && tile.GetTileItem().IsSpecialCollect && !specialSelectedTiles.Contains(tile)) {
+			if(tile != null && tile.GetTileItem() != null && tile.GetTileItem().IsSpecialCollect && !specialSelectedTiles.Contains(tile)
+				&& CheckAvailabilityWithBarriers(x, y, tile.X, tile.Y)) {
 				SelectTileItem(tile, true);
 			}
 		}
@@ -797,6 +806,7 @@ public class GameController : MonoBehaviour {
 		IsTileInputAvaliable = false;
 		ResetTileItemSpawnDelay();
 		dropedTileItemsCount = 0;
+		autoDropTileItems.ReseteDroped();
 
 		if(dropRequire.Count > 0 && collectedTileItemsCount > 1) {
 			autoDropOnCollectIndex = Random.Range(0, collectedTileItemsCount - 1);

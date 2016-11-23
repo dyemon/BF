@@ -52,6 +52,7 @@ public class InputController : MonoBehaviour {
 			mousePress = false;
 			mouseButtonUp = true;
 		}
+
 	}
 
 	public void LateUpdate() {
@@ -66,6 +67,8 @@ public class InputController : MonoBehaviour {
 			lastTime = null;
 			lastMousePosition = null;
 		}
+
+	
 	}
 
 	public static bool IsTouch() {
@@ -175,12 +178,12 @@ public class InputController : MonoBehaviour {
 			Vector3 delta = Input.mousePosition - lastMousePosition.Value;
 			touch.deltaPosition = new Vector2(delta.x, delta.y);
 		}
+//		Debug.Log(mouseButtonUp);
 
-		if(Input.GetMouseButtonDown(0) || mouseButtonDown) {
-			touch.phase = TouchPhase.Began;
-		}
-		else if(Input.GetMouseButtonUp(0) || mouseButtonUp) {
+		if(Input.GetMouseButtonUp(0) || mouseButtonUp) {
 			touch.phase = TouchPhase.Ended;
+		} else if(Input.GetMouseButtonDown(0) || mouseButtonDown) {
+			touch.phase = TouchPhase.Began;
 		}
 		else if(mousePress) {
 			touch.phase = TouchPhase.Moved;

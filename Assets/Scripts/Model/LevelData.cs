@@ -22,6 +22,7 @@ public class LevelData {
 	public Restrictions RestrictionData;
 
 	public TileItemData[] AutoDropOnCollectData = new TileItemData[0];
+	public AutoDropData[] AutoDropData = new AutoDropData[0];
 
 	public void Init() {
 		if(TileData != null) {
@@ -66,6 +67,12 @@ public class LevelData {
 		if(AutoDropOnCollectData != null) {
 			foreach(TileItemData item in AutoDropOnCollectData) {
 				item.Type = (TileItemType)Enum.Parse(typeof(TileItemType), item.TypeAsString);
+			}
+		}
+
+		if(AutoDropData != null) {
+			foreach(AutoDropData item in AutoDropData) {
+				item.TileItem.Type = (TileItemType)Enum.Parse(typeof(TileItemType), item.TileItem.TypeAsString);
 			}
 		}
 	}

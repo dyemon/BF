@@ -32,6 +32,6 @@ public class App {
 	}
 
 	public static string GetCurrentLevel() {
-		return "3_test";
+		return "2_test";
 	}
 }
