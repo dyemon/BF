@@ -674,7 +674,7 @@ public class GameController : MonoBehaviour {
 
 	private Barrier GetBarrier(int x1, int y1, int x2, int y2) {
 		Barrier val;
-		barriers.TryGetValue(new BarrierData(x1, y1, x2, y2, BarrierType.Wood), out val);
+		barriers.TryGetValue(new BarrierData(x1, y1, x2, y2, BarrierType.Barrier_2), out val);
 		return val;
 	}
 

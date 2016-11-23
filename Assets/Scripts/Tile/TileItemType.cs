@@ -38,8 +38,8 @@ public enum TileItemType {
 	YellowBombHV = TileItemTypeGroup.Yellow + TileItem.BOMBHV_OFFSET, 
 	PurpleBombHV = TileItemTypeGroup.Purple + TileItem.BOMBHV_OFFSET,
 
-	Static_Iron = TileItemTypeGroup.Static,
-	Static_Wood = TileItemTypeGroup.Static + 1,
+	Static_1 = TileItemTypeGroup.Static,
+	Static_2 = TileItemTypeGroup.Static + 1,
 
 
 	Brilliant = TileItemTypeGroup.Special + TileItem.BRILLIANT_OFFSET,

@@ -16,7 +16,7 @@ public class Barrier {
 
 	public static Barrier Instantiate(BarrierData data, GameObject go) {
 		switch(data.Type) {
-			case BarrierType.Wood:
+			case BarrierType.Barrier_2:
 				return new BreakableBarrier(data, go, 1);
 		}
 

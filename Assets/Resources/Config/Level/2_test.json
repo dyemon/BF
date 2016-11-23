@@ -8,31 +8,31 @@
     "TileData": [{
             "X": 1, 
             "Y": 6, 
-            "TypeAsString": "Static_Iron"
+            "TypeAsString": "Static_1"
         }, {
             "X": 2, 
             "Y": 1, 
-            "TypeAsString": "Static_Iron"
+            "TypeAsString": "Static_1"
         }, {
             "X": 5, 
             "Y": 2, 
-            "TypeAsString": "Static_Iron"
+            "TypeAsString": "Static_1"
         }, {
             "X": 5, 
             "Y": 3, 
-            "TypeAsString": "Static_Iron"
+            "TypeAsString": "Static_1"
         }, {
             "X": 2, 
             "Y": 7, 
-            "TypeAsString": "Static_Wood"
+            "TypeAsString": "Static_2"
         }, {
             "X": 4, 
             "Y": 7, 
-            "TypeAsString": "Static_Wood"
+            "TypeAsString": "Static_2"
         }, {
             "X": 6, 
             "Y": 7, 
-            "TypeAsString": "Static_Wood"
+            "TypeAsString": "Static_2"
         }, {
             "X": 6, 
             "Y": 3, 
@@ -54,61 +54,61 @@
             "Y1": 0, 
             "X2": 1, 
             "Y2": 0, 
-            "TypeAsString": "Wood"
+            "TypeAsString": "Barrier_2"
         }, {
             "X1": 0, 
             "Y1": 0, 
             "X2": 0, 
             "Y2": 1, 
-            "TypeAsString": "Iron"
+            "TypeAsString": "Barrier_1"
         }, {
             "X1": 1, 
             "Y1": 2, 
             "X2": 1, 
             "Y2": 3, 
-            "TypeAsString": "Wood"
+            "TypeAsString": "Barrier_2"
         }, {
             "X1": 2, 
             "Y1": 2, 
             "X2": 3, 
             "Y2": 2, 
-            "TypeAsString": "Wood"
+            "TypeAsString": "Barrier_2"
         }, {
             "X1": 2, 
             "Y1": 2, 
             "X2": 2, 
             "Y2": 3, 
-            "TypeAsString": "Iron"
+            "TypeAsString": "Barrier_1"
         }, {
             "X1": 3, 
             "Y1": 2, 
             "X2": 3, 
             "Y2": 3, 
-            "TypeAsString": "Wood"
+            "TypeAsString": "Barrier_2"
         }, {
             "X1": 2, 
             "Y1": 3, 
             "X2": 3, 
             "Y2": 3, 
-            "TypeAsString": "Iron"
+            "TypeAsString": "Barrier_1"
         }, {
             "X1": 4, 
             "Y1": 2, 
             "X2": 4, 
             "Y2": 3, 
-            "TypeAsString": "Iron"
+            "TypeAsString": "Barrier_1"
         }, {
             "X1": 5, 
             "Y1": 2, 
             "X2": 5, 
             "Y2": 3, 
-            "TypeAsString": "Iron"
+            "TypeAsString": "Barrier_1"
         }, {
             "X1": 3, 
             "Y1": 4, 
             "X2": 3, 
             "Y2": 5, 
-            "TypeAsString": "Wood"
+            "TypeAsString": "Barrier_2"
         }], 
 
     "TargetData": [{

@@ -78,7 +78,7 @@ public class Tile : ICloneable {
 
 	public TileItemType TileItemType {
 		get {
-			return (tileItem != null) ? tileItem.Type : TileItemType.Static_Iron;
+			return (tileItem != null) ? tileItem.Type : TileItemType.Static_1;
 		}
 	}
 }

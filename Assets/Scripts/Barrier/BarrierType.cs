@@ -2,5 +2,5 @@
 using System.Collections;
 
 public enum BarrierType {
-	Wood, Iron
+	Barrier_1, Barrier_2
 }
