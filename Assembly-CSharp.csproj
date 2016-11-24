@@ -103,6 +103,7 @@
      <Compile Include="Assets\Scripts\Hero\Hero.cs" />
      <Compile Include="Assets\Scripts\Model\AutoDropData.cs" />
      <Compile Include="Assets\Scripts\Model\BarrierData.cs" />
+     <Compile Include="Assets\Scripts\Model\ChildTileItemData.cs" />
      <Compile Include="Assets\Scripts\Model\GameData.cs" />
      <Compile Include="Assets\Scripts\Model\HeroData.cs" />
      <Compile Include="Assets\Scripts\Model\LevelData.cs" />

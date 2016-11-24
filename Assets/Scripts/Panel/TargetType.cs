@@ -2,12 +2,13 @@
 using System.Collections;
 
 public enum TargetType {
-	Red = TileItemType.Red,
-	Green = TileItemType.Green,
-	Blue = TileItemType.Blue,
-	Yellow = TileItemType.Yellow,
-	Purple = TileItemType.Purple,
+	Red = TileItemTypeGroup.Red,
+	Green = TileItemTypeGroup.Green,
+	Blue = TileItemTypeGroup.Blue,
+	Yellow = TileItemTypeGroup.Yellow,
+	Purple = TileItemTypeGroup.Purple,
 	Brilliant = TileItemType.Brilliant,
 	Key = TileItemType.Key,
-	BombAll = TileItemType.BombAll
+	BombAll = TileItemType.BombAll,
+	Box = TileItemTypeGroup.Box,
 }

@@ -1,9 +1,9 @@
 {
     "Id": "2", 
-    "Name": "Level 2", 
-    "Description": "", 
+    "Name": "Level 2",
+    "Description": "",
     "SuccessCount": 3, 
-    "TileItemDropPercent": [20, 20, 20, 20, 20], 
+    "TileItemDropPercent": [20, 20, 20, 20, 20],
 
     "TileData": [{
             "X": 1, 
@@ -20,18 +20,22 @@
         }, {
             "X": 5, 
             "Y": 3, 
+			"Health": 4, 
             "TypeAsString": "Static_1"
         }, {
             "X": 2, 
             "Y": 7, 
-            "TypeAsString": "Static_2"
+			"Health": 1, 
+            "TypeAsString": "Static_1"
         }, {
             "X": 4, 
             "Y": 7, 
-            "TypeAsString": "Static_4"
+			"Health": 3, 
+            "TypeAsString": "Box_1"
         }, {
             "X": 6, 
             "Y": 7, 
+			"Health": 1, 
             "TypeAsString": "Static_3"
         }, {
             "X": 6, 
@@ -47,6 +51,22 @@
             "Y": 4, 
 			"Level": 2,
             "TypeAsString": "Red"
+        }, {
+            "X": 4, 
+            "Y": 3, 
+			"Health": 3,
+            "TypeAsString": "StaticSlime_1",
+			"ChildTileItemData": {
+				 "TypeAsString": "Green"
+			}
+        }, {
+            "X": 3, 
+            "Y": 6, 
+            "TypeAsString": "StaticSlime_1",
+			"ChildTileItemData": {
+				"TypeAsString": "RedBombH",
+				"Level": 3 
+			}
         }], 
 
     "BarrierData": [{
@@ -129,6 +149,9 @@
         }, {
             "Count": 1, 
             "TypeAsString": "BombAll"
+        }, {
+            "Count": 1, 
+            "TypeAsString": "Box"
         }], 
 
     "RestrictionData": {

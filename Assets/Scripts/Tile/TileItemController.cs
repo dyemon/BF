@@ -6,7 +6,7 @@ public class TileItemController : MonoBehaviour {
 	public Sprite HighLightSprite;
 	public ParticleSystem TransitionPS;
 
-	private SpriteRenderer render;
+	protected SpriteRenderer render;
 	private Sprite sourceSprite;
 	private Color sourceColor;
 	private Material sourceMaterial;
@@ -104,5 +104,13 @@ public class TileItemController : MonoBehaviour {
 
 	virtual public int Damage(int damage) {
 		return 1;
+	}
+
+	virtual public bool SetStartHealth(int health) {
+		return true;
+	}
+
+	virtual public bool DestroyOnBreak() {
+		return true;
 	}
 }

@@ -28,6 +28,9 @@ public class LevelData {
 		if(TileData != null) {
 			foreach(TileItemData item in TileData) {
 				item.Type = (TileItemType)Enum.Parse(typeof(TileItemType), item.TypeAsString);
+				if(item.HasChild()) {
+					item.ChildTileItemData.Type = (TileItemType)Enum.Parse(typeof(TileItemType), item.ChildTileItemData.TypeAsString);
+				}
 			}
 		}
 

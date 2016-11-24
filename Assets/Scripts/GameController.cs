@@ -10,7 +10,7 @@ public class GameController : MonoBehaviour {
 	public delegate void OnMoveComplete();
 	public event OnMoveComplete onMoveComplete;
 
-	public static readonly int TILEITEM_SORTING_ORDER = 10;
+	public static readonly int DEFAULT_TILEITEM_SORTING_ORDER = 10;
 
 	private int numColumns;
 	private int numRows;
@@ -23,6 +23,8 @@ public class GameController : MonoBehaviour {
 	public GameObject[] tileItemsColorBombHV;
 	public GameObject[] tileItemsSpecial;
 	public GameObject[] tileItemsStatic;
+	public GameObject[] tileItemsSpecialStatic;
+	public GameObject[] tileItemsBox;
 	public GameObject[] barrierItems;
 
 	private AnimationGroup animationGroup;
@@ -167,7 +169,7 @@ public class GameController : MonoBehaviour {
 			}
 		}
 	//	Debug.Log(rand + " " + index);
-		return InstantiateTileItem(tileItemsColor, index, (TileItemType)(index*20), 0, -10, true);
+		return InstantiateTileItem(tileItemsColor, index, (TileItemType)(index*TileItem.TILE_ITEM_GROUP_WEIGHT), 0, -10, true);
 	}
 
 	private Barrier InstantiateBarrier(BarrierData data) {
@@ -189,11 +191,15 @@ public class GameController : MonoBehaviour {
 			case TileItemTypeGroup.Blue:
 			case TileItemTypeGroup.Yellow:
 			case TileItemTypeGroup.Purple:	
-				return InstantiateTileItem(GetColorGameObjectsByTileItemType(type),  (int)group/20, type, x, y, convertIndexToPos);
+				return InstantiateTileItem(GetColorGameObjectsByTileItemType(type),  (int)group/100, type, x, y, convertIndexToPos);
 			case TileItemTypeGroup.Static:
 				return InstantiateTileItem(tileItemsStatic, (int)(type) - (int)group, type, x, y, convertIndexToPos);
 			case TileItemTypeGroup.Special:
 				return InstantiateTileItem(tileItemsSpecial, (int)(type) - (int)group, type, x, y, convertIndexToPos);
+			case TileItemTypeGroup.Box:
+				return InstantiateTileItem(tileItemsBox, (int)(type) - (int)group, type, x, y, convertIndexToPos);
+			case TileItemTypeGroup.SpecialStatic:
+				return InstantiateTileItem(tileItemsSpecialStatic, (int)(type) - (int)group, type, x, y, convertIndexToPos);
 		}
 
 		throw new System.NotImplementedException("Can not instantient tile item with type " + type.ToString());
@@ -221,7 +227,7 @@ public class GameController : MonoBehaviour {
 	private TileItem InstantiateTileItem(GameObject[] items, int index, TileItemType type, int x, int y, bool convertIndexToPos) {
 		GameObject go = (GameObject)Instantiate(items[index], (!convertIndexToPos)? new Vector3(x, y, 0) : IndexToPosition(x, y), Quaternion.identity);
 		TileItem ti = TileItem.Instantiate(type, go);
-		go.GetComponent<SpriteRenderer>().sortingOrder = TILEITEM_SORTING_ORDER;
+		go.GetComponent<SpriteRenderer>().sortingOrder = DEFAULT_TILEITEM_SORTING_ORDER;
 
 		return ti;
 	}
@@ -280,6 +286,7 @@ public class GameController : MonoBehaviour {
 		}
 
 		Tile lastTile = selectedTiles.Last.Value;
+		Debug.Log(tile.GetTileItem().TypeGroup + " " + lastTile.GetTileItem().TypeGroup);
 		if(lastTile == tile || tile.GetTileItem().TypeGroup != lastTile.GetTileItem().TypeGroup) {
 			return;
 		}
@@ -490,11 +497,20 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void CollectTileItem(Tile tile) {
-		collectedTileItemsCount++;
 		if(onCollectTileItem != null) {
 			onCollectTileItem(tile.GetTileItem());
 		}
-		ClearTile(tile);
+			
+		if(tile.GetTileItem().DestroyOnBreak()) {
+			TileItem child = tile.GetTileItem().GetChildTileItem();
+			ClearTile(tile);
+
+			if(child != null) {
+				tile.SetTileItem(child);
+			} else {
+				collectedTileItemsCount++;
+			}
+		}
 	}
 
 	private void SelectTileItem(Tile tile, bool isSelect, TileItemRenderState unSelectedState = TileItemRenderState.Normal, TileItem transitionTileItem = null) {
@@ -603,7 +619,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void BreakTileItem(Tile tile) {
-		ClearTile(tile);
+		CollectTileItem(tile);
 	}
 
 	private bool BreakBarriers(int x, int y, int damage) {
@@ -839,8 +855,33 @@ public class GameController : MonoBehaviour {
 				Preconditions.Check(item.Level > 0, "Level of TileItem {0}, {1} must be greater than zero", item.X, item.Y);
 			}
 			tiles[item.X, item.Y].SetTileItem(ti);
-			ti.Level = item.Level;
+			initTileItem(item, ti);
+			if(item.HasChild()) {
+				initChildTileItem(item.ChildTileItemData, tiles[item.X, item.Y]);
+				SpriteRenderer render = ti.GetGameObject().GetComponent<SpriteRenderer>();
+				render.sortingOrder = DEFAULT_TILEITEM_SORTING_ORDER + 1;
+			}
 		}
+	}
+
+	private void initTileItem(TileItemData tileItemData, TileItem tileItem) {
+		tileItem.Level = tileItemData.Level;
+		tileItem.SetStartHealth(tileItemData.Health);
+	}
+	private void initTileItem(ChildTileItemData tileItemData, TileItem tileItem) {
+		tileItem.Level = tileItemData.Level;
+		tileItem.SetStartHealth(tileItemData.Health);
+	}
+
+	private void initChildTileItem(ChildTileItemData tileItemData, Tile tile) {
+		if(tileItemData == null) {
+			return;
+		}
+
+		TileItem tileItem = Preconditions.NotNull(tile.GetTileItem(), "Can not init child TileItem for tile {0},{1} curentTileItem is null", tile.X, tile.Y);
+		TileItem ti = InstantiateTileItem(tileItemData.Type, tile.X, tile.Y, true);
+		initTileItem(tileItemData, ti);
+		tileItem.SetChildTileItem(ti);
 	}
 
 	private void InitBarriers() {
@@ -1013,7 +1054,7 @@ public class GameController : MonoBehaviour {
 		if(moveType == TileItemMoveType.DOWN) {
 			from.GetTileItem().IsMoved = true;
 		} else if(moveType == TileItemMoveType.OFFSET) {
-			ao.LayerSortingOrder(TILEITEM_SORTING_ORDER - 3);
+			ao.LayerSortingOrder(DEFAULT_TILEITEM_SORTING_ORDER - 3);
 		}
 
 		ao.Build();

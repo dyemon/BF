@@ -20,13 +20,14 @@ public class TargetController : MonoBehaviour {
 
 		foreach(TargetType type in Enum.GetValues(typeof(TargetType))) {
 			if(TileItem.IsColorItem((TileItemType)type)) {
-				targetIcons.Add(type, Icons[((int)type)/20]);
+				targetIcons.Add(type, Icons[((int)type)/TileItem.TILE_ITEM_GROUP_WEIGHT]);
 			} else if(TileItem.IsSpecialCollectItem((TileItemType)type)) {
 				targetIcons.Add(type, Icons[5 + (int)type - (int)TileItemTypeGroup.Special]);
 			} 
 		}
 
 		targetIcons.Add(TargetType.BombAll, Icons[7]);
+		targetIcons.Add(TargetType.Box, Icons[8]);
 
 		int index = 0;
 		foreach(TargetData data in levelData.TargetData) {
@@ -51,8 +52,9 @@ public class TargetController : MonoBehaviour {
 			return;
 		}
 
+		bool checkByTypeGroup = tileItem.IsColor || tileItem.IsBox;
 		foreach(TargetData data in levelData.TargetData) {
-			if((int)data.Type == (int)tileItem.Type) {
+			if(((int)data.Type == (int)tileItem.Type) && !checkByTypeGroup || ((int)data.Type == (int)tileItem.TypeGroup) && checkByTypeGroup) {
 				GameObject targetGO = Preconditions.NotNull(transform.GetChild(index).gameObject, "Can not get target game object for index {0}", index);
 				Text text = targetGO.transform.Find("Text").gameObject.GetComponent<Text>();
 				if(text == null || success[index]) {

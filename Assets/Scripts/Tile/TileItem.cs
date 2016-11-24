@@ -2,6 +2,8 @@
 using System.Collections;
 
 public class TileItem {
+	public const int TILE_ITEM_GROUP_WEIGHT = 100;
+
 	public const int BOMBH_OFFSET = 1;
 	public const int BOMBV_OFFSET = 2;
 	public const int ENVELOP_OFFSET = 3;
@@ -22,6 +24,8 @@ public class TileItem {
 
 	public int Level { get; set; }
 
+	private TileItem childTileItem;
+
 	public TileItem(TileItemTypeGroup typeGroup, int index, GameObject go) {
 		SetType(typeGroup, index);
 		init(go);
@@ -34,19 +38,29 @@ public class TileItem {
 	private void init(GameObject go) {
 		tileItemGO = go;
 		itemController = go.GetComponent<TileItemController>();		
-		Level = 0;
+		Level = 1;
 	}
 
 	public static bool IsNotStaticItem(TileItemType type) {
 		return IsNotStaticItem(TypeToTypeGroup(type));
 	}
 	public static bool IsNotStaticItem(TileItemTypeGroup typeGroup) {
-		return typeGroup != TileItemTypeGroup.Static;
+		return typeGroup != TileItemTypeGroup.Static && typeGroup != TileItemTypeGroup.Box && typeGroup != TileItemTypeGroup.SpecialStatic;
+	}
+	public bool IsNotStatic {
+		get {return IsNotStaticItem(type);}
 	}
 
-	public bool IsNotStatic {
-		get {return IsNotStaticItem(TypeGroup);}
+	public static bool IsBoxItem(TileItemType type) {
+		return IsBoxItem(TypeToTypeGroup(type));
 	}
+	public static bool IsBoxItem(TileItemTypeGroup typeGroup) {
+		return typeGroup == TileItemTypeGroup.Box;
+	}
+	public bool IsBox {
+		get {return IsBoxItem(type);}
+	}
+
 
 	private void SetType(TileItemTypeGroup typeGroup, int index) {
 		this.typeGroup = typeGroup;
@@ -88,11 +102,11 @@ public class TileItem {
 	}
 
 	public static TileItemTypeGroup TypeToTypeGroup( TileItemType type) {
-		return (TileItemTypeGroup)(type - (int)type % 20);
+		return (TileItemTypeGroup)(type - (int)type % TILE_ITEM_GROUP_WEIGHT);
 	}
 		
 	public static int TypeToIndex( TileItemType type) {
-		return (int)type % 20;
+		return (int)type % TILE_ITEM_GROUP_WEIGHT;
 	}
 
 	public bool IsMoved { get; set;}
@@ -211,15 +225,12 @@ public class TileItem {
 			return IsRepositionItem(type);
 		}
 	}
-
+	/*
 	public bool IsBrilliant {
 		get { 
-			if(!IsSpecial) {
-				return false;
-			}
-			return TypeToIndex(type) == BRILLIANT_OFFSET;
+			type == TileItemType.Brilliant;
 		}
-	}
+	}*/
 		
 	virtual public int Damage(int damage) {
 		return (itemController == null)? 1 : itemController.Damage(damage);
@@ -250,5 +261,23 @@ public class TileItem {
 	public int GetEnvelopReplaceItemCount() {
 		Preconditions.Check(Level > 0, "Level of envelop must be greater zero");
 		return Level * 4 + 4;
+	}
+
+	public void SetStartHealth(int health) {
+		if(itemController != null) {
+			Preconditions.Check(itemController.SetStartHealth(health), "Health for TileItem {0} can not be {1}", type.ToString(), health);
+		}
+	}
+
+	public void SetChildTileItem(TileItem tileItem) {
+		childTileItem = tileItem;
+	}
+
+	public TileItem GetChildTileItem() {
+		return childTileItem;
+	}
+
+	public bool DestroyOnBreak() {
+		return itemController == null ? true : itemController.DestroyOnBreak();
 	}
 }
