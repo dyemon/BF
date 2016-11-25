@@ -4,6 +4,7 @@
     "Description": "",
     "SuccessCount": 3, 
     "TileItemDropPercent": [20, 20, 20, 20, 20],
+	"SlimeRatio": 1,
 
     "TileData": [{
             "X": 1, 
@@ -47,25 +48,49 @@
 			"Level": 2,
             "TypeAsString": "RedBombH"
         }, {
-            "X": 5, 
-            "Y": 4, 
+            "X": 0, 
+            "Y": 0, 
+			"Level": 2,
+            "TypeAsString": "Slime"
+        }, {
+            "X": 0, 
+            "Y": 1, 
+			"Level": 2,
+            "TypeAsString": "RedBombH"
+        }, {
+            "X": 0, 
+            "Y": 2, 
 			"Level": 2,
             "TypeAsString": "Red"
         }, {
+            "X": 0, 
+            "Y": 3, 
+			"Level": 3,
+            "TypeAsString": "Red"
+        },{
             "X": 4, 
             "Y": 3, 
 			"Health": 3,
-            "TypeAsString": "StaticSlime_1",
+            "TypeAsString": "StaticSlime_2",
 			"ChildTileItemData": {
-				 "TypeAsString": "Green"
+				"TypeAsString": "Green"
 			}
         }, {
             "X": 3, 
-            "Y": 6, 
+            "Y": 5, 
             "TypeAsString": "StaticSlime_1",
 			"ChildTileItemData": {
 				"TypeAsString": "RedBombH",
 				"Level": 3 
+			}
+        }, {
+            "X": 3, 
+            "Y": 6, 
+            "TypeAsString": "GeneratorBlue",
+			"GeneratedTileItemData": {
+				"TypeAsString": "BlueEnvelop",
+				"Level": 3,
+				"Ratio": 2 
 			}
         }], 
 

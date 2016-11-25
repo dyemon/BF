@@ -12,7 +12,7 @@ public class LevelData {
 	public string Name;
 	public string Description;
 	public int SuccessCount = 3;
-	public int BrilliantDropRatio;
+	public int SlimeRatio;
 	public int[] TileItemDropPercent;
 
 	public TileItemData[] TileData = new TileItemData[0];
@@ -30,6 +30,9 @@ public class LevelData {
 				item.Type = (TileItemType)Enum.Parse(typeof(TileItemType), item.TypeAsString);
 				if(item.HasChild()) {
 					item.ChildTileItemData.Type = (TileItemType)Enum.Parse(typeof(TileItemType), item.ChildTileItemData.TypeAsString);
+				}
+				if(item.HasGenerated()) {
+					item.GeneratedTileItemData.Type = (TileItemType)Enum.Parse(typeof(TileItemType), item.GeneratedTileItemData.TypeAsString);
 				}
 			}
 		}

@@ -81,4 +81,5 @@ public class Tile : ICloneable {
 			return (tileItem != null) ? tileItem.Type : TileItemType.Static_1;
 		}
 	}
+		
 }

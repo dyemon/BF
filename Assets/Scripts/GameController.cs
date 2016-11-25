@@ -34,6 +34,8 @@ public class GameController : MonoBehaviour {
 	private LinkedList<Tile> specialSelectedTiles = new LinkedList<Tile>();
 	private IList<Tile> bombMarkTiles = new List<Tile>();
 	private IList<Tile> rotaitedBombs = new List<Tile>();
+	private IList<Tile> slimeTiles = new List<Tile>();
+	private IList<Generator> generatorTiles = new List<Generator>();
 	private IList<TileItemData> dropRequire = new List<TileItemData>();
 
 	private Tile[,] tmpTiles;
@@ -65,6 +67,8 @@ public class GameController : MonoBehaviour {
 	int collectedTileItemsCount;
 	int dropedTileItemsCount;
 
+	Slime slime;
+
 	AutoDropTileItems autoDropTileItems;
 
 	void Start() {
@@ -77,6 +81,7 @@ public class GameController : MonoBehaviour {
 		numRows = LevelData.NumRows;
 
 		autoDropTileItems = new AutoDropTileItems(levelData.AutoDropData);
+		slime = new Slime(levelData.SlimeRatio);
 
 		float areaOffset = 0.1f;
 		tilesArea = new Rect(-numColumns / 2f - areaOffset, 0 - areaOffset, numColumns + 2*areaOffset, numRows + 2*areaOffset);
@@ -264,16 +269,17 @@ public class GameController : MonoBehaviour {
 
 	private void BeganTouch(Tile tile) {
 		bombTile = null;
-		if(tile == null || tile.GetTileItem() == null || !tile.GetTileItem().MayBeFirst) {
+		if(tile == null || tile.GetTileItem() == null || !tile.GetTileItem().MayBeFirst ) {
 			return;
 		}
+		TileItem tileItem = tile.GetTileItem();
 		Preconditions.Check(replacedItems.Count == 0, "replacedItems count must be 0 {0}", replacedItems.Count);
 		Preconditions.Check(selectedTiles.Count == 0, "selectedTiles count must be 0 {0}", selectedTiles.Count);
 
-		SetTileItemsRenderState(TileItemRenderState.Dark, tile.GetTileItem().TypeGroup);
+		SetTileItemsRenderState(TileItemRenderState.Dark, tileItem.TypeGroup);
 		SelectTileItem(tile, true);
 
-		if(tile.GetTileItem().IsBomb) {
+		if(tileItem.IsBomb) {
 			bombTile = tile;
 			MarkBombTiles(tile);
 		}
@@ -502,13 +508,19 @@ public class GameController : MonoBehaviour {
 		}
 			
 		if(tile.GetTileItem().DestroyOnBreak()) {
-			TileItem child = tile.GetTileItem().GetChildTileItem();
+			TileItem ti = tile.GetTileItem();
+			TileItem child = ti.GetChildTileItem();
 			ClearTile(tile);
 
 			if(child != null) {
 				tile.SetTileItem(child);
 			} else {
 				collectedTileItemsCount++;
+			}
+
+			if(slimeTiles.Contains(tile)) {
+				slimeTiles.Remove(tile);
+				slime.Collect();
 			}
 		}
 	}
@@ -603,6 +615,9 @@ public class GameController : MonoBehaviour {
 			if(tile == null || tile.GetTileItem() == null) {
 				continue;
 			}
+			if(breakAround && !CheckAvailabilityWithBarriers(x, y, tile.X, tile.Y)) {
+				continue;
+			}
 
 			if(damagedTiles.ContainsKey(tile)) {
 				continue;
@@ -658,12 +673,16 @@ public class GameController : MonoBehaviour {
 		for(int x = 0; x < numColumns; x++) {
 			for(int y = 0; y < numRows; y++) {
 				Tile tile = tiles[x, y];
-				if(!tile.IsNotStatic || tile.GetTileItem() == null) {
+				if(tile.GetTileItem() == null) {
+					continue;
+				}
+				TileItem tileItem = tile.GetTileItem().GetChildTileItem() != null? tile.GetTileItem().GetChildTileItem() : tile.GetTileItem();
+				if(!tileItem.IsNotStatic) {
 					continue;
 				}
 
-				if(excludeTypeGroup == null || tile.GetTileItem().TypeGroup != excludeTypeGroup.Value) {
-					tile.GetTileItem().SetRenderState(state);
+				if(excludeTypeGroup == null || tileItem.TypeGroup != excludeTypeGroup.Value) {
+					tileItem.SetRenderState(state);
 				}
 			}
 		}
@@ -740,10 +759,10 @@ public class GameController : MonoBehaviour {
 		if(to == null) {
 			return from.Y == numRows - 1;
 		}
-
+		/*
 		if(!to.IsNotStatic || !from.IsNotStatic) {
 			return false;
-		}
+		}*/
 
 		return CheckAvailabilityWithBarriers(from.X, from.Y, to.X, to.Y);
 	}
@@ -753,6 +772,9 @@ public class GameController : MonoBehaviour {
 			return false;
 		}
 
+		if(fromX == toX && fromY == toY) {
+			return false;
+		}
 		if(fromX == toX || fromY == toY) {
 			return GetBarrier(fromX, fromY, toX, toY) == null;
 		}
@@ -796,8 +818,10 @@ public class GameController : MonoBehaviour {
 		animationGroup.Run(complete, param);
 	}
 
-	private void OnTileItemUpdateComplete(bool getHeroItem) {
-		if(getHeroItem) {
+	private void OnTileItemUpdateComplete(bool first) {
+		if(first) {
+			UpdateSlime();
+			UpdateTileItemsByGenerators();
 			TileItemData data = GetHeroItemData();
 			if(data != null) {
 				RunHeroItemAnimation(data);
@@ -855,32 +879,38 @@ public class GameController : MonoBehaviour {
 				Preconditions.Check(item.Level > 0, "Level of TileItem {0}, {1} must be greater than zero", item.X, item.Y);
 			}
 			tiles[item.X, item.Y].SetTileItem(ti);
-			initTileItem(item, ti);
+			InitTileItem(item, ti);
 			if(item.HasChild()) {
-				initChildTileItem(item.ChildTileItemData, tiles[item.X, item.Y]);
+				InitChildTileItem(item.ChildTileItemData, tiles[item.X, item.Y]);
 				SpriteRenderer render = ti.GetGameObject().GetComponent<SpriteRenderer>();
 				render.sortingOrder = DEFAULT_TILEITEM_SORTING_ORDER + 1;
+			}
+			if(item.HasGenerated()) {
+				generatorTiles.Add(new Generator(item.X, item.Y, item.GeneratedTileItemData));
+			}
+			if(ti.IsSlime) {
+				slimeTiles.Add(tiles[item.X, item.Y]);
 			}
 		}
 	}
 
-	private void initTileItem(TileItemData tileItemData, TileItem tileItem) {
+	private void InitTileItem(TileItemData tileItemData, TileItem tileItem) {
 		tileItem.Level = tileItemData.Level;
 		tileItem.SetStartHealth(tileItemData.Health);
 	}
-	private void initTileItem(ChildTileItemData tileItemData, TileItem tileItem) {
+	private void InitTileItem(ChildTileItemData tileItemData, TileItem tileItem) {
 		tileItem.Level = tileItemData.Level;
 		tileItem.SetStartHealth(tileItemData.Health);
 	}
 
-	private void initChildTileItem(ChildTileItemData tileItemData, Tile tile) {
+	private void InitChildTileItem(ChildTileItemData tileItemData, Tile tile) {
 		if(tileItemData == null) {
 			return;
 		}
 
 		TileItem tileItem = Preconditions.NotNull(tile.GetTileItem(), "Can not init child TileItem for tile {0},{1} curentTileItem is null", tile.X, tile.Y);
 		TileItem ti = InstantiateTileItem(tileItemData.Type, tile.X, tile.Y, true);
-		initTileItem(tileItemData, ti);
+		InitTileItem(tileItemData, ti);
 		tileItem.SetChildTileItem(ti);
 	}
 
@@ -1775,6 +1805,86 @@ public class GameController : MonoBehaviour {
 				dropRequire.Add(itemData);
 			}
 		}
+	}
+
+	public void UpdateSlime() {
+		if(slimeTiles.Count == 0) {
+			return;
+		}
+
+		TileItemType? type = slime.DropSlime();
+		if(type == null) {
+			return;
+		}
+
+		Tile[] aroundTiles = new Tile[4];
+		IList<Tile> avaliableTiles = new List<Tile>();
+		foreach(Tile tile in slimeTiles) {
+			aroundTiles[0] = GetTile(tile.X + 1, tile.Y);
+			aroundTiles[1] = GetTile(tile.X - 1, tile.Y);
+			aroundTiles[2] = GetTile(tile.X, tile.Y + 1);
+			aroundTiles[3] = GetTile(tile.X, tile.Y - 1);
+			foreach(Tile t in aroundTiles) {
+				if(t == null || t.IsEmpty ) {
+					continue;
+				}
+				if(t.GetTileItem().IsAbsorbable && !avaliableTiles.Contains(t)
+					&& CheckAvailabilityWithBarriers(tile, t)) {
+					avaliableTiles.Add(t);
+				}
+			}
+		}
+
+		if(avaliableTiles.Count == 0) {
+			return;
+		}
+
+		Tile choiceTile = avaliableTiles[Random.Range(0, avaliableTiles.Count)];
+		TileItem ti = InstantiateTileItem(type.Value, choiceTile.X, choiceTile.Y, true);
+		ClearTile(choiceTile);
+		choiceTile.SetTileItem(ti);
+		if(!slimeTiles.Contains(choiceTile)) {
+			slimeTiles.Add(choiceTile);
+		}
+	}
+
+	private void UpdateTileItemsByGenerators() {
+		foreach(Generator gen in generatorTiles) {
+			Tile tile = GetTile(gen.X, gen.Y - 1);
+			if(tile == null || !CheckAvailabilityWithBarriers(gen.X, gen.Y, tile.X, tile.Y)) {
+				continue;
+			}
+				
+			if(tile.IsEmpty || tile.GetTileItem().IsReplacedByGenerator) {
+				TileItemData genItemData = gen.Generate();
+				if(genItemData == null) {
+					continue;
+				}
+
+				if(tile.IsEmpty || tile.GetTileItem().Type != genItemData.Type) {
+					TileItem ti = InstantiateTileItem(genItemData.Type, gen.X, gen.Y, true);
+					InitTileItem(genItemData, ti);
+					if(!tile.IsEmpty) {
+						ClearTile(tile);
+					}
+					AnimatedObject ao = ti.GetGameObject().GetComponent<AnimatedObject>();
+					float speed = App.GetTileItemSpeed(TileItemMoveType.GENERATED_TILEITEM_DROP);
+					ao.AddMove(IndexToPosition(tile.X, tile.Y), speed).LayerSortingOrder(DEFAULT_TILEITEM_SORTING_ORDER + 1).Build().Run();
+
+					tile.SetTileItem(ti);
+				}
+			}
+		}
+	}
+
+	private void OnTileItemReplace(System.Object[] param) {
+		TileItem ti = (TileItem)param[0];
+		Tile tile = (Tile)param[1];
+
+		if(!tile.IsEmpty) {
+			ClearTile(tile);
+		}
+		tile.SetTileItem(ti);
 	}
 }
 

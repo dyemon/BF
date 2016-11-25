@@ -43,8 +43,12 @@ public enum TileItemType {
 	Static_3 = TileItemTypeGroup.Static + 2,
 	Static_4 = TileItemTypeGroup.Static + 3,
 	StaticSlime_1 = TileItemTypeGroup.Static + 4,
+	StaticSlime_2 = TileItemTypeGroup.Static + 5,
+	GeneratorBlue = TileItemTypeGroup.Static + 6,
 
 	Box_1 = TileItemTypeGroup.Box,
+
+	Slime = TileItemTypeGroup.SpecialStatic,
 
 	Brilliant = TileItemTypeGroup.Special + TileItem.BRILLIANT_OFFSET,
 	Key = TileItemTypeGroup.Special + TileItem.KEY_OFFSET,

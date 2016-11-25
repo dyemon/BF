@@ -113,4 +113,5 @@ public class TileItemController : MonoBehaviour {
 	virtual public bool DestroyOnBreak() {
 		return true;
 	}
+		
 }

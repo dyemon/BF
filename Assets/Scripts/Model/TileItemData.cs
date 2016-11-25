@@ -10,6 +10,7 @@ public class TileItemData {
 	public int Level = 1;
 	public int Health;
 	public ChildTileItemData ChildTileItemData;
+	public ChildTileItemData GeneratedTileItemData;
 
 	public TileItemData(int x, int y, TileItemType type) {
 		this.X = x;
@@ -19,5 +20,9 @@ public class TileItemData {
 
 	public bool HasChild() {
 		return ChildTileItemData != null && ChildTileItemData.TypeAsString != null;
+	}
+
+	public bool HasGenerated() {
+		return GeneratedTileItemData != null && GeneratedTileItemData.TypeAsString != null;
 	}
 }

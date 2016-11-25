@@ -131,6 +131,9 @@
      <Compile Include="Assets\Scripts\Scene\PreloadScene.cs" />
      <Compile Include="Assets\Scripts\Tile\AutoDropTileItems.cs" />
      <Compile Include="Assets\Scripts\Tile\BreakableTileItemController.cs" />
+     <Compile Include="Assets\Scripts\Tile\DamageType.cs" />
+     <Compile Include="Assets\Scripts\Tile\Generator.cs" />
+     <Compile Include="Assets\Scripts\Tile\Slime.cs" />
      <Compile Include="Assets\Scripts\Tile\Tile.cs" />
      <Compile Include="Assets\Scripts\Tile\TileItem.cs" />
      <Compile Include="Assets\Scripts\Tile\TileItemController.cs" />

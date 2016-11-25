@@ -7,4 +7,5 @@ public class ChildTileItemData {
 	public string TypeAsString;
 	public int Level = 1;
 	public int Health;
+	public int Ratio;
 }

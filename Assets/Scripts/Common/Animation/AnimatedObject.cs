@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class AnimatedObject : MonoBehaviour {
+	public delegate void CompleteAnimation<T>(T param);
 
 	private bool isPlay = false;
 
@@ -81,6 +82,10 @@ public class AnimatedObject : MonoBehaviour {
 			GetComponent<SpriteRenderer>().sortingOrder = sourceLayerSortingOrder.Value;
 		}
 	}
+	/*
+	public void Run<T>(CompleteAnimation<T> complete, T param) {
+		Run();
+	}*/
 
 	public void Run() {
 		if(animations.Count == 0) {

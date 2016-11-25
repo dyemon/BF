@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class BreakableTileItemController : TileItemController {
 	private int health = 1;
@@ -13,7 +14,6 @@ public class BreakableTileItemController : TileItemController {
 		health = StateSprites == null? 1 : StateSprites.Length + 1;
 		if(startHealth > 0) {
 			SetStartHealth(startHealth);
-		
 		}
 	}
 
@@ -25,7 +25,7 @@ public class BreakableTileItemController : TileItemController {
 		} else if(brokeSprite != null && !broke) {
 			render.sprite = brokeSprite;
 			broke = true;
-		} 
+		}
 
 		return health;
 	}

@@ -26,6 +26,8 @@ public class TileItem {
 
 	private TileItem childTileItem;
 
+	private ChildTileItemData generatedTileItemData;
+
 	public TileItem(TileItemTypeGroup typeGroup, int index, GameObject go) {
 		SetType(typeGroup, index);
 		init(go);
@@ -171,6 +173,10 @@ public class TileItem {
 		get { return IsSimpleItem(Type); }
 	}
 
+	public bool IsSelectable {
+		get { return IsColor; }
+	}
+
 	public bool IsBombH {
 		get { 
 			if(!IsColor) {
@@ -213,6 +219,30 @@ public class TileItem {
 	public bool IsBreakableOnlyByBomb {
 		get {
 			return IsBombAll;
+		}
+	}
+
+	public bool IsSlime {
+		get {
+			return type == TileItemType.Slime;
+		}
+	}
+
+	public bool IsAbsorbable {
+		get {
+			return IsColor || IsSpecialCollect;
+		}
+	}
+
+	public bool IsGenerator {
+		get {
+			return type == TileItemType.GeneratorBlue;
+		}
+	}
+
+	public bool IsReplacedByGenerator {
+		get {
+			return IsColor || IsSpecialCollect;
 		}
 	}
 
@@ -279,5 +309,13 @@ public class TileItem {
 
 	public bool DestroyOnBreak() {
 		return itemController == null ? true : itemController.DestroyOnBreak();
+	}
+
+	public void SetGeneratedData(ChildTileItemData genData) {
+		generatedTileItemData = genData;
+	}
+
+	public TileItemData GenerateTileItemData() {
+		return null;
 	}
 }
