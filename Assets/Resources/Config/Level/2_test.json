@@ -31,7 +31,7 @@
         }, {
             "X": 4, 
             "Y": 7, 
-			"Health": 3, 
+			"Health": 1, 
             "TypeAsString": "Box_1"
         }, {
             "X": 6, 
@@ -58,39 +58,57 @@
 			"Level": 2,
             "TypeAsString": "RedBombH"
         }, {
-            "X": 0, 
-            "Y": 2, 
+            "X": 2, 
+            "Y": 3, 
 			"Level": 2,
-            "TypeAsString": "Red"
+            "TypeAsString": "Blue"
         }, {
-            "X": 0, 
+            "X": 3, 
             "Y": 3, 
 			"Level": 3,
-            "TypeAsString": "Red"
-        },{
+            "TypeAsString": "BlueBombV"
+        }, {
             "X": 4, 
             "Y": 3, 
-			"Health": 3,
-            "TypeAsString": "StaticSlime_2",
-			"ChildTileItemData": {
-				"TypeAsString": "Green"
+			"Level": 3,
+            "TypeAsString": "Blue"
+        },{
+            "X": 4, 
+            "Y": 4, 
+            "TypeAsString": "Blue",
+			"ParentTileItemData": {
+				"Health": 4,
+				"TypeAsString": "StaticSlime_2"
+			}
+        },{
+            "X": 4, 
+            "Y": 5, 
+            "TypeAsString": "Blue",
+			"ParentTileItemData": {
+				"Health": 4,
+				"TypeAsString": "StaticSlime_2"
 			}
         }, {
             "X": 3, 
             "Y": 5, 
+			"Health": 1,
             "TypeAsString": "StaticSlime_1",
 			"ChildTileItemData": {
 				"TypeAsString": "RedBombH",
 				"Level": 3 
 			}
-        }, {
-            "X": 3, 
+        },{
+            "X": 4, 
             "Y": 6, 
+			"Level": 3,
+            "TypeAsString": "BlueEnvelop"
+        },{
+            "X": 1, 
+            "Y": 3, 
             "TypeAsString": "GeneratorBlue",
 			"GeneratedTileItemData": {
-				"TypeAsString": "BlueEnvelop",
-				"Level": 3,
-				"Ratio": 2 
+				"Ratio": 3,
+				"TypeAsString": "BlueEnvelop"
 			}
         }], 
 
@@ -130,12 +148,6 @@
             "X2": 3, 
             "Y2": 3, 
             "TypeAsString": "Barrier_2"
-        }, {
-            "X1": 2, 
-            "Y1": 3, 
-            "X2": 3, 
-            "Y2": 3, 
-            "TypeAsString": "Barrier_1"
         }, {
             "X1": 4, 
             "Y1": 2, 

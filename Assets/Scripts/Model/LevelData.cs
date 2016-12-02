@@ -34,6 +34,9 @@ public class LevelData {
 				if(item.HasGenerated()) {
 					item.GeneratedTileItemData.Type = (TileItemType)Enum.Parse(typeof(TileItemType), item.GeneratedTileItemData.TypeAsString);
 				}
+				if(item.HasParent()) {
+					item.ParentTileItemData.Type = (TileItemType)Enum.Parse(typeof(TileItemType), item.ParentTileItemData.TypeAsString);
+				}
 			}
 		}
 

@@ -5,7 +5,7 @@ using System;
 public class BreakableTileItemController : TileItemController {
 	private int health = 1;
 	public Sprite[] StateSprites;
-	public Sprite brokeSprite;
+	public Sprite BrokeSprite;
 	private bool broke = false;
 	private int startHealth = 0;
 
@@ -19,11 +19,12 @@ public class BreakableTileItemController : TileItemController {
 
 	override public int Damage(int damage) {
 		health -= damage;
+		//SpriteRenderer render = GetComponent<SpriteRenderer>();
 
 		if(health > 0) {
 			render.sprite = StateSprites[health - 1];
-		} else if(brokeSprite != null && !broke) {
-			render.sprite = brokeSprite;
+		} else if(BrokeSprite != null && !broke) {
+			render.sprite = BrokeSprite;
 			broke = true;
 		}
 
@@ -55,6 +56,6 @@ public class BreakableTileItemController : TileItemController {
 	}
 
 	override public bool DestroyOnBreak() {
-		return brokeSprite == null;
+		return BrokeSprite == null;
 	}
 }

@@ -25,7 +25,7 @@ public class TileItem {
 	public int Level { get; set; }
 
 	private TileItem childTileItem;
-
+	private TileItem parentTileItem;
 	private ChildTileItemData generatedTileItemData;
 
 	public TileItem(TileItemTypeGroup typeGroup, int index, GameObject go) {
@@ -50,7 +50,9 @@ public class TileItem {
 		return typeGroup != TileItemTypeGroup.Static && typeGroup != TileItemTypeGroup.Box && typeGroup != TileItemTypeGroup.SpecialStatic;
 	}
 	public bool IsNotStatic {
-		get {return IsNotStaticItem(type);}
+		get {
+			return parentTileItem != null ? IsNotStaticItem(parentTileItem.Type) : IsNotStaticItem(Type);
+		}
 	}
 
 	public static bool IsBoxItem(TileItemType type) {
@@ -302,9 +304,14 @@ public class TileItem {
 	public void SetChildTileItem(TileItem tileItem) {
 		childTileItem = tileItem;
 	}
-
+	public void SetParentTileItem(TileItem tileItem) {
+		parentTileItem = tileItem;
+	}
 	public TileItem GetChildTileItem() {
 		return childTileItem;
+	}
+	public TileItem GetParentTileItem() {
+		return parentTileItem;
 	}
 
 	public bool DestroyOnBreak() {

@@ -11,6 +11,7 @@ public class TileItemData {
 	public int Health;
 	public ChildTileItemData ChildTileItemData;
 	public ChildTileItemData GeneratedTileItemData;
+	public ChildTileItemData ParentTileItemData;
 
 	public TileItemData(int x, int y, TileItemType type) {
 		this.X = x;
@@ -24,5 +25,9 @@ public class TileItemData {
 
 	public bool HasGenerated() {
 		return GeneratedTileItemData != null && GeneratedTileItemData.TypeAsString != null;
+	}
+
+	public bool HasParent() {
+		return ParentTileItemData != null && ParentTileItemData.TypeAsString != null;
 	}
 }

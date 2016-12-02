@@ -71,6 +71,8 @@ public class GameController : MonoBehaviour {
 
 	AutoDropTileItems autoDropTileItems;
 
+	private bool suspendBomb = false;
+
 	void Start() {
 		levelData = GameResources.Instance.LoadLevel(App.GetCurrentLevel());
 		levelData.Init();
@@ -269,6 +271,8 @@ public class GameController : MonoBehaviour {
 
 	private void BeganTouch(Tile tile) {
 		bombTile = null;
+		suspendBomb = false;
+
 		if(tile == null || tile.GetTileItem() == null || !tile.GetTileItem().MayBeFirst ) {
 			return;
 		}
@@ -427,7 +431,7 @@ public class GameController : MonoBehaviour {
 				continue;
 			}
 			tile.GetTileItem().Mark(false);
-			if(tile.GetTileItem().IsColor || tile.GetTileItem().IsSpecialCollect || tile.GetTileItem().IsBreakableOnlyByBomb) {
+			if((tile.GetTileItem().IsColor || tile.GetTileItem().IsSpecialCollect || tile.GetTileItem().IsBreakableOnlyByBomb )) {
 				CollectTileItem(tile);
 			}
 			if(BreakTileItems(tile.X, tile.Y, 5, false)) {
@@ -503,6 +507,15 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void CollectTileItem(Tile tile) {
+		if(selectedTiles.Contains(tile)) {
+			tile.GetTileItem().UnSelect(TileItemRenderState.Normal);
+		}
+
+		TileItem parentTi = tile.GetTileItem().GetParentTileItem();
+		if(parentTi != null) {
+			return;
+		}
+
 		if(onCollectTileItem != null) {
 			onCollectTileItem(tile.GetTileItem());
 		}
@@ -615,7 +628,7 @@ public class GameController : MonoBehaviour {
 			if(tile == null || tile.GetTileItem() == null) {
 				continue;
 			}
-			if(breakAround && !CheckAvailabilityWithBarriers(x, y, tile.X, tile.Y)) {
+			if(breakAround && (tile.X != x || tile.Y != y) && !CheckAvailabilityWithBarriers(x, y, tile.X, tile.Y)) {
 				continue;
 			}
 
@@ -623,11 +636,18 @@ public class GameController : MonoBehaviour {
 				continue;
 			}
 
-			damagedTiles.Add(tile, null);
-			if(tile.GetTileItem().Damage(damage) <= 0) {
+			TileItem parentTi = tile.GetTileItem().GetParentTileItem();
+			if(parentTi == null) {
+				damagedTiles.Add(tile, null);
+			}
+			if(parentTi == null && tile.GetTileItem().Damage(damage) <= 0) {
 				res = true;
 				BreakTileItem(tile);
+			} else if(parentTi != null && tile.X == x && tile.Y == y && parentTi.Damage(damage) <= 0) {
+				Destroy(parentTi.GetGameObject());
+				tile.GetTileItem().SetParentTileItem(null);
 			}
+
 		}
 
 		return res;
@@ -677,7 +697,7 @@ public class GameController : MonoBehaviour {
 					continue;
 				}
 				TileItem tileItem = tile.GetTileItem().GetChildTileItem() != null? tile.GetTileItem().GetChildTileItem() : tile.GetTileItem();
-				if(!tileItem.IsNotStatic) {
+				if(!tileItem.IsNotStatic && tileItem.GetParentTileItem() == null) {
 					continue;
 				}
 
@@ -885,6 +905,9 @@ public class GameController : MonoBehaviour {
 				SpriteRenderer render = ti.GetGameObject().GetComponent<SpriteRenderer>();
 				render.sortingOrder = DEFAULT_TILEITEM_SORTING_ORDER + 1;
 			}
+			if(item.HasParent()) {
+				InitParentTileItem(item.ParentTileItemData, tiles[item.X, item.Y]);
+			}
 			if(item.HasGenerated()) {
 				generatorTiles.Add(new Generator(item.X, item.Y, item.GeneratedTileItemData));
 			}
@@ -912,6 +935,19 @@ public class GameController : MonoBehaviour {
 		TileItem ti = InstantiateTileItem(tileItemData.Type, tile.X, tile.Y, true);
 		InitTileItem(tileItemData, ti);
 		tileItem.SetChildTileItem(ti);
+	}
+
+	private void InitParentTileItem(ChildTileItemData tileItemData, Tile tile) {
+		if(tileItemData == null) {
+			return;
+		}
+
+		TileItem tileItem = Preconditions.NotNull(tile.GetTileItem(), "Can not init parent TileItem for tile {0},{1} curentTileItem is null", tile.X, tile.Y);
+		TileItem ti = InstantiateTileItem(tileItemData.Type, tile.X, tile.Y, true);
+		InitTileItem(tileItemData, ti);
+		tileItem.SetParentTileItem(ti);
+		SpriteRenderer render = ti.GetGameObject().GetComponent<SpriteRenderer>();
+		render.sortingOrder = DEFAULT_TILEITEM_SORTING_ORDER + 1;
 	}
 
 	private void InitBarriers() {
@@ -1195,6 +1231,7 @@ public class GameController : MonoBehaviour {
 		}
 
 		foreach(Vector2 pos in positions) {
+			bool hasParent;
 			if(tileData == null) {
 				Tile curTile = GetTile(pos);
 				if(curTile == null) {
@@ -1203,6 +1240,7 @@ public class GameController : MonoBehaviour {
 				curTileType = curTile.TileItemType;
 				dataX = (int)pos.x;
 				dataY = (int)pos.y;
+				hasParent = curTile.GetTileItem() != null && curTile.GetTileItem().GetParentTileItem() != null;
 			} else {
 		//		Preconditions.Check(!isSelected, "Tile {0} {1} can not be selected (check tiledata)", x, y);
 				TileItemData curTile = GetTileItemData((int)pos.x, (int)pos.y, tileData);
@@ -1212,12 +1250,16 @@ public class GameController : MonoBehaviour {
 				curTileType = curTile.Type;
 				dataX = curTile.X;
 				dataY = curTile.Y;
+				hasParent = curTile.HasParent();
 			}
-
+				
 			TileItemTypeGroup curTypeGroup = TileItem.TypeToTypeGroup(curTileType);
 
 			if(curTypeGroup == typeGroup && TileItem.MayBeFirstItem(curTileType) && CheckAvailabilityTransition(tileX, tileY, (int)pos.x, (int)pos.y)) {
 				reachable = true;
+			}
+			if(hasParent) {
+				continue;
 			}
 			if(curTypeGroup != typeGroup && TileItem.IsSimpleItem(curTileType)) {
 				if(res == null) {
@@ -1407,6 +1449,11 @@ public class GameController : MonoBehaviour {
 				res[x, y] = new TileItemData(tile.X, tile.Y, tile.TileItemType);
 				if(tile.GetTileItem() != null) {
 					res[x, y].Level = tile.GetTileItem().Level;
+					if(tile.GetTileItem().GetParentTileItem() != null) { 
+						res[x, y].ParentTileItemData = new ChildTileItemData();
+						res[x, y].ParentTileItemData.Type = tile.GetTileItem().GetParentTileItem().Type;
+						res[x, y].ParentTileItemData.TypeAsString = res[x, y].ParentTileItemData.Type.ToString();
+					}
 				}
 			}
 		}
@@ -1748,7 +1795,7 @@ public class GameController : MonoBehaviour {
 				continue;
 			}
 				
-			if(!selectedTiles.Contains(curTile) && !bombMarkTiles.Contains(curTile) && !specialSelectedTiles.Contains(curTile)) {
+			if(!bombMarkTiles.Contains(curTile) && !specialSelectedTiles.Contains(curTile)) {
 				bombMarkTiles.Add(curTile);
 				curTile.GetTileItem().Mark(true);
 
