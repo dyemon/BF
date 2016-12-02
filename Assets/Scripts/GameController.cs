@@ -315,7 +315,8 @@ public class GameController : MonoBehaviour {
 				if(bombTile != null && lastTile == bombTile) {
 					bombTile = null;
 					ResetBombMark();
-				} else if(bombTile != null) {
+				} else if(bombTile != null && !suspendBomb) {
+					ResetBombMark();
 					ExchangeTileItem(lastTile, tile);
 					tile.GetTileItem().Select(null);
 					lastTile.GetTileItem().UnSelect(TileItemRenderState.Normal);
@@ -323,7 +324,11 @@ public class GameController : MonoBehaviour {
 					if(selectedTiles.Count > 1) {
 						tile.GetTileItem().SetTransitionTileItem(selectedTiles.Last.Previous.Value.GetTileItem());
 					}
-					ResetBombMark();
+
+					MarkBombTiles(tile);
+				}
+				if(suspendBomb && tile.GetTileItem().IsBomb) {
+					suspendBomb = false;
 					MarkBombTiles(tile);
 				}
 				return;
@@ -340,14 +345,19 @@ public class GameController : MonoBehaviour {
 
 			SelectTileItem(tile, true, TileItemRenderState.HighLight, lastTile.GetTileItem());
 
-			if(bombTile != null && bombTile != tile) {
+			if(bombTile != null && !tile.GetTileItem().IsNotStatic) {
+				suspendBomb = true;
+				ResetBombMark();
+			} else if(bombTile != null && bombTile != tile && !suspendBomb) {
+				ResetBombMark();
+			
 				ExchangeTileItem(lastTile, tile);
 				lastTile.GetTileItem().SetTransitionTileItem(null);
 				tile.GetTileItem().SetTransitionTileItem(lastTile.GetTileItem());
 				if(predLastTile != null) {
 					lastTile.GetTileItem().SetTransitionTileItem(predLastTile.GetTileItem());
 				} 
-				ResetBombMark();
+
 				MarkBombTiles(tile);
 			} else if(bombTile == null && tile.GetTileItem().IsBomb) {
 				bombTile = tile;
@@ -393,6 +403,7 @@ public class GameController : MonoBehaviour {
 				Tile prevTile = node.Previous.Value;
 				if(prevTile != null) {
 					prevTile.GetTileItem().UnSelect(TileItemRenderState.Normal);
+					prevTile.GetTileItem().Mark(false);
 					ExchangeTileItem(curTile, prevTile);
 				}
 			} else if(bombTile != null && curTile == bombTile ) {
@@ -443,12 +454,13 @@ public class GameController : MonoBehaviour {
 			if(tile.GetTileItem() == null) {
 				continue;
 			}
+			bool isNotStatic = tile.GetTileItem().IsNotStatic;
 			CollectTileItem(tile);
-			if(BreakTileItems(tile.X, tile.Y, 1, true)) {
+			if(BreakTileItems(tile.X, tile.Y, 1, isNotStatic)) {
 				isDetectAvaliable = true;
 			}
 
-			if(BreakBarriers(tile.X, tile.Y, 1)) {
+			if(isNotStatic && BreakBarriers(tile.X, tile.Y, 1)) {
 				isDetectAvaliable = true;
 			}
 		}
@@ -464,9 +476,9 @@ public class GameController : MonoBehaviour {
 		bombMarkTiles.Clear();
 		bombTile = null;
 
-		if(isDetectAvaliable) {
+	//	if(isDetectAvaliable) {
 			DetectUnavaliableTiles();
-		}
+	//	}
 
 		if(onMoveComplete != null) {
 			onMoveComplete();
@@ -543,10 +555,10 @@ public class GameController : MonoBehaviour {
 		TileItem tileItem = Preconditions.NotNull(tile.GetTileItem(), "Tile Item {0} {1} can not be null", tile.X, tile.Y);
 
 		if(isSelect) {
-			if(bombMarkTiles.Contains(tile)) {
+			/*if(bombMarkTiles.Contains(tile)) {
 				tileItem.Mark(false);
 				bombMarkTiles.Remove(tile);
-			}
+			}*/
 			tileItem.Select(transitionTileItem);
 			if(!tile.GetTileItem().IsSpecialCollect) {
 				selectedTiles.AddLast(tile);
@@ -628,7 +640,7 @@ public class GameController : MonoBehaviour {
 			if(tile == null || tile.GetTileItem() == null) {
 				continue;
 			}
-			if(breakAround && (tile.X != x || tile.Y != y) && !CheckAvailabilityWithBarriers(x, y, tile.X, tile.Y)) {
+			if(breakAround && !CheckAvailabilityWithBarriers(x, y, tile.X, tile.Y)) {
 				continue;
 			}
 
@@ -1800,7 +1812,8 @@ public class GameController : MonoBehaviour {
 				curTile.GetTileItem().Mark(true);
 
 				if((curTile.GetTileItem().IsBomb || curTile.GetTileItem().IsBombAll) && !tileItem.IsBombAll) {
-					if((curTile.GetTileItem().IsBombH && tileItem.IsBombH) || (curTile.GetTileItem().IsBombV && tileItem.IsBombV)) {
+					if(((curTile.GetTileItem().IsBombH && tileItem.IsBombH) || (curTile.GetTileItem().IsBombV && tileItem.IsBombV))
+						&& (curTile.GetTileItem().Type != tileItem.Type)) {
 						RotateBomb(curTile);
 						rotaitedBombs.Add(curTile);
 						curTile.GetTileItem().Mark(true);

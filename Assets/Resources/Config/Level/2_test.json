@@ -70,28 +70,23 @@
         }, {
             "X": 4, 
             "Y": 3, 
-			"Level": 3,
             "TypeAsString": "Blue"
+        },{
+            "X": 2, 
+            "Y": 0, 
+            "TypeAsString": "Red"
         },{
             "X": 4, 
             "Y": 4, 
-            "TypeAsString": "Blue",
-			"ParentTileItemData": {
-				"Health": 4,
-				"TypeAsString": "StaticSlime_2"
-			}
+            "TypeAsString": "Static_2"
         },{
             "X": 4, 
             "Y": 5, 
-            "TypeAsString": "Blue",
-			"ParentTileItemData": {
-				"Health": 4,
-				"TypeAsString": "StaticSlime_2"
-			}
+            "TypeAsString": "Static_2"
         }, {
             "X": 3, 
             "Y": 5, 
-			"Health": 1,
+			"Health": 2,
             "TypeAsString": "StaticSlime_1",
 			"ChildTileItemData": {
 				"TypeAsString": "RedBombH",
@@ -164,6 +159,12 @@
             "X1": 3, 
             "Y1": 4, 
             "X2": 3, 
+            "Y2": 5, 
+            "TypeAsString": "Barrier_2"
+        }, {
+            "X1": 4, 
+            "Y1": 5, 
+            "X2": 5, 
             "Y2": 5, 
             "TypeAsString": "Barrier_2"
         }], 
