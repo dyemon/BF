@@ -1,39 +1,15 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/GameController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/App.cs">
     <Files>
-      <File FileName="Assets/Scripts/GameController.cs" Line="1737" Column="37" />
-      <File FileName="Assets/Scripts/Tile/BreakableTileItemController.cs" Line="17" Column="4" />
-      <File FileName="Assets/Resources/Config/Level/2_test.json" Line="75" Column="19" />
-      <File FileName="Assets/Scripts/Tile/Slime.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Model/BarrierData.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Tile/TileItemType.cs" Line="47" Column="15" />
-      <File FileName="Assets/Scripts/Model/ChildTileItemData.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Model/LevelData.cs" Line="18" Column="21" />
-      <File FileName="Assets/Scripts/Tile/Generator.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/App.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Tile/TileItemMoveType.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Common/Animation/AnimatedObject.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Common/Animation/AnimationGroup.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Model/TileItemData.cs" Line="13" Column="48" />
-      <File FileName="Assets/Scripts/Tile/TileItem.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Tile/Tile.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Tile/TileItemController.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/GameController.cs" Line="887" Column="4" />
+      <File FileName="Assets/Scripts/Tile/Tile.cs" Line="22" Column="10" />
+      <File FileName="Assets/Resources/Config/Level/2_test.json" Line="62" Column="19" />
+      <File FileName="Assets/Scripts/App.cs" Line="36" Column="12" />
     </Files>
-    <Pads>
-      <Pad Id="MonoDevelop.Debugger.WatchPad">
-        <State>
-          <Value>bombMarkTiles</Value>
-        </State>
-      </Pad>
-    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore>
-      <Breakpoint file="/home/dm/unity/BF/Assets/Scripts/GameController.cs" line="459" column="19" />
-      <Breakpoint file="/home/dm/unity/BF/Assets/Scripts/GameController.cs" line="465" column="1" />
-      <Breakpoint file="/home/dm/unity/BF/Assets/Scripts/GameController.cs" line="413" column="1" />
-    </BreakpointStore>
+    <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>
     <Watch file="Assets/Scripts/Resource/GameResources.cs" line="13" offsetX="822" offsetY="264" expression="aText.text" liveUpdate="False" />

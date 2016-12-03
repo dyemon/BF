@@ -18,11 +18,11 @@ public class Tile : ICloneable {
 		return type != TileType.UnavaliableForDrop;
 	}
 
-	public bool IsAvaliable {
-		get {
-			return IsAvaliableForDropTile(Type) && (tileItem == null || tileItem.IsNotStatic);
-		}
-	}
+//	public bool IsAvaliable {
+//		get {
+//			return IsAvaliableForDropTile(Type) && (tileItem == null || tileItem.IsNotStatic);
+//		}
+//	}
 	public bool IsAvaliableForDrop {
 		get {
 			return IsAvaliableForDropTile(Type);

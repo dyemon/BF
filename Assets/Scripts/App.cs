@@ -12,7 +12,7 @@ public class App {
 
 	static App() {
 		tileItemMoveType.Add(TileItemMoveType.DOWN, 10f);
-		tileItemMoveType.Add(TileItemMoveType.OFFSET, 15f);
+		tileItemMoveType.Add(TileItemMoveType.OFFSET, 10f);
 		tileItemMoveType.Add(TileItemMoveType.MIX, 30f);
 		tileItemMoveType.Add(TileItemMoveType.HERO_DROP, 10f);
 		tileItemMoveType.Add(TileItemMoveType.GENERATED_TILEITEM_DROP, 5f);

@@ -476,9 +476,9 @@ public class GameController : MonoBehaviour {
 		bombMarkTiles.Clear();
 		bombTile = null;
 
-	//	if(isDetectAvaliable) {
+		if(isDetectAvaliable) {
 			DetectUnavaliableTiles();
-	//	}
+		}
 
 		if(onMoveComplete != null) {
 			onMoveComplete();
@@ -751,12 +751,8 @@ public class GameController : MonoBehaviour {
 				Tile tile = tiles[x, y];
 				tile.Type = TileType.Avaliable;
 
-			//	if(tile.GetTileItem() == null || !tile.GetTileItem().IsNotStatic()) {
-			//		continue;
-			//	}
-			//	tile.Type = TileType.Unavaliable;
-			//	continue;
 				if(tile.GetTileItem() != null && !tile.GetTileItem().IsNotStatic) {
+					tile.Type = TileType.UnavaliableForDrop;
 					continue;
 				}
 
@@ -770,16 +766,16 @@ public class GameController : MonoBehaviour {
 
 				if(!av1 && !av2 && !av3) {
 					tile.Type = TileType.UnavaliableForDrop;
-			//		InstantiateTileItem(TileItemType.Brilliant, x, y, true);
+	//				InstantiateTileItem(TileItemType.Brilliant, x, y, true);
 					continue;
 				}
 
-				if((x == 0 || (left != null && !left.IsAvaliable) )
-					&& (center != null && !center.IsAvaliable ) 
-					&& ((x == numColumns - 1) || right != null && !right.IsAvaliable)) 
+				if((x == 0 || (left != null && !left.IsAvaliableForDrop) || !av1)
+					&& ((center != null && !center.IsAvaliableForDrop ) || !av2)
+					&& ((x == numColumns - 1) || (right != null && !right.IsAvaliableForDrop) || !av3)) 
 				{
 					tile.Type = TileType.UnavaliableForDrop;
-			//		InstantiateTileItem(TileItemType.Brilliant, x, y, true);
+	//				InstantiateTileItem(TileItemType.Brilliant, x, y, true);
 				} 
 			}
 		}	
@@ -886,10 +882,11 @@ public class GameController : MonoBehaviour {
 
 		while(UpdateTilesColumns()) {
 			ResetTileColumnAvalibleForOffset();
-			UpdateTilesWithOffset();
+			UpdateTilesWithOffset(true);
 			ResetTileItemMoved();
 		}
-			
+		UpdateTilesWithOffset(false);
+
 		RunTileItemsAnimation(OnTileItemUpdateComplete, true);
 	}
 
@@ -1038,12 +1035,15 @@ public class GameController : MonoBehaviour {
 		return res;
 	}
 
-	private void UpdateTilesWithOffset() {
+	private void UpdateTilesWithOffset(bool oneOffset) {
 		bool res = true;
 		while(res) {
 			res = false;
 			for(int y = 0; y < numRows - 1; y++) {
 				res = UpdateTilesWithOffsetRow(y) || res;
+			}
+			if (oneOffset) {
+				break;
 			}
 		}
 	}
