@@ -8,6 +8,7 @@ public class Tile : ICloneable {
 	public int Y { get; set; }
 
 	private TileItem tileItem;
+	private GameObject bombMarkGO;
 
 	public Tile(int x, int y) {
 		this.X = x;
@@ -82,4 +83,12 @@ public class Tile : ICloneable {
 		}
 	}
 		
+	public void SetBombMarkGO(GameObject bMark) {
+		bombMarkGO = bMark;
+	}
+
+	public void MarkBomb(bool mark) {
+		Preconditions.NotNull(bombMarkGO, "Game object for bomb mark can not be null ");
+		bombMarkGO.active = mark;
+	}
 }

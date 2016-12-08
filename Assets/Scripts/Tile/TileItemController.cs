@@ -4,6 +4,9 @@ using System.Collections;
 public class TileItemController : MonoBehaviour {
 
 	public Sprite HighLightSprite;
+	public Sprite RotateSprite;
+	public Sprite RotateHighLightSprite;
+
 	public ParticleSystem TransitionPS;
 
 	protected SpriteRenderer render;
@@ -15,6 +18,7 @@ public class TileItemController : MonoBehaviour {
 	private TileItemRenderState currentRenderState = TileItemRenderState.Normal;
 	private ParticleSystem transitionPS;
 	private bool isMark = false;
+	private bool isRotate = false;
 
 	protected virtual void Start () {
 		render = GetComponent<SpriteRenderer>();
@@ -26,9 +30,9 @@ public class TileItemController : MonoBehaviour {
 		if(currentRenderState != TileItemRenderState.Normal) {
 			SetRenderState(currentRenderState);
 		}
-		if(isMark) {
+	/*	if(isMark) {
 			Mark(true);	
-		}
+		}*/
 
 		if(TransitionPS != null) {
 			transitionPS = Instantiate(TransitionPS);
@@ -43,9 +47,11 @@ public class TileItemController : MonoBehaviour {
 		Preconditions.NotNull(markMaterial, "Can not load Mark material");
 	}
 
-	// Update is called once per frame
-	void Update () {
-	
+	private Sprite GetSourceSprite() {
+		return (isRotate)? RotateSprite : sourceSprite;
+	}
+	private Sprite GetHighLightSprite() {
+		return (isRotate)? RotateHighLightSprite : HighLightSprite;
 	}
 
 	public void SetRenderState(TileItemRenderState state) {
@@ -56,11 +62,11 @@ public class TileItemController : MonoBehaviour {
 		}
 
 		if(state == TileItemRenderState.Normal) {
-			renderNormal();
+			RenderNormal();
 		} else if(state == TileItemRenderState.HighLight) {
-			renderHighLight();
+			RenderHighLight();
 		} else if(state == TileItemRenderState.Dark) {
-			renderDark();
+			RenderDark();
 		}
 	}
 
@@ -78,22 +84,23 @@ public class TileItemController : MonoBehaviour {
 		}		
 	}
 
-	virtual protected void renderNormal() {
+	virtual protected void RenderNormal() {
 		render.color = sourceColor;
-		render.sprite = sourceSprite;
+		render.sprite = GetSourceSprite();
 	}
 
-	virtual protected void renderDark() {
+	virtual protected void RenderDark() {
 		render.color = darkColor;
 	}
 
-	virtual protected void renderHighLight() {
-		if(HighLightSprite != null) {
-			render.sprite = HighLightSprite;
+	virtual protected void RenderHighLight() {
+		Sprite hl = GetHighLightSprite();
+		if(hl != null) {
+			render.sprite = hl;
 		}
 		render.color = sourceColor;
 	}
-
+	/*
 	virtual public void Mark(bool isMark) {
 		this.isMark = isMark;
 			
@@ -101,7 +108,7 @@ public class TileItemController : MonoBehaviour {
 			render.material = (isMark) ? markMaterial : sourceMaterial;
 		}
 	}
-
+	*/
 	virtual public int Damage(int damage) {
 		return 1;
 	}
@@ -114,4 +121,12 @@ public class TileItemController : MonoBehaviour {
 		return true;
 	}
 		
+	public void Rotate() {
+		if(RotateHighLightSprite == null || RotateSprite == null ) {
+			return;
+		}
+
+		isRotate = !isRotate;
+		SetRenderState(currentRenderState);
+	}
 }

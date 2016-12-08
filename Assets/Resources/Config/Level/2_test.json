@@ -2,7 +2,7 @@
     "Id": "2", 
     "Name": "Level 2",
     "Description": "",
-    "SuccessCount": 3, 
+    "SuccessCount": 10, 
     "TileItemDropPercent": [20, 20, 20, 20, 20],
 	"SlimeRatio": 1,
 
@@ -58,12 +58,7 @@
 			"Level": 2,
             "TypeAsString": "RedBombH"
         }, {
-            "X": 0, 
-            "Y": 3, 
-			"Level": 2,
-            "TypeAsString": "RedBombH"
-        }, {
-            "X": 2, 
+            "X": 4, 
             "Y": 3, 
 			"Level": 2,
             "TypeAsString": "Blue"
@@ -73,7 +68,7 @@
 			"Level": 3,
             "TypeAsString": "BlueBombV"
         }, {
-            "X": 4, 
+            "X": 2, 
             "Y": 3, 
             "TypeAsString": "Blue"
         },{
@@ -83,11 +78,19 @@
         },{
             "X": 4, 
             "Y": 4, 
-            "TypeAsString": "Static_2"
+            "TypeAsString": "Blue",
+			"ParentTileItemData": {
+				"Health": 4,
+				"TypeAsString": "StaticSlime_2"
+			}
         },{
             "X": 4, 
             "Y": 5, 
-            "TypeAsString": "Static_2"
+            "TypeAsString": "Blue",
+			"ParentTileItemData": {
+				"Health": 4,
+				"TypeAsString": "StaticSlime_2"
+			}
         }, {
             "X": 3, 
             "Y": 5, 
@@ -101,7 +104,7 @@
             "X": 4, 
             "Y": 6, 
 			"Level": 3,
-            "TypeAsString": "BlueEnvelop"
+            "TypeAsString": "Blue"
         },{
             "X": 1, 
             "Y": 3, 
@@ -125,6 +128,12 @@
             "Y2": 1, 
             "TypeAsString": "Barrier_1"
         }, {
+            "X1": 1, 
+            "Y1": 2, 
+            "X2": 1, 
+            "Y2": 3, 
+            "TypeAsString": "Barrier_2"
+        }, {
             "X1": 2, 
             "Y1": 2, 
             "X2": 3, 
@@ -141,7 +150,7 @@
             "Y1": 2, 
             "X2": 3, 
             "Y2": 3, 
-            "TypeAsString": "Barrier_2"
+            "TypeAsString": "Barrier_3"
         }, {
             "X1": 4, 
             "Y1": 2, 
@@ -158,12 +167,6 @@
             "X1": 3, 
             "Y1": 4, 
             "X2": 3, 
-            "Y2": 5, 
-            "TypeAsString": "Barrier_2"
-        }, {
-            "X1": 2, 
-            "Y1": 4, 
-            "X2": 2, 
             "Y2": 5, 
             "TypeAsString": "Barrier_2"
         }, {

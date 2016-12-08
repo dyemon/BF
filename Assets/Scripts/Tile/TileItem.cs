@@ -43,10 +43,11 @@ public class TileItem {
 		Level = 1;
 	}
 
-	public static bool IsNotStaticItem(TileItemType type) {
-		return IsNotStaticItem(TypeToTypeGroup(type));
+	public static bool IsNotStaticItem(TileItemData data) {
+		return data.HasParent() ? IsNotStaticItem(data.ParentTileItemData.Type) : IsNotStaticItem(data.Type);
 	}
-	public static bool IsNotStaticItem(TileItemTypeGroup typeGroup) {
+	private static bool IsNotStaticItem(TileItemType type) {
+		TileItemTypeGroup typeGroup = TypeToTypeGroup(type);
 		return typeGroup != TileItemTypeGroup.Static && typeGroup != TileItemTypeGroup.Box && typeGroup != TileItemTypeGroup.SpecialStatic;
 	}
 	public bool IsNotStatic {
@@ -56,22 +57,19 @@ public class TileItem {
 	}
 
 	public static bool IsBoxItem(TileItemType type) {
-		return IsBoxItem(TypeToTypeGroup(type));
-	}
-	public static bool IsBoxItem(TileItemTypeGroup typeGroup) {
-		return typeGroup == TileItemTypeGroup.Box;
+		return TypeToTypeGroup(type) == TileItemTypeGroup.Box;
 	}
 	public bool IsBox {
 		get {return IsBoxItem(type);}
 	}
 
 
-	private void SetType(TileItemTypeGroup typeGroup, int index) {
+	public void SetType(TileItemTypeGroup typeGroup, int index) {
 		this.typeGroup = typeGroup;
 		type = (TileItemType)(typeGroup + index);
 	}
 
-	private void SetType(TileItemType type) {
+	public void SetType(TileItemType type) {
 		this.type = type;
 		this.typeGroup = TypeToTypeGroup(type);
 	}
@@ -248,23 +246,19 @@ public class TileItem {
 		}
 	}
 
-	public static bool IsRepositionItem(TileItemType type) {
+	public static bool IsRepositionItem(TileItemData data) {
+		return data.HasParent() ? IsRepositionItem(data.ParentTileItemData.Type) : IsRepositionItem(data.Type);
+	} 
+	private static bool IsRepositionItem(TileItemType type) {
 		return IsNotStaticItem(type) && type != TileItemType.BombAll;
 	} 
-
 	public bool IsReposition {
 		get {
-			return IsRepositionItem(type);
+			return parentTileItem != null ? IsRepositionItem(parentTileItem.Type) : IsRepositionItem(Type);
 		}
 	}
-	/*
-	public bool IsBrilliant {
-		get { 
-			type == TileItemType.Brilliant;
-		}
-	}*/
 		
-	virtual public int Damage(int damage) {
+	public int Damage(int damage) {
 		return (itemController == null)? 1 : itemController.Damage(damage);
 	}
 
@@ -283,12 +277,12 @@ public class TileItem {
 
 		return new TileItem(type, go);
 	}
-
+	/*
 	public void Mark(bool isMark) {
 		if(itemController != null) {
 			itemController.Mark(isMark);
 		}
-	}
+	}*/
 
 	public int GetEnvelopReplaceItemCount() {
 		Preconditions.Check(Level > 0, "Level of envelop must be greater zero");
@@ -324,5 +318,11 @@ public class TileItem {
 
 	public TileItemData GenerateTileItemData() {
 		return null;
+	}
+
+	public void Rotate() {
+		if(itemController != null) {
+			itemController.Rotate();
+		}
 	}
 }

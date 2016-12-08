@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour {
 	public event OnMoveComplete onMoveComplete;
 
 	public static readonly int DEFAULT_TILEITEM_SORTING_ORDER = 10;
+	public static readonly int BOMB_MARK_SORTING_ORDER = 20;
 
 	private int numColumns;
 	private int numRows;
@@ -27,7 +28,10 @@ public class GameController : MonoBehaviour {
 	public GameObject[] tileItemsBox;
 	public GameObject[] barrierItems;
 
+	public GameObject bombMark;
+
 	private AnimationGroup animationGroup;
+
 
 	private Tile[,] tiles;
 	private LinkedList<Tile> selectedTiles = new LinkedList<Tile>();
@@ -329,7 +333,6 @@ public class GameController : MonoBehaviour {
 				}
 				if(suspendBomb && tile.GetTileItem().IsBomb) {
 					suspendBomb = false;
-					MarkBombTiles(tile);
 				}
 				return;
 			}
@@ -347,7 +350,6 @@ public class GameController : MonoBehaviour {
 
 			if(bombTile != null && !tile.GetTileItem().IsNotStatic) {
 				suspendBomb = true;
-				ResetBombMark();
 			} else if(bombTile != null && bombTile != tile && !suspendBomb) {
 				ResetBombMark();
 			
@@ -399,11 +401,11 @@ public class GameController : MonoBehaviour {
 			Tile curTile = node.Value;
 			curTile.GetTileItem().UnSelect(TileItemRenderState.Normal);
 
-			if(bombTile != null && curTile != bombTile ) {
+			if(bombTile != null && curTile != bombTile && curTile.GetTileItem().IsBomb) {
 				Tile prevTile = node.Previous.Value;
 				if(prevTile != null) {
 					prevTile.GetTileItem().UnSelect(TileItemRenderState.Normal);
-					prevTile.GetTileItem().Mark(false);
+					prevTile.MarkBomb(false);
 					ExchangeTileItem(curTile, prevTile);
 				}
 			} else if(bombTile != null && curTile == bombTile ) {
@@ -431,17 +433,23 @@ public class GameController : MonoBehaviour {
 
 		bool isDetectAvaliable = false;
 		SetTileItemsRenderState(TileItemRenderState.Normal, null);
-
+		/*
 		if(bombMarkTiles.Count > 1) {
 			if(BreakBarriersByBomb(5)) {
 				isDetectAvaliable = true;
 			}
-		}
+		}*/
 		foreach(Tile tile in bombMarkTiles) {
+			tile.MarkBomb(false);
+			bool isNotStatic = tile.IsEmpty || tile.GetTileItem().IsNotStatic;
+			if(isNotStatic && BreakBarriers(tile.X, tile.Y, 5)) {
+				isDetectAvaliable = true;
+			}
+
 			if(tile.GetTileItem() == null) {
 				continue;
 			}
-			tile.GetTileItem().Mark(false);
+
 			if((tile.GetTileItem().IsColor || tile.GetTileItem().IsSpecialCollect || tile.GetTileItem().IsBreakableOnlyByBomb )) {
 				CollectTileItem(tile);
 			}
@@ -449,7 +457,9 @@ public class GameController : MonoBehaviour {
 				isDetectAvaliable = true;
 			}
 				
+		
 		}
+
 		foreach(Tile tile in selectedTiles) {
 			if(tile.GetTileItem() == null) {
 				continue;
@@ -895,6 +905,10 @@ public class GameController : MonoBehaviour {
 			for(int y = 0; y < numRows; y++) {
 				if(tiles[x, y] == null) {
 					tiles[x, y] = new Tile(x, y);
+					GameObject go = (GameObject)Instantiate(bombMark, IndexToPosition(x, y), Quaternion.identity);
+					go.GetComponent<SpriteRenderer>().sortingOrder = BOMB_MARK_SORTING_ORDER;
+					go.active = false;
+					tiles[x, y].SetBombMarkGO(go);
 				}
 			}
 		}
@@ -1345,7 +1359,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void CheckConsistency() {
-		TileItemTypeGroup? group = CheckTileItemSameColorCount(true);
+		TileItemTypeGroup? group = CheckTileItemSameColorCount(false);
 		if(group == null) {
 			LevelFailureByColorCount();
 			return;
@@ -1357,7 +1371,7 @@ public class GameController : MonoBehaviour {
 		int i = 0;
 		while(!CheckTileItemsPosition(data) ) {
 			validPosition = false;
-			if(i++ > 0) {
+			if(i++ > 100) {
 				data = RepositionTileItemsBySuccessPath();
 				if(data == null) {
 					LevelFailureByColorCount();
@@ -1379,7 +1393,7 @@ public class GameController : MonoBehaviour {
 		IsTileInputAvaliable = true;
 	}
 
-	private TileItemTypeGroup? CheckTileItemSameColorCount(bool applyEnvelop) {
+	private TileItemTypeGroup? CheckTileItemSameColorCount(bool strict) {
 		IDictionary<TileItemTypeGroup, TileItemSameColorCount> items = new Dictionary<TileItemTypeGroup, TileItemSameColorCount>();
 		TileItemTypeGroup maxCountType = TileItemTypeGroup.Red;
 		int maxCount = 0;
@@ -1390,13 +1404,16 @@ public class GameController : MonoBehaviour {
 				if(!tile.IsColor) {
 					continue;
 				}
+				if(strict && !tile.GetTileItem().IsReposition) {
+					continue;
+				}
 
 				TileItemTypeGroup tg = tile.GetTileItem().TypeGroup;
 				if(!items.ContainsKey(tg)) {
 					items.Add(tg, new TileItemSameColorCount(tg));
 				}
 				int count = items[tg].Increment();
-				if(applyEnvelop && tile.GetTileItem().IsEnvelop) {
+				if(!strict && tile.GetTileItem().IsEnvelop) {
 					count += tile.GetTileItem().GetEnvelopReplaceItemCount() ;
 				}
 					
@@ -1412,46 +1429,8 @@ public class GameController : MonoBehaviour {
 		}
 			
 		return null;
-
-		/*
-		Debug.Log("CheckTileItemSameColorCount " + maxCount + " " + maxCountType);
-
-		maxCount = items.ContainsKey(maxCountType) ? items[maxCountType].GetItemCount() : 0;
-		int success = levelData.SuccessCount - maxCount;
-		for(int x = 0; x < numColumns; x++) {
-			for(int y = 0; y < numRows; y++) {
-				Tile tile = tiles[x, y];
-				bool avaliable = (colorOnly) ? tile.IsColor : tile.IsAvaliable;
-				if(!avaliable) {
-					continue;
-				}
-
-				if(!tile.IsEmpty && tile.GetTileItem().TypeGroup == maxCountType) {
-					continue;
-				}
-
-				RecolorTileItem(tile, maxCountType);
-				success--;
-				if(success == 0) {
-					return false;
-				}
-			}
-		}
-
-		if(colorOnly) {
-			return null;
-		}
-
-		throw new LevelConfigException("Can not instantiate " + levelData.SuccessCount + " items same color");
-		*/
 	}
-	/*
-	private void RecolorTileItem(Tile tile, TileItemTypeGroup type) {
-		int tileItemIndex = TileItem.TypeToIndex(tile.GetTileItem().Type);
-		ClearTile(tile);
-		tile.SetTileItem(InstantiateTileItem((TileItemType)(type + tileItemIndex), tile.X, tile.Y, true));
-	}
-*/
+
 	private TileItemData[,] GenerateTileItemDataFromCurrentTiles() {
 		TileItemData[,] res = new TileItemData[numColumns, numRows];
 
@@ -1479,7 +1458,7 @@ public class GameController : MonoBehaviour {
 
 		for(int x = 0; x < numColumns; x++) {
 			for(int y = 0; y < numRows; y++) {
-				if(TileItem.IsRepositionItem(data[x, y].Type)) {
+				if(TileItem.IsRepositionItem(data[x, y])) {
 					avaliableItems.Add(data[x, y]);
 					positions.Add(new Vector2(x, y));
 				}
@@ -1504,7 +1483,7 @@ public class GameController : MonoBehaviour {
 		for(int x = 0; x < numColumns; x++) {
 			for(int y = 0; y < numRows; y++) {
 				TileItemData itemData = data[x, y];
-				if(!TileItem.IsRepositionItem(itemData.Type) || (x == itemData.X && y == itemData.Y)) {
+				if(!TileItem.IsRepositionItem(itemData) || (x == itemData.X && y == itemData.Y)) {
 					continue;
 				}
 
@@ -1622,7 +1601,7 @@ public class GameController : MonoBehaviour {
 			}
 		}
 
-		TileItemTypeGroup? maxTypeGroup = CheckTileItemSameColorCount(false);
+		TileItemTypeGroup? maxTypeGroup = CheckTileItemSameColorCount(true);
 		if(maxTypeGroup == null) {
 			return null;
 		}
@@ -1633,7 +1612,7 @@ public class GameController : MonoBehaviour {
 		for(int x = 0; x < numColumns; x++) {
 			for(int y = 0; y < numRows; y++) {	
 				TileItemData tid = data[x, y];
-				if(tid == null || !TileItem.IsColorItem(tid.Type)) {
+				if(tid == null || !TileItem.IsColorItem(tid.Type) || !TileItem.IsRepositionItem(tid)) {
 					continue;
 				}
 
@@ -1743,7 +1722,7 @@ public class GameController : MonoBehaviour {
 			if(rotaitedBombs.Contains(tile)) {
 				RotateBomb(tile);
 			}
-			tile.GetTileItem().Mark(false);
+			tile.MarkBomb(false);
 		}
 
 		rotaitedBombs.Clear();
@@ -1803,20 +1782,22 @@ public class GameController : MonoBehaviour {
 		foreach(Vector2 pos in positions) {
 			Tile curTile = GetTile(pos);
 
-			if(curTile == null || curTile.GetTileItem() == null) {
+			if(curTile == null) {
 				continue;
 			}
 				
 			if(!bombMarkTiles.Contains(curTile) && !specialSelectedTiles.Contains(curTile)) {
 				bombMarkTiles.Add(curTile);
-				curTile.GetTileItem().Mark(true);
+				curTile.MarkBomb(true);
+
+				if(curTile.GetTileItem() == null) {
+					continue;
+				}
 
 				if((curTile.GetTileItem().IsBomb || curTile.GetTileItem().IsBombAll) && !tileItem.IsBombAll) {
-					if(((curTile.GetTileItem().IsBombH && tileItem.IsBombH) || (curTile.GetTileItem().IsBombV && tileItem.IsBombV))
-						&& (curTile.GetTileItem().Type != tileItem.Type)) {
+					if(((curTile.GetTileItem().IsBombH && tileItem.IsBombH) || (curTile.GetTileItem().IsBombV && tileItem.IsBombV))) {
 						RotateBomb(curTile);
 						rotaitedBombs.Add(curTile);
-						curTile.GetTileItem().Mark(true);
 					}
 					MarkBombTiles(curTile);
 				}
@@ -1825,15 +1806,12 @@ public class GameController : MonoBehaviour {
 	}
 
 	public void RotateBomb(Tile tile) {
-		TileItemTypeGroup group = tile.GetTileItem().TypeGroup;
-		TileItemType type = (TileItemType)((int)group + ((tile.GetTileItem().IsBombH) ? TileItem.BOMBV_OFFSET : TileItem.BOMBH_OFFSET));
-		int level = tile.GetTileItem().Level;
+		TileItem tileItem = tile.GetTileItem();
+		TileItemTypeGroup group = tileItem.TypeGroup;
+		TileItemType type = (TileItemType)((int)group + ((tileItem.IsBombH) ? TileItem.BOMBV_OFFSET : TileItem.BOMBH_OFFSET));
 
-		ClearTile(tile);
-
-		TileItem ti = InstantiateTileItem(type, tile.X, tile.Y, true);
-		ti.Level = level;
-		tile.SetTileItem(ti);
+		tileItem.Rotate();
+		tileItem.SetType(type);
 	}
 
 	public void RotateBombs() {
