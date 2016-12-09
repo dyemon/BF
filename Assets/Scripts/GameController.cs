@@ -104,7 +104,7 @@ public class GameController : MonoBehaviour {
 		InitControllers();
 
 		DetectUnavaliableTiles();
-		UpdateTiles();
+		UpdateTiles(true);
 	}
 	// Update is called once per frame
 	void Update() {
@@ -456,8 +456,6 @@ public class GameController : MonoBehaviour {
 			if(BreakTileItems(tile.X, tile.Y, 5, false)) {
 				isDetectAvaliable = true;
 			}
-				
-		
 		}
 
 		foreach(Tile tile in selectedTiles) {
@@ -500,7 +498,7 @@ public class GameController : MonoBehaviour {
 			LevelFailure();
 		}
 
-		UpdateTiles();
+		UpdateTiles(true);
 	}
 
 	private bool BreakBarriersByBomb(int damage) {
@@ -858,11 +856,17 @@ public class GameController : MonoBehaviour {
 
 	private void OnTileItemUpdateComplete(bool first) {
 		if(first) {
+			animationGroup.Clear();
+
 			UpdateSlime();
 			UpdateTileItemsByGenerators();
 			TileItemData data = GetHeroItemData();
 			if(data != null) {
-				RunHeroItemAnimation(data);
+				InitHeroItemAnimation(data);
+			}
+
+			if(animationGroup.AnimationExist()) {
+				animationGroup.Run(OnTileItemUpdateComplete, false);
 				return;
 			}
 		}
@@ -880,14 +884,17 @@ public class GameController : MonoBehaviour {
 		OnTileItemUpdateComplete(false);
 	}
 
-	private void UpdateTiles() {
+	private void UpdateTiles(bool first) {
 		IsTileInputAvaliable = false;
 		ResetTileItemSpawnDelay();
-		dropedTileItemsCount = 0;
-		autoDropTileItems.ReseteDroped();
 
-		if(dropRequire.Count > 0 && collectedTileItemsCount > 1) {
-			autoDropOnCollectIndex = Random.Range(0, collectedTileItemsCount - 1);
+		if(first) {
+			dropedTileItemsCount = 0;
+			autoDropTileItems.ReseteDroped();
+
+			if(dropRequire.Count > 0 && collectedTileItemsCount > 1) {
+				autoDropOnCollectIndex = Random.Range(0, collectedTileItemsCount - 1);
+			}
 		}
 
 		while(UpdateTilesColumns()) {
@@ -897,7 +904,7 @@ public class GameController : MonoBehaviour {
 		}
 		UpdateTilesWithOffset(false);
 
-		RunTileItemsAnimation(OnTileItemUpdateComplete, true);
+		RunTileItemsAnimation(OnTileItemUpdateComplete, first);
 	}
 
 	private void InitTiles() {
@@ -1156,8 +1163,8 @@ public class GameController : MonoBehaviour {
 		}
 	}
 
-	private void ClearTile(Tile tile) {
-		if(tile.GetTileItemGO() != null) {
+	private void ClearTile(Tile tile, bool destroy = true) {
+		if(destroy && tile.GetTileItemGO() != null) {
 			Destroy(tile.GetTileItemGO());
 		}
 		tile.SetTileItem(null);
@@ -1174,34 +1181,33 @@ public class GameController : MonoBehaviour {
 		return null;
 	}
 
-	private void RunHeroItemAnimation(TileItemData itemData) {
+	private void InitHeroItemAnimation(TileItemData itemData) {
 		IList<Tile> avaliableTiles = new List<Tile>();
 
 		for(int x = 0;x < numColumns;x++) {
 			Tile tile = tiles[x, numRows - 1];
-			if(tile.IsSimple) {
+			if(tile.IsSimple && tile.GetTileItem().IsNotStatic) {
 				avaliableTiles.Add(tile);
 			}
 		}
 
 		if(avaliableTiles.Count == 0) {
-			CheckConsistency();
 			return;
 		}
-
-		animationGroup.Clear();
-
+			
 		TileItem ti = InstantiateTileItem(itemData.Type, itemData.X, itemData.Y, false);
 		ti.Level = itemData.Level;
 		Tile dest = avaliableTiles[Random.Range(0, avaliableTiles.Count)];
 
 		AnimatedObject ao = ti.GetGameObject().GetComponent<AnimatedObject>();
-		ao.AddMove(ti.GetGameObject().transform.position, dest.GetTileItemGO().transform.position, App.GetTileItemSpeed(TileItemMoveType.HERO_DROP));
-		ao.Build();
+		ao.AddMove(ti.GetGameObject().transform.position, dest.GetTileItemGO().transform.position, App.GetTileItemSpeed(TileItemMoveType.HERO_DROP))
+			.LayerSortingOrder(DEFAULT_TILEITEM_SORTING_ORDER + 1)
+			.OnStop(DestroyGameObjects, new System.Object[] {dest.GetTileItemGO()})
+			.Build();
 
 		animationGroup.Add(ao);
-
-		animationGroup.Run(OnTileItemUpdateComplete, new System.Object[] {ti, dest});
+		ClearTile(dest, false);
+		dest.SetTileItem(ti);
 	}
 
 
@@ -1884,6 +1890,10 @@ public class GameController : MonoBehaviour {
 		if(!slimeTiles.Contains(choiceTile)) {
 			slimeTiles.Add(choiceTile);
 		}
+
+		AnimatedObject ao = ti.GetGameObject().GetComponent<AnimatedObject>();
+		ao.AddResize(new Vector3(0, 0, 1), new Vector3(1, 1, 1), App.SlimeAnimationTime).Build();
+		animationGroup.Add(ao);
 	}
 
 	private void UpdateTileItemsByGenerators() {
@@ -1907,8 +1917,12 @@ public class GameController : MonoBehaviour {
 					}
 					AnimatedObject ao = ti.GetGameObject().GetComponent<AnimatedObject>();
 					float speed = App.GetTileItemSpeed(TileItemMoveType.GENERATED_TILEITEM_DROP);
-					ao.AddMove(IndexToPosition(tile.X, tile.Y), speed).LayerSortingOrder(DEFAULT_TILEITEM_SORTING_ORDER + 1).Build().Run();
-
+					float time = AMove.CalcTime(IndexToPosition(gen.X, gen.Y), IndexToPosition(tile.X, tile.Y), speed);
+					ao.AddMove(null, IndexToPosition(tile.X, tile.Y), speed).LayerSortingOrder(DEFAULT_TILEITEM_SORTING_ORDER + 1)
+						.AddResize(null, new Vector3(1.3f, 1.3f, 1), time * 0.2f)
+						.AddResize(null, new Vector3(1f, 1f, 1), time * 0.7f)
+						.Build();
+					animationGroup.Add(ao);
 					tile.SetTileItem(ti);
 				}
 			}
@@ -1923,6 +1937,12 @@ public class GameController : MonoBehaviour {
 			ClearTile(tile);
 		}
 		tile.SetTileItem(ti);
+	}
+
+	private void DestroyGameObjects(System.Object[] objects) {
+		foreach(System.Object obj in objects) {
+			Destroy((GameObject)obj);
+		}
 	}
 }
 

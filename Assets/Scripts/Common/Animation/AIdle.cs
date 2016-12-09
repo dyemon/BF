@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class AIdle {
+public class AIdle : IABase{
 
 	private float time;
 	private float startTime;
 	private float startDurationTime;
+	private bool isComplete = false;
 
 	public AIdle(float time) {
 		this.time = time;
@@ -16,8 +17,13 @@ public class AIdle {
 		startDurationTime = time;
 	}
 
-	public bool Idle() {
+	public bool Animate(GameObject go) {
 		time = startDurationTime - (Time.time - startTime);
-		return (time > 0);
+		isComplete = !(time > 0);
+		return (time > 0); 
+	}
+
+	public bool IsCompleteAnimation() {
+		return isComplete;
 	}
 }

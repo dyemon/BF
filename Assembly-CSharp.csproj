@@ -66,9 +66,12 @@
      <Compile Include="Assets\Scripts\Common\Animation\AFadeUIText.cs" />
      <Compile Include="Assets\Scripts\Common\Animation\AIdle.cs" />
      <Compile Include="Assets\Scripts\Common\Animation\AMove.cs" />
+     <Compile Include="Assets\Scripts\Common\Animation\AResize.cs" />
      <Compile Include="Assets\Scripts\Common\Animation\AnimatedObject.cs" />
      <Compile Include="Assets\Scripts\Common\Animation\Animation.cs" />
      <Compile Include="Assets\Scripts\Common\Animation\AnimationGroup.cs" />
+     <Compile Include="Assets\Scripts\Common\Animation\AnimationType.cs" />
+     <Compile Include="Assets\Scripts\Common\Animation\IABase.cs" />
      <Compile Include="Assets\Scripts\Common\Effect\Circlesetup.cs" />
      <Compile Include="Assets\Scripts\Common\Effect\DrawCircle.cs" />
      <Compile Include="Assets\Scripts\Common\Effect\ExampleGL.cs" />

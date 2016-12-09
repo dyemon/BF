@@ -2,9 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System;
 
 public class AnimatedObject : MonoBehaviour {
-	public delegate void CompleteAnimation<T>(T param);
+	public delegate void OnStopAnimation(System.Object[] param);
 
 	private bool isPlay = false;
 
@@ -15,6 +16,10 @@ public class AnimatedObject : MonoBehaviour {
 	private int? sourceLayerSortingOrder = null;
 
 	private bool destroyOnStop = false;
+	private bool clearOnStop = true;
+
+	private OnStopAnimation onStop;
+	private System.Object[] onStopParam;
 
 	public bool IsDone {
 		get {return !isPlay;}
@@ -31,9 +36,10 @@ public class AnimatedObject : MonoBehaviour {
 			return;
 		}
 			
-		bool isContinue = PlayMove();
-		isContinue = PlayIdle() || isContinue;
-		isContinue = PlayFade() || isContinue;
+		bool isContinue = false;
+		foreach(AnimationType type in Enum.GetValues(typeof(AnimationType))) {
+			isContinue = PlayAnimation(type) || isContinue;
+		}
 
 		if(!isContinue) {
 			if(sourceLayerSortingOrder != null) {
@@ -74,18 +80,21 @@ public class AnimatedObject : MonoBehaviour {
 		return currentPlayAnimation;
 	}
 
-	public void ClearAnimations() {
+	public AnimatedObject ClearAnimations() {
 		animations.Clear();
 		currentAnimation = null;
 		currentPlayAnimation = null;
 		if(sourceLayerSortingOrder != null) {
 			GetComponent<SpriteRenderer>().sortingOrder = sourceLayerSortingOrder.Value;
+			sourceLayerSortingOrder = null;
 		}
+		onStop = null;
+		onStopParam = null;
+		destroyOnStop = false;
+		clearOnStop = true;
+
+		return this;
 	}
-	/*
-	public void Run<T>(CompleteAnimation<T> complete, T param) {
-		Run();
-	}*/
 
 	public void Run() {
 		if(animations.Count == 0) {
@@ -104,60 +113,60 @@ public class AnimatedObject : MonoBehaviour {
 		if(destroyOnStop) {
 			Destroy(gameObject);
 		}
+
+		if(onStop != null) {
+			onStop(onStopParam);
+		}
+
+		if(clearOnStop) {
+			ClearAnimations();
+		}
 	}
 
 	public bool IsAnimationExist() {
 		return animations.Count > 0;
 	}
 
-	public AnimatedObject AddMove(Vector3 end, float speed, bool ui = false) {
-		getCurrentAnimation().AddMove(transform.position, end, speed, ui);
-		return this;
-	}
 
 	public AnimatedObject LayerSortingOrder(int order) {
 		getCurrentAnimation().LayerSortingOrder = order;
 		return this;
 	}
-
-	public AnimatedObject AddMove(Vector3 start, Vector3 end, float speed, bool ui = false) {
-		getCurrentAnimation().AddMove(start, end, speed, ui);
+		
+	public AnimatedObject AddMove(Vector3? start, Vector3 end, float speed, bool ui = false) {
+		IABase a = new AMove(start, end, speed, ui);
+		getCurrentAnimation().AddAnimation(AnimationType.Move, a);
+		return this;
+	}
+		
+	public AnimatedObject AddResize(Vector3? start, Vector3 end, float time) {
+		IABase a = new AResize(start, end, time);
+		getCurrentAnimation().AddAnimation(AnimationType.Resize, a);
 		return this;
 	}
 
-	public AnimatedObject AddMoveByTime(Vector3 end, float time, bool ui = false ) {
-		getCurrentAnimation().AddMoveByTime(transform.position, end, time, ui);
+	public AnimatedObject AddMoveByTime(Vector3? start, Vector3 end, float time, bool ui = false) {
+		AMove a = new AMove(start, end, ui);
+		a.SetTime(time);
+		getCurrentAnimation().AddAnimation(AnimationType.Move, a);
 		return this;
 	}
 
-	public AnimatedObject AddMoveByTime(Vector3 start, Vector3 end, float time, bool ui = false) {
-		getCurrentAnimation().AddMoveByTime(start, end, time, ui);
+	public AnimatedObject AddFade(float? startAlpha, float endAlpha, float time) {
+		IABase a = new AFade(startAlpha, endAlpha, time);
+		getCurrentAnimation().AddAnimation(AnimationType.Fade, a);
 		return this;
 	}
-
+		
 	public AnimatedObject AddIdle(float time) {
-		getCurrentAnimation().AddIdle(time);
+		getCurrentAnimation().AddAnimation(AnimationType.Idle, new AIdle(time));
 		return this;
 	}
 
-	public AnimatedObject AddFade(float startAlpha, float endAlpha, float time) {
-		getCurrentAnimation().AddFade(startAlpha, endAlpha, time);
+	public AnimatedObject AddFadeUIText(float? startAlpha, float endAlpha, float time) {
+		IABase a = new AFadeUIText(startAlpha, endAlpha, time);
+		getCurrentAnimation().AddAnimation(AnimationType.Fade, a);
 		return this;
-	}
-
-	public AnimatedObject AddFade(float endAlpha, float time) {
-		SpriteRenderer renderer = Preconditions.NotNull(gameObject.GetComponent<SpriteRenderer>(), "There is no 'SpriteRenderer' attached to the {0}", gameObject.name);
-		return AddFade(renderer.material.color.a, endAlpha, time);
-	}
-
-	public AnimatedObject AddFadeUIText(float startAlpha, float endAlpha, float time) {
-		getCurrentAnimation().AddFadeUIText(startAlpha, endAlpha, time);
-		return this;
-	}
-
-	public AnimatedObject AddFadeUIText(float endAlpha, float time) {
-		Text text = Preconditions.NotNull(gameObject.GetComponent<Text>(), "There is no 'Text' attached to the {0}", gameObject.name);
-		return AddFadeUIText(text.color.a, endAlpha, time);
 	}
 
 	public AnimatedObject Build() {
@@ -171,47 +180,29 @@ public class AnimatedObject : MonoBehaviour {
 		return this;
 	}
 
-	private bool PlayMove() {
-		Animation animation = getCurrentPlayAnimation();
-		if(animation == null) {
-			return false;
-		}
-
-		AMove move = animation.GetMove();
-		if(move == null) {
-			return false;
-		}
-
-
-		return move.Move(gameObject);
+	public AnimatedObject ClearOnStop(bool clearOnStop) {
+		this.clearOnStop = clearOnStop;
+		return this;
 	}
 
-	private bool PlayIdle() {
-		Animation animation = getCurrentPlayAnimation();
-		if(animation == null) {
-			return false;
-		}
-
-		AIdle idle = animation.GetIdle();
-		if(idle == null) {
-			return false;
-		}
-
-
-		return idle.Idle();
+	public AnimatedObject OnStop(OnStopAnimation onStop, System.Object[] param) {
+		this.onStop = onStop;
+		this.onStopParam = param;
+		return this;
 	}
 
-	private bool PlayFade() {
+	private bool PlayAnimation(AnimationType type) {
 		Animation animation = getCurrentPlayAnimation();
 		if(animation == null) {
 			return false;
 		}
 
-		AFade fade = animation.GetFade();
-		if(fade == null) {
+		IABase a = animation.GetAnimation(type);
+		if(a == null) {
 			return false;
 		}
 			
-		return fade.Fade(gameObject);
+		a.Animate(gameObject);
+		return true;
 	}
 }

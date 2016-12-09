@@ -50,8 +50,8 @@ public class DisplayMessageController : MonoBehaviour {
 		text.color = color;
 
 		AnimatedObject ao = text.GetComponent<AnimatedObject>();
-		ao.AddMove(endPos, MoveSpeed, true).Build()
-			.AddFadeUIText(0f, FadeTime).Build()
+		ao.AddMove(null, endPos, MoveSpeed, true).Build()
+			.AddFadeUIText(null, 0f, FadeTime).Build()
 			.DestroyOnStop(true).Run();
 	}
 }

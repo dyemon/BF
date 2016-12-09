@@ -3,63 +3,41 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Animation {
-
-	private AMove move;
-	private AIdle idle;
-	private AFade fade;
-
+	private IDictionary<AnimationType, List<IABase>> animations = new Dictionary<AnimationType, List<IABase>>();
 	public int? LayerSortingOrder { get; set;}
 
-	public void AddMove(Vector3 startPos, Vector3 movePos, float speed, bool ui) {
-		Preconditions.IsNull(move, "Move animation already exist for this animation object");
-		move = new AMove(startPos, movePos, speed, ui);
-	}
-
-	public void AddMoveByTime(Vector3 startPos, Vector3 movePos, float time, bool ui) {
-		Preconditions.IsNull(move, "Move animation already exist for this animation object");
-		move = new AMove(startPos, movePos, ui);
-		move.SetTime(time);
-	}
-
-	public void AddIdle(float time) {
-		Preconditions.IsNull(idle, "Idle animation already exist for this animation object");
-		idle = new AIdle(time);
-	}
-
-	public void AddFade(float startAlpha, float endAlpha, float time) {
-		Preconditions.IsNull(fade, "Fade animation already exist for this animation object");
-		fade = new AFade(startAlpha, endAlpha, time);
-	}
-
-	public void AddFadeUIText(float startAlpha, float endAlpha, float time) {
-		Preconditions.IsNull(fade, "Fade animation already exist for this animation object");
-		fade = new AFadeUIText(startAlpha, endAlpha, time);
-	}
-
-	public AMove GetMove() {
-		return move;
-	}
-
-	public AIdle GetIdle() {
-		return idle;
-	}
-
-	public AFade GetFade() {
-		return fade;
-	}
-
-	public void Run() {
-		if(move != null) {
-			move.Run();
+	public void AddAnimation(AnimationType type, IABase a) {
+		if(!animations.ContainsKey(type)) {
+			animations.Add(type, new List<IABase>());
 		}
-		if(idle != null) {
-			idle.Run();
+		animations[type].Add(a);
+	}
+
+	public IABase GetAnimation(AnimationType type) {
+		List<IABase> val;
+		animations.TryGetValue(type, out val);
+		if(val == null || val.Count == 0) {
+			return null;
 		}
-		if(fade != null) {
-			fade.Run();
+		IABase a = val[0];
+		if(!a.IsCompleteAnimation()) {
+			return a;
 		}
+		val.Remove(a);
+		if( (val.Count == 0)) {
+			return null;
+		}
+		val[0].Run();
+
+		return val[0];
 	}
 		
-
+	public void Run() {
+		foreach(List<IABase> list in animations.Values) {
+			if(list.Count > 0) {
+				list[0].Run();
+			}
+		}
+	}
 }
 

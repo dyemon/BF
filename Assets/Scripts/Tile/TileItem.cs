@@ -242,7 +242,7 @@ public class TileItem {
 
 	public bool IsReplacedByGenerator {
 		get {
-			return IsColor || IsSpecialCollect;
+			return (IsSimple || IsSpecialCollect) && IsNotStatic;
 		}
 	}
 

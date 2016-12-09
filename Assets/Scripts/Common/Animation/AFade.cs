@@ -2,15 +2,16 @@
 using UnityEngine;
 
 
-public class AFade {
-	private float startAlpha;
+public class AFade : IABase {
+	protected float? startAlpha;
 	private float endAlpha;
 	private float time;
 
 	private float startTime;
 	private float startDurationTime;
+	private bool isComplete;
 
-	public AFade(float startAlpha, float endAlpha, float time) {
+	public AFade(float? startAlpha, float endAlpha, float time) {
 		this.startAlpha = startAlpha;
 		this.endAlpha = endAlpha;
 		this.time = time;
@@ -21,14 +22,19 @@ public class AFade {
 		startDurationTime = time;
 	}
 
-	public bool Fade(GameObject gameObject) {
+	public bool Animate(GameObject gameObject) {
+		if(startAlpha == null) {
+			SetStartAlpha(gameObject);
+		}
+
 		float delta = UnityEngine.Time.time - startTime;
 		time = startDurationTime - delta;
 		float t = (time <= 0)? 1f : delta/startDurationTime;
 
-		SetAlpha(gameObject, Mathf.Lerp(startAlpha, endAlpha, t));
+		SetAlpha(gameObject, Mathf.Lerp(startAlpha.Value, endAlpha, t));
 
-		return (time > 0);
+		isComplete = !(time > 0);
+		return (time > 0); 
 	}
 
 	virtual protected void SetAlpha(GameObject gameObject, float alpha ) {
@@ -38,6 +44,15 @@ public class AFade {
 			color.a = alpha;
 			renderer.material.color = color;
 		}
+	}
+
+	virtual protected void SetStartAlpha(GameObject gameObject) {
+		SpriteRenderer renderer = Preconditions.NotNull(gameObject.GetComponent<SpriteRenderer>(), "There is no 'SpriteRenderer' attached to the {0}", gameObject.name);
+		startAlpha = renderer.material.color.a;
+	}
+
+	public bool IsCompleteAnimation() {
+		return isComplete;
 	}
 }
 

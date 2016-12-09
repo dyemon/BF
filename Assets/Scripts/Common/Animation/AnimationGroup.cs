@@ -52,4 +52,7 @@ public class AnimationGroup : MonoBehaviour {
 
 	}
 
+	public bool AnimationExist() {
+		return objects.Count > 0;
+	}
 }

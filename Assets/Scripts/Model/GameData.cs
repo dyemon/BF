@@ -7,10 +7,10 @@ public class GameData {
 	public IDictionary<string, HeroData> HeroData = new Dictionary<string, HeroData>();
 
 	public void Init() {
-		HeroData["redHBomb"] = new HeroData(TileItemType.RedBombH, 50);
-		HeroData["redVBomb"] = new HeroData(TileItemType.RedBombV, 50);
-		HeroData["redEnvelop"] = new HeroData(TileItemType.RedEnvelop, 50);
-		HeroData["redHVBomb"] = new HeroData(TileItemType.RedBombHV, 50);
+		HeroData["redHBomb"] = new HeroData(TileItemType.RedBombH, 2);
+		HeroData["redVBomb"] = new HeroData(TileItemType.RedBombV, 2);
+		HeroData["redEnvelop"] = new HeroData(TileItemType.RedEnvelop, 2);
+		HeroData["redHVBomb"] = new HeroData(TileItemType.RedBombHV, 2);
 
 		HeroData["greenHBomb"] = new HeroData(TileItemType.GreenBombH, 50);
 		HeroData["greenVBomb"] = new HeroData(TileItemType.GreenBombV, 50);
