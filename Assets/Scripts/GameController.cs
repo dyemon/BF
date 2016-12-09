@@ -1359,8 +1359,7 @@ public class GameController : MonoBehaviour {
 				}
 			}
 		}
-
-
+			
 		return oldItems;
 	}
 
@@ -1385,8 +1384,6 @@ public class GameController : MonoBehaviour {
 				}
 				break;
 			}
-		
-
 			data = MixTileItemData(data);
 		}
 
@@ -1719,7 +1716,7 @@ public class GameController : MonoBehaviour {
 			}
 		}
 
-		return false;	
+		return false;
 	}
 
 	private void ResetBombMark() {
@@ -1823,7 +1820,7 @@ public class GameController : MonoBehaviour {
 	public void RotateBombs() {
 		foreach(Tile tile in rotaitedBombs) {
 			RotateBomb(tile);
-		}	
+		}
 	}
 
 	private void LevelSuccess() {
