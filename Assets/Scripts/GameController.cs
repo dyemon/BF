@@ -441,7 +441,7 @@ public class GameController : MonoBehaviour {
 		}*/
 		foreach(Tile tile in bombMarkTiles) {
 			tile.MarkBomb(false);
-			bool isNotStatic = tile.IsEmpty || tile.GetTileItem().IsNotStatic;
+			bool isNotStatic = tile.IsEmpty || tile.GetTileItem().IsNotStatic || tile.GetTileItem().IsSlime;
 			if(isNotStatic && BreakBarriers(tile.X, tile.Y, 5)) {
 				isDetectAvaliable = true;
 			}
