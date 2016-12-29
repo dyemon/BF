@@ -21,7 +21,6 @@
         }, {
             "X": 5, 
             "Y": 3, 
-			"Health": 4, 
             "TypeAsString": "Static_1"
         }, {
             "X": 2, 

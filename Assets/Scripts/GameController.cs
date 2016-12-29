@@ -12,6 +12,7 @@ public class GameController : MonoBehaviour {
 
 	public static readonly int DEFAULT_TILEITEM_SORTING_ORDER = 10;
 	public static readonly int BOMB_MARK_SORTING_ORDER = 20;
+	public static readonly int BOMB_EXPLOSION_SORTING_ORDER = 25;
 
 	private int numColumns;
 	private int numRows;
@@ -77,6 +78,9 @@ public class GameController : MonoBehaviour {
 
 	private bool suspendBomb = false;
 
+	public ParticleSystem BombExplosionPS;
+	private float bombExplosionDelay = 0;
+
 	void Start() {
 		levelData = GameResources.Instance.LoadLevel(App.GetCurrentLevel());
 		levelData.Init();
@@ -104,6 +108,7 @@ public class GameController : MonoBehaviour {
 		InitControllers();
 
 		DetectUnavaliableTiles();
+
 		UpdateTiles(true);
 	}
 	// Update is called once per frame
@@ -440,6 +445,8 @@ public class GameController : MonoBehaviour {
 			}
 		}*/
 		foreach(Tile tile in bombMarkTiles) {
+			InitBombExplosion(tile);
+
 			tile.MarkBomb(false);
 		//	bool isNotStatic = tile.IsEmpty || tile.GetTileItem().IsNotStatic || tile.GetTileItem().IsSlime;
 			if(tile.IsEmpty && BreakBarriers(tile.X, tile.Y, 5)) {
@@ -478,6 +485,9 @@ public class GameController : MonoBehaviour {
 		}
 
 		foreach(Tile tile in specialSelectedTiles) {
+			if(tile.GetTileItem() == null) {
+				continue;
+			}
 			CollectTileItem(tile);
 		}
 
@@ -498,11 +508,14 @@ public class GameController : MonoBehaviour {
 
 		if(targetController.CheckSuccess()) {
 			LevelSuccess();
+			return;
 		} else if (!restrictionsController.CheckRestrictions()){
 			LevelFailure();
+			return;
 		}
 
-		UpdateTiles(true);
+
+		StartCoroutine(UpdateTilesWitDelay(true, bombExplosionDelay));
 	}
 
 	private bool BreakBarriersByBomb(int damage) {
@@ -893,6 +906,7 @@ public class GameController : MonoBehaviour {
 		ResetTileItemSpawnDelay();
 
 		if(first) {
+			bombExplosionDelay = 0;
 			dropedTileItemsCount = 0;
 			autoDropTileItems.ReseteDroped();
 
@@ -1747,9 +1761,9 @@ public class GameController : MonoBehaviour {
 			int start = tileItem.IsBombH ? tile.X : tile.Y;
 
 			for(int i = start - ratio; i <= start + ratio; i++) {
-				if(i == start) {
-					continue;
-				}
+			//	if(i == start) {
+			//		continue;
+			//	}
 
 				int x = tileItem.IsBombH ? i : tile.X;
 				int y = tileItem.IsBombV ? i : tile.Y;
@@ -1760,6 +1774,7 @@ public class GameController : MonoBehaviour {
 			positions.Add(new Vector2(tile.X + 1, tile.Y));
 			positions.Add(new Vector2(tile.X, tile.Y - 1));
 			positions.Add(new Vector2(tile.X, tile.Y + 1));
+			positions.Add(new Vector2(tile.X, tile.Y));
 
 			if(tileItem.Level > 1) {
 				positions.Add(new Vector2(tile.X - 1, tile.Y + 1));
@@ -1793,7 +1808,7 @@ public class GameController : MonoBehaviour {
 				continue;
 			}
 				
-			if(!bombMarkTiles.Contains(curTile) && !specialSelectedTiles.Contains(curTile)) {
+			if(!bombMarkTiles.Contains(curTile) /*&& !specialSelectedTiles.Contains(curTile)*/) {
 				bombMarkTiles.Add(curTile);
 				curTile.MarkBomb(true);
 
@@ -1801,7 +1816,7 @@ public class GameController : MonoBehaviour {
 					continue;
 				}
 
-				if((curTile.GetTileItem().IsBomb || curTile.GetTileItem().IsBombAll) && !tileItem.IsBombAll) {
+				if((tile != curTile) && (curTile.GetTileItem().IsBomb || curTile.GetTileItem().IsBombAll) && !tileItem.IsBombAll) {
 					if(((curTile.GetTileItem().IsBombH && tileItem.IsBombH) || (curTile.GetTileItem().IsBombV && tileItem.IsBombV))) {
 						RotateBomb(curTile);
 						rotaitedBombs.Add(curTile);
@@ -1944,6 +1959,22 @@ public class GameController : MonoBehaviour {
 		foreach(System.Object obj in objects) {
 			Destroy((GameObject)obj);
 		}
+	}
+
+	IEnumerator UpdateTilesWitDelay(bool first, float delay) {
+		yield return new WaitForSeconds(delay);
+		UpdateTiles(first);
+	}
+
+	private void InitBombExplosion(Tile tile) {
+		ParticleSystem explosion = Instantiate(BombExplosionPS, IndexToPosition(tile.X, tile.Y), Quaternion.identity);
+		Destroy(explosion.gameObject, explosion.main.duration);
+		bombExplosionDelay = explosion.main.duration;
+		explosion.GetComponent<Renderer>().sortingOrder = BOMB_EXPLOSION_SORTING_ORDER;
+	/*	ParticleSystem[] children = explosion.GetComponentsInChildren<ParticleSystem>();
+		foreach(ParticleSystem ps in children) {
+			ps.GetComponent<Renderer>().sortingOrder = BOMB_EXPLOSION_SORTING_ORDER;
+		}*/
 	}
 }
 
