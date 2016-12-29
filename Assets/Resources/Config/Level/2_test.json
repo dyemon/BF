@@ -84,7 +84,7 @@
 				"TypeAsString": "StaticSlime_2"
 			}
         },{
-            "X": 4, 
+            "X": 3, 
             "Y": 7, 
             "TypeAsString": "Blue",
 			"ParentTileItemData": {
@@ -102,9 +102,9 @@
 			}
         },{
             "X": 4, 
-            "Y": 6, 
+            "Y": 5, 
 			"Level": 3,
-            "TypeAsString": "Blue"
+            "TypeAsString": "Static_1"
         },{
             "X": 1, 
             "Y": 3, 

@@ -441,20 +441,24 @@ public class GameController : MonoBehaviour {
 		}*/
 		foreach(Tile tile in bombMarkTiles) {
 			tile.MarkBomb(false);
-			bool isNotStatic = tile.IsEmpty || tile.GetTileItem().IsNotStatic || tile.GetTileItem().IsSlime;
-			if(isNotStatic && BreakBarriers(tile.X, tile.Y, 5)) {
+		//	bool isNotStatic = tile.IsEmpty || tile.GetTileItem().IsNotStatic || tile.GetTileItem().IsSlime;
+			if(tile.IsEmpty && BreakBarriers(tile.X, tile.Y, 5)) {
 				isDetectAvaliable = true;
 			}
 
-			if(tile.GetTileItem() == null) {
+			if(tile.IsEmpty) {
 				continue;
 			}
 
 			if((tile.GetTileItem().IsColor || tile.GetTileItem().IsSpecialCollect || tile.GetTileItem().IsBreakableOnlyByBomb )) {
 				CollectTileItem(tile);
+				if(BreakBarriers(tile.X, tile.Y, 5)) {
+					isDetectAvaliable = true;
+				}
 			}
 			if(BreakTileItems(tile.X, tile.Y, 5, false)) {
 				isDetectAvaliable = true;
+				BreakBarriers(tile.X, tile.Y, 5);
 			}
 		}
 
