@@ -40,7 +40,8 @@
         }, {
             "X": 6, 
             "Y": 3, 
-            "TypeAsString": "BombAll"
+            "TypeAsString": "BombAll",
+			"Level": 1
         }, {
             "X": 6, 
             "Y": 4, 
@@ -97,7 +98,7 @@
             "TypeAsString": "StaticSlime_1",
 			"ChildTileItemData": {
 				"TypeAsString": "RedBombH",
-				"Level": 3 
+				"Level": 1
 			}
         },{
             "X": 4, 
