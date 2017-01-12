@@ -19,9 +19,11 @@ public class TileItemController : MonoBehaviour {
 	private ParticleSystem transitionPS;
 	private bool isMark = false;
 	private bool isRotate = false;
+	private MaterialPropertyBlock _propBlock;
 
 	protected virtual void Start () {
 		render = GetComponent<SpriteRenderer>();
+		_propBlock = new MaterialPropertyBlock();
 		sourceSprite = render.sprite;
 		sourceColor = render.color;
 		sourceMaterial = render.material;
@@ -85,20 +87,34 @@ public class TileItemController : MonoBehaviour {
 	}
 
 	virtual protected void RenderNormal() {
-		render.color = sourceColor;
-		render.sprite = GetSourceSprite();
+		render.GetPropertyBlock(_propBlock);
+		_propBlock.SetColor("_Color", sourceColor);
+		_propBlock.SetTexture("_MainTex", GetSourceSprite().texture);
+		render.SetPropertyBlock(_propBlock);
+	//	render.color = sourceColor;
+	//	render.sprite = GetSourceSprite();
 	}
 
 	virtual protected void RenderDark() {
-		render.color = darkColor;
+		render.GetPropertyBlock(_propBlock);
+		_propBlock.SetColor("_Color", darkColor);
+		render.SetPropertyBlock(_propBlock);
+
+		//render.color = darkColor;
 	}
 
 	virtual protected void RenderHighLight() {
+		render.GetPropertyBlock(_propBlock);
+
+
 		Sprite hl = GetHighLightSprite();
 		if(hl != null) {
-			render.sprite = hl;
+		//	render.sprite = hl;
+			_propBlock.SetTexture("_MainTex", hl.texture);
 		}
-		render.color = sourceColor;
+	//	render.color = sourceColor;
+		_propBlock.SetColor("_Color", sourceColor);
+		render.SetPropertyBlock(_propBlock);
 	}
 	/*
 	virtual public void Mark(bool isMark) {
