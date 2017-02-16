@@ -77,6 +77,11 @@
             "TypeAsString": "Red"
         },{
             "X": 4, 
+            "Y": 6, 
+			"Level": 1,
+            "TypeAsString": "GreenBombV"
+        },{
+            "X": 4, 
             "Y": 4, 
             "TypeAsString": "Blue",
 			"ParentTileItemData": {
@@ -123,6 +128,12 @@
             "Y2": 0, 
             "TypeAsString": "Barrier_2"
         }, {
+            "X1": 4, 
+            "Y1": 6, 
+            "X2": 5, 
+            "Y2": 6, 
+            "TypeAsString": "Barrier_2"
+        },{
             "X1": 0, 
             "Y1": 0, 
             "X2": 0, 
