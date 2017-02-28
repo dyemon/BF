@@ -98,6 +98,7 @@ public class TileItemController : MonoBehaviour {
 	virtual protected void RenderDark() {
 		render.GetPropertyBlock(_propBlock);
 		_propBlock.SetColor("_Color", darkColor);
+		_propBlock.SetTexture("_MainTex", GetSourceSprite().texture);
 		render.SetPropertyBlock(_propBlock);
 
 		//render.color = darkColor;
