@@ -1,4 +1,6 @@
- public class GameObject2DArray : MonoBehaviour, ISerializationCallbackReceiver
+ using UnityEngine;
+
+public class GameObject2DArray : MonoBehaviour, ISerializationCallbackReceiver
  {
      public GameObject[,] items;
  

@@ -29,6 +29,8 @@ public class GameController : MonoBehaviour {
 	public GameObject[] tileItemsBox;
 	public GameObject[] barrierItems;
 
+	public GameObject tilesBg;
+
 	public GameObject bombMark;
 
 	private AnimationGroup animationGroup;
@@ -104,7 +106,9 @@ public class GameController : MonoBehaviour {
 		tiles = new Tile[numColumns, numRows];
 		tileItemSpawnDelay = new int[numColumns];
 		tileColumnAvalibleForOffset = new bool[numColumns];
-
+	
+		GameObject tileBgObj = Instantiate (tilesBg);
+		tileBgObj.transform.position = IndexToPosition (3.0f, 3.0f);
 		InitTiles();
 		InitBarriers();
 		InitHeroes();
@@ -157,7 +161,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	public static Vector3 IndexToPosition(float x, float y) {
-		return new Vector3(x - LevelData.NumColumns / 2f + 0.5f, y + 0.5f, 0);
+		return new Vector3(x - LevelData.NumColumns / 2f + 0.5f, y + 0.5f + 0.18f, 0);
 	}
 	public static Vector2 PositionToIndex(Vector3 pos) {
 		return new Vector2(pos.x + LevelData.NumColumns / 2f - 0.5f, pos.y - 0.5f);

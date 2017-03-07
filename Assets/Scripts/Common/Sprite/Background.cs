@@ -12,8 +12,8 @@ public class Background : MonoBehaviour {
 	}
 	// Update is called once per frame
 	void Update() {
-		//  ResizeSpriteToScreen();
-		//  return;
+		  ResizeSpriteToScreen();
+		  return;
 		if(Screen.width != screenWidth || Screen.height != screenHeight) {
 			//  transform.localScale = new Vector3(1,1,1);
 			screenWidth = Screen.width;
@@ -25,6 +25,7 @@ public class Background : MonoBehaviour {
 			float wCf = screenWidth / lSize.x;
 			float hCf = screenHeight / lSize.y;
 
+		
 			//Debug.Log(wCf + " " + hCf);
 			//Debug.Log(size);  
 			if(wCf > hCf) {
@@ -58,6 +59,7 @@ public class Background : MonoBehaviour {
 
 		//  transform.localScale.x = worldScreenWidth / width;
 		//   transform.localScale.y = worldScreenHeight / height;
-		transform.localScale = new Vector3(worldScreenWidth / width, worldScreenHeight / height, 1);
+//		transform.localScale = new Vector3(worldScreenWidth / width, worldScreenHeight / height, 1);
+		transform.localScale = new Vector3(worldScreenHeight / height, worldScreenHeight / height, 1);
 	}
 }

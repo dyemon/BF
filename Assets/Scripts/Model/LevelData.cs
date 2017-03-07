@@ -6,7 +6,7 @@ using System;
 [System.Serializable]
 public class LevelData {
 	public static int NumColumns = 7;
-	public static int NumRows = 8;
+	public static int NumRows = 7;
 
 	public string Id;
 	public string Name;
