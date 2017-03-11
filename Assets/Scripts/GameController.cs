@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 [RequireComponent(typeof(AnimationGroup))]
 public class GameController : MonoBehaviour {
-	
+	private static float TILESYOFFSET = 0.25f;
+
 	public delegate void OnCollectTileItem(TileItem tileItem);
 	public event OnCollectTileItem onCollectTileItem;
 	public delegate void OnMoveComplete();
@@ -29,7 +30,7 @@ public class GameController : MonoBehaviour {
 	public GameObject[] tileItemsBox;
 	public GameObject[] barrierItems;
 
-	public GameObject tilesBg;
+//	public GameObject tilesBg;
 
 	public GameObject bombMark;
 
@@ -107,8 +108,9 @@ public class GameController : MonoBehaviour {
 		tileItemSpawnDelay = new int[numColumns];
 		tileColumnAvalibleForOffset = new bool[numColumns];
 	
-		GameObject tileBgObj = Instantiate (tilesBg);
-		tileBgObj.transform.position = IndexToPosition (3.0f, 3.0f);
+	//	GameObject tileBgObj = Instantiate (tilesBg);
+	//	tileBgObj.transform.position = IndexToPosition (3.0f, 3.0f);
+
 		InitTiles();
 		InitBarriers();
 		InitHeroes();
@@ -161,10 +163,10 @@ public class GameController : MonoBehaviour {
 	}
 
 	public static Vector3 IndexToPosition(float x, float y) {
-		return new Vector3(x - LevelData.NumColumns / 2f + 0.5f, y + 0.5f + 0.18f, 0);
+		return new Vector3(x - LevelData.NumColumns / 2f + 0.5f, y + 0.5f + TILESYOFFSET, 0);
 	}
 	public static Vector2 PositionToIndex(Vector3 pos) {
-		return new Vector2(pos.x + LevelData.NumColumns / 2f - 0.5f, pos.y - 0.5f);
+		return new Vector2(pos.x + LevelData.NumColumns / 2f - 0.5f, pos.y - 0.5f - TILESYOFFSET);
 	}
 
 	private TileItem InstantiateColorOrSpecialTileItem(int column) {
@@ -1066,7 +1068,7 @@ public class GameController : MonoBehaviour {
 			}
 
 			if(tEmpty.Count > 0 && !tile.IsEmpty) {
-				MoveTileItem(tile, tEmpty[0], TileItemMoveType.DOWN);
+				MoveTileItem(tile, tEmpty[0], TileItemMoveType.DOWN, 0);
 				tEmpty.RemoveAt(0);
 				tEmpty.Add(tile);
 			}
@@ -1084,7 +1086,7 @@ public class GameController : MonoBehaviour {
 			TileItem tileItem = InstantiateColorOrSpecialTileItem(x);
 			tileItem.GetGameObject().GetComponent<AnimatedObject>().AddIdle((App.MoveTileItemTimeUnit + App.moveTileItemDelay) * tileItemSpawnDelay[x]).Build();
 			spawnTile.SetTileItem(tileItem);
-			MoveTileItem(spawnTile, tile, TileItemMoveType.DOWN);
+			MoveTileItem(spawnTile, tile, TileItemMoveType.DOWN, 0);
 			tileItemSpawnDelay[x]++;
 		}
 
@@ -1155,7 +1157,9 @@ public class GameController : MonoBehaviour {
 				}
 			}
 				
-			MoveTileItem(chosen, tile, TileItemMoveType.OFFSET);
+			float rotate = chosen.X < tile.X ? -90 : 90;
+		//	float rotate = 0;
+			MoveTileItem(chosen, tile, TileItemMoveType.OFFSET, rotate);
 			res = true;
 			tileColumnAvalibleForOffset[chosen.X] = false;
 
@@ -1178,7 +1182,7 @@ public class GameController : MonoBehaviour {
 		return (x < 0 || y < 0 || x >= numColumns || y >= numRows) ? null : data[x, y];
 	}
 
-	private void MoveTileItem(Tile from, Tile to, TileItemMoveType moveType) {
+	private void MoveTileItem(Tile from, Tile to, TileItemMoveType moveType, float rotate) {
 		AnimatedObject ao = from.GetTileItemGO().GetComponent<AnimatedObject>();
 
 		float speed = App.GetTileItemSpeed(moveType);
@@ -1189,6 +1193,12 @@ public class GameController : MonoBehaviour {
 			from.GetTileItem().IsMoved = true;
 		} else if(moveType == TileItemMoveType.OFFSET) {
 			ao.LayerSortingOrder(DEFAULT_TILEITEM_SORTING_ORDER - 3);
+		}
+			
+		if(rotate != 0) {
+			ao.AddRotate(null, new Vector3(0, 0, rotate), 
+				AMove.CalcTime(IndexToPosition(from.X, from.Y), IndexToPosition(to.X, to.Y), speed));
+	
 		}
 
 		ao.Build();
@@ -1537,7 +1547,7 @@ public class GameController : MonoBehaviour {
 				tilesSave[x, y].SetTileItem(tiles[x, y].GetTileItem());
 
 				try {
-					MoveTileItem(from, tiles[x, y], TileItemMoveType.MIX);
+					MoveTileItem(from, tiles[x, y], TileItemMoveType.MIX, 0);
 				} catch(System.Exception e) {
 					Debug.Log(from.X + " " + from.Y);
 					throw e;

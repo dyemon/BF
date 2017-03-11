@@ -145,6 +145,12 @@ public class AnimatedObject : MonoBehaviour {
 		return this;
 	}
 
+	public AnimatedObject AddRotate(Vector3? start, Vector3 end, float time) {
+		IABase a = new ARotate(start, end, time);
+		getCurrentAnimation().AddAnimation(AnimationType.Rotate, a);
+		return this;
+	}
+
 	public AnimatedObject AddMoveByTime(Vector3? start, Vector3 end, float time, bool ui = false) {
 		AMove a = new AMove(start, end, ui);
 		a.SetTime(time);

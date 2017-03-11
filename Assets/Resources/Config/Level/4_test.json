@@ -2,5 +2,117 @@
 	"Id": "1",
     "Name": "Level 1", 
     "Description": "",
-	"TileItemDropPercent": [100, 0, 0, 0, 0]
+	 "TileItemDropPercent": [20, 20, 20, 20, 20],
+
+	  "TileData": [{
+			"X": 1, 
+			"Y": 6, 
+			"TypeAsString": "Static_1"
+		}, {
+			"X": 2, 
+			"Y": 1, 
+			"TypeAsString": "Static_1"
+		}, {
+			"X": 5, 
+			"Y": 2, 
+			"TypeAsString": "Static_1"
+		}, {
+			"X": 5, 
+			"Y": 3, 
+			"TypeAsString": "Static_1"
+		}, {
+			"X": 2, 
+			"Y": 6, 
+			"Health": 1, 
+			"TypeAsString": "Static_1"
+		}],
+	
+	  "BarrierData": [{
+            "X1": 0, 
+            "Y1": 0, 
+            "X2": 1, 
+            "Y2": 0, 
+            "TypeAsString": "Barrier_2"
+        }, {
+            "X1": 4, 
+            "Y1": 6, 
+            "X2": 5, 
+            "Y2": 6, 
+            "TypeAsString": "Barrier_2"
+        },{
+            "X1": 0, 
+            "Y1": 0, 
+            "X2": 0, 
+            "Y2": 1, 
+            "TypeAsString": "Barrier_1"
+        },  {
+            "X1": 2, 
+            "Y1": 2, 
+            "X2": 3, 
+            "Y2": 2, 
+            "TypeAsString": "Barrier_2"
+        }, {
+            "X1": 2, 
+            "Y1": 2, 
+            "X2": 2, 
+            "Y2": 3, 
+            "TypeAsString": "Barrier_1"
+        }, {
+            "X1": 3, 
+            "Y1": 2, 
+            "X2": 3, 
+            "Y2": 3, 
+            "TypeAsString": "Barrier_3"
+        }, {
+            "X1": 4, 
+            "Y1": 2, 
+            "X2": 4, 
+            "Y2": 3, 
+            "TypeAsString": "Barrier_1"
+        }, {
+            "X1": 5, 
+            "Y1": 2, 
+            "X2": 5, 
+            "Y2": 3, 
+            "TypeAsString": "Barrier_1"
+        }, {
+            "X1": 3, 
+            "Y1": 4, 
+            "X2": 3, 
+            "Y2": 5, 
+            "TypeAsString": "Barrier_1"
+        }, {
+            "X1": 4, 
+            "Y1": 5, 
+            "X2": 5, 
+            "Y2": 5, 
+            "TypeAsString": "Barrier_1"
+        }], 
+		
+   "TargetData": [{
+		"Count": 15, 
+		"TypeAsString": "Red"
+	}, {
+		"Count": 20, 
+		"TypeAsString": "Green"
+	}, {
+		"Count": 30, 
+		"TypeAsString": "Blue"
+	}, {
+		"Count": 2, 
+		"TypeAsString": "Brilliant"
+	}, {
+		"Count": 2, 
+		"TypeAsString": "Key"
+	}, {
+		"Count": 1, 
+		"TypeAsString": "BombAll"
+	}, {
+		"Count": 1, 
+		"TypeAsString": "Box"
+	}],
+
+	"RestrictionData": {
+        "Movies": 25
+    }
 }
