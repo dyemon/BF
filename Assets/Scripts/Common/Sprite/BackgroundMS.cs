@@ -7,7 +7,8 @@ public class BackgroundMS : MonoBehaviour {
 	private int screenHeight;
 
 	public float centerYOffset;
-
+	public GameObject[] resizeListeners;
+	
 	void Start() {
 	}
 
@@ -22,34 +23,9 @@ public class BackgroundMS : MonoBehaviour {
 	void ResizeToScreen() {
 		transform.localScale = new Vector3(1, 1, 1);
 
-		float minX = float.PositiveInfinity;
-		float maxX = float.NegativeInfinity; 
-		float minY = float.PositiveInfinity;
-		float maxY = float.NegativeInfinity;
-
-		foreach(SpriteRenderer r in GetComponentsInChildren<SpriteRenderer>()) {
-			if(r == null) {
-				continue;
-			}
-
-			Bounds bounds = r.bounds;
-			if(bounds.max.x > maxX) {
-				maxX = bounds.max.x;
-			}
-			if(bounds.max.y > maxY) {
-				maxY = bounds.max.y;
-			}
-			if(bounds.min.x < minX) {
-				minX = bounds.min.x;
-			}
-			if(bounds.min.y < minY) {
-				minY = bounds.min.y;
-			}
-		}
-
-		Renderer renderer = gameObject.GetComponent<Renderer>();
-		float width = maxX - minX;
-		float height = maxY - minY;
+		Vector2 bounds = GetBounds.GetBounds(gameObject);
+		float width = bounds.x;
+		float height = bounds.y;
 
 		float worldScreenHeight = Camera.main.orthographicSize * 2.0f;
 		float worldScreenWidth = worldScreenHeight / Screen.height * Screen.width;
@@ -58,6 +34,14 @@ public class BackgroundMS : MonoBehaviour {
 		transform.position = new Vector3(0.0f, Camera.main.orthographicSize + centerYOffset*resizeRation, transform.position.z);
 //		transform.localScale = new Vector3(worldScreenWidth / width, worldScreenHeight / height, 1);
 		transform.localScale = new Vector3(resizeRation, resizeRation, 1);
+		
+		Vector2 size = new Vector2(width * resizeRation, worldScreenHeight);
+		foreach(GameObject go in resizeListeners) {
+			IResizeListener rListener = go.GetComponent<IResizeListener>();
+			if(rListener != null) {
+				rListener.OnResize(resizeRation, size);
+			}
+		}
 	}
 }
 			

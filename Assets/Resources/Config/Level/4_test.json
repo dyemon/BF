@@ -23,8 +23,23 @@
 		}, {
 			"X": 2, 
 			"Y": 6, 
-			"Health": 1, 
 			"TypeAsString": "Static_1"
+		}, {
+			"X": 3, 
+			"Y": 0, 
+			"TypeAsString": "BombH"
+		}, {
+			"X": 3, 
+			"Y": 0, 
+			"TypeAsString": "BombV"
+		}, {
+			"X": 3, 
+			"Y": 0, 
+			"TypeAsString": "BombP"
+		}, {
+			"X": 3, 
+			"Y": 0, 
+			"TypeAsString": "BombC"
 		}],
 	
 	  "BarrierData": [{

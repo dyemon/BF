@@ -114,7 +114,7 @@ public class TileItem {
 	public bool IsMoved { get; set;}
 
 	public static bool IsColorItem(TileItemType type) {
-		return (int)type < (int)TileItemTypeGroup.Static; 
+		return (int)type < (int)TileItemTypeGroup.Bomb; 
 	}
 	public bool IsColor {
 		get { return TileItem.IsColorItem(type);}
@@ -146,6 +146,9 @@ public class TileItem {
 	}
 
 	public static bool MayBeFirstItem(TileItemType type) {
+		if(IsIndependedColorItem(type)) {
+			return true;
+		}
 		if(!IsColorItem(type)) {
 			return false;
 		}
@@ -174,11 +177,14 @@ public class TileItem {
 	}
 
 	public bool IsSelectable {
-		get { return IsColor; }
+		get { return IsColor || IsColorIndepended; }
 	}
 
 	public bool IsBombH {
 		get { 
+			if(type == TileItemType.BombH) {
+				return true;
+			}
 			if(!IsColor) {
 				return false;
 			}
@@ -188,6 +194,9 @@ public class TileItem {
 
 	public bool IsBombV {
 		get { 
+			if(type == TileItemType.BombV) {
+				return true;
+			}
 			if(!IsColor) {
 				return false;
 			}
@@ -197,6 +206,9 @@ public class TileItem {
 
 	public bool IsBombHV {
 		get { 
+			if(type == TileItemType.BombV || type == TileItemType.BombH) {
+				return true;
+			}
 			if(!IsColor) {
 				return false;
 			}
@@ -212,7 +224,7 @@ public class TileItem {
 
 	public bool IsBomb {
 		get {
-			return IsBombH || IsBombV || IsBombHV;
+			return IsBombH || IsBombV || IsBombHV || IsColorIndependedBomb;
 		}
 	}
 
@@ -323,6 +335,26 @@ public class TileItem {
 	public void Rotate() {
 		if(itemController != null) {
 			itemController.Rotate();
+		}
+	}
+	
+	public static bool IsColorIndependedItem(TileItemType type) {
+		return (int)type >= (int)TileItemTypeGroup.Bomb && (int)type < (int)TileItemTypeGroup.Static;
+	} 
+	
+	public bool IsColorIndepended {
+		get {
+			return IsColorIndependedItem(type);
+		}
+	}
+	
+	public static bool IsColorIndependedBombItem(TileItemType type) {
+		return (int)type >= (int)TileItemTypeGroup.Bomb && (int)type < (int)TileItemTypeGroup.Static;
+	} 
+	
+	public bool IsColorIndependedBomb {
+		get {
+			return IsColorIndependedBombItem(type);
 		}
 	}
 }
