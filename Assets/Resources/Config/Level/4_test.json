@@ -26,20 +26,24 @@
 			"TypeAsString": "Static_1"
 		}, {
 			"X": 3, 
-			"Y": 0, 
+			"Y": 1, 
 			"TypeAsString": "BombH"
 		}, {
 			"X": 3, 
-			"Y": 0, 
+			"Y": 2, 
 			"TypeAsString": "BombV"
 		}, {
 			"X": 3, 
-			"Y": 0, 
+			"Y": 3, 
 			"TypeAsString": "BombP"
 		}, {
 			"X": 3, 
-			"Y": 0, 
+			"Y": 4, 
 			"TypeAsString": "BombC"
+		}, {
+			"X": 3, 
+			"Y": 5, 
+			"TypeAsString": "GreenEnvelop"
 		}],
 	
 	  "BarrierData": [{

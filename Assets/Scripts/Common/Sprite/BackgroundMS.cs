@@ -23,7 +23,7 @@ public class BackgroundMS : MonoBehaviour {
 	void ResizeToScreen() {
 		transform.localScale = new Vector3(1, 1, 1);
 
-		Vector2 bounds = GetBounds.GetBounds(gameObject);
+		Vector2 bounds = UnityUtill.GetBounds(gameObject);
 		float width = bounds.x;
 		float height = bounds.y;
 
