@@ -7,68 +7,25 @@ using System;
 public class UserData {
 	public long Version;
 	public int Level;
-
+	public int Experience;
+	public int OwnHealth;
+	public int EquipmentHealth;
+	public int OwnDamage;
+	public int EquipmentDamage;
+		
+	public int Health {
+		get { return OwnHealth + EquipmentHealth; }
+	}
+	public int Damage {
+		get { return OwnDamage + EquipmentDamage; }
+	}
+	
 	[SerializeField]
 	private List<UserAssetData> Assets = new List<UserAssetData>();
-	[SerializeField]
-	public List<UserHeroData> HeroesData = new List<UserHeroData>();
 	[SerializeField]
 	public List<QuestData> QuestsData = new List<QuestData>();
 
 	public void InitTest() {
-		/*
-		HeroesData = new UserHeroData[20];
-
-		HeroesData[0] = new UserHeroData("redVBomb", 2);
-		HeroesData[1] = new UserHeroData("redHBomb", 1);
-		HeroesData[2] = new UserHeroData("redEnvelop", 2);
-		HeroesData[3] = new UserHeroData("redHVBomb", 1);
-
-		HeroesData[4] = new UserHeroData("greenVBomb", 1);
-		HeroesData[5] = new UserHeroData("greenHBomb", 2);
-		HeroesData[6] = new UserHeroData("greenEnvelop", 2);
-		HeroesData[7] = new UserHeroData("greenHVBomb", 1);
-
-		HeroesData[8] = new UserHeroData("blueVBomb", 1);
-		HeroesData[9] = new UserHeroData("blueHBomb", 1);
-		HeroesData[10] = new UserHeroData("blueEnvelop", 2);
-		HeroesData[11] = new UserHeroData("blueHVBomb", 1);
-
-		HeroesData[12] = new UserHeroData("yellowVBomb", 1);
-		HeroesData[13] = new UserHeroData("yellowHBomb", 1);
-		HeroesData[14] = new UserHeroData("yellowEnvelop", 2);
-		HeroesData[15] = new UserHeroData("yellowHVBomb", 1);
-
-		HeroesData[16] = new UserHeroData("purpleVBomb", 1);
-		HeroesData[17] = new UserHeroData("purpleHBomb", 1);
-		HeroesData[18] = new UserHeroData("purpleEnvelop", 2);
-		HeroesData[19] = new UserHeroData("purpleHVBomb", 20);
-		*/
-		HeroesData.Clear();
-		HeroesData.Add(new UserHeroData("redVBomb", 2));
-		HeroesData.Add(new UserHeroData("redHBomb", 1));
-		HeroesData.Add(new UserHeroData("redEnvelop", 2));
-		HeroesData.Add(new UserHeroData("redHVBomb", 1));
-
-		HeroesData.Add(new UserHeroData("greenVBomb", 1));
-		HeroesData.Add(new UserHeroData("greenHBomb", 2));
-		HeroesData.Add(new UserHeroData("greenEnvelop", 2));
-		HeroesData.Add(new UserHeroData("greenHVBomb", 1));
-
-		HeroesData.Add(new UserHeroData("blueVBomb", 1));
-		HeroesData.Add(new UserHeroData("blueHBomb", 1));
-		HeroesData.Add(new UserHeroData("blueEnvelop", 2));
-		HeroesData.Add(new UserHeroData("blueHVBomb", 1));
-												
-		HeroesData.Add(new UserHeroData("yellowVBomb", 1));
-		HeroesData.Add(new UserHeroData("yellowHBomb", 1));
-		HeroesData.Add(new UserHeroData("yellowEnvelop", 2));
-		HeroesData.Add(new UserHeroData("yellowHVBomb", 1));
-
-		HeroesData.Add(new UserHeroData("purpleVBomb", 1));
-		HeroesData.Add(new UserHeroData("purpleHBomb", 1));
-		HeroesData.Add(new UserHeroData("purpleEnvelop", 2));
-		HeroesData.Add(new UserHeroData("purpleHVBomb", 20));
 
 		QuestsData.Clear();
 		QuestsData.Add(new QuestData("1", 1));
@@ -84,7 +41,12 @@ public class UserData {
 	public void InitDefalt() {
 		Version = 2;
 		Level = 1;
-
+		Experience = 0;
+		OwnHealth = 100;
+		EquipmentHealth = 0;
+		OwnDamage = 10;
+		EquipmentDamage = 0;
+		
 		Assets.Add(new UserAssetData(UserAssetType.GoldCoins, 0));
 		Assets.Add(new UserAssetData(UserAssetType.SilverCoins, 100));
 		Assets.Add(new UserAssetData(UserAssetType.Energy, 20));
