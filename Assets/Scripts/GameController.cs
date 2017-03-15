@@ -1189,7 +1189,9 @@ public class GameController : MonoBehaviour {
 			}
 				
 			float rotate = chosen.X < tile.X ? -90 : 90;
-		//	float rotate = 0;
+			if(!chosen.GetTileItem().IsRotateOnDrop) {
+				rotate = 0;
+			}
 			MoveTileItem(chosen, tile, TileItemMoveType.OFFSET, rotate);
 			res = true;
 			tileColumnAvalibleForOffset[chosen.X] = false;
@@ -1396,19 +1398,21 @@ public class GameController : MonoBehaviour {
 		foreach(TileItemData itemData in replaceData) {
 			Tile tile = GetTile(itemData.X, itemData.Y);
 			Preconditions.NotNull(tile, "Can not replace tile item for x={0} y={1}", itemData.X, itemData.Y);
-
+			TileItem tileItem = tile.GetTileItem();
+			
 			if(saveOld) {
 				index.x = itemData.X; index.y = itemData.Y;
-				TileItemData old = new TileItemData(tile.X, tile.Y, tile.GetTileItem().Type);
+				TileItemData old = new TileItemData(tile.X, tile.Y, tileItem.Type);
 				oldItems.Add(old);
 				if(selectedTiles.Contains(tile)) {
 					SelectTileItem(tile, false, state);
 				}
 			}
-
-			ClearTile(tile);
+		
 			TileItem ti = InstantiateTileItem(itemData.Type, itemData.X, itemData.Y, true);
 			ti.Level = itemData.Level;
+			ti.GetGameObject().transition.rotation = tileItem.transition.rotation;
+			ClearTile(tile);
 			tile.SetTileItem(ti);
 			ti.SetRenderState(state);
 		}
@@ -1850,14 +1854,24 @@ public class GameController : MonoBehaviour {
 				positions.Add(new Vector2(tile.X - 2, tile.Y));
 				positions.Add(new Vector2(tile.X + 2, tile.Y));
 			}
-		} else if(tileItem.IsBombAll) {
+		} else if(tileItem.IsBombAll || (tileItem.IsBombC && selectedTileItemTypeGroup != null) {
 			for(int x = 0; x < numColumns; x++) {
 				for(int y = 0; y < numRows; y++) {
+					Tile tile = tiles[x, y];
+					if(tileItem.IsBombAll) {
+						positions.Add(new Vector2(x, y));
+					} else if(tile.GetTileItem() != null && tile.GetTileItem().TypeGroup == selectedTileItemTypeGroup.Value) {
+						positions.Add(new Vector2(x, y));
+					}
+				}
+			}
+		} else if(tileItem.IsBombP) {
+			for(int x = tile.X - 1; x < tile.X + 1; x++) {
+				for(int y = tile.Y - 1; y < tile.Y + 1; y++) {
 					positions.Add(new Vector2(x, y));
 				}
 			}
 		}
-	
 
 		foreach(Vector2 pos in positions) {
 			Tile curTile = GetTile(pos);

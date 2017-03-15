@@ -8,6 +8,8 @@ public class TileItem {
 	public const int BOMBV_OFFSET = 2;
 	public const int ENVELOP_OFFSET = 3;
 	public const int BOMBHV_OFFSET = 4;
+	public const int BOMBP_OFFSET = 5;
+	public const int BOMBC_OFFSET = 6;
 
 	public const int BOMBALL_OFFSET = 5;
 
@@ -206,9 +208,6 @@ public class TileItem {
 
 	public bool IsBombHV {
 		get { 
-			if(type == TileItemType.BombV || type == TileItemType.BombH) {
-				return true;
-			}
 			if(!IsColor) {
 				return false;
 			}
@@ -216,6 +215,30 @@ public class TileItem {
 		}
 	}
 
+	public bool IsBombP {
+		get { 
+			if(type == TileItemType.BombP) {
+				return true;
+			}
+			if(!IsColor) {
+				return false;
+			}
+			return TypeToIndex(type) == BOMBP_OFFSET;
+		}
+	}
+	
+	public bool IsBombC {
+		get { 
+			if(type == TileItemType.BombC) {
+				return true;
+			}
+			if(!IsColor) {
+				return false;
+			}
+			return TypeToIndex(type) == BOMBC_OFFSET;
+		}
+	}
+	
 	public bool IsBombAll {
 		get {
 			return type == TileItemType.BombAll;
@@ -355,6 +378,12 @@ public class TileItem {
 	public bool IsColorIndependedBomb {
 		get {
 			return IsColorIndependedBombItem(type);
+		}
+	}
+	
+	public bool IsRotateOnDrop {
+		get {
+			return !IsBomb && !IsBombAll;
 		}
 	}
 }
