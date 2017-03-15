@@ -146,7 +146,7 @@ public class TileItem {
 	}
 
 	public static bool MayBeFirstItem(TileItemType type) {
-		if(IsIndependedColorItem(type)) {
+		if(IsColorIndependedItem(type)) {
 			return true;
 		}
 		if(!IsColorItem(type)) {
@@ -297,8 +297,8 @@ public class TileItem {
 	}*/
 
 	public int GetEnvelopReplaceItemCount() {
-		Preconditions.Check(Level > 0, "Level of envelop must be greater zero");
-		return Level * 4 + 4;
+		//Preconditions.Check(Level > 0, "Level of envelop must be greater zero");
+		return (Level == 0)? 8 : Level * 4 + 4;
 	}
 
 	public void SetStartHealth(int health) {

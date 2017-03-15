@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class GameData {
+	public static int NumColumns = 7;
+	public static int NumRows = 7;
 
 	public IDictionary<string, HeroData> HeroData = new Dictionary<string, HeroData>();
 
@@ -36,7 +38,7 @@ public class GameData {
 	}
 
 	public int GetBombRatio(int level) {
-		Preconditions.Check(level > 0, "Bomb level must be greater 1");
-		return level + 1;
+	//	Preconditions.Check(level > 0, "Bomb level must be greater 1");
+		return (level == 0)? Mathf.Max(NumColumns, NumRows) :  level + 1;
 	}
 }

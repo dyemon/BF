@@ -29,6 +29,7 @@ public class GameController : MonoBehaviour {
 	public GameObject[] tileItemsSpecialStatic;
 	public GameObject[] tileItemsBox;
 	public GameObject[] barrierItems;
+	public GameObject[] tileItemsColorIndependedBomb;
 
 //	public GameObject tilesBg;
 
@@ -88,14 +89,16 @@ public class GameController : MonoBehaviour {
 
 	private Tile endTouchTile;
 
+	private TileItemTypeGroup? selectedTileItemTypeGroup = null;
+
 	void Start() {
 		levelData = GameResources.Instance.LoadLevel(App.GetCurrentLevel());
 		levelData.Init();
 		gameData = new GameData();
 		gameData.Init();
 
-		numColumns = LevelData.NumColumns;
-		numRows = LevelData.NumRows;
+		numColumns = GameData.NumColumns;
+		numRows = GameData.NumRows;
 
 		autoDropTileItems = new AutoDropTileItems(levelData.AutoDropData);
 		slime = new Slime(levelData.SlimeRatio);
@@ -163,10 +166,10 @@ public class GameController : MonoBehaviour {
 	}
 
 	public static Vector3 IndexToPosition(float x, float y) {
-		return new Vector3(x - LevelData.NumColumns / 2f + 0.5f, y + 0.5f + TILESYOFFSET, 0);
+		return new Vector3(x - GameData.NumColumns / 2f + 0.5f, y + 0.5f + TILESYOFFSET, 0);
 	}
 	public static Vector2 PositionToIndex(Vector3 pos) {
-		return new Vector2(pos.x + LevelData.NumColumns / 2f - 0.5f, pos.y - 0.5f - TILESYOFFSET);
+		return new Vector2(pos.x + GameData.NumColumns / 2f - 0.5f, pos.y - 0.5f - TILESYOFFSET);
 	}
 
 	private TileItem InstantiateColorOrSpecialTileItem(int column) {
@@ -218,6 +221,8 @@ public class GameController : MonoBehaviour {
 			case TileItemTypeGroup.Yellow:
 			case TileItemTypeGroup.Purple:	
 				return InstantiateTileItem(GetColorGameObjectsByTileItemType(type),  (int)group/100, type, x, y, convertIndexToPos);
+			case TileItemTypeGroup.Bomb:
+				return InstantiateTileItem(tileItemsColorIndependedBomb, (int)(type) - (int)group, type, x, y, convertIndexToPos);
 			case TileItemTypeGroup.Static:
 				return InstantiateTileItem(tileItemsStatic, (int)(type) - (int)group, type, x, y, convertIndexToPos);
 			case TileItemTypeGroup.Special:
@@ -292,6 +297,7 @@ public class GameController : MonoBehaviour {
 		bombTile = null;
 		suspendBomb = false;
 		endTouchTile = null;
+		selectedTileItemTypeGroup = null;
 
 		if(tile == null || tile.GetTileItem() == null || !tile.GetTileItem().MayBeFirst ) {
 			return;
@@ -300,7 +306,10 @@ public class GameController : MonoBehaviour {
 		Preconditions.Check(replacedItems.Count == 0, "replacedItems count must be 0 {0}", replacedItems.Count);
 		Preconditions.Check(selectedTiles.Count == 0, "selectedTiles count must be 0 {0}", selectedTiles.Count);
 
-		SetTileItemsRenderState(TileItemRenderState.Dark, tileItem.TypeGroup);
+		if(!tileItem.IsColorIndepended) {
+			SetTileItemsRenderState(TileItemRenderState.Dark, tileItem.TypeGroup);
+			selectedTileItemTypeGroup = tileItem.TypeGroup;
+		}		
 		SelectTileItem(tile, true);
 
 		if(tileItem.IsBomb) {
@@ -316,10 +325,18 @@ public class GameController : MonoBehaviour {
 		}
 
 		Tile lastTile = selectedTiles.Last.Value;
-		Debug.Log(tile.GetTileItem().TypeGroup + " " + lastTile.GetTileItem().TypeGroup);
-		if(lastTile == tile || tile.GetTileItem().TypeGroup != lastTile.GetTileItem().TypeGroup) {
+		TileItem tileItem = tile.GetTileItem();
+		TileItemTypeGroup curTypeGroup = tileItem.TypeGroup;
+		if(lastTile == tile || (selectedTileItemTypeGroup != null &&  curTypeGroup != selectedTileItemTypeGroup.Value && !tileItem.IsColorIndepended)) {
 			return;
 		}
+
+		Debug.Log(tileItem.TypeGroup + " " + lastTile.GetTileItem().TypeGroup + " " +selectedTileItemTypeGroup);
+
+		if(selectedTileItemTypeGroup == null && !tileItem.IsColorIndepended) {
+			SetTileItemsRenderState(TileItemRenderState.Dark, tileItem.TypeGroup);
+			selectedTileItemTypeGroup = tileItem.TypeGroup;
+		}		
 
 		Tile predLastTile = null;
 		if(selectedTiles.Count > 1) {
@@ -347,6 +364,8 @@ public class GameController : MonoBehaviour {
 
 					MarkBombTiles(tile);
 				}
+				CheckSelectedColor();
+
 				if(suspendBomb && tile.GetTileItem().IsBomb) {
 					suspendBomb = false;
 				}
@@ -393,6 +412,18 @@ public class GameController : MonoBehaviour {
 		} else {
 			ResetSelected();
 		}
+	}
+
+	private void CheckSelectedColor() {
+		foreach(Tile tile in selectedTiles) {
+			TileItem ti = tile.GetTileItem();
+			if(!ti.IsColorIndepended) {
+				return;
+			}
+		}
+
+		SetTileItemsRenderState(TileItemRenderState.Normal, null);
+		selectedTileItemTypeGroup = null;
 	}
 
 	private void ExchangeTileItem(Tile t1, Tile t2) {
@@ -757,7 +788,7 @@ public class GameController : MonoBehaviour {
 					continue;
 				}
 
-				if(excludeTypeGroup == null || tileItem.TypeGroup != excludeTypeGroup.Value) {
+				if(excludeTypeGroup == null || tileItem.TypeGroup != excludeTypeGroup.Value && !tileItem.IsColorIndepended) {
 					tileItem.SetRenderState(state);
 				}
 			}
@@ -962,9 +993,9 @@ public class GameController : MonoBehaviour {
 				throw new System.Exception("Invalid configuration for tile " + tiles[item.X, item.Y] + ". Tile is configured twice");
 			}
 			TileItem ti = InstantiateTileItem(item.Type, item.X, item.Y, true);
-			if(ti.IsBomb || ti.IsEnvelop) {
-				Preconditions.Check(item.Level > 0, "Level of TileItem {0}, {1} must be greater than zero", item.X, item.Y);
-			}
+		//	if(ti.IsBomb || ti.IsEnvelop) {
+		//		Preconditions.Check(item.Level > 0, "Level of TileItem {0}, {1} must be greater than zero", item.X, item.Y);
+		//	}
 			tiles[item.X, item.Y].SetTileItem(ti);
 			InitTileItem(item, ti);
 			if(item.HasChild()) {
@@ -1332,7 +1363,7 @@ public class GameController : MonoBehaviour {
 				
 			TileItemTypeGroup curTypeGroup = TileItem.TypeToTypeGroup(curTileType);
 
-			if(curTypeGroup == typeGroup && TileItem.MayBeFirstItem(curTileType) && CheckAvailabilityTransition(tileX, tileY, (int)pos.x, (int)pos.y)) {
+			if((curTypeGroup == typeGroup || TileItem.IsColorIndependedItem(curTileType)) && TileItem.MayBeFirstItem(curTileType) && CheckAvailabilityTransition(tileX, tileY, (int)pos.x, (int)pos.y)) {
 				reachable = true;
 			}
 			if(hasParent) {
@@ -1787,7 +1818,7 @@ public class GameController : MonoBehaviour {
 			int ratio = gameData.GetBombRatio(tileItem.Level);
 			int start = tileItem.IsBombH ? tile.X : tile.Y;
 
-			for(int i = start - ratio; i <= start + ratio; i++) {
+			for(int i = Mathf.Max(0, start - ratio); i <= Mathf.Min(Mathf.Max(numColumns, numRows), start + ratio); i++) {
 			//	if(i == start) {
 			//		continue;
 			//	}
