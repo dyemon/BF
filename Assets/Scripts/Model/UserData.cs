@@ -23,10 +23,13 @@ public class UserData {
 	[SerializeField]
 	private List<UserAssetData> Assets = new List<UserAssetData>();
 	[SerializeField]
+	public List<UserHeroData> HeroesData = new List<UserHeroData>();
+	[SerializeField]
 	public List<QuestData> QuestsData = new List<QuestData>();
 
 	public void InitTest() {
-
+		HeroesData.Add(new UserHeroData("purpleEnvelop",1));
+			
 		QuestsData.Clear();
 		QuestsData.Add(new QuestData("1", 1));
 		QuestsData.Add(new QuestData("2", 2));

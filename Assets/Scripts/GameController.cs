@@ -312,7 +312,7 @@ public class GameController : MonoBehaviour {
 		}		
 		SelectTileItem(tile, true);
 
-		if(tileItem.IsBomb) {
+		if(tileItem.IsMovableBomb) {
 			bombTile = tile;
 			MarkBombTiles(tile);
 		}
@@ -402,7 +402,7 @@ public class GameController : MonoBehaviour {
 				} 
 
 				MarkBombTiles(tile);
-			} else if(bombTile == null && tile.GetTileItem().IsBomb) {
+			} else if(bombTile == null && tile.GetTileItem().IsMovableBomb) {
 				bombTile = tile;
 				MarkBombTiles(tile);
 			}
@@ -503,6 +503,9 @@ public class GameController : MonoBehaviour {
 		foreach(Tile tile in bombMarkTiles) {
 			InitBombExplosion(tile);
 
+			if(tile.GetTileItem() != null && tile.GetTileItem().IsBomb) {
+				int a = 5;
+			}
 			tile.MarkBomb(false);
 		//	bool isNotStatic = tile.IsEmpty || tile.GetTileItem().IsNotStatic || tile.GetTileItem().IsSlime;
 			if(tile.IsEmpty && BreakBarriers(tile.X, tile.Y, 5)) {
@@ -513,7 +516,7 @@ public class GameController : MonoBehaviour {
 				continue;
 			}
 
-			if((tile.GetTileItem().IsColor || tile.GetTileItem().IsSpecialCollect || tile.GetTileItem().IsBreakableOnlyByBomb )) {
+			if((tile.GetTileItem().IsColor || tile.GetTileItem().IsColorIndepended || tile.GetTileItem().IsSpecialCollect || tile.GetTileItem().IsBreakableOnlyByBomb )) {
 				CollectTileItem(tile);
 				if(BreakBarriers(tile.X, tile.Y, 5)) {
 					isDetectAvaliable = true;
@@ -726,7 +729,7 @@ public class GameController : MonoBehaviour {
 			}
 
 			if(damagedTiles.ContainsKey(tile)) {
-				continue;
+						continue;
 			}
 
 			TileItem parentTi = tile.GetTileItem().GetParentTileItem();
@@ -1417,7 +1420,7 @@ public class GameController : MonoBehaviour {
 		
 			TileItem ti = InstantiateTileItem(itemData.Type, itemData.X, itemData.Y, true);
 			ti.Level = itemData.Level;
-			ti.GetGameObject().transition.rotation = tileItem.transition.rotation;
+			ti.GetGameObject().transform.rotation = tileItem.GetGameObject().transform.rotation;
 			ClearTile(tile);
 			tile.SetTileItem(ti);
 			ti.SetRenderState(state);
@@ -1860,20 +1863,20 @@ public class GameController : MonoBehaviour {
 				positions.Add(new Vector2(tile.X - 2, tile.Y));
 				positions.Add(new Vector2(tile.X + 2, tile.Y));
 			}
-		} else if(tileItem.IsBombAll || (tileItem.IsBombC && selectedTileItemTypeGroup != null) {
+		} else if(tileItem.IsBombAll || (tileItem.IsBombC && selectedTileItemTypeGroup != null)) {
 			for(int x = 0; x < numColumns; x++) {
 				for(int y = 0; y < numRows; y++) {
-					Tile tile = tiles[x, y];
+					Tile curTile = tiles[x, y];
 					if(tileItem.IsBombAll) {
 						positions.Add(new Vector2(x, y));
-					} else if(tile.GetTileItem() != null && tile.GetTileItem().TypeGroup == selectedTileItemTypeGroup.Value) {
+					} else if(curTile.GetTileItem() != null && curTile.GetTileItem().TypeGroup == selectedTileItemTypeGroup.Value) {
 						positions.Add(new Vector2(x, y));
 					}
 				}
 			}
 		} else if(tileItem.IsBombP) {
-			for(int x = tile.X - 1; x < tile.X + 1; x++) {
-				for(int y = tile.Y - 1; y < tile.Y + 1; y++) {
+			for(int x = tile.X - 1; x <= tile.X + 1; x++) {
+				for(int y = tile.Y - 1; y <= tile.Y + 1; y++) {
 					positions.Add(new Vector2(x, y));
 				}
 			}

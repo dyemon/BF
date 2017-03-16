@@ -386,4 +386,10 @@ public class TileItem {
 			return !IsBomb && !IsBombAll;
 		}
 	}
+
+	public bool IsMovableBomb {
+		get {
+			return IsBomb;// && !IsBombC;
+		}
+	}
 }
