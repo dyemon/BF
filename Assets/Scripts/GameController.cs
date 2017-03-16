@@ -349,6 +349,7 @@ public class GameController : MonoBehaviour {
 				}
 				SelectTileItem(lastTile, false);
 
+				bool checkSelectedColor = false;
 				if(bombTile != null && lastTile == bombTile) {
 					bombTile = null;
 					ResetBombMark();
@@ -362,9 +363,14 @@ public class GameController : MonoBehaviour {
 						tile.GetTileItem().SetTransitionTileItem(selectedTiles.Last.Previous.Value.GetTileItem());
 					}
 
+					CheckSelectedColor();
+					checkSelectedColor = true;
 					MarkBombTiles(tile);
 				}
-				CheckSelectedColor();
+				
+				if(!checkSelectedColor) {
+					CheckSelectedColor();
+				}
 
 				if(suspendBomb && tile.GetTileItem().IsBomb) {
 					suspendBomb = false;
