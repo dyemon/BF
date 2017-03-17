@@ -410,7 +410,7 @@ public class TileItem {
 
 	public bool IsMovableBomb {
 		get {
-			return IsBomb;// && !IsBombC;
+			return IsBomb && !IsBombC;
 		}
 	}
 }

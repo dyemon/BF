@@ -337,13 +337,14 @@ public class GameController : MonoBehaviour {
 		}
 
 		Debug.Log(tileItem.TypeGroup + " " + lastTile.GetTileItem().TypeGroup + " " +selectedTileItemTypeGroup);
+		bool updateMarkBombTiles = false;
 
 		if(selectedTileItemTypeGroup == null && !tileItem.IsColorIndepended) {
 			SetTileItemsRenderState(TileItemRenderState.Dark, tileItem.TypeGroup);
 			selectedTileItemTypeGroup = tileItem.TypeGroup;
+			updateMarkBombTiles = true;
 		}		
-
-		bool updateMarkBombTiles = false;
+			
 		bool stop = false;
 		Tile predLastTile = null;
 		if(selectedTiles.Count > 1) {
@@ -405,6 +406,10 @@ public class GameController : MonoBehaviour {
 			}
 
 			SelectTileItem(tile, true, TileItemRenderState.HighLight, lastTile.GetTileItem());
+			if(tile.GetTileItem().IsBomb && !bombSelectedTiles.Contains(tile.GetTileItem())) {
+				bombSelectedTiles.Add(tile.GetTileItem());
+				updateMarkBombTiles = true;
+			}
 
 			if(bombTile != null && !tile.GetTileItem().IsNotStatic) {
 				suspendBomb = true;
@@ -423,10 +428,7 @@ public class GameController : MonoBehaviour {
 				updateMarkBombTiles = true;
 			}
 			
-			if(tile.GetTileItem().IsBomb && !bombSelectedTiles.Contains(tile.GetTileItem())) {
-				bombSelectedTiles.Add(tile.GetTileItem());
-				updateMarkBombTiles = true;
-			}
+
 
 		}
 		
@@ -477,6 +479,8 @@ public class GameController : MonoBehaviour {
 			tile.GetTileItem().UnSelect(TileItemRenderState.Normal);
 		}
 
+		ResetBombMark();
+
 		for( LinkedListNode<Tile> node = selectedTiles.Last;node != null; node = node.Previous ) {
 			Tile curTile = node.Value;
 			curTile.GetTileItem().UnSelect(TileItemRenderState.Normal);
@@ -496,8 +500,8 @@ public class GameController : MonoBehaviour {
 			ReplaceTileItems(replacedItems[index], TileItemRenderState.Normal, false);
 		}
 
-		ResetBombMark();
-		RotateBombs();
+
+	//	RotateBombs();
 
 		rotaitedBombs.Clear();
 		specialSelectedTiles.Clear();
@@ -1868,7 +1872,7 @@ public class GameController : MonoBehaviour {
 		if(bombSelectedTiles.Count > 1) {
 			int a = 7;
 		}
-	//	Debug.Log(bombSelectedTiles.Count);
+		Debug.Log(bombSelectedTiles.Count);
 		foreach(TileItem ti in bombSelectedTiles) {
 			Vector3 pos = new Vector3(ti.GetGameObject().transform.position.x ,
 				ti.GetGameObject().transform.position.y, 0);
@@ -1928,7 +1932,7 @@ public class GameController : MonoBehaviour {
 					Tile curTile = tiles[x, y];
 					if(tileItem.IsBombAll) {
 						positions.Add(new Vector2(x, y));
-					} else if(curTile.GetTileItem() != null && curTile.GetTileItem().TypeGroup == selectedTileItemTypeGroup.Value) {
+					} else if(curTile.GetTileItem() != null && curTile.GetTileItem().TypeGroup == selectedTileItemTypeGroup.Value && curTile.IsSimple) {
 						positions.Add(new Vector2(x, y));
 					}
 				}
