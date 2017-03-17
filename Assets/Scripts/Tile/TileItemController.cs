@@ -107,7 +107,6 @@ public class TileItemController : MonoBehaviour {
 	virtual protected void RenderHighLight() {
 		render.GetPropertyBlock(_propBlock);
 
-
 		Sprite hl = GetHighLightSprite();
 		if(hl != null) {
 		//	render.sprite = hl;

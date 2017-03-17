@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 public class TileItem {
 	public const int TILE_ITEM_GROUP_WEIGHT = 100;
@@ -107,12 +109,13 @@ public class TileItem {
 			IList<TileItemTypeGroup> items = new List<TileItemTypeGroup>();
 		
 			foreach(TileItemTypeGroup item in EnumUtill.GetValues<TileItemTypeGroup>()) {
-				if(IsColorItem(item)) {
-					items.add(item);
+				if(IsColorItem((TileItemType)(item))) {
+					items.Add(item);
 				}
 			}
-			
-			allColorTileItemGroup = items.ToArray();
+
+			allColorTileItemGroup = items.Cast<TileItemTypeGroup>().ToArray();
+
 		}
 		
 		return allColorTileItemGroup;
