@@ -42,6 +42,7 @@ public class GameController : MonoBehaviour {
 	private LinkedList<Tile> selectedTiles = new LinkedList<Tile>();
 	private LinkedList<Tile> specialSelectedTiles = new LinkedList<Tile>();
 	private IList<Tile> bombMarkTiles = new List<Tile>();
+	private IList<Tile> bombSelectedTiles = new List<Tile>();
 	private IList<Tile> rotaitedBombs = new List<Tile>();
 	private IList<Tile> slimeTiles = new List<Tile>();
 	private IList<Generator> generatorTiles = new List<Generator>();
@@ -298,7 +299,8 @@ public class GameController : MonoBehaviour {
 		suspendBomb = false;
 		endTouchTile = null;
 		selectedTileItemTypeGroup = null;
-
+		bombSelectedTiles.Clear();
+		
 		if(tile == null || tile.GetTileItem() == null || !tile.GetTileItem().MayBeFirst ) {
 			return;
 		}
@@ -312,9 +314,12 @@ public class GameController : MonoBehaviour {
 		}		
 		SelectTileItem(tile, true);
 
-		if(tileItem.IsMovableBomb) {
-			bombTile = tile;
-			MarkBombTiles(tile);
+		if(tileItem.IsBomb) {
+			bombSelectedTiles.add(tile);
+			MarkBombTiles();
+			if(tileItem.IsMovableBomb) {
+				bombTile = tile;		
+			}
 		}
 
 	}
@@ -338,6 +343,8 @@ public class GameController : MonoBehaviour {
 			selectedTileItemTypeGroup = tileItem.TypeGroup;
 		}		
 
+		bool updateMarkBombTiles = false;
+		
 		Tile predLastTile = null;
 		if(selectedTiles.Count > 1) {
 			predLastTile = selectedTiles.Last.Previous.Value;
@@ -347,31 +354,30 @@ public class GameController : MonoBehaviour {
 					ReplaceTileItems(replacedItems[index], TileItemRenderState.Dark, false);
 					replacedItems.Remove(index);
 				}
+				
 				SelectTileItem(lastTile, false);
 
-				bool checkSelectedColor = false;
 				if(bombTile != null && lastTile == bombTile) {
 					bombTile = null;
-					ResetBombMark();
+					updateMarkBombTiles = true;
 				} else if(bombTile != null && !suspendBomb) {
-					ResetBombMark();
+					updateMarkBombTiles = true;
 					ExchangeTileItem(lastTile, tile);
 					tile.GetTileItem().Select(null);
 					lastTile.GetTileItem().UnSelect(TileItemRenderState.Normal);
 
 					if(selectedTiles.Count > 1) {
 						tile.GetTileItem().SetTransitionTileItem(selectedTiles.Last.Previous.Value.GetTileItem());
-					}
-
-					CheckSelectedColor();
-					checkSelectedColor = true;
-					MarkBombTiles(tile);
+					}				
 				}
 				
-				if(!checkSelectedColor) {
-					CheckSelectedColor();
-				}
+				CheckSelectedColor();
 
+				if(bombSelectedTiles.Contains(lastTile)) {
+					bombSelectedTiles.Remove(lastTile);
+					updateMarkBombTiles = true;
+				}
+				
 				if(suspendBomb && tile.GetTileItem().IsBomb) {
 					suspendBomb = false;
 				}
@@ -392,7 +398,7 @@ public class GameController : MonoBehaviour {
 			if(bombTile != null && !tile.GetTileItem().IsNotStatic) {
 				suspendBomb = true;
 			} else if(bombTile != null && bombTile != tile && !suspendBomb) {
-				ResetBombMark();
+				updateMarkBombTiles = true;
 			
 				ExchangeTileItem(lastTile, tile);
 				lastTile.GetTileItem().SetTransitionTileItem(null);
@@ -401,12 +407,21 @@ public class GameController : MonoBehaviour {
 					lastTile.GetTileItem().SetTransitionTileItem(predLastTile.GetTileItem());
 				} 
 
-				MarkBombTiles(tile);
 			} else if(bombTile == null && tile.GetTileItem().IsMovableBomb) {
 				bombTile = tile;
-				MarkBombTiles(tile);
+				updateMarkBombTiles = true;
+			}
+			
+			if(tile.GetTileItem().IsBomb) {
+				bombSelectedTiles.add(tile);
+				updateMarkBombTiles = true;
 			}
 
+		}
+		
+		if(updateMarkBombTiles) {
+			ResetBombMark();
+			MarkBombTiles();
 		}
 
 	}
@@ -1493,18 +1508,34 @@ public class GameController : MonoBehaviour {
 		for(int x = 0; x < numColumns; x++) {
 			for(int y = 0; y < numRows; y++) {
 				Tile tile = tiles[x, y];
-				if(!tile.IsColor) {
+				
+				if(!tile.IsColor && !tile.IsColorIndepended) {
 					continue;
 				}
 				if(strict && !tile.GetTileItem().IsReposition) {
 					continue;
 				}
 
-				TileItemTypeGroup tg = tile.GetTileItem().TypeGroup;
-				if(!items.ContainsKey(tg)) {
-					items.Add(tg, new TileItemSameColorCount(tg));
+				int count = 0;
+				TileItemTypeGroup tg;
+				
+				if(tile.IsColorIndepended) {
+					foreach(TileItemTypeGroup tgt in TileItem.GetAllColorTileItemGroup()) {
+						if(!items.ContainsKey(tgt)) {
+							items.Add(tgt, new TileItemSameColorCount(tgt));
+						}
+						items[tgt].Increment();
+					}
+					count = maxCount + 1;
+					tg = maxCountType;
+				} else {
+					tg = tile.GetTileItem().TypeGroup;
+					if(!items.ContainsKey(tg)) {
+						items.Add(tg, new TileItemSameColorCount(tg));
+					}
+					count = items[tg].Increment();
 				}
-				int count = items[tg].Increment();
+				
 				if(!strict && tile.GetTileItem().IsEnvelop) {
 					count += tile.GetTileItem().GetEnvelopReplaceItemCount() ;
 				}
@@ -1821,7 +1852,15 @@ public class GameController : MonoBehaviour {
 		bombMarkTiles.Clear();
 	}
 
-	private void MarkBombTiles(Tile tile) {
+	private void MarkBombTiles() {
+		foreach(Tile tile in bombSelectedTiles) {
+			if(!bombMarkTiles.Contains(tile) {
+				MarkBombTile(tile);
+			}
+		}
+	}
+	
+	private void MarkBombTile(Tile tile) {
 		TileItem tileItem = Preconditions.NotNull(tile.GetTileItem());
 		Preconditions.Check(tileItem.IsBomb || tileItem.IsBombAll, "Tile item must be bomb");
 
@@ -1902,7 +1941,7 @@ public class GameController : MonoBehaviour {
 						RotateBomb(curTile);
 						rotaitedBombs.Add(curTile);
 					}
-					MarkBombTiles(curTile);
+					MarkBombTile(curTile);
 				}
 			}
 		}
@@ -1911,8 +1950,14 @@ public class GameController : MonoBehaviour {
 	public void RotateBomb(Tile tile) {
 		TileItem tileItem = tile.GetTileItem();
 		TileItemTypeGroup group = tileItem.TypeGroup;
-		TileItemType type = (TileItemType)((int)group + ((tileItem.IsBombH) ? TileItem.BOMBV_OFFSET : TileItem.BOMBH_OFFSET));
-
+		TileItemType type;
+		
+		if(tileItem.IsBreakableOnlyByBomb) {
+			type = tileItem.IsBombH? TileItemType.BombV : TileItemType.BombH;
+		} else {
+			type = (TileItemType)((int)group + ((tileItem.IsBombH) ? TileItem.BOMBV_OFFSET : TileItem.BOMBH_OFFSET));
+		}
+		
 		tileItem.Rotate();
 		tileItem.SetType(type);
 	}

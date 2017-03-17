@@ -30,6 +30,8 @@ public class TileItem {
 	private TileItem parentTileItem;
 	private ChildTileItemData generatedTileItemData;
 
+	private static TileItemTypeGroup[] allColorTileItemGroup = null;
+	
 	public TileItem(TileItemTypeGroup typeGroup, int index, GameObject go) {
 		SetType(typeGroup, index);
 		init(go);
@@ -100,6 +102,22 @@ public class TileItem {
 		}
 	}
 
+	public static TileItemTypeGroup[] GetAllColorTileItemGroup() {
+		if(allColorTileItemGroup == null) {
+			IList<TileItemTypeGroup> items = new List<TileItemTypeGroup>();
+		
+			foreach(TileItemTypeGroup item in EnumUtill.GetValues<TileItemTypeGroup>()) {
+				if(IsColorItem(item)) {
+					items.add(item);
+				}
+			}
+			
+			allColorTileItemGroup = items.ToArray();
+		}
+		
+		return allColorTileItemGroup;
+	}
+	
 	public void UnSelect(TileItemRenderState state) {
 		SetRenderState(state);
 		SetTransitionTileItem(null);
