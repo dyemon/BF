@@ -1686,11 +1686,11 @@ public class GameController : MonoBehaviour {
 		for(int x = (int)pos.x - 1; x <= pos.x + 1; x++) {
 			for(int y = (int)pos.y - 1; y <= pos.y + 1; y++) {
 				TileItemData itemData = GetTileItemData(x, y, data);
-				if(itemData == null || !TileItem.IsColorItem(itemData.Type)) {
+				if(itemData == null || (!TileItem.IsColorItem(itemData.Type) && !TileItem.IsColorIndependedItem(itemData.Type)) {
 					continue;
 				}
 				Vector2 curPos = new Vector2(x, y);
-				if(chain.ContainsKey(curPos) || TileItem.TypeToTypeGroup(itemData.Type) != typeGroup) {
+				if(chain.ContainsKey(curPos) || (TileItem.TypeToTypeGroup(itemData.Type) != typeGroup && !TileItem.IsColorIndependedItem(itemData.Type)) {
 					continue;
 				}
 
@@ -1751,12 +1751,12 @@ public class GameController : MonoBehaviour {
 		for(int x = 0; x < numColumns; x++) {
 			for(int y = 0; y < numRows; y++) {	
 				TileItemData tid = data[x, y];
-				if(tid == null || !TileItem.IsColorItem(tid.Type) || !TileItem.IsRepositionItem(tid)) {
+				if(tid == null || (!TileItem.IsColorItem(tid.Type) && !TileItem.IsColorIndependedItem(tid.Type)) || !TileItem.IsRepositionItem(tid)) {
 					continue;
 				}
 
 				TileItemTypeGroup tg = TileItem.TypeToTypeGroup(tid.Type);
-				if(tg == maxTypeGroup) {
+				if(tg == maxTypeGroup || TileItem.IsColorIndependedItem(tid.Type)) {
 					Vector2 pos = new Vector2(x, y);
 					i++;
 					if(!path.ContainsKey(pos)) {
@@ -1774,7 +1774,7 @@ public class GameController : MonoBehaviour {
 
 		foreach(Vector2 pos in path.Keys) {
 			TileItemData tid = data[(int)pos.x, (int)pos.y];
-			if(TileItem.TypeToTypeGroup(tid.Type) == maxTypeGroup) {
+			if(TileItem.TypeToTypeGroup(tid.Type) == maxTypeGroup || TileItem.IsColorIndependedItem(tid.Type)) {
 				continue;
 			}
 			Vector2 movePos = movePositions.First.Value;

@@ -34,7 +34,10 @@ public class GameData {
 		HeroData["purpleEnvelop"] = new HeroData(TileItemType.PurpleEnvelop, 50);
 		HeroData["purpleHVBomb"] = new HeroData(TileItemType.PurpleBombHV, 50);
 
-
+		HeroData["BombH"] = new HeroData(TileItemType.BombH, 50);
+		HeroData["BombV"] = new HeroData(TileItemType.BombV, 50);
+		HeroData["BombP"] = new HeroData(TileItemType.BombP, 50);
+		HeroData["BombC"] = new HeroData(TileItemType.BombC, 50);
 	}
 
 	public int GetBombRatio(int level) {
