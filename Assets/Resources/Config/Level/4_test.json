@@ -44,6 +44,18 @@
 			"X": 3, 
 			"Y": 5, 
 			"TypeAsString": "GreenEnvelop"
+		}, {
+			"X": 4, 
+			"Y": 4, 
+			"TypeAsString": "Static_2"
+		}, {
+			"X": 5, 
+			"Y": 4, 
+			"TypeAsString": "Static_2"
+		}, {
+			"X": 3, 
+			"Y": 4, 
+			"TypeAsString": "Static_2"
 		}],
 	
 	  "BarrierData": [{
@@ -51,7 +63,8 @@
             "Y1": 0, 
             "X2": 1, 
             "Y2": 0, 
-            "TypeAsString": "Barrier_2"
+            "TypeAsString": "Barrier_2",
+			"Health": 2
         }, {
             "X1": 4, 
             "Y1": 6, 

@@ -7,6 +7,7 @@ public class BarrierData {
 	public int Y1;
 	public int X2;
 	public int Y2;
+	public int Health;
 	public BarrierType Type;
 	public string TypeAsString;
 
