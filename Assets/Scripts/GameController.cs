@@ -1686,11 +1686,11 @@ public class GameController : MonoBehaviour {
 		for(int x = (int)pos.x - 1; x <= pos.x + 1; x++) {
 			for(int y = (int)pos.y - 1; y <= pos.y + 1; y++) {
 				TileItemData itemData = GetTileItemData(x, y, data);
-				if(itemData == null || (!TileItem.IsColorItem(itemData.Type) && !TileItem.IsColorIndependedItem(itemData.Type)) {
+				if(itemData == null || (!TileItem.IsColorItem(itemData.Type) && !TileItem.IsColorIndependedItem(itemData.Type))) {
 					continue;
 				}
 				Vector2 curPos = new Vector2(x, y);
-				if(chain.ContainsKey(curPos) || (TileItem.TypeToTypeGroup(itemData.Type) != typeGroup && !TileItem.IsColorIndependedItem(itemData.Type)) {
+				if(chain.ContainsKey(curPos) || (TileItem.TypeToTypeGroup(itemData.Type) != typeGroup && !TileItem.IsColorIndependedItem(itemData.Type))) {
 					continue;
 				}
 

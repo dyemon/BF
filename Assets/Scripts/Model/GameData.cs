@@ -9,15 +9,15 @@ public class GameData {
 	public IDictionary<string, HeroData> HeroData = new Dictionary<string, HeroData>();
 
 	public void Init() {
-		HeroData["redHBomb"] = new HeroData(TileItemType.RedBombH, 2);
-		HeroData["redVBomb"] = new HeroData(TileItemType.RedBombV, 2);
-		HeroData["redEnvelop"] = new HeroData(TileItemType.RedEnvelop, 2);
-		HeroData["redHVBomb"] = new HeroData(TileItemType.RedBombHV, 2);
+		HeroData["redHBomb"] = new HeroData(TileItemType.RedBombH, 5);
+		HeroData["redVBomb"] = new HeroData(TileItemType.RedBombV, 5);
+		HeroData["redEnvelop"] = new HeroData(TileItemType.RedEnvelop, 50);
+		HeroData["redHVBomb"] = new HeroData(TileItemType.RedBombHV, 5);
 
-		HeroData["greenHBomb"] = new HeroData(TileItemType.GreenBombH, 50);
-		HeroData["greenVBomb"] = new HeroData(TileItemType.GreenBombV, 50);
+		HeroData["greenHBomb"] = new HeroData(TileItemType.GreenBombH, 5);
+		HeroData["greenVBomb"] = new HeroData(TileItemType.GreenBombV, 5);
 		HeroData["greenEnvelop"] = new HeroData(TileItemType.GreenEnvelop, 50);
-		HeroData["greenHVBomb"] = new HeroData(TileItemType.GreenBombHV, 50);
+		HeroData["greenHVBomb"] = new HeroData(TileItemType.GreenBombHV, 5);
 
 		HeroData["blueHBomb"] = new HeroData(TileItemType.BlueBombH, 50);
 		HeroData["blueVBomb"] = new HeroData(TileItemType.BlueBombV, 50);
@@ -34,10 +34,10 @@ public class GameData {
 		HeroData["purpleEnvelop"] = new HeroData(TileItemType.PurpleEnvelop, 50);
 		HeroData["purpleHVBomb"] = new HeroData(TileItemType.PurpleBombHV, 50);
 
-		HeroData["BombH"] = new HeroData(TileItemType.BombH, 50);
-		HeroData["BombV"] = new HeroData(TileItemType.BombV, 50);
-		HeroData["BombP"] = new HeroData(TileItemType.BombP, 50);
-		HeroData["BombC"] = new HeroData(TileItemType.BombC, 50);
+		HeroData["BombH"] = new HeroData(TileItemType.BombH, 3);
+		HeroData["BombV"] = new HeroData(TileItemType.BombV, 3);
+		HeroData["BombP"] = new HeroData(TileItemType.BombP, 3);
+		HeroData["BombC"] = new HeroData(TileItemType.BombC, 3);
 	}
 
 	public int GetBombRatio(int level) {

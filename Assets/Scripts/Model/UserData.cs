@@ -28,7 +28,7 @@ public class UserData {
 	public List<QuestData> QuestsData = new List<QuestData>();
 
 	public void InitTest() {
-		HeroesData.Add(new UserHeroData("radEnvelop",0));
+	/*	HeroesData.Add(new UserHeroData("redEnvelop",0));
 		HeroesData.Add(new UserHeroData("yellowEnvelop",0));
 		HeroesData.Add(new UserHeroData("greenEnvelop",0));		
 		HeroesData.Add(new UserHeroData("blueEnvelop",0));
@@ -38,7 +38,7 @@ public class UserData {
 		HeroesData.Add(new UserHeroData("BombV",0));		
 		HeroesData.Add(new UserHeroData("BombP",0));
 		HeroesData.Add(new UserHeroData("BombC",0));
-		
+		*/
 		QuestsData.Clear();
 		QuestsData.Add(new QuestData("1", 1));
 		QuestsData.Add(new QuestData("2", 2));

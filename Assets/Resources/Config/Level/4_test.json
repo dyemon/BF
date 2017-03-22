@@ -53,8 +53,8 @@
 			"Y": 4, 
 			"TypeAsString": "Static_2"
 		}, {
-			"X": 3, 
-			"Y": 4, 
+			"X": 2, 
+			"Y": 5, 
 			"TypeAsString": "Static_2"
 		}],
 	
@@ -130,18 +130,6 @@
 	}, {
 		"Count": 30, 
 		"TypeAsString": "Blue"
-	}, {
-		"Count": 2, 
-		"TypeAsString": "Brilliant"
-	}, {
-		"Count": 2, 
-		"TypeAsString": "Key"
-	}, {
-		"Count": 1, 
-		"TypeAsString": "BombAll"
-	}, {
-		"Count": 1, 
-		"TypeAsString": "Box"
 	}],
 
 	"RestrictionData": {

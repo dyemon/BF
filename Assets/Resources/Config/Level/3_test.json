@@ -2,7 +2,7 @@
     "Id": "3", 
     "Name": "Level 3", 
     "Description": "", 
-    "SuccessCount": 3, 
+	"TileItemDropPercent": [20, 20, 20, 20, 20],
     "TileData": [  {
             "X": 0, 
             "Y": 5, 
@@ -18,12 +18,11 @@
         }, {
             "X": 3, 
             "Y": 5, 
-            "TypeAsString": "Red",
-			"Level": 1
+            "TypeAsString": "Red"
         }, {
             "X": 4, 
             "Y": 4, 
-            "TypeAsString": "Green",
+            "TypeAsString": "BombC"
         }, {
             "X": 5, 
             "Y": 5, 
@@ -47,21 +46,11 @@
         }, {
             "X": 3, 
             "Y": 6, 
-            "TypeAsString": "Static_2",
-			"Level": 1
+            "TypeAsString": "Static_2"
         },{
             "X": 0, 
-            "Y": 5, 
-			"Level": 1,
+            "Y": 0, 
             "TypeAsString": "Purple"
-        }, {
-            "X": 5, 
-            "Y": 4, 
-            "TypeAsString": "Blue",
-			"ParentTileItemData": {
-				"Health": 4,
-				"TypeAsString": "StaticSlime_2"
-			}
         }
 		], 
 
@@ -134,6 +123,6 @@
 
 	"RestrictionData": {
         "Movies": 25
-    },
+    }
 
 }
