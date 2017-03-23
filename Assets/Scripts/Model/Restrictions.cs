@@ -3,5 +3,5 @@ using System.Collections;
 
 [System.Serializable]
 public class Restrictions {
-	public int Movies;
+	public int Turns;
 }

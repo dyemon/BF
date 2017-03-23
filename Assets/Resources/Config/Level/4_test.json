@@ -30,7 +30,7 @@
 			"TypeAsString": "BombH"
 		}, {
 			"X": 3, 
-			"Y": 2, 
+			"Y": 0, 
 			"TypeAsString": "BombH"
 		}, {
 			"X": 3, 
@@ -56,7 +56,30 @@
 			"X": 2, 
 			"Y": 5, 
 			"TypeAsString": "Static_2"
-		}],
+		},{
+            "X": 4, 
+            "Y": 2, 
+            "TypeAsString": "Blue",
+			"ParentTileItemData": {
+				"Health": 1,
+				"TypeAsString": "StaticSlime_1"
+			}
+        },{
+            "X": 3, 
+            "Y": 2, 
+            "TypeAsString": "BlueEnvelop",
+			"ParentTileItemData": {
+				"Health": 2,
+				"TypeAsString": "StaticSlime_1"
+			}
+        },{
+            "X": 2, 
+            "Y": 2, 
+            "TypeAsString": "BombC",
+			"ParentTileItemData": {
+				"TypeAsString": "StaticSlime_1"
+			}
+        }],
 	
 	  "BarrierData": [{
             "X1": 0, 
@@ -66,11 +89,12 @@
             "TypeAsString": "Barrier_2",
 			"Health": 2
         }, {
-            "X1": 4, 
-            "Y1": 6, 
-            "X2": 5, 
-            "Y2": 6, 
-            "TypeAsString": "Barrier_2"
+            "X1": 0, 
+            "Y1": 1, 
+            "X2": 1, 
+            "Y2": 1, 
+            "TypeAsString": "Barrier_2",
+			"Health": 1
         },{
             "X1": 0, 
             "Y1": 0, 
@@ -78,9 +102,9 @@
             "Y2": 1, 
             "TypeAsString": "Barrier_1"
         },  {
-            "X1": 2, 
+            "X1": 0, 
             "Y1": 2, 
-            "X2": 3, 
+            "X2": 1, 
             "Y2": 2, 
             "TypeAsString": "Barrier_2"
         }, {
@@ -133,6 +157,6 @@
 	}],
 
 	"RestrictionData": {
-        "Movies": 25
+        "Turns": 25
     }
 }

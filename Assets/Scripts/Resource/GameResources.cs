@@ -10,7 +10,8 @@ public class GameResources {
 
 	private string currentLevelId = null;
 	private LevelData currentLevelData = null;
-
+	private GameData gameData = null;
+	
 	private string userData;
 
 	private INIParser settings;
@@ -52,6 +53,13 @@ public class GameResources {
 		}
 	}
 
+	public GameData GetGameData() {
+		if(gameData == null) {
+			gameData = new GameData();
+		}
+		return gameData;
+	}
+	
 	private void saveUserDataLocal(UserData userData) {
 		string json = JsonUtility.ToJson(userData);
 		this.userData = B64X.Encode(json);

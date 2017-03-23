@@ -95,7 +95,7 @@ public class GameController : MonoBehaviour {
 	void Start() {
 		levelData = GameResources.Instance.LoadLevel(App.GetCurrentLevel());
 		levelData.Init();
-		gameData = new GameData();
+		gameData = GameResources.Instance.GetGameData();
 		gameData.Init();
 
 		numColumns = GameData.NumColumns;

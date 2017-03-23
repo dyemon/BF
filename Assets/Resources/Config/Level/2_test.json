@@ -207,7 +207,7 @@
         }], 
 
     "RestrictionData": {
-        "Movies": 25
+        "Turns": 25
     },
 
 	"AutoDropOnCollectData" : [

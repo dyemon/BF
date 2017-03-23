@@ -3,9 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class GameData {
-	public static int NumColumns = 7;
-	public static int NumRows = 7;
+	public static int readonly NumColumns = 7;
+	public static int readonly NumRows = 7;
 
+	public static int readonly PowerPointSuccess = 100; 
+	public static int readonly PowerPointByItem = 3; 
+	public static int readonly EnemyTurn = 5; 
+	
 	public IDictionary<string, HeroData> HeroData = new Dictionary<string, HeroData>();
 
 	public void Init() {
@@ -43,5 +47,9 @@ public class GameData {
 	public int GetBombRatio(int level) {
 	//	Preconditions.Check(level > 0, "Bomb level must be greater 1");
 		return (level == 0)? Mathf.Max(NumColumns, NumRows) :  level + 1;
+	}
+	
+	public float GetPowerRatio(int itemCount) {
+		return 1 + ((int) itemCount / 6) *0.5;
 	}
 }
