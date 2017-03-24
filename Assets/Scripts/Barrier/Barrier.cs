@@ -11,6 +11,7 @@ public class Barrier {
 		this.Data = data;
 		this.BarrierGO = go;
 		this.itemController = go.GetComponent<TileItemController>();	
+		itemController.SetStartHealth(data.Health);
 	}
 
 	public int Damage(int damage) {

@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class GameData {
-	public static int readonly NumColumns = 7;
-	public static int readonly NumRows = 7;
+	public static readonly int  NumColumns = 7;
+	public static readonly int NumRows = 7;
 
-	public static int readonly PowerPointSuccess = 100; 
-	public static int readonly PowerPointByItem = 3; 
-	public static int readonly EnemyTurn = 5; 
+	public static readonly int PowerPointSuccess = 100; 
+	public static readonly int PowerPointByItem = 3; 
+	public static readonly int EnemyTurn = 5; 
 	
 	public IDictionary<string, HeroData> HeroData = new Dictionary<string, HeroData>();
 
@@ -50,6 +50,6 @@ public class GameData {
 	}
 	
 	public float GetPowerRatio(int itemCount) {
-		return 1 + ((int) itemCount / 6) *0.5;
+		return 1 + ((int) itemCount / 6f) *0.5f;
 	}
 }
