@@ -839,7 +839,9 @@ public class GameController : MonoBehaviour {
 	}
 
 	private Tile GetTile(GameObject go) {
-		for(int x = 0; x < numColumns; x++) {
+		Vector3 pos = new Vector3(go.transform.position.x, go.transform.position.y, 0);
+		return GetTile(PositionToIndex(pos));
+	/*	for(int x = 0; x < numColumns; x++) {
 			for(int y = 0; y < numRows; y++) {
 				if(tiles[x, y].IsEmpty ) {
 					continue;
@@ -850,7 +852,7 @@ public class GameController : MonoBehaviour {
 			}
 		}
 
-		return null;
+		return null;*/
 	}
 
 	private Barrier GetBarrier(int x1, int y1, int x2, int y2) {
@@ -1874,9 +1876,9 @@ public class GameController : MonoBehaviour {
 		}
 		Debug.Log(bombSelectedTiles.Count);
 		foreach(TileItem ti in bombSelectedTiles) {
-			Vector3 pos = new Vector3(ti.GetGameObject().transform.position.x ,
-				ti.GetGameObject().transform.position.y, 0);
-			Tile tile = GetTile(PositionToIndex(pos));
+	//		Vector3 pos = new Vector3(ti.GetGameObject().transform.position.x ,
+	//			ti.GetGameObject().transform.position.y, 0);
+			Tile tile = GetTile(ti.GetGameObject());
 	//		Debug.Log(tile);
 			if(!bombMarkTiles.Contains(tile)) {
 				MarkBombTile(tile);
