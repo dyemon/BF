@@ -8,6 +8,8 @@ public class BreakableTileItemController : TileItemController {
 	public Sprite BrokeSprite;
 	private bool broke = false;
 	private int startHealth = 0;
+	public GameObject Splinter;
+	public int SplintersCount;
 
 	protected override void Start() {
 		base.Start();
@@ -26,6 +28,10 @@ public class BreakableTileItemController : TileItemController {
 		} else if(BrokeSprite != null && !broke) {
 			render.sprite = BrokeSprite;
 			broke = true;
+		}
+
+		if(Splinter != null) {
+			displaySplinters();
 		}
 
 		return health;
@@ -57,5 +63,11 @@ public class BreakableTileItemController : TileItemController {
 
 	override public bool DestroyOnBreak() {
 		return BrokeSprite == null;
+	}
+
+	private void displaySplinters() {
+		for(int i = 0; i < SplintersCount; i++) {
+			Instantiate(Splinter, transform.position, Quaternion.identity);
+		}
 	}
 }

@@ -3,15 +3,16 @@ using System.Collections;
 
 public class MoveAway : MonoBehaviour {
 
-	public bool runOsStart = false;
-	public float speed = 1f;
-	
+	public bool RunOsStart = false;
+	public float Speed = 0.2f;
+	public float TimeToLive = 1;
+
 	private Vector3 move;
 	private bool isRun;
 	private float rotateAngle;
 	
 	void Start () {
-		if(runOsStart) {
+		if(RunOsStart) {
 			Run();
 		}
 	}
@@ -19,8 +20,9 @@ public class MoveAway : MonoBehaviour {
 	public void Run() {
 		isRun = true;
 		rotateAngle = Random.Range(1, 5);
-		float angle =  2f * Mathf.PI / Random.Range(1, 361);
-		move = new Vector3(Mathf.Cos(angle) * speed, Mathf.Sin(angle) * speed, 0);
+		float angle =  2f * Mathf.PI * Random.Range(1, 361)/360;
+		move = new Vector3(Mathf.Cos(angle) * Speed, Mathf.Sin(angle) * Speed, 0);
+		Destroy(gameObject, TimeToLive);
 	}
 	
 	// Update is called once per frame
