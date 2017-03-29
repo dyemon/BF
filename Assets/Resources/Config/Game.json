@@ -1,0 +1,35 @@
+{
+	"GoodsData" : [{
+			"TypeAsString":	"Espander",
+			"Name": "Эспандер",
+			"Health": 0,
+			"Damage": 10,
+			"MinExperience": 10,
+			"PriceTypeAsString": "Semka",
+			"PriceValue": 10
+	},{
+			"TypeAsString":	"Gruzilo",
+			"Name": "Грузило",
+			"Health": 0,
+			"Damage": 20,
+			"MinExperience": 20,
+			"PriceTypeAsString": "Money",
+			"PriceValue": 10
+	},{
+			"TypeAsString":	"Zazhigalka",
+			"Name": "Зажигалка",
+			"Health": 10,
+			"Damage": 0,
+			"MinExperience": 10,
+			"PriceTypeAsString": "Ring",
+			"PriceValue": 10
+	},{
+			"TypeAsString":	"Karti",
+			"Name": "Карты",
+			"Health": 20,
+			"Damage": 0,
+			"MinExperience": 20,
+			"PriceTypeAsString": "Star",
+			"PriceValue": 10
+	}]
+}

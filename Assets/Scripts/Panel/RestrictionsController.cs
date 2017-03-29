@@ -8,7 +8,7 @@ public class RestrictionsController : MonoBehaviour {
 	private Text textMovesScore;
 
 	public void LoadCurrentLevel () {
-		levelData = GameResources.Instance.LoadLevel(App.GetCurrentLevel());
+		levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
 		currentMovesCount = levelData.RestrictionData.Turns;
 
 		textMovesScore = Preconditions.NotNull(transform.Find("Image").Find("Moves Score").gameObject.GetComponent<Text>(),"Can not get moves score");

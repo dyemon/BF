@@ -35,7 +35,7 @@ public class BackgroundMS : MonoBehaviour {
 //		transform.localScale = new Vector3(worldScreenWidth / width, worldScreenHeight / height, 1);
 		transform.localScale = new Vector3(resizeRation, resizeRation, 1);
 		
-		Vector2 size = new Vector2(width * resizeRation, worldScreenHeight);
+		Vector2 size = new Vector2(Mathf.Min(width * resizeRation, worldScreenWidth), worldScreenHeight);
 		foreach(GameObject go in resizeListeners) {
 			IResizeListener rListener = go.GetComponent<IResizeListener>();
 			if(rListener != null) {

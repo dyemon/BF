@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class GameData {
 	public static readonly int  NumColumns = 7;
@@ -11,6 +12,8 @@ public class GameData {
 	public static readonly int EnemyTurn = 5; 
 	
 	public IDictionary<string, HeroData> HeroData = new Dictionary<string, HeroData>();
+
+	public GoodsData[] GoodsData = new GoodsData[0];
 
 	public void Init() {
 		HeroData["redHBomb"] = new HeroData(TileItemType.RedBombH, 5);
@@ -42,6 +45,10 @@ public class GameData {
 		HeroData["BombV"] = new HeroData(TileItemType.BombV, 3);
 		HeroData["BombP"] = new HeroData(TileItemType.BombP, 3);
 		HeroData["BombC"] = new HeroData(TileItemType.BombC, 3);
+
+		foreach(GoodsData item in GoodsData) {
+			item.Type = (GoodsType)Enum.Parse(typeof(GoodsType), item.TypeAsString);
+		}
 	}
 
 	public int GetBombRatio(int level) {
@@ -49,7 +56,20 @@ public class GameData {
 		return (level == 0)? Mathf.Max(NumColumns, NumRows) :  level + 1;
 	}
 	
-	public float GetPowerRatio(int itemCount) {
-		return 1 + ((int) itemCount / 6f) *0.5f;
+	public float GetPowerMultiplier(int itemCount) {
+		return 1 + ((int) (itemCount / 6f)) *0.5f;
 	}
+
+	public GoodsData GetGoodsData(GoodsType type) {
+		foreach(GoodsData item in GoodsData) {
+			if(item.Type == type) {
+				return item;
+			}
+		}
+			return null;
+	}
+
+	public int CalculatePowerPoint(int itemCountSelect, int itemCountBomb, float ratio) {
+		return (int)Mathf.Round((itemCountSelect + itemCountBomb) * ratio * GameData.PowerPointByItem);
+	}		
 }

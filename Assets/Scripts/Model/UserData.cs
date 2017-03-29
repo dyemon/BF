@@ -9,15 +9,22 @@ public class UserData {
 	public int Level;
 	public int Experience;
 	public int OwnHealth;
-	public int EquipmentHealth;
 	public int OwnDamage;
-	public int EquipmentDamage;
-		
+
+	public GoodsType DamageEquipmentType = GoodsType.None;
+	public GoodsType HealthEquipmentType = GoodsType.None;
+
 	public int Health {
-		get { return OwnHealth + EquipmentHealth; }
+		get { 
+			GoodsData data = GameResources.Instance.GetGameData().GetGoodsData(HealthEquipmentType);
+			return OwnHealth + ((data != null)? data.Health : 0); 
+		}
 	}
 	public int Damage {
-		get { return OwnDamage + EquipmentDamage; }
+		get { 
+			GoodsData data = GameResources.Instance.GetGameData().GetGoodsData(DamageEquipmentType);
+			return OwnDamage  + ((data != null)? data.Damage : 0); 
+		}
 	}
 	
 	[SerializeField]
@@ -28,7 +35,7 @@ public class UserData {
 	public List<QuestData> QuestsData = new List<QuestData>();
 
 	public void InitTest() {
-	/*	HeroesData.Add(new UserHeroData("redEnvelop",0));
+		HeroesData.Add(new UserHeroData("redEnvelop",0));
 		HeroesData.Add(new UserHeroData("yellowEnvelop",0));
 		HeroesData.Add(new UserHeroData("greenEnvelop",0));		
 		HeroesData.Add(new UserHeroData("blueEnvelop",0));
@@ -38,7 +45,7 @@ public class UserData {
 		HeroesData.Add(new UserHeroData("BombV",0));		
 		HeroesData.Add(new UserHeroData("BombP",0));
 		HeroesData.Add(new UserHeroData("BombC",0));
-		*/
+
 		QuestsData.Clear();
 		QuestsData.Add(new QuestData("1", 1));
 		QuestsData.Add(new QuestData("2", 2));
@@ -48,6 +55,10 @@ public class UserData {
 		foreach(UserAssetData data in Assets) {
 			data.Init();
 		}
+
+		DamageEquipmentType = GoodsType.Espander;
+		HealthEquipmentType = GoodsType.Karti;
+
 	}
 
 	public void InitDefalt() {
@@ -55,16 +66,13 @@ public class UserData {
 		Level = 1;
 		Experience = 0;
 		OwnHealth = 100;
-		EquipmentHealth = 0;
 		OwnDamage = 10;
-		EquipmentDamage = 0;
 		
-		Assets.Add(new UserAssetData(UserAssetType.GoldCoins, 0));
-		Assets.Add(new UserAssetData(UserAssetType.SilverCoins, 100));
-		Assets.Add(new UserAssetData(UserAssetType.Energy, 20));
-		Assets.Add(new UserAssetData(UserAssetType.Brilliants, 0));
-		Assets.Add(new UserAssetData(UserAssetType.Keys, 0));
-		Assets.Add(new UserAssetData(UserAssetType.Gold, 0));
+		Assets.Add(new UserAssetData(UserAssetType.Money, 5));
+		Assets.Add(new UserAssetData(UserAssetType.Semka, 100));
+		Assets.Add(new UserAssetData(UserAssetType.Ring, 0));
+		Assets.Add(new UserAssetData(UserAssetType.Star, 0));
+		Assets.Add(new UserAssetData(UserAssetType.Mobile, 0));
 	}
 
 	public UserAssetData GetAsset(UserAssetType type) {
@@ -80,7 +88,5 @@ public class UserData {
 		return newAsset;
 	}
 	
-	public int CalculatePowerPoint(int itemCountSelect, int itemCountBomb, float ratio) {
-		return (int)Mathf.Round((itemCountSelect + itemCountBomb) * ratio * GameData.PowerPointByItem);
-	}		
+
 }

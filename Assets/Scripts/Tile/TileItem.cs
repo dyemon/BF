@@ -413,4 +413,10 @@ public class TileItem {
 			return IsBomb && !IsBombC;
 		}
 	}
+
+	public bool IsPower {
+		get {
+			return IsColor || IsColorIndepended;
+		}
+	}
 }

@@ -24,7 +24,7 @@ public class GameResources {
 		return res;
 	}
 
-	public LevelData LoadLevel(string id) {
+	public LevelData GetLevel(string id) {
 		if(currentLevelId == null || currentLevelId != id) {
 			TextAsset aText = Resources.Load(Path.Combine(Path.Combine("Config", "Level"), id)) as TextAsset;
 			Preconditions.NotNull(aText, "Can not load level {0}", id);
@@ -55,7 +55,10 @@ public class GameResources {
 
 	public GameData GetGameData() {
 		if(gameData == null) {
-			gameData = new GameData();
+			TextAsset aText = Resources.Load(Path.Combine("Config", "Game")) as TextAsset;
+			Preconditions.NotNull(aText, "Can not load Game data");
+			gameData = JsonUtility.FromJson<GameData>(aText.text);
+			gameData.Init();
 		}
 		return gameData;
 	}

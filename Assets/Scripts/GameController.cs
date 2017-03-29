@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(AnimationGroup))]
 public class GameController : MonoBehaviour {
@@ -92,11 +93,18 @@ public class GameController : MonoBehaviour {
 
 	private TileItemTypeGroup? selectedTileItemTypeGroup = null;
 
+	public Text PowerMultiplierText;
+	public Text PowerItemsText;
+
+	private float powerMultiplier = 1f;
+	private int powerItems = 0;
+	private float powerPoints = 0f;
+
+	public FightProgressPanel FPPanel;
+
 	void Start() {
-		levelData = GameResources.Instance.LoadLevel(App.GetCurrentLevel());
-		levelData.Init();
+		levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
 		gameData = GameResources.Instance.GetGameData();
-		gameData.Init();
 
 		numColumns = GameData.NumColumns;
 		numRows = GameData.NumRows;
@@ -124,6 +132,8 @@ public class GameController : MonoBehaviour {
 		DetectUnavaliableTiles();
 
 		UpdateTiles(true);
+
+		ShowCurrentPowerPoints();
 	}
 	// Update is called once per frame
 	void Update() {
@@ -281,15 +291,20 @@ public class GameController : MonoBehaviour {
 				tile = GetTile(hit.collider.gameObject);
 			}
 	
+			bool resetCurrentPowerPoint = false;
 			if(touch.phase == TouchPhase.Began) {
 				BeganTouch(tile);
 			} else if(touch.phase == TouchPhase.Moved) {
 				MoveTouch(tile);
 			} else if(touch.phase == TouchPhase.Ended) {
 				EndTouch(tile);
+				resetCurrentPowerPoint = true;
 			} else if(touch.phase == TouchPhase.Canceled) {
 				ResetSelected();
+				resetCurrentPowerPoint = true;
 			}
+
+			UpdateCurrentPowerPoints(resetCurrentPowerPoint);
 		}
 		
 	}
@@ -2135,6 +2150,37 @@ public class GameController : MonoBehaviour {
 		foreach(ParticleSystem ps in children) {
 			ps.GetComponent<Renderer>().sortingOrder = BOMB_EXPLOSION_SORTING_ORDER;
 		}*/
+	}
+
+	private void UpdateCurrentPowerPoints(bool reset) {
+		if(reset) {
+			powerItems = 0;
+			powerMultiplier = 1;
+			powerPoints = 0;
+			ShowCurrentPowerPoints();
+			return;
+		}
+
+		int selectedItems = selectedTiles.Count;
+		int bombItems = 0;
+		foreach(Tile tile in bombMarkTiles) {
+			TileItem ti = tile.GetTileItem();
+			if(ti == null || !ti.IsPower || selectedTiles.Contains(tile)) {
+				continue;
+			}
+			bombItems++;
+		}
+
+		powerItems = selectedItems + bombItems;
+		powerMultiplier = gameData.GetPowerMultiplier(selectedItems);
+		powerPoints = gameData.CalculatePowerPoint(selectedItems, bombItems, powerMultiplier);
+		ShowCurrentPowerPoints();
+	}
+
+	private void ShowCurrentPowerPoints() {
+		PowerItemsText.text = powerItems.ToString();
+		PowerMultiplierText.text = powerMultiplier.ToString();
+		FPPanel.UpdateEvaluatePowerPoints(powerPoints);
 	}
 }
 

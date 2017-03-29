@@ -1,14 +1,69 @@
 using UnityEngine;
 using System.Collections;
 using Common.Net.Http;
+using UnityEngine.UI;
 
 public class FightProgressPanel : MonoBehaviour, IResizeListener {
+	public GameObject[] ResizedGO;
+
+	public Text UserDamageText;
+	public Text UserHealthText;
+	public Text EnemyDamageText;
+	public Text EnemyHealthText;
+
+	public Camera camera;
+
+	private Rect userDamageRect;
+	private Rect userHealthRect;
+	private Rect enemyDamageRect;
+	private Rect enemyHealthRect;
+	private int screenHeight;
+	private int screenWidth;
+
+	private UserData userData;
+	private GameData gameData;
+	private LevelData levelData;
+
+	private int currentUserHealth;
+
 
 	public void OnResize(float resizeRation, Vector2 size) {
-		transform.localScale = new Vector3(1, 1, 1);
-		Vector2 bounds = UnityUtill.GetBounds(gameObject);
-		float rRatio = size.x / bounds.x;
-		transform.localScale = new Vector3(rRatio, rRatio, 1);
+	//	transform.localScale = new Vector3(1, 1, 1);
+	//	Vector2 bounds = UnityUtill.GetBounds(gameObject);
+	//	float rRatio = size.x / bounds.x;
+	//	transform.localScale = new Vector3(rRatio, 1, 1); 
+
+		foreach(GameObject go in ResizedGO) {
+			go.transform.localScale = new Vector3(1, 1, 1);
+			Vector2 bounds = UnityUtill.GetBounds(go);
+			float rRatio = size.x / bounds.x;
+			go.transform.localScale = new Vector3(rRatio, 1, 1); 
+		}
 	}
 
+	void Start() {
+		levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
+		gameData = GameResources.Instance.GetGameData();
+		userData = GameResources.Instance.GetUserData();
+		currentUserHealth = userData.Health;
+
+		if(camera == null) {
+			camera = Camera.main;
+		}
+
+		UserDamageText.text = userData.Damage.ToString();
+		UserHealthText.text = userData.Health.ToString();
+	}
+
+	/*
+	private void CalcUIRects() {
+		Vector3 screenPos = camera.WorldToScreenPoint(UserDamagePos.transform.position);
+		userDamageRect = new Rect(screenPos.x, Screen.height - screenPos.y, 70, 50);
+
+		Debug.Log(UserDamagePos.transform.position);
+		Debug.Log(screenPos);
+	}*/
+
+	public void UpdateEvaluatePowerPoints(float points) {
+	}
 }

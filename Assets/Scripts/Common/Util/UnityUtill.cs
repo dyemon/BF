@@ -10,6 +10,11 @@ public class UnityUtill {
 		float minY = float.PositiveInfinity;
 		float maxY = float.NegativeInfinity;
 
+		SpriteRenderer sr = go.GetComponent<SpriteRenderer>();
+		if(sr != null) {
+			return new Vector2(sr.bounds.max.x - sr.bounds.min.x, sr.bounds.max.y - sr.bounds.min.y);
+		}
+
 		foreach(SpriteRenderer r in go.GetComponentsInChildren<SpriteRenderer>()) {
 			if(r == null) {
 				continue;
