@@ -97,8 +97,8 @@ public class GameController : MonoBehaviour {
 	public Text PowerItemsText;
 
 	private float powerMultiplier = 1f;
-	private int powerItems = 0;
-	private float powerPoints = 0f;
+	private int evaluatePowerItems = 0;
+	private float evaluatePowerPoints = 0f;
 
 	public FightProgressPanel FPPanel;
 
@@ -2154,9 +2154,9 @@ public class GameController : MonoBehaviour {
 
 	private void UpdateCurrentPowerPoints(bool reset) {
 		if(reset) {
-			powerItems = 0;
+			evaluatePowerItems = 0;
 			powerMultiplier = 1;
-			powerPoints = 0;
+			evaluatePowerPoints = 0;
 			ShowCurrentPowerPoints();
 			return;
 		}
@@ -2171,16 +2171,16 @@ public class GameController : MonoBehaviour {
 			bombItems++;
 		}
 
-		powerItems = selectedItems + bombItems;
+		evaluatePowerItems = selectedItems + bombItems;
 		powerMultiplier = gameData.GetPowerMultiplier(selectedItems);
-		powerPoints = gameData.CalculatePowerPoint(selectedItems, bombItems, powerMultiplier);
+		evaluatePowerPoints = gameData.CalculatePowerPoint(selectedItems, bombItems, powerMultiplier);
 		ShowCurrentPowerPoints();
 	}
 
 	private void ShowCurrentPowerPoints() {
-		PowerItemsText.text = powerItems.ToString();
+		PowerItemsText.text = evaluatePowerItems.ToString();
 		PowerMultiplierText.text = powerMultiplier.ToString();
-		FPPanel.UpdateEvaluatePowerPoints(powerPoints);
+		FPPanel.UpdateEvaluatePowerPoints(evaluatePowerPoints);
 	}
 }
 
