@@ -610,6 +610,7 @@ public class GameController : MonoBehaviour {
 			onMoveComplete();
 		}
 
+		FPPanel.IncreesUserProgress(evaluatePowerPoints);
 		if(targetController.CheckSuccess()) {
 			LevelSuccess();
 			return;
@@ -2178,9 +2179,10 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void ShowCurrentPowerPoints() {
+		
 		PowerItemsText.text = evaluatePowerItems.ToString();
 		PowerMultiplierText.text = powerMultiplier.ToString();
-		FPPanel.UpdateEvaluatePowerPoints(evaluatePowerPoints);
+		FPPanel.UpdateUserEvaluatePowerPoints(evaluatePowerPoints);
 	}
 }
 

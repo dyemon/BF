@@ -11,6 +11,11 @@ public class FightProgressPanel : MonoBehaviour, IResizeListener {
 	public Text EnemyDamageText;
 	public Text EnemyHealthText;
 
+	public ProgressBar UserPs;
+	public ProgressBar EnemyPs;
+
+	public GameObject IndicatorFull;
+
 	public Camera camera;
 
 	private Rect userDamageRect;
@@ -39,6 +44,9 @@ public class FightProgressPanel : MonoBehaviour, IResizeListener {
 			float rRatio = size.x / bounds.x;
 			go.transform.localScale = new Vector3(rRatio, 1, 1); 
 		}
+
+		UserPs.OnResize();
+		EnemyPs.OnResize();
 	}
 
 	void Start() {
@@ -53,8 +61,18 @@ public class FightProgressPanel : MonoBehaviour, IResizeListener {
 
 		UserDamageText.text = userData.Damage.ToString();
 		UserHealthText.text = userData.Health.ToString();
+
+		UserPs.SetMaxValue(GameData.PowerPointSuccess);
+		EnemyPs.SetMaxValue(GameData.EnemyTurn);
+
+		ShowFullIndicator(false);
 	}
 
+	private void ShowFullIndicator(bool show) {
+		if(IndicatorFull != null) {
+			IndicatorFull.GetComponent<SpriteRenderer>().enabled = show;
+		}
+	}
 	/*
 	private void CalcUIRects() {
 		Vector3 screenPos = camera.WorldToScreenPoint(UserDamagePos.transform.position);
@@ -64,6 +82,15 @@ public class FightProgressPanel : MonoBehaviour, IResizeListener {
 		Debug.Log(screenPos);
 	}*/
 
-	public void UpdateEvaluatePowerPoints(float points) {
+	public bool UpdateUserEvaluatePowerPoints(float points) {
+		bool res = UserPs.SetEvaluteProgress((int)Mathf.Round(points));
+		ShowFullIndicator(res);
+		return res;
+	}
+
+	public bool IncreesUserProgress(float points) {
+		bool res = UserPs.IncreesProgress((int)Mathf.Round(points), true);
+		ShowFullIndicator(res);
+		return res;
 	}
 }
