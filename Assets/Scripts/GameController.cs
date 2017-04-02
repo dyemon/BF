@@ -2238,7 +2238,7 @@ public class GameController : MonoBehaviour {
 		PowerItemsText.text = evaluatePowerItems.ToString();
 
 		if(fightActive) {
-			PowerMultiplierText.text = powerMultiplier.ToString();
+			PowerMultiplierText.text = "x" + powerMultiplier.ToString();
 			FPPanel.UpdateHeroEvaluatePowerPoints(evaluatePowerPoints);
 		}
 	}

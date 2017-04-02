@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: d2feac79fc9852d4c93ec77106ddc0d7
+timeCreated: 1491143375
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: KabelCTT Ultra
+  fontNames:
+  - KabelCTT Ultra
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

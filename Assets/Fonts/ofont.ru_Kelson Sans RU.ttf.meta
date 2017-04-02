@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: e43eff0da55059448b8e8b5822871967
+timeCreated: 1491143375
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Kelson Sans RU
+  fontNames:
+  - Kelson Sans RU
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
