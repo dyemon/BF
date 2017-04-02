@@ -21,6 +21,8 @@ public class LevelData {
 	public TileItemData[] AutoDropOnCollectData = new TileItemData[0];
 	public AutoDropData[] AutoDropData = new AutoDropData[0];
 
+	public EnemyData EnemyData;
+
 	public void Init() {
 		if(TileData != null) {
 			foreach(TileItemData item in TileData) {

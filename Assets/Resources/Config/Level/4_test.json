@@ -157,5 +157,11 @@
 
 	"RestrictionData": {
         "Turns": 25
-    }
+    },
+
+	"EnemyData": {
+		"TypeAsString": "",
+		"Health": 100,
+		"Damage": 30
+	} 
 }

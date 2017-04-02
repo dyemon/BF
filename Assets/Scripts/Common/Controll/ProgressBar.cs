@@ -11,6 +11,7 @@ public class ProgressBar : MonoBehaviour {
 	public bool ShowPercent;
 	public string TextFormat;
 	public Vector3 TextOffset = Vector2.zero;
+	public bool Invers = false;
 
 	private int curValue;
 	public int MaxValue; 
@@ -109,7 +110,15 @@ public class ProgressBar : MonoBehaviour {
 			float percent = Mathf.Round(((float)(curValue + curEvaluteOffset)) * 100 / MaxValue);
 			str = string.Format("{0}%", percent);
 		} else {
-			str = string.Format(TextFormat, curValue);
+			int val = (Invers) ? MaxValue - curValue : curValue;
+			if(val < 0) {
+				val = 0;
+			}
+			if(val > MaxValue) {
+				val = MaxValue;
+			}
+
+			str = string.Format(TextFormat, val);
 		}
 
 		SetText(str);

@@ -98,9 +98,17 @@ public class GameController : MonoBehaviour {
 
 	private float powerMultiplier = 1f;
 	private int evaluatePowerItems = 0;
-	private float evaluatePowerPoints = 0f;
+	private int evaluatePowerPoints = 0;
 
 	public FightProgressPanel FPPanel;
+
+	public GameObject HeroPos;
+	public GameObject EnemyPos;
+
+	private HeroController heroController;
+	private EnemyController enemyController;
+
+	private bool fightActive = false;
 
 	void Start() {
 		levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
@@ -133,6 +141,7 @@ public class GameController : MonoBehaviour {
 
 		UpdateTiles(true);
 
+		InitFight();
 		ShowCurrentPowerPoints();
 	}
 	// Update is called once per frame
@@ -153,6 +162,18 @@ public class GameController : MonoBehaviour {
 		restrictionsController = Preconditions.NotNull(go.GetComponent<RestrictionsController>(), "Can not get restrictions controller");
 		restrictionsController.LoadCurrentLevel();
 		onMoveComplete += restrictionsController.DecrementMoveScore;
+	}
+
+	private void InitFight() {
+		EnemyData eData = levelData.EnemyData;
+		if(eData == null) {
+			return;
+		}
+
+		fightActive = true;
+		enemyController = EnemyPos.GetComponent<EnemyController>();
+		heroController = HeroPos.GetComponent<HeroController>();
+		FPPanel.Init(heroController, enemyController); 
 	}
 
 	private void ResetTileColumnAvalibleForOffset() {
@@ -610,13 +631,31 @@ public class GameController : MonoBehaviour {
 			onMoveComplete();
 		}
 
-		FPPanel.IncreesUserProgress(evaluatePowerPoints);
+		if(fightActive) {
+			heroController.IncreesPowerPoints(evaluatePowerPoints);
+			enemyController.IncreesTurns(1);
+			FPPanel.UpdateProgress(true);
+		
+			if(heroController.IsStrik) {
+				heroController.Strike(OnHeroStrike);	
+				if(enemyController.IsDeath(heroController.Damage)) {
+					return;
+				}
+			}
+
+			if(enemyController.IsStrik) {
+				enemyController.Strike(OnEnemyStrike);
+				if(heroController.IsDeath(enemyController.Damage)) {
+					return;
+				}
+			}
+		}
+	
+
 		if(targetController.CheckSuccess()) {
 			LevelSuccess();
-			return;
 		} else if (!restrictionsController.CheckRestrictions()){
 			LevelFailure();
-			return;
 		}
 
 
@@ -2179,10 +2218,40 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void ShowCurrentPowerPoints() {
-		
 		PowerItemsText.text = evaluatePowerItems.ToString();
 		PowerMultiplierText.text = powerMultiplier.ToString();
-		FPPanel.UpdateUserEvaluatePowerPoints(evaluatePowerPoints);
+		if(fightActive) {
+			FPPanel.UpdateHeroEvaluatePowerPoints(evaluatePowerPoints);
+		}
+	}
+
+	private void OnHeroStrike() {
+		enemyController.DecreesHealt(heroController.Damage);
+		FPPanel.UpdateFightParams();
+
+		if(enemyController.IsDeath(0)) {
+			fightActive = false;
+
+			if(targetController.CheckSuccess()) {
+				LevelSuccess();
+				return;
+			}
+		} else {
+			FPPanel.UpdateProgress(false);
+		}
+			
+		UpdateTiles(true);
+	}
+
+	private void OnEnemyStrike() {
+		heroController.DecreesHealt(enemyController.Damage);
+		FPPanel.UpdateFightParams();
+
+		if(heroController.IsDeath(0)) {
+			LevelFailure();
+		} else {
+			FPPanel.UpdateProgress(false);
+		}
 	}
 }
 
