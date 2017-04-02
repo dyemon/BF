@@ -11,4 +11,5 @@ public enum TargetType {
 	Key = TileItemType.Key,
 	BombAll = TileItemType.BombAll,
 	Box = TileItemTypeGroup.Box,
+	Enemy = TileItemTypeGroup.Special + 1000
 }

@@ -5,6 +5,8 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour {
 	public delegate void OnStrik();
 
+	public static float STRIKE_DELAY = 1;
+
 	EnemyData enemyData;
 
 	public int Health { get; set; }
@@ -46,6 +48,12 @@ public class EnemyController : MonoBehaviour {
 
 	public void Strike(OnStrik onStrik) {
 		DisplayMessageController.DisplayMessage("Удар врага", Color.red);
+		StartCoroutine(StrikInternal(onStrik));
+
+	}
+
+	private IEnumerator StrikInternal(OnStrik onStrik) {
+		yield return new WaitForSeconds(STRIKE_DELAY);
 		ResetTurns();
 		onStrik();
 	}

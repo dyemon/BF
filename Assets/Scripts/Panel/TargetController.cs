@@ -28,6 +28,7 @@ public class TargetController : MonoBehaviour {
 
 		targetIcons.Add(TargetType.BombAll, Icons[7]);
 		targetIcons.Add(TargetType.Box, Icons[8]);
+		targetIcons.Add(TargetType.Enemy, Icons[9]);
 
 		int index = 0;
 		foreach(TargetData data in levelData.TargetData) {
@@ -66,12 +67,7 @@ public class TargetController : MonoBehaviour {
 					break;
 				}
 				if(--count == 0) {					
-					Image sImage = Instantiate(successImage);
-					sImage.transform.SetParent(targetGO.transform);
-					sImage.transform.localScale = new Vector3(1, 1, 1);
-					sImage.transform.position = new Vector3(text.transform.position.x, text.transform.position.y, text.transform.position.z);
-					Destroy(text);
-					success[index] = true;;
+					SetSuccess(targetGO, index);
 				} else {
 					text.text = count.ToString();
 				}
@@ -81,6 +77,16 @@ public class TargetController : MonoBehaviour {
 		}
 	}
 
+	private void SetSuccess(GameObject targetGO, int index) {
+		Image sImage = Instantiate(successImage);
+		sImage.transform.SetParent(targetGO.transform);
+		sImage.transform.localScale = new Vector3(1, 1, 1);
+		Text text = targetGO.transform.Find("Text").gameObject.GetComponent<Text>();
+		sImage.transform.position = new Vector3(text.transform.position.x, text.transform.position.y, text.transform.position.z);
+		Destroy(text);
+		success[index] = true;
+	}
+
 	public void ClearPanel() {
 		for(int i = 1; i < gameObject.transform.childCount; i++) {
 			Destroy(gameObject.transform.GetChild(i).gameObject);
@@ -88,8 +94,8 @@ public class TargetController : MonoBehaviour {
 	}
 
 	public void UnloadLevel() {
-		ClearPanel();
-		levelLoaded = false;
+		//ClearPanel();
+	//	levelLoaded = false;
 	}
 
 	public bool CheckSuccess() {
@@ -107,5 +113,16 @@ public class TargetController : MonoBehaviour {
 
 	public void LevelFailure() {
 		UnloadLevel();
+	}
+
+	public void KillEnemy() {
+		int index = 0;
+		foreach(TargetData data in levelData.TargetData) {
+			if(data.Type == TargetType.Enemy) {
+				GameObject targetGO = Preconditions.NotNull(transform.GetChild(index).gameObject, "Can not get target game object for index {0}", index);
+				SetSuccess(targetGO, index);
+			}
+			index++;
+		}
 	}
 }

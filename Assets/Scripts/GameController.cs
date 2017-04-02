@@ -109,6 +109,7 @@ public class GameController : MonoBehaviour {
 	private EnemyController enemyController;
 
 	private bool fightActive = false;
+	private bool imposibleCollect = false;
 
 	void Start() {
 		levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
@@ -635,7 +636,8 @@ public class GameController : MonoBehaviour {
 			heroController.IncreesPowerPoints(evaluatePowerPoints);
 			enemyController.IncreesTurns(1);
 			FPPanel.UpdateProgress(true);
-		
+			bool enemyDeath = false;
+
 			if(heroController.IsStrik) {
 				heroController.Strike(OnHeroStrike);	
 				if(enemyController.IsDeath(heroController.Damage)) {
@@ -646,6 +648,7 @@ public class GameController : MonoBehaviour {
 			if(enemyController.IsStrik) {
 				enemyController.Strike(OnEnemyStrike);
 				if(heroController.IsDeath(enemyController.Damage)) {
+					StartCoroutine(UpdateTilesWitDelay(true, bombExplosionDelay));
 					return;
 				}
 			}
@@ -653,9 +656,10 @@ public class GameController : MonoBehaviour {
 	
 
 		if(targetController.CheckSuccess()) {
-			LevelSuccess();
+			Invoke("LevelSuccess", bombExplosionDelay);
+			return;
 		} else if (!restrictionsController.CheckRestrictions()){
-			LevelFailure();
+			Invoke("LevelFailure", 2);
 		}
 
 
@@ -2055,12 +2059,25 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void LevelFailure() {
-		SceneController.Instance.LoadSceneAsync("LevelFailure");
+		if(imposibleCollect) {
+			SceneController.Instance.LoadSceneAsync("LevelFailure");
+			return;
+		}
+		if(heroController != null && heroController.Health <= 0) {
+			SceneController.Instance.LoadSceneAsync("LevelFailure");
+			return;
+		}
+		if(!restrictionsController.CheckRestrictions()) {
+			SceneController.Instance.LoadSceneAsync("LevelFailure");
+			return;
+		}
+
 	}
 
 	private void LevelFailureByColorCount() {
 		DisplayMessageController.DisplayMessage("Невозможно собрать цепочку", Color.red);
-	//	Invoke("LevelFailure", 3);
+		imposibleCollect = true;
+		Invoke("LevelFailure", 3);
 	}
 
 	private void OnCheckAutoDropOnDestroyData(TileItem tileItem) {
@@ -2219,8 +2236,9 @@ public class GameController : MonoBehaviour {
 
 	private void ShowCurrentPowerPoints() {
 		PowerItemsText.text = evaluatePowerItems.ToString();
-		PowerMultiplierText.text = powerMultiplier.ToString();
+
 		if(fightActive) {
+			PowerMultiplierText.text = powerMultiplier.ToString();
 			FPPanel.UpdateHeroEvaluatePowerPoints(evaluatePowerPoints);
 		}
 	}
@@ -2231,16 +2249,17 @@ public class GameController : MonoBehaviour {
 
 		if(enemyController.IsDeath(0)) {
 			fightActive = false;
-
+			targetController.KillEnemy();
 			if(targetController.CheckSuccess()) {
 				LevelSuccess();
 				return;
+			} else {
+				UpdateTiles(true);
 			}
 		} else {
 			FPPanel.UpdateProgress(false);
 		}
 			
-		UpdateTiles(true);
 	}
 
 	private void OnEnemyStrike() {

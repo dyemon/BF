@@ -145,23 +145,23 @@
         }], 
 		
    "TargetData": [{
-		"Count": 15, 
+		"Count": 10, 
 		"TypeAsString": "Red"
 	}, {
-		"Count": 20, 
+		"Count": 10, 
 		"TypeAsString": "Green"
 	}, {
-		"Count": 30, 
-		"TypeAsString": "Blue"
+		"Count": 1, 
+		"TypeAsString": "Enemy"
 	}],
 
 	"RestrictionData": {
-        "Turns": 25
+        "Turns": 10
     },
 
 	"EnemyData": {
 		"TypeAsString": "",
-		"Health": 100,
+		"Health": 10,
 		"Damage": 30
 	} 
 }

@@ -15,11 +15,15 @@ public class ProgressBar : MonoBehaviour {
 
 	private int curValue;
 	public int MaxValue; 
-	private bool notChangeEvalute = false;
 	private int curEvaluteOffset;
+	private Camera camera;
+
+	private int screenWidth;
+	private int screenHeight;
+
 	// Use this for initialization
 	void Start () {
-		
+		camera = Camera.main;
 	}
 
 	public bool SetProgress(int i, bool isAnimate){
@@ -39,11 +43,12 @@ public class ProgressBar : MonoBehaviour {
 			StartCoroutine(AnimateProgress(oldValue));
 		}
 
+		SetEvaluteProgress(0);
 		return i >= MaxValue;
 	}
 
-	public bool SetEvaluteProgress(int i){
-		if(MaxValue <= 0) {
+	public bool SetEvaluteProgress(int i) {
+		if(MaxValue <= 0 || EvaluteProgress == null) {
 			return false;
 		}
 		if(curValue + i > MaxValue) {
@@ -74,7 +79,6 @@ public class ProgressBar : MonoBehaviour {
 		}
 
 		UpdateText();
-	//	notChangeEvalute = false;
 	}
 
 	public bool ChangeMaxValue(int newValue) {
@@ -89,9 +93,11 @@ public class ProgressBar : MonoBehaviour {
 		if(text == null) {
 			return;
 		}
-	
-		Vector3 screenPos = Camera.main.WorldToScreenPoint(gameObject.transform.position + TextOffset);
+
+		Vector3 screenPos = camera.WorldToScreenPoint(gameObject.transform.position + TextOffset);
 		text.gameObject.transform.position = screenPos;
+		Debug.Log(gameObject.transform.position);
+		Debug.Log(screenPos);
 	}
 
 	public void SetText(string str) {
@@ -127,5 +133,13 @@ public class ProgressBar : MonoBehaviour {
 	public void SetMaxValue(int val) {
 		MaxValue = val;
 		UpdateText();
+	}
+
+	void Update() {
+	//	if((Screen.width != screenWidth || Screen.height != screenHeight) && camera.isActiveAndEnabled) {
+	//		screenWidth = Screen.width;
+	//		screenHeight = Screen.height;
+			OnResize();
+//		}
 	}
 }

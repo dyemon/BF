@@ -5,6 +5,8 @@ using UnityEngine;
 public class HeroController : MonoBehaviour {
 	public delegate void OnStrik();
 
+	public static float STRIKE_DELAY = 1;
+
 	UserData userData;
 	public int Health { get; set; }
 	public int CurrentPowerPoints { get; set; }
@@ -43,6 +45,11 @@ public class HeroController : MonoBehaviour {
 
 	public void Strike(OnStrik onStrik) {
 		DisplayMessageController.DisplayMessage("Удар героя", Color.green);
+		StartCoroutine(StrikInternal(onStrik));
+	}
+
+	private IEnumerator StrikInternal(OnStrik onStrik) {
+		yield return new WaitForSeconds(STRIKE_DELAY);
 		ResetPowerPoints();
 		onStrik();
 	}
