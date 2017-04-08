@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Spine;
 
 public class HeroController : MonoBehaviour {
 	public delegate void OnStrik();
@@ -10,6 +11,35 @@ public class HeroController : MonoBehaviour {
 	UserData userData;
 	public int Health { get; set; }
 	public int CurrentPowerPoints { get; set; }
+
+	#region Inspector
+	// [SpineAnimation] attribute allows an Inspector dropdown of Spine animation names coming form SkeletonAnimation.
+	[SpineAnimation]
+	public string idleAnimationName;
+
+	[SpineAnimation]
+	public string baseAnimationName;
+
+	[SpineAnimation]
+	public string damageAnimationName;
+
+	[SpineAnimation]
+	public string getCardAnimationName;
+
+	[SpineAnimation]
+	public string kick1AnimationName;
+
+	[SpineAnimation]
+	public string kick2AnimationName;
+	#endregion
+
+	SkeletonAnimation skeletonAnimation;
+
+	// Spine.AnimationState and Spine.Skeleton are not Unity-serialized objects. You will not see them as fields in the inspector.
+	public Spine.AnimationState spineAnimationState;
+	public Spine.Skeleton skeleton;
+
+	private EnemyController enemyController;
 
 	public int Damage {
 		get { 
@@ -27,10 +57,20 @@ public class HeroController : MonoBehaviour {
 		get { return CurrentPowerPoints >= PowerPointSuccess; }
 	}
 
+	public void SetEnemyController(EnemyController enemyController) {
+		this.enemyController = enemyController;
+	}
+
 	void Start () {
 		userData = GameResources.Instance.GetUserData();
 		Health = userData.Health;
 		ResetPowerPoints();
+
+		skeletonAnimation = GetComponent<SkeletonAnimation>();
+		spineAnimationState = skeletonAnimation.state;
+		skeleton = skeletonAnimation.Skeleton;
+
+	
 	}
 		
 	public void IncreesPowerPoints(int points) {
@@ -44,6 +84,10 @@ public class HeroController : MonoBehaviour {
 	}
 
 	public void Strike(OnStrik onStrik) {
+		string animName = kick1AnimationName;//(Random.Range(0, 2) >= 1)? kick1AnimationName : kick2AnimationName;
+		spineAnimationState.SetAnimation(0, animName, false); 
+		spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
+		enemyController.GetKick();
 		DisplayMessageController.DisplayMessage("Удар героя", Color.green);
 		StartCoroutine(StrikInternal(onStrik));
 	}

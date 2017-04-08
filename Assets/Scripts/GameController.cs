@@ -102,7 +102,7 @@ public class GameController : MonoBehaviour {
 
 	public FightProgressPanel FPPanel;
 
-	public GameObject HeroPos;
+	public GameObject Hero;
 	public GameObject EnemyPos;
 
 	private HeroController heroController;
@@ -173,7 +173,9 @@ public class GameController : MonoBehaviour {
 
 		fightActive = true;
 		enemyController = EnemyPos.GetComponent<EnemyController>();
-		heroController = HeroPos.GetComponent<HeroController>();
+
+		heroController = Hero.GetComponent<HeroController>();
+		heroController.SetEnemyController(enemyController);
 		FPPanel.Init(heroController, enemyController); 
 	}
 

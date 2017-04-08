@@ -10,7 +10,7 @@ public class GameData {
 
 	public static readonly int PowerPointSuccess = 50; 
 	public static readonly int PowerPointByItem = 3; 
-	public static readonly int EnemyTurns = 5; 
+	public static readonly int EnemyTurns = 3; 
 	
 	public IDictionary<string, HeroData> HeroData = new Dictionary<string, HeroData>();
 

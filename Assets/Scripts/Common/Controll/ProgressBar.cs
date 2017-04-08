@@ -96,8 +96,8 @@ public class ProgressBar : MonoBehaviour {
 
 		Vector3 screenPos = camera.WorldToScreenPoint(gameObject.transform.position + TextOffset);
 		text.gameObject.transform.position = screenPos;
-		Debug.Log(gameObject.transform.position);
-		Debug.Log(screenPos);
+	//	Debug.Log(gameObject.transform.position);
+	//	Debug.Log(screenPos);
 	}
 
 	public void SetText(string str) {

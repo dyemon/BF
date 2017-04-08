@@ -7,14 +7,37 @@ public class EnemyController : MonoBehaviour {
 
 	public static float STRIKE_DELAY = 1;
 
-	EnemyData enemyData;
+	public EnemyData enemyData;
 
 	public int Health { get; set; }
 	public int CurrentTurns { get; set; }
 
+	#region Inspector
+	// [SpineAnimation] attribute allows an Inspector dropdown of Spine animation names coming form SkeletonAnimation.
+	[SpineAnimation]
+	public string idleAnimationName;
+
+	[SpineAnimation]
+	public string idl2eAnimationName;
+
+	[SpineAnimation]
+	public string damageAnimationName;
+
+	[SpineAnimation]
+	public string kickAnimationName;
+
+
+	#endregion
+
+	SkeletonAnimation skeletonAnimation;
+
+	// Spine.AnimationState and Spine.Skeleton are not Unity-serialized objects. You will not see them as fields in the inspector.
+	public Spine.AnimationState spineAnimationState;
+	public Spine.Skeleton skeleton;
+
 	public int Damage {
 		get { 
-			return enemyData.Damage; 
+			return (enemyData == null)? 0 : enemyData.Damage; 
 		}
 	}
 		
@@ -36,6 +59,10 @@ public class EnemyController : MonoBehaviour {
 
 		Health = enemyData.Health;
 		ResetTurns();
+
+		skeletonAnimation = GetComponent<SkeletonAnimation>();
+		spineAnimationState = skeletonAnimation.state;
+		skeleton = skeletonAnimation.Skeleton;
 	}
 
 	public void IncreesTurns(int turns) {
@@ -50,6 +77,11 @@ public class EnemyController : MonoBehaviour {
 		DisplayMessageController.DisplayMessage("Удар врага", Color.red);
 		StartCoroutine(StrikInternal(onStrik));
 
+	}
+
+	public void GetKick() {
+		spineAnimationState.AddAnimation(0, damageAnimationName, false, 0); 
+	//	spineAnimationState.AddAnimation(0, idleAnimationName, true, 2);
 	}
 
 	private IEnumerator StrikInternal(OnStrik onStrik) {
@@ -68,4 +100,6 @@ public class EnemyController : MonoBehaviour {
 	public bool IsDeath(int evaluteValue) {
 		return Health - evaluteValue <= 0;
 	}
+
+
 }
