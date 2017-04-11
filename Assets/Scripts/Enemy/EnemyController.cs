@@ -80,8 +80,9 @@ public class EnemyController : MonoBehaviour {
 	}
 
 	public void GetKick() {
-		spineAnimationState.AddAnimation(0, damageAnimationName, false, 0); 
-	//	spineAnimationState.AddAnimation(0, idleAnimationName, true, 2);
+		spineAnimationState.SetAnimation(0, idleAnimationName, false); 
+		spineAnimationState.AddAnimation(0, damageAnimationName, false, 0.7f);
+		spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
 	}
 
 	private IEnumerator StrikInternal(OnStrik onStrik) {
