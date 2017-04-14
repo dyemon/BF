@@ -46,9 +46,9 @@ public class GameResources {
 				uData = JsonUtility.FromJson<UserData>(json);
 			}
 			uData.Init();
-			if(Application.isEditor) {
+	//	if(Application.isEditor) {
 				uData.InitTest();
-			}
+	//		}
 			saveUserDataLocal(uData);
 		}
 	}

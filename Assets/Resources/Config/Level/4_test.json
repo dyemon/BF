@@ -148,7 +148,7 @@
 		"Count": 10, 
 		"TypeAsString": "Red"
 	}, {
-		"Count": 10, 
+		"Count": 20, 
 		"TypeAsString": "Green"
 	}, {
 		"Count": 1, 
@@ -156,12 +156,23 @@
 	}],
 
 	"RestrictionData": {
-        "Turns": 10
+        "Turns": 20
     },
 
 	"EnemyData": {
 		"TypeAsString": "",
 		"Health": 100,
-		"Damage": 30
-	} 
+		"Damage": 30,
+		"SkillRatio": 1,
+		"SkillData": [{
+				"TypeAsString": "Simple",
+				"Count": 3
+			},{
+				"TypeAsString": "Slime",
+				"Count": 2
+			},{
+				"TypeAsString": "Eater",
+				"Count": 2
+			}]
+	}
 }

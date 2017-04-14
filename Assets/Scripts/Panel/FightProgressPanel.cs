@@ -75,13 +75,13 @@ public class FightProgressPanel : MonoBehaviour, IResizeListener {
 		return res;
 	}
 
-	public void UpdateProgress(bool animate) {
+	public void UpdateProgress() {
 		if(heroController == null || enemyController == null) {
 			return;
 		}
 
-		EnemyPs.SetProgress(enemyController.CurrentTurns, animate);
-		HeroPs.SetProgress(heroController.CurrentPowerPoints, animate);
+		EnemyPs.SetProgress(enemyController.CurrentTurns, true);
+		HeroPs.SetProgress(heroController.CurrentPowerPoints, true);
 		ShowFullIndicator(heroController.IsStrik);
 	}
 
@@ -90,5 +90,12 @@ public class FightProgressPanel : MonoBehaviour, IResizeListener {
 		HeroHealthText.text = heroController.Health.ToString();
 		EnemyDamageText.text = enemyController.Damage.ToString();
 		EnemyHealthText.text = enemyController.Health.ToString();
+	}
+
+	public void KillEnemy() {
+		EnemyPs.SetProgress(0, false);
+		EnemyPs.ShowText(false);
+		EnemyDamageText.enabled = false;
+		EnemyHealthText.enabled = false;
 	}
 }

@@ -83,6 +83,8 @@ public class LevelData {
 				item.TileItem.Type = (TileItemType)Enum.Parse(typeof(TileItemType), item.TileItem.TypeAsString);
 			}
 		}
+
+		EnemyData.Init();
 	}
 
 }

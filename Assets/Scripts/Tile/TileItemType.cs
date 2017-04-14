@@ -49,7 +49,8 @@ public enum TileItemType {
 	Box_1 = TileItemTypeGroup.Box,
 
 	Slime = TileItemTypeGroup.SpecialStatic,
-
+	EnemySkillEater = TileItemTypeGroup.SpecialStatic + 1,
+		
 	Brilliant = TileItemTypeGroup.Special + TileItem.BRILLIANT_OFFSET,
 	Key = TileItemTypeGroup.Special + TileItem.KEY_OFFSET,
 	BombAll = TileItemTypeGroup.Special + TileItem.BOMBALL_OFFSET,
@@ -57,5 +58,9 @@ public enum TileItemType {
 	BombH = TileItemTypeGroup.Bomb,
 	BombV = TileItemTypeGroup.Bomb + 1,
 	BombP = TileItemTypeGroup.Bomb + 2,
-	BombC = TileItemTypeGroup.Bomb + 3
+	BombC = TileItemTypeGroup.Bomb + 3,
+
+	EnemySkillSimple = TileItemTypeGroup.Special + TileItem.ENEMY_SKILL
+
+
 }

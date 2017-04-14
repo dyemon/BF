@@ -18,6 +18,8 @@ public class TileItem {
 	public const int BRILLIANT_OFFSET = 0;
 	public const int KEY_OFFSET = 1;
 
+	public const int ENEMY_SKILL = 6;
+
 	private TileItemType type;
 	private TileItemTypeGroup typeGroup;
 	private GameObject tileItemGO;
@@ -417,6 +419,12 @@ public class TileItem {
 	public bool IsPower {
 		get {
 			return IsColor || IsColorIndepended;
+		}
+	}
+
+	public bool NotHighLight {
+		get {
+			return type == TileItemType.EnemySkillSimple;
 		}
 	}
 }

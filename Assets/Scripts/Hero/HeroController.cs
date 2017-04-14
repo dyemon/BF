@@ -61,11 +61,13 @@ public class HeroController : MonoBehaviour {
 		this.enemyController = enemyController;
 	}
 
-	void Start () {
+	void Awake() {
 		userData = GameResources.Instance.GetUserData();
 		Health = userData.Health;
 		ResetPowerPoints();
+	}
 
+	void Start () {
 		skeletonAnimation = GetComponent<SkeletonAnimation>();
 		spineAnimationState = skeletonAnimation.state;
 		skeleton = skeletonAnimation.Skeleton;
@@ -83,13 +85,19 @@ public class HeroController : MonoBehaviour {
 		CurrentPowerPoints = 0;
 	}
 
-	public void Strike(OnStrik onStrik) {
+	public void Strik(OnStrik onStrik) {
 		string animName = kick1AnimationName;//(Random.Range(0, 2) >= 1)? kick1AnimationName : kick2AnimationName;
 		spineAnimationState.SetAnimation(0, animName, false); 
 		spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
 		enemyController.GetKick();
-		DisplayMessageController.DisplayMessage("Удар героя", Color.green);
+	//	DisplayMessageController.DisplayMessage("Удар героя", Color.green);
 		StartCoroutine(StrikInternal(onStrik));
+	}
+
+	public void GetKick() {
+		spineAnimationState.SetAnimation(0, idleAnimationName, false); 
+		spineAnimationState.AddAnimation(0, damageAnimationName, false, 0.7f);
+		spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
 	}
 
 	private IEnumerator StrikInternal(OnStrik onStrik) {

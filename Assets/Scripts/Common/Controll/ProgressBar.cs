@@ -142,4 +142,8 @@ public class ProgressBar : MonoBehaviour {
 			OnResize();
 //		}
 	}
+
+	public void ShowText(bool show) {
+		text.enabled = show;
+	}
 }

@@ -111,6 +111,9 @@ public class GameController : MonoBehaviour {
 	private bool fightActive = false;
 	private bool imposibleCollect = false;
 
+	private const int START_ENEMY_SKILL_CONDITIONS = 2;
+	private int currentStartEnemySkillConditions;
+
 	void Start() {
 		levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
 		gameData = GameResources.Instance.GetGameData();
@@ -173,9 +176,10 @@ public class GameController : MonoBehaviour {
 
 		fightActive = true;
 		enemyController = EnemyPos.GetComponent<EnemyController>();
-
 		heroController = Hero.GetComponent<HeroController>();
 		heroController.SetEnemyController(enemyController);
+		enemyController.SetHeroController(heroController);
+
 		FPPanel.Init(heroController, enemyController); 
 	}
 
@@ -375,7 +379,6 @@ public class GameController : MonoBehaviour {
 			return;
 		}
 
-		Debug.Log(tileItem.TypeGroup + " " + lastTile.GetTileItem().TypeGroup + " " +selectedTileItemTypeGroup);
 		bool updateMarkBombTiles = false;
 
 		if(selectedTileItemTypeGroup == null && !tileItem.IsColorIndepended) {
@@ -384,7 +387,6 @@ public class GameController : MonoBehaviour {
 			updateMarkBombTiles = true;
 		}		
 			
-		bool stop = false;
 		Tile predLastTile = null;
 		if(selectedTiles.Count > 1) {
 			predLastTile = selectedTiles.Last.Previous.Value;
@@ -466,9 +468,6 @@ public class GameController : MonoBehaviour {
 				bombTile = tile;
 				updateMarkBombTiles = true;
 			}
-			
-
-
 		}
 		
 		if(updateMarkBombTiles) {
@@ -538,9 +537,6 @@ public class GameController : MonoBehaviour {
 		foreach(Vector2 index in replacedItems.Keys) {
 			ReplaceTileItems(replacedItems[index], TileItemRenderState.Normal, false);
 		}
-
-
-	//	RotateBombs();
 
 		rotaitedBombs.Clear();
 		specialSelectedTiles.Clear();
@@ -634,25 +630,28 @@ public class GameController : MonoBehaviour {
 			onMoveComplete();
 		}
 
+		
+//		isEnemyStrik = false;
+		currentStartEnemySkillConditions = 0;
 		if(fightActive) {
 			heroController.IncreesPowerPoints(evaluatePowerPoints);
 			enemyController.IncreesTurns(1);
-			FPPanel.UpdateProgress(true);
+			FPPanel.UpdateProgress();
 			bool enemyDeath = false;
+	//		isEnemyStrik = enemyController.IsStrik;
 
 			if(heroController.IsStrik) {
-				heroController.Strike(OnHeroStrike);	
-				if(enemyController.IsDeath(heroController.Damage)) {
-					return;
+				heroController.Strik(OnHeroStrik);	
+				if(!enemyController.IsDeath(heroController.Damage)) {
+					StartCoroutine(UpdateTilesWitDelay(true, bombExplosionDelay));
 				}
+				return;
 			}
 
 			if(enemyController.IsStrik) {
-				enemyController.Strike(OnEnemyStrike);
-				if(heroController.IsDeath(enemyController.Damage)) {
-					StartCoroutine(UpdateTilesWitDelay(true, bombExplosionDelay));
-					return;
-				}
+				enemyController.Strik(OnEnemyStrik);
+				StartCoroutine(UpdateTilesWitDelay(true, bombExplosionDelay));
+				return;
 			}
 		}
 	
@@ -664,8 +663,8 @@ public class GameController : MonoBehaviour {
 			Invoke("LevelFailure", 2);
 		}
 
-
 		StartCoroutine(UpdateTilesWitDelay(true, bombExplosionDelay));
+
 	}
 
 	private bool BreakBarriersByBomb(int damage) {
@@ -884,7 +883,7 @@ public class GameController : MonoBehaviour {
 					continue;
 				}
 				TileItem tileItem = tile.GetTileItem().GetChildTileItem() != null? tile.GetTileItem().GetChildTileItem() : tile.GetTileItem();
-				if(!tileItem.IsNotStatic && tileItem.GetParentTileItem() == null) {
+				if(!tileItem.IsNotStatic && tileItem.GetParentTileItem() == null || tileItem.NotHighLight) {
 					continue;
 				}
 
@@ -1034,8 +1033,17 @@ public class GameController : MonoBehaviour {
 				InitHeroItemAnimation(data);
 			}
 
+			bool complete = true;
 			if(animationGroup.AnimationExist()) {
 				animationGroup.Run(OnTileItemUpdateComplete, false);
+				complete = false;
+			}
+
+			if(StartEnemySkill()) {
+				complete = false;
+			}
+
+			if(!complete) {
 				return;
 			}
 		}
@@ -1932,9 +1940,6 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void MarkBombTiles() {
-		if(bombSelectedTiles.Count > 1) {
-			int a = 7;
-		}
 		Debug.Log(bombSelectedTiles.Count);
 		foreach(TileItem ti in bombSelectedTiles) {
 	//		Vector3 pos = new Vector3(ti.GetGameObject().transform.position.x ,
@@ -2039,7 +2044,7 @@ public class GameController : MonoBehaviour {
 		TileItem tileItem = tile.GetTileItem();
 		TileItemTypeGroup group = tileItem.TypeGroup;
 		TileItemType type;
-		Debug.Log(tile);
+
 		if(tileItem.IsColorIndependedBomb) {
 			type = tileItem.IsBombH? TileItemType.BombV : TileItemType.BombH;
 		} else {
@@ -2245,34 +2250,61 @@ public class GameController : MonoBehaviour {
 		}
 	}
 
-	private void OnHeroStrike() {
+	private void OnHeroStrik() {
 		enemyController.DecreesHealt(heroController.Damage);
 		FPPanel.UpdateFightParams();
 
 		if(enemyController.IsDeath(0)) {
 			fightActive = false;
 			targetController.KillEnemy();
+			FPPanel.KillEnemy();
+			enemyController.Death();
 			if(targetController.CheckSuccess()) {
-				LevelSuccess();
+				Invoke("LevelSuccess", 0.5f);
 				return;
 			} else {
 				UpdateTiles(true);
 			}
-		} else {
-			FPPanel.UpdateProgress(false);
+		} else if(enemyController.IsStrik) {
+			enemyController.Strik(OnEnemyStrik);
+			return;
+		}
+			
+		if(!enemyController.IsDeath(0)) {
+			FPPanel.UpdateProgress();
+		}
+		if (!restrictionsController.CheckRestrictions()){
+			LevelFailure();
 		}
 			
 	}
 
-	private void OnEnemyStrike() {
+	private void OnEnemyStrik() {
 		heroController.DecreesHealt(enemyController.Damage);
 		FPPanel.UpdateFightParams();
+		FPPanel.UpdateProgress();
 
-		if(heroController.IsDeath(0)) {
+		StartEnemySkill();
+
+		if(heroController.IsDeath(0) || !restrictionsController.CheckRestrictions()) {
 			LevelFailure();
-		} else {
-			FPPanel.UpdateProgress(false);
 		}
+			
+
+	}
+
+	private bool StartEnemySkill() {
+		if(++currentStartEnemySkillConditions != START_ENEMY_SKILL_CONDITIONS) {
+			return false;
+		}
+
+		EnemySkillData skill = enemyController.GetSkill();
+		if(skill == null) {
+			return false;
+		}
+
+		DisplayMessageController.DisplayMessage(skill.TypeAsString);
+		return false;
 	}
 }
 

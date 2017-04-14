@@ -9,8 +9,12 @@ public class EnemyController : MonoBehaviour {
 
 	public EnemyData enemyData;
 
+	private HeroController heroController;
+
 	public int Health { get; set; }
 	public int CurrentTurns { get; set; }
+
+	private int currentSkillRatio;
 
 	#region Inspector
 	// [SpineAnimation] attribute allows an Inspector dropdown of Spine animation names coming form SkeletonAnimation.
@@ -51,14 +55,21 @@ public class EnemyController : MonoBehaviour {
 		get { return CurrentTurns >= TurnsSuccess; }
 	}
 
-	void Start () {
+	void Awake() {
 		enemyData = GameResources.Instance.GetLevel(App.GetCurrentLevel()).EnemyData;
 		if(enemyData == null) {
 			return;
 		}
 
+		currentSkillRatio = enemyData.SkillRatio;
 		Health = enemyData.Health;
 		ResetTurns();
+	}
+
+	void Start () {
+		if(enemyData == null) {
+			return;
+		}
 
 		skeletonAnimation = GetComponent<SkeletonAnimation>();
 		spineAnimationState = skeletonAnimation.state;
@@ -73,8 +84,12 @@ public class EnemyController : MonoBehaviour {
 		CurrentTurns = 0;
 	}
 
-	public void Strike(OnStrik onStrik) {
-		DisplayMessageController.DisplayMessage("Удар врага", Color.red);
+	public void Strik(OnStrik onStrik) {
+		string animName = kickAnimationName;
+		spineAnimationState.SetAnimation(0, animName, false); 
+		spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
+		heroController.GetKick();
+	//	DisplayMessageController.DisplayMessage("Удар врага", Color.red);
 		StartCoroutine(StrikInternal(onStrik));
 
 	}
@@ -96,11 +111,31 @@ public class EnemyController : MonoBehaviour {
 		if(Health < 0) {
 			Health = 0;
 		}
+			
 	}
 
 	public bool IsDeath(int evaluteValue) {
 		return Health - evaluteValue <= 0;
 	}
 
+	public void SetHeroController(HeroController hc) {
+		heroController = hc;
+	}
 
+	public void Death() {
+		gameObject.SetActive(false);
+	}
+
+	public EnemySkillData GetSkill() {
+		if(enemyData.SkillRatio == 0 || enemyData.SkillData == null || enemyData.SkillData.Length == 0) {
+			return null;
+		}
+
+		currentSkillRatio--;
+		if(currentSkillRatio == 0) {
+			currentSkillRatio = enemyData.SkillRatio;
+			return enemyData.SkillData[Random.Range(0, enemyData.SkillData.Length)];
+		}
+		return null;
+	}
 }
