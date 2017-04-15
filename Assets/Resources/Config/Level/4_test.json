@@ -169,7 +169,8 @@
 				"Count": 3
 			},{
 				"TypeAsString": "Slime",
-				"Count": 2
+				"Count": 2,
+				"Health": 1
 			},{
 				"TypeAsString": "Eater",
 				"Count": 2

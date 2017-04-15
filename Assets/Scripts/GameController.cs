@@ -86,6 +86,8 @@ public class GameController : MonoBehaviour {
 
 	public ParticleSystem BombExplosionPS;
 	public ParticleSystem BombExplosionBombPS;
+	public ParticleSystem EnemySkillPS;
+
 	private float bombExplosionDelay = 0;
 	private bool existBombAll;
 
@@ -113,6 +115,7 @@ public class GameController : MonoBehaviour {
 
 	private const int START_ENEMY_SKILL_CONDITIONS = 2;
 	private int currentStartEnemySkillConditions;
+	private IList<Tile> usingForSkillsTiles = new List<Tile>();
 
 	void Start() {
 		levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
@@ -633,6 +636,7 @@ public class GameController : MonoBehaviour {
 		
 //		isEnemyStrik = false;
 		currentStartEnemySkillConditions = 0;
+		usingForSkillsTiles.Clear();
 		if(fightActive) {
 			heroController.IncreesPowerPoints(evaluatePowerPoints);
 			enemyController.IncreesTurns(1);
@@ -1374,7 +1378,7 @@ public class GameController : MonoBehaviour {
 
 		for(int x = 0;x < numColumns;x++) {
 			Tile tile = tiles[x, numRows - 1];
-			if(tile.IsSimple && tile.GetTileItem().IsNotStatic) {
+			if(tile.IsSimple && !usingForSkillsTiles.Contains(tile)) {
 				avaliableTiles.Add(tile);
 			}
 		}
@@ -1386,6 +1390,7 @@ public class GameController : MonoBehaviour {
 		TileItem ti = InstantiateTileItem(itemData.Type, itemData.X, itemData.Y, false);
 		ti.Level = itemData.Level;
 		Tile dest = avaliableTiles[Random.Range(0, avaliableTiles.Count)];
+		usingForSkillsTiles.Add(dest);
 
 		AnimatedObject ao = ti.GetGameObject().GetComponent<AnimatedObject>();
 		ao.AddMove(ti.GetGameObject().transform.position, dest.GetTileItemGO().transform.position, App.GetTileItemSpeed(TileItemMoveType.HERO_DROP))
@@ -2120,7 +2125,7 @@ public class GameController : MonoBehaviour {
 				if(t == null || t.IsEmpty ) {
 					continue;
 				}
-				if(t.GetTileItem().IsAbsorbable && !avaliableTiles.Contains(t)
+				if(t.GetTileItem().IsAbsorbableByEnemy && !avaliableTiles.Contains(t)
 					&& CheckAvailabilityWithBarriers(tile, t)) {
 					avaliableTiles.Add(t);
 				}
@@ -2303,9 +2308,44 @@ public class GameController : MonoBehaviour {
 			return false;
 		}
 
+		IList<Tile> avaliabe = GetTilesForEnemySkill();
+		for(int i = 0; i < skill.Count; i++) {
+			Tile tile = avaliabe[Random.Range(0, avaliabe.Count)];
+			InstantiateEnemySkill(tile, skill);
+			avaliabe.Remove(tile);
+			usingForSkillsTiles.Add(tile);
+		}
+
 		DisplayMessageController.DisplayMessage(skill.TypeAsString);
 		return false;
 	}
+
+	public IList<Tile> GetTilesForEnemySkill() {
+		IList<Tile> res = new List<Tile>();
+
+		for(int x = 0; x < numColumns; x++) {
+			for(int y = 0; y < numRows; y++) {
+				Tile tile = tiles[x, y];
+				TileItem ti = tile.GetTileItem();
+				if(ti != null && ti.IsAbsorbableByEnemy && !usingForSkillsTiles.Contains(tile)) {
+					res.Add(tile);
+				}
+			}
+		}
+		return res;
+	}
+
+	private void InstantiateEnemySkill(Tile tile, EnemySkillData skill) {
+		ParticleSystem flash = Instantiate(EnemySkillPS, IndexToPosition(tile.X, tile.Y), Quaternion.identity);
+		Destroy(flash.gameObject, flash.main.duration);
+	//	flash.GetComponent<Renderer>().sortingOrder = BOMB_EXPLOSION_SORTING_ORDER;
+		UnityUtill.SetSortingOrder(flash.gameObject, BOMB_EXPLOSION_SORTING_ORDER);
+		Destroy(tile.GetTileItemGO(), 1f);
+		tile.SetTileItem(null);
+
+	}
+
+
 }
 
 

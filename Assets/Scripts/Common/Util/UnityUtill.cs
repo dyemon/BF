@@ -63,5 +63,12 @@ public class UnityUtill {
 		}
 
 		return new Vector2(maxX - minX, maxY - minY);
-	}		
+	}
+
+	public static void SetSortingOrder(GameObject go, int order) {
+		go.GetComponent<Renderer>().sortingOrder = order;
+		foreach(Renderer r in go.GetComponentsInChildren<Renderer>()) {
+			r.sortingOrder = order;
+		}
+	}
 }

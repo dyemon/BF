@@ -286,9 +286,9 @@ public class TileItem {
 		}
 	}
 
-	public bool IsAbsorbable {
+	public bool IsAbsorbableByEnemy {
 		get {
-			return IsColor || IsSpecialCollect;
+			return IsColor || IsColorIndepended;
 		}
 	}
 
