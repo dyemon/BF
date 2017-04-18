@@ -27,6 +27,7 @@ public class FightProgressPanel : MonoBehaviour, IResizeListener {
 	private EnemyController enemyController;
 
 	public void OnResize(float resizeRation, Vector2 size) {
+		/*
 		foreach(GameObject go in ResizedGO) {
 			go.transform.localScale = new Vector3(1, 1, 1);
 			Vector2 bounds = UnityUtill.GetBounds(go);
@@ -36,6 +37,7 @@ public class FightProgressPanel : MonoBehaviour, IResizeListener {
 
 		HeroPs.OnResize();
 		EnemyPs.OnResize();
+		*/
 	}
 
 	void Start() {

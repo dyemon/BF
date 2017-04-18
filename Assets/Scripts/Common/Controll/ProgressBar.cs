@@ -24,6 +24,7 @@ public class ProgressBar : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		camera = Camera.main;
+		OnResize();
 	}
 
 	public bool SetProgress(int i, bool isAnimate){
@@ -133,14 +134,6 @@ public class ProgressBar : MonoBehaviour {
 	public void SetMaxValue(int val) {
 		MaxValue = val;
 		UpdateText();
-	}
-
-	void Update() {
-	//	if((Screen.width != screenWidth || Screen.height != screenHeight) && camera.isActiveAndEnabled) {
-	//		screenWidth = Screen.width;
-	//		screenHeight = Screen.height;
-			OnResize();
-//		}
 	}
 
 	public void ShowText(bool show) {

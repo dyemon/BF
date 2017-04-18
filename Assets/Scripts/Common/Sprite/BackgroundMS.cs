@@ -16,7 +16,7 @@ public class BackgroundMS : MonoBehaviour {
 		if(Screen.width != screenWidth || Screen.height != screenHeight) {
 			screenWidth = Screen.width;
 			screenHeight = Screen.height;
-			ResizeToScreen();
+		//	ResizeToScreen();
 		}
 	}
 
