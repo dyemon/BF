@@ -17,7 +17,7 @@ public class UserData {
 	public int Health {
 		get { 
 			GoodsData data = GameResources.Instance.GetGameData().GetGoodsData(HealthEquipmentType);
-			return OwnHealth + ((data != null)? data.Health : 0); 
+			return 1000;//OwnHealth + ((data != null)? data.Health : 0); 
 		}
 	}
 	public int Damage {
@@ -35,6 +35,8 @@ public class UserData {
 	public List<QuestData> QuestsData = new List<QuestData>();
 
 	public void InitTest() {
+		HeroesData.Clear();
+		/*
 		HeroesData.Add(new UserHeroData("redEnvelop",0));
 		HeroesData.Add(new UserHeroData("yellowEnvelop",0));
 		HeroesData.Add(new UserHeroData("greenEnvelop",0));		
@@ -49,6 +51,7 @@ public class UserData {
 		QuestsData.Clear();
 		QuestsData.Add(new QuestData("1", 1));
 		QuestsData.Add(new QuestData("2", 2));
+		*/
 	}
 
 	public void Init() {

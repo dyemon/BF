@@ -117,6 +117,9 @@ public class GameController : MonoBehaviour {
 	private int currentStartEnemySkillConditions;
 	private IList<Tile> usingForSkillsTiles = new List<Tile>();
 
+	private int checkConsistencyConditions = 0;
+	private int currentCheckConsistencyConditions = 0;
+
 	void Start() {
 		levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
 		gameData = GameResources.Instance.GetGameData();
@@ -254,7 +257,13 @@ public class GameController : MonoBehaviour {
 		return Barrier.Instantiate(data, go);
 	}
 
-	private TileItem InstantiateTileItem(TileItemType type, int x, int y, bool convertIndexToPos) {
+	private TileItem InstantiateTileItem(TileItemData data, bool convert) {
+		TileItem ti = InstantiateTileItem(data.Type, data.X, data.Y, convert);	
+		InitTileItem(data, ti);
+		return ti;
+	}
+
+	private TileItem InstantiateTileItem(TileItemType type, float x, float y, bool convertIndexToPos) {
 		TileItemTypeGroup group = TileItem.TypeToTypeGroup(type);
 		switch(group) {
 			case TileItemTypeGroup.Red:
@@ -297,7 +306,7 @@ public class GameController : MonoBehaviour {
 
 	}
 
-	private TileItem InstantiateTileItem(GameObject[] items, int index, TileItemType type, int x, int y, bool convertIndexToPos) {
+	private TileItem InstantiateTileItem(GameObject[] items, int index, TileItemType type, float x, float y, bool convertIndexToPos) {
 		GameObject go = (GameObject)Instantiate(items[index], (!convertIndexToPos)? new Vector3(x, y, 0) : IndexToPosition(x, y), Quaternion.identity);
 		TileItem ti = TileItem.Instantiate(type, go);
 		go.GetComponent<SpriteRenderer>().sortingOrder = DEFAULT_TILEITEM_SORTING_ORDER;
@@ -635,6 +644,8 @@ public class GameController : MonoBehaviour {
 
 		
 //		isEnemyStrik = false;
+		checkConsistencyConditions = 0;
+		currentCheckConsistencyConditions = 0;
 		currentStartEnemySkillConditions = 0;
 		usingForSkillsTiles.Clear();
 		if(fightActive) {
@@ -644,17 +655,21 @@ public class GameController : MonoBehaviour {
 			bool enemyDeath = false;
 	//		isEnemyStrik = enemyController.IsStrik;
 
+			if(enemyController.IsStrik) {
+				checkConsistencyConditions++;
+			}
+
 			if(heroController.IsStrik) {
 				heroController.Strik(OnHeroStrik);	
 				if(!enemyController.IsDeath(heroController.Damage)) {
-					StartCoroutine(UpdateTilesWitDelay(true, bombExplosionDelay));
+					StartCoroutine(UpdateTilesWithDelay(true, bombExplosionDelay));
 				}
 				return;
 			}
 
 			if(enemyController.IsStrik) {
-				enemyController.Strik(OnEnemyStrik);
-				StartCoroutine(UpdateTilesWitDelay(true, bombExplosionDelay));
+				enemyController.Strik(OnEnemyStrik);			
+				StartCoroutine(UpdateTilesWithDelay(true, bombExplosionDelay));
 				return;
 			}
 		}
@@ -667,7 +682,7 @@ public class GameController : MonoBehaviour {
 			Invoke("LevelFailure", 2);
 		}
 
-		StartCoroutine(UpdateTilesWitDelay(true, bombExplosionDelay));
+		StartCoroutine(UpdateTilesWithDelay(true, bombExplosionDelay));
 
 	}
 
@@ -887,7 +902,7 @@ public class GameController : MonoBehaviour {
 					continue;
 				}
 				TileItem tileItem = tile.GetTileItem().GetChildTileItem() != null? tile.GetTileItem().GetChildTileItem() : tile.GetTileItem();
-				if(!tileItem.IsNotStatic && tileItem.GetParentTileItem() == null || tileItem.NotHighLight) {
+				if((!tileItem.IsNotStatic && !tileItem.IsSpecialCollect) && tileItem.GetParentTileItem() == null || tileItem.NotHighLight) {
 					continue;
 				}
 
@@ -1039,11 +1054,12 @@ public class GameController : MonoBehaviour {
 
 			bool complete = true;
 			if(animationGroup.AnimationExist()) {
-				animationGroup.Run(OnTileItemUpdateComplete, false);
+				checkConsistencyConditions++;
+				animationGroup.Run(OnCompleteSkill, true);
 				complete = false;
 			}
 
-			if(StartEnemySkill()) {
+			if(StartEnemySkill(false)) {
 				complete = false;
 			}
 
@@ -1052,17 +1068,14 @@ public class GameController : MonoBehaviour {
 			}
 		}
 
-		CheckConsistency();
+		OnCompleteSkill(false);
 	}
 
-	private void OnTileItemUpdateComplete(System.Object[] param) {
-		TileItem ti = (TileItem)param[0];
-		Tile tile = (Tile)param[1];
-
-		ClearTile(tile);
-		tile.SetTileItem(ti);
-
-		OnTileItemUpdateComplete(false);
+	private void OnCompleteSkill(bool inc) {
+		if(inc) {
+			currentCheckConsistencyConditions++;
+		}
+		CheckConsistency();
 	}
 
 	private void UpdateTiles(bool first) {
@@ -1559,6 +1572,12 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void CheckConsistency() {
+		if(currentCheckConsistencyConditions < checkConsistencyConditions) {
+			return;
+		}
+
+		Preconditions.Check(currentCheckConsistencyConditions == checkConsistencyConditions, "CheckConsistency Invalid condition");
+
 		TileItemTypeGroup? group = CheckTileItemSameColorCount(false);
 		if(group == null) {
 			LevelFailureByColorCount();
@@ -2198,7 +2217,7 @@ public class GameController : MonoBehaviour {
 		}
 	}
 
-	IEnumerator UpdateTilesWitDelay(bool first, float delay) {
+	IEnumerator UpdateTilesWithDelay(bool first, float delay) {
 		yield return new WaitForSeconds(delay);
 		UpdateTiles(first);
 	}
@@ -2268,6 +2287,8 @@ public class GameController : MonoBehaviour {
 				Invoke("LevelSuccess", 0.5f);
 				return;
 			} else {
+				checkConsistencyConditions = 0;
+				currentCheckConsistencyConditions = 0;
 				UpdateTiles(true);
 			}
 		} else if(enemyController.IsStrik) {
@@ -2289,7 +2310,7 @@ public class GameController : MonoBehaviour {
 		FPPanel.UpdateFightParams();
 		FPPanel.UpdateProgress();
 
-		StartEnemySkill();
+		StartEnemySkill(false);
 
 		if(heroController.IsDeath(0) || !restrictionsController.CheckRestrictions()) {
 			LevelFailure();
@@ -2298,26 +2319,35 @@ public class GameController : MonoBehaviour {
 
 	}
 
-	private bool StartEnemySkill() {
+	private bool StartEnemySkill(bool strik) {
 		if(++currentStartEnemySkillConditions != START_ENEMY_SKILL_CONDITIONS) {
 			return false;
 		}
 
 		EnemySkillData skill = enemyController.GetSkill();
-		if(skill == null) {
+		if(skill == null || skill.Count <= 0) {
+			OnCompleteSkill(true);
 			return false;
 		}
 
+		Tile[] tileRes = new Tile[skill.Count];
+		TileItem[] tiRes = new TileItem[skill.Count];
+
 		IList<Tile> avaliabe = GetTilesForEnemySkill();
 		for(int i = 0; i < skill.Count; i++) {
+			if(avaliabe.Count == 0) {
+				break;
+			}
 			Tile tile = avaliabe[Random.Range(0, avaliabe.Count)];
-			InstantiateEnemySkill(tile, skill);
+			tiRes[i] = InstantiateEnemySkill(tile, skill, strik);
 			avaliabe.Remove(tile);
 			usingForSkillsTiles.Add(tile);
+			tileRes[i] = tile;
 		}
 
 		DisplayMessageController.DisplayMessage(skill.TypeAsString);
-		return false;
+		StartCoroutine( CompleteEnemySkillWithDelay(tileRes, tiRes, EnemySkillPS.main.duration/2));
+		return true;
 	}
 
 	public IList<Tile> GetTilesForEnemySkill() {
@@ -2335,17 +2365,50 @@ public class GameController : MonoBehaviour {
 		return res;
 	}
 
-	private void InstantiateEnemySkill(Tile tile, EnemySkillData skill) {
-		ParticleSystem flash = Instantiate(EnemySkillPS, IndexToPosition(tile.X, tile.Y), Quaternion.identity);
-		Destroy(flash.gameObject, flash.main.duration);
-	//	flash.GetComponent<Renderer>().sortingOrder = BOMB_EXPLOSION_SORTING_ORDER;
-		UnityUtill.SetSortingOrder(flash.gameObject, BOMB_EXPLOSION_SORTING_ORDER);
-		Destroy(tile.GetTileItemGO(), 1f);
-		tile.SetTileItem(null);
+	private TileItem InstantiateEnemySkill(Tile tile, EnemySkillData skill, bool strik) {
+		Vector2 pos = new Vector2(0, -2);
 
+		if(strik) {
+		} else {
+			ParticleSystem flash = Instantiate(EnemySkillPS, IndexToPosition(tile.X, tile.Y), Quaternion.identity);
+			Destroy(flash.gameObject, flash.main.duration);
+			UnityUtill.SetSortingOrder(flash.gameObject, BOMB_EXPLOSION_SORTING_ORDER);
+		}
+
+		TileItemData data = new TileItemData(skill);
+		TileItem tileItem = InstantiateTileItem(data.Type, pos.x, pos.y, false);
+		InitTileItem(data, tileItem);
+
+		return tileItem;
 	}
 
+	private IEnumerator CompleteEnemySkillWithDelay(Tile[] targets, TileItem[] newTis, float delay) {
+		yield return new WaitForSeconds(delay);
+		CompleteEnemySkill(targets, newTis);
+	}
 
+	private void CompleteEnemySkill(Tile[] targets, TileItem[] newTis) {
+		for(int i = 0; i < targets.Length; i++) {
+			Tile tile = targets[i];
+			TileItem tileItem = newTis[i];
+			if(tileItem == null || tile == null) {
+				continue;
+			}
+			if(tileItem.IsStaticSlime1) {
+				tileItem.SetChildTileItem(tile.GetTileItem());
+				SpriteRenderer render = tileItem.GetGameObject().GetComponent<SpriteRenderer>();
+				render.sortingOrder = DEFAULT_TILEITEM_SORTING_ORDER + 1;
+			} else {
+				ClearTile(tile);
+			}
+			tileItem.GetGameObject().transform.position = IndexToPosition(tile.X, tile.Y);
+			tile.SetTileItem(tileItem);
+		}
+
+		DetectUnavaliableTiles();
+		OnCompleteSkill(true);
+	}
+		
 }
 
 

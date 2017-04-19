@@ -156,7 +156,7 @@
 	}],
 
 	"RestrictionData": {
-        "Turns": 20
+        "Turns": 40
     },
 
 	"EnemyData": {
@@ -169,8 +169,7 @@
 				"Count": 3
 			},{
 				"TypeAsString": "Slime",
-				"Count": 2,
-				"Health": 1
+				"Count": 2
 			},{
 				"TypeAsString": "Eater",
 				"Count": 2

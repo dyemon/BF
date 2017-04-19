@@ -19,6 +19,12 @@ public class TileItemData {
 		this.Type = type;
 	}
 
+	public TileItemData(EnemySkillData eSkill) {
+		Health = eSkill.Health;
+		Type = (TileItemType)eSkill.Type;
+		TypeAsString = eSkill.TypeAsString;
+	}
+
 	public bool HasChild() {
 		return ChildTileItemData != null && ChildTileItemData.TypeAsString != null;
 	}

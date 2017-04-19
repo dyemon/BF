@@ -184,7 +184,7 @@ public class TileItem {
 	}
 
 	public static bool IsSpecialCollectItem(TileItemType type) {
-		return type == TileItemType.Brilliant || type == TileItemType.Key;
+		return type == TileItemType.Brilliant || type == TileItemType.Key || type == TileItemType.EnemySkillEater || type == TileItemType.EnemySkillSimple;
 	}
 	public bool IsSpecialCollect {
 		get { return IsSpecialCollectItem(Type); }
@@ -283,6 +283,11 @@ public class TileItem {
 	public bool IsSlime {
 		get {
 			return type == TileItemType.Slime;
+		}
+	}
+	public bool IsStaticSlime1 {
+		get {
+			return type == TileItemType.StaticSlime_1;
 		}
 	}
 
@@ -424,7 +429,7 @@ public class TileItem {
 
 	public bool NotHighLight {
 		get {
-			return type == TileItemType.EnemySkillSimple;
+			return false;//type == TileItemType.EnemySkillSimple;
 		}
 	}
 }
