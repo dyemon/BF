@@ -156,7 +156,7 @@
 	}],
 
 	"RestrictionData": {
-        "Turns": 40
+        "Turns": 25
     },
 
 	"EnemyData": {

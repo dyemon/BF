@@ -17,7 +17,7 @@ public class UserData {
 	public int Health {
 		get { 
 			GoodsData data = GameResources.Instance.GetGameData().GetGoodsData(HealthEquipmentType);
-			return 1000;//OwnHealth + ((data != null)? data.Health : 0); 
+			return OwnHealth + ((data != null)? data.Health : 0); 
 		}
 	}
 	public int Damage {

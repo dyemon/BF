@@ -95,7 +95,7 @@ public class GameController : MonoBehaviour {
 
 	private TileItemTypeGroup? selectedTileItemTypeGroup = null;
 
-	public Text PowerMultiplierText;
+	public PowerMultiplierText PowerMultiplierText;
 	public Text PowerItemsText;
 
 	private float powerMultiplier = 1f;
@@ -2298,7 +2298,7 @@ public class GameController : MonoBehaviour {
 		PowerItemsText.text = evaluatePowerItems.ToString();
 
 		if(fightActive) {
-			PowerMultiplierText.text = "x" + powerMultiplier.ToString();
+			PowerMultiplierText.SetValue(powerMultiplier);
 			FPPanel.UpdateHeroEvaluatePowerPoints(evaluatePowerPoints);
 		}
 	}
