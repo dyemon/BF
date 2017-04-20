@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(AnimationGroup))]
 public class GameController : MonoBehaviour {
@@ -38,6 +39,7 @@ public class GameController : MonoBehaviour {
 
 	private AnimationGroup animationGroup;
 
+	public static bool IsTileInputAvaliable;
 
 	private Tile[,] tiles;
 	private LinkedList<Tile> selectedTiles = new LinkedList<Tile>();
@@ -68,8 +70,6 @@ public class GameController : MonoBehaviour {
 
 	private TargetController targetController;
 	private RestrictionsController restrictionsController;
-
-	bool IsTileInputAvaliable { get; set;}
 
 	private IDictionary<Tile, object> damagedTiles = new Dictionary<Tile, object>();
 	private IDictionary<Barrier, object> damagedBarriers = new Dictionary<Barrier, object>();
@@ -161,6 +161,9 @@ public class GameController : MonoBehaviour {
 	}
 	// Update is called once per frame
 	void Update() {
+		if(EventSystem.current.IsPointerOverGameObject()) {
+			return;
+		}
 		ProcessInput();
 	
 	}
