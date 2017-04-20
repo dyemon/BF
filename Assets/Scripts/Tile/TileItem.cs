@@ -432,4 +432,10 @@ public class TileItem {
 			return false;//type == TileItemType.EnemySkillSimple;
 		}
 	}
+
+	public bool IsEater {
+		get {
+			return type == TileItemType.EnemySkillEater;
+		}
+	}
 }

@@ -2,5 +2,5 @@
 using System.Collections;
 
 public enum TileItemMoveType {
-	DOWN, OFFSET, MIX, HERO_DROP, GENERATED_TILEITEM_DROP
+	DOWN, OFFSET, MIX, HERO_DROP, GENERATED_TILEITEM_DROP, EATER
 }

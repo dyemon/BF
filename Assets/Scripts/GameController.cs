@@ -120,6 +120,11 @@ public class GameController : MonoBehaviour {
 	private int checkConsistencyConditions = 0;
 	private int currentCheckConsistencyConditions = 0;
 
+	private List<TileItem> eaters = new List<TileItem>();
+	private List<TileItem> newEaters = new List<TileItem>();
+
+	private bool needUpdateAnawaliableTiles = false;
+
 	void Start() {
 		levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
 		gameData = GameResources.Instance.GetGameData();
@@ -712,20 +717,26 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void CollectTileItem(Tile tile) {
+		TileItem tileItem = tile.GetTileItem();
+
 		if(selectedTiles.Contains(tile)) {
-			tile.GetTileItem().UnSelect(TileItemRenderState.Normal);
+			tileItem.UnSelect(TileItemRenderState.Normal);
 		}
 
-		TileItem parentTi = tile.GetTileItem().GetParentTileItem();
+		TileItem parentTi = tileItem.GetParentTileItem();
 		if(parentTi != null) {
 			return;
 		}
 
+		if(tileItem.IsEater) {
+			eaters.Remove(tileItem);
+		}
+
 		if(onCollectTileItem != null) {
-			onCollectTileItem(tile.GetTileItem());
+			onCollectTileItem(tileItem);
 		}
 			
-		if(tile.GetTileItem().DestroyOnBreak()) {
+		if(tileItem.DestroyOnBreak()) {
 			TileItem ti = tile.GetTileItem();
 			TileItem child = ti.GetChildTileItem();
 			ClearTile(tile);
@@ -1047,11 +1058,12 @@ public class GameController : MonoBehaviour {
 
 			UpdateSlime();
 			UpdateTileItemsByGenerators();
+			UpdateEaters();
 			TileItemData data = GetHeroItemData();
 			if(data != null) {
 				InitHeroItemAnimation(data);
 			}
-
+				
 			bool complete = true;
 			if(animationGroup.AnimationExist()) {
 				checkConsistencyConditions++;
@@ -1068,14 +1080,31 @@ public class GameController : MonoBehaviour {
 			}
 		}
 
-		OnCompleteSkill(false);
+		OnCompleteSkill(false, first);
 	}
 
 	private void OnCompleteSkill(bool inc) {
+		OnCompleteSkill(inc, true);
+	}
+
+	private void OnCompleteSkill(bool inc, bool first) {
 		if(inc) {
 			currentCheckConsistencyConditions++;
 		}
-		CheckConsistency();
+		if(currentCheckConsistencyConditions < checkConsistencyConditions) {
+			return;
+		}
+			
+		if(needUpdateAnawaliableTiles) {
+			DetectUnavaliableTiles();
+			needUpdateAnawaliableTiles = false;
+		}
+
+		if(first && eaters.Count > 0) {
+			UpdateTiles(false);
+		} else {
+			CheckConsistency();
+		}
 	}
 
 	private void UpdateTiles(bool first) {
@@ -1572,10 +1601,6 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void CheckConsistency() {
-		if(currentCheckConsistencyConditions < checkConsistencyConditions) {
-			return;
-		}
-
 		Preconditions.Check(currentCheckConsistencyConditions == checkConsistencyConditions, "CheckConsistency Invalid condition");
 
 		TileItemTypeGroup? group = CheckTileItemSameColorCount(false);
@@ -1608,6 +1633,10 @@ public class GameController : MonoBehaviour {
 		}
 
 		IsTileInputAvaliable = true;
+		if(newEaters.Count > 0) {
+			eaters.AddRange(newEaters);
+			newEaters.Clear();
+		}
 	}
 
 	private TileItemTypeGroup? CheckTileItemSameColorCount(bool strict) {
@@ -2345,7 +2374,6 @@ public class GameController : MonoBehaviour {
 			tileRes[i] = tile;
 		}
 
-		DisplayMessageController.DisplayMessage(skill.TypeAsString);
 		StartCoroutine( CompleteEnemySkillWithDelay(tileRes, tiRes, EnemySkillPS.main.duration/2));
 		return true;
 	}
@@ -2401,12 +2429,45 @@ public class GameController : MonoBehaviour {
 			} else {
 				ClearTile(tile);
 			}
+			if(tileItem.IsEater) {
+				newEaters.Add(tileItem);
+			}
 			tileItem.GetGameObject().transform.position = IndexToPosition(tile.X, tile.Y);
 			tile.SetTileItem(tileItem);
 		}
 
-		DetectUnavaliableTiles();
+		needUpdateAnawaliableTiles = true;
 		OnCompleteSkill(true);
+	}
+
+	private void UpdateEaters() {
+		if(eaters.Count == 0) {
+			return;
+		}
+
+		IList<Tile> avaliabe = GetTilesForEnemySkill();
+		foreach(TileItem eater in eaters) {
+			if(avaliabe.Count == 0) {
+				break;
+			}
+			Tile tile = avaliabe[Random.Range(0, avaliabe.Count)];
+			avaliabe.Remove(tile);
+			usingForSkillsTiles.Add(tile);
+
+			Tile curTile = GetTile(eater.GetGameObject());
+			curTile.SetTileItem(null);
+
+			AnimatedObject ao = eater.GetGameObject().GetComponent<AnimatedObject>();
+			float speed = App.GetTileItemSpeed(TileItemMoveType.EATER);
+			float time = AMove.CalcTime(IndexToPosition(curTile.X, curTile.Y), IndexToPosition(tile.X, tile.Y), speed);
+			ao.AddMove(null, IndexToPosition(tile.X, tile.Y), speed).LayerSortingOrder(DEFAULT_TILEITEM_SORTING_ORDER + 1)
+				.AddResize(null, new Vector3(1.3f, 1.3f, 1), time * 0.2f)
+				.AddResize(null, new Vector3(1f, 1f, 1), time * 0.7f)
+				.OnStop(OnTileItemReplace, new System.Object[] {eater, tile})
+				.Build();
+			animationGroup.Add(ao);
+			needUpdateAnawaliableTiles = true;
+		}
 	}
 		
 }
