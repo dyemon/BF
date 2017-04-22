@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using UnityEditor;
 
 
 public class SceneController : MonoBehaviour {
@@ -61,6 +62,7 @@ public class SceneController : MonoBehaviour {
 				loaddedScenes.Clear();
 			}
 			loaddedScenes.Add(name);
+			SceneManager.SetActiveScene(SceneManager.GetSceneByName(name));
 		}else if(unloadOther) {
 			loaddedScenes.Clear();
 			loaddedScenes.Add(name);
@@ -68,6 +70,13 @@ public class SceneController : MonoBehaviour {
 	}
 
 	public void UnloadScene(string name) {
+		SceneManager.UnloadScene(name);
+		loaddedScenes.Remove(name);
+	}
+
+	public void UnloadCurrentScene() {
+		Preconditions.Check(loaddedScenes.Count > 0, "Can not detect current scene"); 
+		string name = loaddedScenes[loaddedScenes.Count - 1];
 		SceneManager.UnloadScene(name);
 		loaddedScenes.Remove(name);
 	}

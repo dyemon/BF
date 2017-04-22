@@ -14,9 +14,9 @@ public abstract class FlashObject : FadeObject {
 	}
 
 	private IEnumerator FlashInternal() {
-		StartCoroutine(FadeIn());
+		FadeIn();
 		yield return new WaitForSeconds(VisibleTime);
-		StartCoroutine(FadeOut());
+		FadeOut();
 	}
 
 

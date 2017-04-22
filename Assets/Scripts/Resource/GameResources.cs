@@ -11,7 +11,8 @@ public class GameResources {
 	private string currentLevelId = null;
 	private LevelData currentLevelData = null;
 	private GameData gameData = null;
-	
+	private LocalSettingsData localSettings = null;
+
 	private string userData;
 
 	private INIParser settings;
@@ -211,5 +212,23 @@ public class GameResources {
 	public bool CanChangeAsset(UserData data, UserAssetType type, int value) {
 		UserAssetData asset = data.GetAsset(type);
 		return asset.Value + value >= 0;
+	}
+
+	public LocalSettingsData GetLocalSettings() {
+		if(localSettings == null) {
+			string data = PlayerPrefs.GetString("localSettings");
+			localSettings = JsonUtility.FromJson<LocalSettingsData>(data);
+			if(localSettings == null) {
+				localSettings = new LocalSettingsData();
+			}
+		}
+
+		return localSettings;
+	}
+
+	public void SaveLocalSettings() {
+		string data = JsonUtility.ToJson(localSettings);
+		PlayerPrefs.SetString("localSettings", data);
+		PlayerPrefs.Save();
 	}
 }
