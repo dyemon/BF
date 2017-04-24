@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class WindowScene : MonoBehaviour {
-
+		
 	public void Close() {
-		StartCoroutine(CloseInternal());
+		Close(null);
 	}
 
-	private IEnumerator CloseInternal() {
+	public void Close(System.Object retVal = null) {
+		StartCoroutine(CloseInternal(retVal));
+	}
+
+	private IEnumerator CloseInternal(System.Object retVal) {
 		FadeCanvasGroup fcg = GetComponent<FadeCanvasGroup>();
 		if(fcg != null) {
 			fcg.FadeOut();
@@ -17,6 +21,6 @@ public class WindowScene : MonoBehaviour {
 			}
 		}
 
-		SceneController.Instance.UnloadCurrentScene();
+		SceneController.Instance.UnloadCurrentScene(retVal);
 	}
 }

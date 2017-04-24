@@ -8,6 +8,8 @@ using UnityEngine.EventSystems;
 public class GameController : MonoBehaviour {
 	private static float TILESYOFFSET = 0.25f;
 
+	public static GameController Instance;
+
 	public delegate void OnCollectTileItem(TileItem tileItem);
 	public event OnCollectTileItem onCollectTileItem;
 	public delegate void OnMoveComplete();
@@ -39,7 +41,7 @@ public class GameController : MonoBehaviour {
 
 	private AnimationGroup animationGroup;
 
-	public static bool IsTileInputAvaliable;
+	public bool IsTileInputAvaliable;
 
 	private Tile[,] tiles;
 	private LinkedList<Tile> selectedTiles = new LinkedList<Tile>();
@@ -87,6 +89,7 @@ public class GameController : MonoBehaviour {
 	public ParticleSystem BombExplosionPS;
 	public ParticleSystem BombExplosionBombPS;
 	public ParticleSystem EnemySkillPS;
+	public ParticleSystem HeroSkillPS;
 
 	private float bombExplosionDelay = 0;
 	private bool existBombAll;
@@ -125,7 +128,14 @@ public class GameController : MonoBehaviour {
 
 	private bool needUpdateAnawaliableTiles = false;
 
+	private List<HeroSkillData> avaliableHeroSkills = new List<HeroSkillData>();
+	private bool resetHeroSkillData = true;
+	public GameObject StartHeroSkillPos;
+
+
 	void Start() {
+		Instance = this;
+
 		levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
 		gameData = GameResources.Instance.GetGameData();
 
@@ -180,6 +190,10 @@ public class GameController : MonoBehaviour {
 		restrictionsController = Preconditions.NotNull(go.GetComponent<RestrictionsController>(), "Can not get restrictions controller");
 		restrictionsController.LoadCurrentLevel();
 		onMoveComplete += restrictionsController.DecrementMoveScore;
+
+		if(SceneControllerHelper.instance != null) {
+			SceneControllerHelper.instance.onUnloadScene += OnUnloadScene;
+		}
 	}
 
 	private void InitFight() {
@@ -1111,12 +1125,13 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void UpdateTiles(bool first) {
-		IsTileInputAvaliable = false;
+		SetTileInputAvaliable(false);
 		ResetTileItemSpawnDelay();
 
 		if(first) {
 			bombExplosionDelay = 0;
 			dropedTileItemsCount = 0;
+			resetHeroSkillData = true;
 			autoDropTileItems.ReseteDroped();
 
 			if(dropRequire.Count > 0 && collectedTileItemsCount > 1) {
@@ -1635,7 +1650,7 @@ public class GameController : MonoBehaviour {
 			RepositionTileItems(data);
 		}
 
-		IsTileInputAvaliable = true;
+		SetTileInputAvaliable(true);
 		if(newEaters.Count > 0) {
 			eaters.AddRange(newEaters);
 			newEaters.Clear();
@@ -2396,6 +2411,21 @@ public class GameController : MonoBehaviour {
 		return res;
 	}
 
+	public IList<Tile> GetTilesForHeroSkill() {
+		IList<Tile> res = new List<Tile>();
+
+		for(int x = 0; x < numColumns; x++) {
+			for(int y = 0; y < numRows; y++) {
+				Tile tile = tiles[x, y];
+				TileItem ti = tile.GetTileItem();
+				if(ti != null && ti.IsSimple) {
+					res.Add(tile);
+				}
+			}
+		}
+		return res;
+	}
+
 	private TileItem InstantiateEnemySkill(Tile tile, EnemySkillData skill, bool strik) {
 		Vector2 pos = new Vector2(0, -2);
 
@@ -2473,6 +2503,90 @@ public class GameController : MonoBehaviour {
 		}
 	}
 		
+	public void ShowHeroSkillsWindow() {
+		IList<HeroSkillData> skills = GetAvaliableHeroSkills();
+		SceneControllerHelper.instance.LoadSceneAdditive(HeroSkillScene.SceneName, skills);
+	}
+
+	private IList<HeroSkillData> GetAvaliableHeroSkills() {
+		if(avaliableHeroSkills.Count == 0 || resetHeroSkillData) {
+			HeroSkillData data = new HeroSkillData();
+			data.Type = HeroSkillType.BombV;
+			data.Name = "Вертикальная Бомба";
+			data.Description = "Какое то там описание скила";
+			data.PricaType = UserAssetType.Money;
+			data.PriceValue = 10;
+			data.Count = 1;
+			data.init();
+			avaliableHeroSkills.Add(data);
+		}
+
+		return avaliableHeroSkills;
+	}
+
+	void OnUnloadScene (string name, object retVal) {
+		if(name == HeroSkillScene.SceneName && retVal != null) {
+			HeroSkillData skill = (HeroSkillData)retVal;
+			UseHeroSkill(skill);
+		}
+	}
+
+	void UseHeroSkill(HeroSkillData skill) {
+		SetTileInputAvaliable(false);
+		heroController.UseSkill();
+		StartCoroutine(StartHeroSkill(skill, 2f));
+	}
+
+	IEnumerator StartHeroSkill(HeroSkillData skill, float delay) {
+		yield return new WaitForSeconds(delay);
+		HeroSkillTypeGroup group = skill.TypeGroup;
+
+		ParticleSystem flash = Instantiate(HeroSkillPS, StartHeroSkillPos.transform.position, Quaternion.identity);
+		Destroy(flash.gameObject, flash.main.duration);
+		UnityUtill.SetSortingOrder(flash.gameObject, BOMB_EXPLOSION_SORTING_ORDER);
+
+		switch(skill.TypeGroup) {
+		case HeroSkillTypeGroup.DropTileItem:
+			StartHeroSkillDropTileItem(skill);
+			break;
+		default:
+			CompleteHeroSkill(false);
+			break;
+		}
+	}
+
+	void StartHeroSkillDropTileItem(HeroSkillData skill) {
+		IList<Tile> avaliabe = GetTilesForHeroSkill();
+
+		for(int i = 0; i < skill.Count; i++) {
+			if(avaliabe.Count == 0) {
+				break;
+			}
+			Tile tile = avaliabe[Random.Range(0, avaliabe.Count)];
+			avaliabe.Remove(tile);
+
+			Vector3 pos = StartHeroSkillPos.transform.position;
+			TileItem tileItem = InstantiateTileItem(skill.DropTileItem.Type, pos.x, pos.y, false);
+			InitTileItem(skill.DropTileItem, tileItem);
+
+			AnimatedObject ao = tileItem.GetGameObject().GetComponent<AnimatedObject>();
+			float speed = App.GetTileItemSpeed(TileItemMoveType.HERO_SKILL);
+			ao.AddMove(null, IndexToPosition(tile.X, tile.Y), speed).LayerSortingOrder(DEFAULT_TILEITEM_SORTING_ORDER + 1)
+				.OnStop(OnTileItemReplace, new System.Object[] {tileItem, tile})
+				.Build();
+			animationGroup.Add(ao);
+		}
+
+		animationGroup.Run(CompleteHeroSkill, false);
+	}
+
+	void CompleteHeroSkill(bool checkConsistensy) {
+		SetTileInputAvaliable(true);
+	}
+
+	void SetTileInputAvaliable(bool val) {
+		IsTileInputAvaliable = val;
+	}
 }
 
 

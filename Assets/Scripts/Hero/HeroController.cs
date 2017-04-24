@@ -116,4 +116,9 @@ public class HeroController : MonoBehaviour {
 	public bool IsDeath(int evaluteValue) {
 		return Health - evaluteValue <= 0;
 	}
+
+	public void UseSkill() {
+		spineAnimationState.SetAnimation(0, getCardAnimationName, false); 
+		spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
+	}
 }

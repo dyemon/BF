@@ -18,6 +18,7 @@ public class App {
 		tileItemMoveType.Add(TileItemMoveType.HERO_DROP, 10f);
 		tileItemMoveType.Add(TileItemMoveType.GENERATED_TILEITEM_DROP, 5f);
 		tileItemMoveType.Add(TileItemMoveType.EATER, 10f);
+		tileItemMoveType.Add(TileItemMoveType.HERO_SKILL, 15f);
 	}
 
 	public static float MoveTileItemTimeUnit {

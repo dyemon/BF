@@ -9,6 +9,9 @@ using UnityEditor;
 public class SceneController : MonoBehaviour {
 	public static SceneController Instance;
 
+	public delegate void OnUnloadScene(string name, System.Object retVal);
+	public event OnUnloadScene onUnloadScene;
+
 //	public Image fadeImage;
 	public float MinDuration = 0.05f;
 	public float MaxAlpha = 0.5f;
@@ -24,6 +27,8 @@ public class SceneController : MonoBehaviour {
 	public CanvasGroup canvasGroup;
 
 	private IList<string> loaddedScenes = new List<string>();
+	private IDictionary<string, System.Object> parameters = new Dictionary<string, System.Object>();
+	private IDictionary<string, System.Object> returnValues = new Dictionary<string, System.Object>();
 
 	void Awake() {
 		Instance = this;
@@ -43,15 +48,15 @@ public class SceneController : MonoBehaviour {
 	}
 
 	public void LoadScene(string name) {
-		loaddedScenes.Clear();
+		Clear();
 		SceneManager.LoadSceneAsync(name, LoadSceneMode.Single);
 	}
 
-	public void LoadSceneAdditive(string name, bool unloadOther = false) {
+	public void LoadSceneAdditive(string name, System.Object param = null, bool unloadOther = false) {
 		if(unloadOther) {
 			foreach(string scene in loaddedScenes) {
 				if(name != scene) {
-					SceneManager.UnloadScene(scene);
+					StartCoroutine(UnloadSceneInternal(name, null));
 				}
 			}
 		}
@@ -59,30 +64,37 @@ public class SceneController : MonoBehaviour {
 		if(!loaddedScenes.Contains(name)) {
 			SceneManager.LoadSceneAsync(name, LoadSceneMode.Additive);
 			if(unloadOther) {
-				loaddedScenes.Clear();
+				Clear();
 			}
 			loaddedScenes.Add(name);
 			SceneManager.SetActiveScene(SceneManager.GetSceneByName(name));
 		}else if(unloadOther) {
-			loaddedScenes.Clear();
+			Clear();
 			loaddedScenes.Add(name);
 		}
+
+		parameters[name] = param;
 	}
 
-	public void UnloadScene(string name) {
-		SceneManager.UnloadScene(name);
-		loaddedScenes.Remove(name);
+	public void UnloadScene(string name, System.Object retVal = null) {
+		StartCoroutine(UnloadSceneInternal(name, retVal));
+
 	}
 
-	public void UnloadCurrentScene() {
+	public void UnloadCurrentScene(System.Object retVal = null) {
 		Preconditions.Check(loaddedScenes.Count > 0, "Can not detect current scene"); 
 		string name = loaddedScenes[loaddedScenes.Count - 1];
-		SceneManager.UnloadScene(name);
+		StartCoroutine(UnloadSceneInternal(name, retVal));
+	}
+
+	private IEnumerator UnloadSceneInternal(string name, System.Object retVal) {
+		yield return SceneManager.UnloadSceneAsync(name);
 		loaddedScenes.Remove(name);
+		onUnloadScene(name, retVal);
 	}
 
 	public void LoadSceneAsync(string name) {
-		loaddedScenes.Clear();
+		Clear();
 		StartCoroutine(LoadSceneAsyncInternal(name));
 	}
 
@@ -149,5 +161,15 @@ public class SceneController : MonoBehaviour {
 		
 	public void SetAlpha(float alpha) {
 		canvasGroup.alpha = Mathf.Clamp(alpha, 0, 1);
+	}
+
+	private void Clear() {
+		loaddedScenes.Clear();
+		parameters.Clear();
+		returnValues.Clear();
+	}
+
+	public System.Object GetParameter(string name) {
+		return parameters[name];
 	}
 }
