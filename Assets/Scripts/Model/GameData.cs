@@ -15,8 +15,10 @@ public class GameData {
 	public IDictionary<string, HeroData> HeroData = new Dictionary<string, HeroData>();
 
 	public GoodsData[] GoodsData = new GoodsData[0];
+	public HeroSkillData[] HeroSkillData = new HeroSkillData[0];
 
 	public void Init() {
+		/*
 		HeroData["redHBomb"] = new HeroData(TileItemType.RedBombH, 5);
 		HeroData["redVBomb"] = new HeroData(TileItemType.RedBombV, 5);
 		HeroData["redEnvelop"] = new HeroData(TileItemType.RedEnvelop, 50);
@@ -46,9 +48,13 @@ public class GameData {
 		HeroData["BombV"] = new HeroData(TileItemType.BombV, 3);
 		HeroData["BombP"] = new HeroData(TileItemType.BombP, 3);
 		HeroData["BombC"] = new HeroData(TileItemType.BombC, 3);
-
+		*/
 		foreach(GoodsData item in GoodsData) {
 			item.Type = (GoodsType)Enum.Parse(typeof(GoodsType), item.TypeAsString);
+		}
+
+		foreach(HeroSkillData item in HeroSkillData) {
+			item.init();
 		}
 	}
 

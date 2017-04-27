@@ -31,5 +31,55 @@
 			"MinExperience": 20,
 			"PriceTypeAsString": "Star",
 			"PriceValue": 10
-	}]
+	}],
+
+	"HeroSkillData": [{
+			"Name": "Бомба вертикали",
+			"Description": "Взрывает все элементы по вертикали",
+			"TypeAsString": "BombV",
+			"MinExperience": 20,
+			"PriceTypeAsString": "Semka",
+			"PriceValue": 20,
+			"Count": 1
+		},{
+			"Name": "Бомба горизонтали",
+			"Description": "Взрывает все элементы по горизонтали",
+			"TypeAsString": "BombH",
+			"MinExperience": 30,
+			"PriceTypeAsString": "Money",
+			"PriceValue": 30,
+			"Count": 1
+		},{
+			"Name": "Бомба по периметру",
+			"Description": "Взрывает все соседние элементы",
+			"TypeAsString": "BombP",
+			"MinExperience": 40,
+			"PriceTypeAsString": "Ring",
+			"PriceValue": 40,
+			"Count": 1
+		},{
+			"Name": "Бомба любой цвет",
+			"Description": "Взрывает все элементы одного цвета",
+			"TypeAsString": "BombC",
+			"MinExperience": 50,
+			"PriceTypeAsString": "Star",
+			"PriceValue": 50,
+			"Count": 1
+		},{
+			"Name": "Конвертер",
+			"Description": "Меняет цвет соседних элементов",
+			"TypeAsString": "Envelop",
+			"MinExperience": 60,
+			"PriceTypeAsString": "Money",
+			"PriceValue": 60,
+			"Count": 1
+		},{
+			"Name": "Розовые очки",
+			"Description": "Yбрать один цвет с поля на (0) ходов",
+			"TypeAsString": "ExcludeColor",
+			"MinExperience": 70,
+			"PriceTypeAsString": "Ring",
+			"PriceValue": 70,
+			"Turns": 5
+		}] 
 }

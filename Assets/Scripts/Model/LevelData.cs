@@ -62,7 +62,7 @@ public class LevelData {
 				TileItemDropPercent[i] = 20;
 			}
 		}
-
+		/*
 		int sum = 0;
 		for(int i = 0;i < TileItemDropPercent.Length;i++) {
 			sum += TileItemDropPercent[i];
@@ -71,7 +71,7 @@ public class LevelData {
 		if(sum != 100) {
 			throw new LevelConfigException("Sum of tile item drop percent must be 100. Now it is " + sum );
 		}
-
+		*/
 		if(AutoDropOnCollectData != null) {
 			foreach(TileItemData item in AutoDropOnCollectData) {
 				item.Type = (TileItemType)Enum.Parse(typeof(TileItemType), item.TypeAsString);

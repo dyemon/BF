@@ -7,6 +7,7 @@ public class TileItemSameColorCount {
 	
 	private int itemCount = 0;
 	private IDictionary<Vector2, Object> enevlopReplacePositions = new Dictionary<Vector2, Object>();
+	public bool MayBeFirst = false;
 
 	public TileItemSameColorCount(TileItemTypeGroup typeGroup) {
 		TypeGroup = typeGroup;

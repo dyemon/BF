@@ -71,4 +71,12 @@ public class UnityUtill {
 			r.sortingOrder = order;
 		}
 	}
+
+	public static void Destroy(GameObject go) {
+		foreach(Transform child in go.transform) {
+			GameObject.Destroy(child);
+		}
+
+		GameObject.Destroy(go);
+	}
 }

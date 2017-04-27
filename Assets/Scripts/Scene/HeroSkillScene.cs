@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class HeroSkillScene : WindowScene {
 
-	public ImageResources imageResources;
+	public GameObjectResources GameObjectResources;
 	private IList<HeroSkillData> skills;
 	public static string SceneName = "HeroSkill";
 

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Linq;
 
 [RequireComponent(typeof(AnimationGroup))]
 public class GameController : MonoBehaviour {
@@ -13,7 +14,7 @@ public class GameController : MonoBehaviour {
 	public delegate void OnCollectTileItem(TileItem tileItem);
 	public event OnCollectTileItem onCollectTileItem;
 	public delegate void OnMoveComplete();
-	public event OnMoveComplete onMoveComplete;
+	public event OnMoveComplete onTurnComplete;
 
 	public static readonly int DEFAULT_TILEITEM_SORTING_ORDER = 10;
 	public static readonly int BOMB_MARK_SORTING_ORDER = 20;
@@ -131,7 +132,7 @@ public class GameController : MonoBehaviour {
 	private List<HeroSkillData> avaliableHeroSkills = new List<HeroSkillData>();
 	private bool resetHeroSkillData = true;
 	public GameObject StartHeroSkillPos;
-
+	public HeroSkillController heroSkillController;
 
 	void Start() {
 		Instance = this;
@@ -183,13 +184,14 @@ public class GameController : MonoBehaviour {
 		targetController = Preconditions.NotNull(go.GetComponent<TargetController>(), "Can not get target controller");
 		targetController.LoadCurrentLevel();
 
-		onCollectTileItem += targetController.OnCollectTileItem;
-		onCollectTileItem += OnCheckAutoDropOnDestroyData;
-
 		go = Preconditions.NotNull(GameObject.Find("Restrictions Panel"), "Can not find restrictions panel");
 		restrictionsController = Preconditions.NotNull(go.GetComponent<RestrictionsController>(), "Can not get restrictions controller");
 		restrictionsController.LoadCurrentLevel();
-		onMoveComplete += restrictionsController.DecrementMoveScore;
+
+		onCollectTileItem += targetController.OnCollectTileItem;
+		onCollectTileItem += OnCheckAutoDropOnDestroyData;
+
+		onTurnComplete += restrictionsController.DecrementMoveScore;
 
 		if(SceneControllerHelper.instance != null) {
 			SceneControllerHelper.instance.onUnloadScene += OnUnloadScene;
@@ -254,11 +256,21 @@ public class GameController : MonoBehaviour {
 			return InstantiateTileItem(itemData.Type, 0, -10, true);
 		}
 
-		int rand = Random.Range(1, 101);
+		int[] dropPercent = levelData.TileItemDropPercent;
+		IList<HeroSkillData> skills = heroSkillController.GetDropTileItemEffects();
+		if(skills.Count > 0) {
+			dropPercent = new int[levelData.TileItemDropPercent.Length];
+			System.Array.Copy(levelData.TileItemDropPercent, dropPercent, dropPercent.Length);
+			foreach(HeroSkillData skillData in skills) {
+				dropPercent[((int)skillData.ExcludeColor / TileItem.TILE_ITEM_GROUP_WEIGHT)] = 0;
+			}
+		}
+			
+		int rand = Random.Range(1, dropPercent.Sum() + 1);
 		int sum = 0;
 		int index = 0;
-		for(int i = 0;i < levelData.TileItemDropPercent.Length;i++) {
-			sum += levelData.TileItemDropPercent[i];
+		for(int i = 0;i < dropPercent.Length;i++) {
+			sum += dropPercent[i];
 			if(rand <= sum) {
 				index = i;
 				break;
@@ -660,8 +672,8 @@ public class GameController : MonoBehaviour {
 			DetectUnavaliableTiles();
 		}
 
-		if(onMoveComplete != null) {
-			onMoveComplete();
+		if(onTurnComplete != null) {
+			onTurnComplete();
 		}
 
 		
@@ -1121,6 +1133,7 @@ public class GameController : MonoBehaviour {
 			UpdateTiles(false);
 		} else {
 			CheckConsistency();
+			heroSkillController.OnTurnComplete();
 		}
 	}
 
@@ -1661,11 +1674,13 @@ public class GameController : MonoBehaviour {
 		IDictionary<TileItemTypeGroup, TileItemSameColorCount> items = new Dictionary<TileItemTypeGroup, TileItemSameColorCount>();
 		TileItemTypeGroup maxCountType = TileItemTypeGroup.Red;
 		int maxCount = 0;
+		bool colorIndependedFirst = false;
 
 		for(int x = 0; x < numColumns; x++) {
 			for(int y = 0; y < numRows; y++) {
 				Tile tile = tiles[x, y];
 				TileItem ti = tile.GetTileItem();
+				bool mayBeFirst = false;
 
 				if(ti == null || !tile.IsColor && !ti.IsColorIndepended) {
 					continue;
@@ -1683,6 +1698,10 @@ public class GameController : MonoBehaviour {
 							items.Add(tgt, new TileItemSameColorCount(tgt));
 						}
 						items[tgt].Increment();
+						if(ti.MayBeFirst) {
+							items[tgt].MayBeFirst = true;
+							colorIndependedFirst = true;
+						}
 					}
 					count = maxCount + 1;
 					tg = maxCountType;
@@ -1692,13 +1711,17 @@ public class GameController : MonoBehaviour {
 						items.Add(tg, new TileItemSameColorCount(tg));
 					}
 					count = items[tg].Increment();
+					if(ti.MayBeFirst) {
+						items[tg].MayBeFirst = true;
+					}
+					mayBeFirst = items[tg].MayBeFirst;
 				}
 				
 				if(!strict && tile.GetTileItem().IsEnvelop) {
 					count += tile.GetTileItem().GetEnvelopReplaceItemCount() ;
 				}
 					
-				if(count > maxCount) {
+				if(count > maxCount && (colorIndependedFirst || mayBeFirst)) {
 					maxCount = count;
 					maxCountType = tg;
 				}
@@ -1832,7 +1855,8 @@ public class GameController : MonoBehaviour {
 					continue;
 				}
 				Vector2 curPos = new Vector2(x, y);
-				if(chain.ContainsKey(curPos) || (TileItem.TypeToTypeGroup(itemData.Type) != typeGroup && !TileItem.IsColorIndependedItem(itemData.Type))) {
+				if(chain.ContainsKey(curPos) || (TileItem.TypeToTypeGroup(itemData.Type) != typeGroup && !TileItem.IsColorIndependedItem(itemData.Type)
+					&& !TileItem.IsColorIndependedItem(type))) {
 					continue;
 				}
 
@@ -2011,7 +2035,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void MarkBombTiles() {
-		Debug.Log(bombSelectedTiles.Count);
+	//	Debug.Log(bombSelectedTiles.Count);
 		foreach(TileItem ti in bombSelectedTiles) {
 	//		Vector3 pos = new Vector3(ti.GetGameObject().transform.position.x ,
 	//			ti.GetGameObject().transform.position.y, 0);
@@ -2138,15 +2162,15 @@ public class GameController : MonoBehaviour {
 
 	private void LevelFailure() {
 		if(imposibleCollect) {
-			SceneController.Instance.LoadSceneAsync("LevelFailure");
+	//		SceneController.Instance.LoadSceneAsync("LevelFailure");
 			return;
 		}
 		if(heroController != null && heroController.Health <= 0) {
-			SceneController.Instance.LoadSceneAsync("LevelFailure");
+		//	SceneController.Instance.LoadSceneAsync("LevelFailure");
 			return;
 		}
 		if(!restrictionsController.CheckRestrictions()) {
-			SceneController.Instance.LoadSceneAsync("LevelFailure");
+	//		SceneController.Instance.LoadSceneAsync("LevelFailure");
 			return;
 		}
 
@@ -2426,6 +2450,21 @@ public class GameController : MonoBehaviour {
 		return res;
 	}
 
+	public IList<Tile> GetTiles(TileItemTypeGroup group) {
+		IList<Tile> res = new List<Tile>();
+
+		for(int x = 0; x < numColumns; x++) {
+			for(int y = 0; y < numRows; y++) {
+				Tile tile = tiles[x, y];
+				TileItem ti = tile.GetTileItem();
+				if(ti != null && ti.TypeGroup == group) {
+					res.Add(tile);
+				}
+			}
+		}
+		return res;
+	}
+
 	private TileItem InstantiateEnemySkill(Tile tile, EnemySkillData skill, bool strik) {
 		Vector2 pos = new Vector2(0, -2);
 
@@ -2510,14 +2549,8 @@ public class GameController : MonoBehaviour {
 
 	private IList<HeroSkillData> GetAvaliableHeroSkills() {
 		if(avaliableHeroSkills.Count == 0 || resetHeroSkillData) {
-			HeroSkillData data = new HeroSkillData();
-			data.Type = HeroSkillType.BombV;
-			data.Name = "Вертикальная Бомба";
-			data.Description = "Какое то там описание скила";
-			data.PricaType = UserAssetType.Money;
-			data.PriceValue = 10;
-			data.Count = 1;
-			data.init();
+			HeroSkillData[] skills = GameResources.Instance.GetGameData().HeroSkillData; 
+			HeroSkillData data = skills[5];
 			avaliableHeroSkills.Add(data);
 		}
 
@@ -2539,49 +2572,136 @@ public class GameController : MonoBehaviour {
 
 	IEnumerator StartHeroSkill(HeroSkillData skill, float delay) {
 		yield return new WaitForSeconds(delay);
-		HeroSkillTypeGroup group = skill.TypeGroup;
 
 		ParticleSystem flash = Instantiate(HeroSkillPS, StartHeroSkillPos.transform.position, Quaternion.identity);
 		Destroy(flash.gameObject, flash.main.duration);
 		UnityUtill.SetSortingOrder(flash.gameObject, BOMB_EXPLOSION_SORTING_ORDER);
+		bool success = false;
 
-		switch(skill.TypeGroup) {
-		case HeroSkillTypeGroup.DropTileItem:
-			StartHeroSkillDropTileItem(skill);
+		switch(skill.Type) {
+		case HeroSkillType.BombC:
+		case HeroSkillType.BombV:
+		case HeroSkillType.BombH:
+		case HeroSkillType.BombP:
+		case HeroSkillType.Envelop:
+			success = StartHeroSkillDropTileItem(skill);
 			break;
-		default:
+		case HeroSkillType.ExcludeColor:
+			success = StartHeroSkillExcludeColor(skill);
+			break;
+		}
+
+		if(!success) {
+			DisplayMessageController.DisplayMessage("Невозможно использовать данную магию", Color.red);
 			CompleteHeroSkill(false);
-			break;
+		} else if(skill.Turns > 0) {
+			heroSkillController.AddSkill(skill);
 		}
 	}
 
-	void StartHeroSkillDropTileItem(HeroSkillData skill) {
+	bool StartHeroSkillDropTileItem(HeroSkillData skill) {
 		IList<Tile> avaliabe = GetTilesForHeroSkill();
+		TileItemType[] tileItemsType;
+		animationGroup.Clear();
+		bool checkConsistensy = false;
 
-		for(int i = 0; i < skill.Count; i++) {
+		if(skill.Type == HeroSkillType.Envelop) {
+			tileItemsType = new TileItemType[2];
+			IList<TileItemTypeGroup> items = targetController.GetColorNecessaryGroup();
+			if(items.Count == 0) {
+				return false;
+			}
+			while(items.Count > 2) {
+				items.RemoveAt(Random.Range(0, items.Count));
+			}
+			tileItemsType[0] = (TileItemType)(items[0] + TileItem.ENVELOP_OFFSET);
+			tileItemsType[1] = (TileItemType)(items[Mathf.Min(1, items.Count - 1)] + TileItem.ENVELOP_OFFSET);
+			checkConsistensy = true;
+		} else {
+			tileItemsType = new TileItemType[skill.Count];
+			for(int i = 0; i < skill.Count; i++) {
+				tileItemsType[i] = skill.DropTileItem.Type;
+			}
+		}
+
+		return HeroSkillDropTileItem(tileItemsType, avaliabe, checkConsistensy);
+	}
+
+	bool HeroSkillDropTileItem(TileItemType[] tileItemsType, IList<Tile> avaliabe, bool checkConsistensy) {
+		Vector3 pos = StartHeroSkillPos.transform.position;
+		animationGroup.Clear();
+		foreach(TileItemType itemType in tileItemsType) {
 			if(avaliabe.Count == 0) {
 				break;
 			}
 			Tile tile = avaliabe[Random.Range(0, avaliabe.Count)];
 			avaliabe.Remove(tile);
 
-			Vector3 pos = StartHeroSkillPos.transform.position;
-			TileItem tileItem = InstantiateTileItem(skill.DropTileItem.Type, pos.x, pos.y, false);
-			InitTileItem(skill.DropTileItem, tileItem);
+			TileItem tileItem = InstantiateTileItem(itemType, pos.x, pos.y, false);
+			tileItem.Level = 0;
 
 			AnimatedObject ao = tileItem.GetGameObject().GetComponent<AnimatedObject>();
 			float speed = App.GetTileItemSpeed(TileItemMoveType.HERO_SKILL);
+			float time = AMove.CalcTime(pos, IndexToPosition(tile.X, tile.Y), speed);
 			ao.AddMove(null, IndexToPosition(tile.X, tile.Y), speed).LayerSortingOrder(DEFAULT_TILEITEM_SORTING_ORDER + 1)
+				.AddResize(null, new Vector3(1.5f, 1.5f, 1), time * 0.2f)
+				.AddResize(null, new Vector3(1f, 1f, 1), time * 0.7f)
 				.OnStop(OnTileItemReplace, new System.Object[] {tileItem, tile})
 				.Build();
 			animationGroup.Add(ao);
 		}
 
-		animationGroup.Run(CompleteHeroSkill, false);
+		if(animationGroup.AnimationExist()) {
+			animationGroup.Run(CompleteHeroSkill, checkConsistensy);
+			return true;
+		}
+
+		return false;
+	}
+
+	bool StartHeroSkillExcludeColor(HeroSkillData skill) {
+		TileItemTypeGroup[] colorGroups = TileItem.GetAllColorTileItemGroup();
+		IList<TileItemTypeGroup> groups = new List<TileItemTypeGroup>(colorGroups);
+		IList<TileItemTypeGroup> groupsForGenerate = new List<TileItemTypeGroup>(colorGroups);
+
+		for(int i = 0; i < levelData.TileItemDropPercent.Length; i++) {
+			if(levelData.TileItemDropPercent[i] <= 0) {
+				groups.Remove((TileItemTypeGroup)(i*TileItem.TILE_ITEM_GROUP_WEIGHT));
+				groupsForGenerate.Remove((TileItemTypeGroup)(i*TileItem.TILE_ITEM_GROUP_WEIGHT));
+			}
+		}
+		foreach(TileItemTypeGroup group in targetController.GetColorNecessaryGroup()) {
+			groups.Remove(group);
+		}
+
+		if(groups.Count == 0) {
+			return false;
+		}
+
+		TileItemTypeGroup excludeGroup = groups[Random.Range(0, groups.Count)];
+		skill.ExcludeColor = (TileItemType)excludeGroup;
+		DisplayMessageController.DisplayMessage(excludeGroup.ToString());
+
+		groupsForGenerate.Remove(excludeGroup);
+		IList<Tile> avaliable = GetTiles(excludeGroup);
+		TileItemType[] tiTypes = new TileItemType[avaliable.Count];
+		for(int i = 0; i < tiTypes.Length;i++) {
+			tiTypes[i] = (TileItemType)groupsForGenerate[Random.Range(0, groupsForGenerate.Count)];
+		}
+
+		if(!HeroSkillDropTileItem(tiTypes, avaliable, true)) {
+			CompleteHeroSkill(false);
+		}
+
+		return true;
 	}
 
 	void CompleteHeroSkill(bool checkConsistensy) {
-		SetTileInputAvaliable(true);
+		if(checkConsistensy) {
+			CheckConsistency();
+		} else {
+			SetTileInputAvaliable(true);
+		}
 	}
 
 	void SetTileInputAvaliable(bool val) {

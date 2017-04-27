@@ -16,21 +16,31 @@ public class HeroSkillData {
 	public string PricaTypeAsString;
 	public int PriceValue;
 
+	public int Turns = 0;
+	public int RemainTurns;
+
+	public int MinExperience;
+
+	public TileItemType ExcludeColor;
+
 	public void init() {
 		if(!string.IsNullOrEmpty(TypeAsString)) {
 			Type = EnumUtill.Parse<HeroSkillType>(TypeAsString);
 		}
-			
-		if(TypeGroup == HeroSkillTypeGroup.DropTileItem) {
+		if(!string.IsNullOrEmpty(PricaTypeAsString)) {
+			PricaType = EnumUtill.Parse<UserAssetType>(PricaTypeAsString);
+		}
+
+		if((int)Type < (int)HeroSkillType.Envelop) {
 			TileItemType tiType = EnumUtill.Parse<TileItemType>(Type.ToString());
 			DropTileItem = new TileItemData(0, -2, tiType);
 			DropTileItem.Level = 0;
 		}
-	}
 
-	public HeroSkillTypeGroup TypeGroup {
-		get {
-			return (HeroSkillTypeGroup)((int)Type - (int)Type % 100);
+		if(Turns > 0) {
+			Description = string.Format(Description, Turns);
 		}
 	}
+
+
 }

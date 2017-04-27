@@ -35,8 +35,8 @@ public class TargetController : MonoBehaviour {
 			GameObject target = Instantiate(TargetGO);
 			target.transform.SetParent(gameObject.transform);
 			target.transform.localScale = new Vector3(1, 1, 1);
-			Image icone = target.transform.Find("Image").gameObject.GetComponent<Image>();
-			icone.sprite = targetIcons[data.Type];
+			Image icon = target.transform.Find("Image").gameObject.GetComponent<Image>();
+			icon.sprite = targetIcons[data.Type];
 			Text text = target.transform.Find("Text").gameObject.GetComponent<Text>();
 			text.text = data.Count.ToString();
 			success[index++] = (data.Count > 0)? false : true;
@@ -124,5 +124,33 @@ public class TargetController : MonoBehaviour {
 			}
 			index++;
 		}
+	}
+
+	public IList<TileItemTypeGroup> GetColorNecessaryGroup() {
+		IList<TileItemTypeGroup> res = new List<TileItemTypeGroup>();
+		int index = -1;
+
+		foreach(TargetData data in levelData.TargetData) {
+			index++;
+			if(data.Type == TargetType.Enemy) {
+				continue;
+			}
+			TileItemType tiType = (TileItemType)data.Type; 
+			if(!TileItem.IsColorItem(tiType)) {
+				continue;
+			}
+
+			GameObject targetGO = Preconditions.NotNull(transform.GetChild(index).gameObject, "Can not get target game object for index {0}", index);
+			Text text = targetGO.transform.Find("Text").gameObject.GetComponent<Text>();
+			if(text == null || success[index]) {
+				continue;
+			}
+			int count = Int32.Parse(text.text);
+			if(count > 0) {
+				res.Add(TileItem.TypeToTypeGroup(tiType));
+			}
+		}
+
+		return res;
 	}
 }

@@ -28,7 +28,7 @@ public class TileItemController : MonoBehaviour {
 		sourceColor = render.color;
 		sourceMaterial = render.material;
 		markMaterial = Resources.Load("Material/ShinyDefault", typeof(Material)) as Material;
-
+	
 		if(currentRenderState != TileItemRenderState.Normal) {
 			SetRenderState(currentRenderState);
 		}

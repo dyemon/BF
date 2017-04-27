@@ -438,4 +438,24 @@ public class TileItem {
 			return type == TileItemType.EnemySkillEater;
 		}
 	}
+
+	public static Color ConvertToColor(TileItemType type) {
+		TileItemTypeGroup group = TypeToTypeGroup(type);
+
+		switch(group) {
+		case TileItemTypeGroup.Red:
+			return Color.red;
+		case TileItemTypeGroup.Green:
+			return Color.green;
+		case TileItemTypeGroup.Blue:
+			return Color.blue;
+		case TileItemTypeGroup.Yellow:
+			return Color.yellow;
+		case TileItemTypeGroup.Purple:
+			return new Color(1, 0, 1);
+		default:
+			throw new System.ArgumentException(string.Format("Can not convert to Color fot type {0)", type.ToString()));
+
+		}
+	}
 }
