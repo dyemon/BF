@@ -42,5 +42,9 @@ public class HeroSkillData {
 		}
 	}
 
-
+	public static HeroSkillType[] GetDropTileItemEffects() {
+		HeroSkillType[] types = new HeroSkillType[1];
+		types[0] = HeroSkillType.ExcludeColor;
+		return types;
+	}
 }

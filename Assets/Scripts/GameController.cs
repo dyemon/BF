@@ -257,7 +257,7 @@ public class GameController : MonoBehaviour {
 		}
 
 		int[] dropPercent = levelData.TileItemDropPercent;
-		IList<HeroSkillData> skills = heroSkillController.GetDropTileItemEffects();
+		IList<HeroSkillData> skills = heroSkillController.GetSkills(HeroSkillData.GetDropTileItemEffects());
 		if(skills.Count > 0) {
 			dropPercent = new int[levelData.TileItemDropPercent.Length];
 			System.Array.Copy(levelData.TileItemDropPercent, dropPercent, dropPercent.Length);
@@ -2550,7 +2550,7 @@ public class GameController : MonoBehaviour {
 	private IList<HeroSkillData> GetAvaliableHeroSkills() {
 		if(avaliableHeroSkills.Count == 0 || resetHeroSkillData) {
 			HeroSkillData[] skills = GameResources.Instance.GetGameData().HeroSkillData; 
-			HeroSkillData data = skills[5];
+			HeroSkillData data = skills[7];
 			avaliableHeroSkills.Add(data);
 		}
 
@@ -2589,6 +2589,10 @@ public class GameController : MonoBehaviour {
 		case HeroSkillType.ExcludeColor:
 			success = StartHeroSkillExcludeColor(skill);
 			break;
+		case HeroSkillType.KillEater:
+		case HeroSkillType.KillAllEaters:
+			success = StartHeroSkillKillEater(skill);
+			break;			
 		}
 
 		if(!success) {
@@ -2602,7 +2606,6 @@ public class GameController : MonoBehaviour {
 	bool StartHeroSkillDropTileItem(HeroSkillData skill) {
 		IList<Tile> avaliabe = GetTilesForHeroSkill();
 		TileItemType[] tileItemsType;
-		animationGroup.Clear();
 		bool checkConsistensy = false;
 
 		if(skill.Type == HeroSkillType.Envelop) {
@@ -2644,8 +2647,9 @@ public class GameController : MonoBehaviour {
 			float speed = App.GetTileItemSpeed(TileItemMoveType.HERO_SKILL);
 			float time = AMove.CalcTime(pos, IndexToPosition(tile.X, tile.Y), speed);
 			ao.AddMove(null, IndexToPosition(tile.X, tile.Y), speed).LayerSortingOrder(DEFAULT_TILEITEM_SORTING_ORDER + 1)
-				.AddResize(null, new Vector3(1.5f, 1.5f, 1), time * 0.2f)
-				.AddResize(null, new Vector3(1f, 1f, 1), time * 0.7f)
+				.AddResize(null, new Vector3(1.5f, 1.5f, 1), time * 0.7f)
+				.AddResize(null, new Vector3(1f, 1f, 1), time * 0.2f)
+		//		.AddRotate(null, new Vector3(0, 0, 720), time)
 				.OnStop(OnTileItemReplace, new System.Object[] {tileItem, tile})
 				.Build();
 			animationGroup.Add(ao);
@@ -2659,28 +2663,42 @@ public class GameController : MonoBehaviour {
 		return false;
 	}
 
-	bool StartHeroSkillExcludeColor(HeroSkillData skill) {
+	IList<TileItemTypeGroup> GetAvaliableForDropColors() {
 		TileItemTypeGroup[] colorGroups = TileItem.GetAllColorTileItemGroup();
 		IList<TileItemTypeGroup> groups = new List<TileItemTypeGroup>(colorGroups);
-		IList<TileItemTypeGroup> groupsForGenerate = new List<TileItemTypeGroup>(colorGroups);
 
 		for(int i = 0; i < levelData.TileItemDropPercent.Length; i++) {
 			if(levelData.TileItemDropPercent[i] <= 0) {
-				groups.Remove((TileItemTypeGroup)(i*TileItem.TILE_ITEM_GROUP_WEIGHT));
-				groupsForGenerate.Remove((TileItemTypeGroup)(i*TileItem.TILE_ITEM_GROUP_WEIGHT));
+				groups.Remove((TileItemTypeGroup)(i * TileItem.TILE_ITEM_GROUP_WEIGHT));
 			}
 		}
+
+		IList<HeroSkillData> skills = heroSkillController.GetSkills(HeroSkillData.GetDropTileItemEffects());
+		foreach(HeroSkillData data in skills) {
+			if(data.Type == HeroSkillType.ExcludeColor) {
+				groups.Remove((TileItemTypeGroup)data.ExcludeColor);
+			}
+		}
+
+		return groups;
+	}
+
+	bool StartHeroSkillExcludeColor(HeroSkillData skill) {
+		TileItemTypeGroup[] colorGroups = TileItem.GetAllColorTileItemGroup();
+		IList<TileItemTypeGroup> groups = GetAvaliableForDropColors();
+		IList<TileItemTypeGroup> groupsForGenerate = groups.Select(item => item).ToList();
+
 		foreach(TileItemTypeGroup group in targetController.GetColorNecessaryGroup()) {
 			groups.Remove(group);
 		}
 
-		if(groups.Count == 0) {
+		if(groups.Count == 0 || groupsForGenerate.Count <= 1) {
 			return false;
 		}
 
 		TileItemTypeGroup excludeGroup = groups[Random.Range(0, groups.Count)];
 		skill.ExcludeColor = (TileItemType)excludeGroup;
-		DisplayMessageController.DisplayMessage(excludeGroup.ToString());
+	//	DisplayMessageController.DisplayMessage(excludeGroup.ToString());
 
 		groupsForGenerate.Remove(excludeGroup);
 		IList<Tile> avaliable = GetTiles(excludeGroup);
@@ -2694,6 +2712,45 @@ public class GameController : MonoBehaviour {
 		}
 
 		return true;
+	}
+
+	bool StartHeroSkillKillEater(HeroSkillData skill) {
+		if(eaters.Count == 0) {
+			return false;
+		}
+
+		IList<Tile> avaliabe = new List<Tile>();
+		TileItemType[] tileItemsType;
+		int count = (skill.Type == HeroSkillType.KillEater) ? 1 : eaters.Count;
+		tileItemsType = new TileItemType[count];
+		int i = 0;
+		IList<TileItemTypeGroup> groups = GetAvaliableForDropColors();
+		if(groups.Count == 0) {
+			return false;
+		}
+
+		TileItem lastEater = null;
+		foreach(TileItem ti in eaters) {
+			tileItemsType[i] = (TileItemType)groups[Random.Range(0, groups.Count)];
+			avaliabe.Add(GetTile(ti.GetGameObject()));
+			lastEater = ti;
+
+			if(++i >= count) {
+				break;
+			}
+		}
+
+		bool res = HeroSkillDropTileItem(tileItemsType, avaliabe, false);
+
+		if(res && lastEater != null) {
+			if(count == 1) {
+				eaters.Remove(lastEater);
+			} else {
+				eaters.Clear();
+			}
+		}
+
+		return res;
 	}
 
 	void CompleteHeroSkill(bool checkConsistensy) {

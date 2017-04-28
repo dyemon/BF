@@ -71,15 +71,28 @@
 			"TypeAsString": "Envelop",
 			"MinExperience": 60,
 			"PriceTypeAsString": "Money",
-			"PriceValue": 60,
-			"Count": 1
+			"PriceValue": 60
 		},{
 			"Name": "Розовые очки",
-			"Description": "Yбрать один цвет с поля на (0) ходов",
+			"Description": "Убрать один цвет с поля на (0) ходов",
 			"TypeAsString": "ExcludeColor",
 			"MinExperience": 70,
 			"PriceTypeAsString": "Ring",
 			"PriceValue": 70,
 			"Turns": 5
+		},{
+			"Name": "Пырнуть голубя",
+			"Description": "Убирает одного голубя",
+			"TypeAsString": "KillEater",
+			"MinExperience": 70,
+			"PriceTypeAsString": "Semka",
+			"PriceValue": 70
+		},{
+			"Name": "Воздушка",
+			"Description": "Убрать всех голубей",
+			"TypeAsString": "KillAllEaters",
+			"MinExperience": 70,
+			"PriceTypeAsString": "Money",
+			"PriceValue": 70
 		}] 
 }

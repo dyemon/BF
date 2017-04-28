@@ -6,5 +6,6 @@ using UnityEngine;
 public enum HeroSkillType {
 	BombV, BombH, BombP, BombC,
 	Envelop,
-	ExcludeColor 
+	ExcludeColor,
+	KillEater, KillAllEaters
 }

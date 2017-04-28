@@ -34,14 +34,8 @@ public class HeroSkillController : MonoBehaviour {
 		Text text = icon.transform.Find("Text").gameObject.GetComponent<Text>();
 		text.text = skill.RemainTurns.ToString();
 	}
-
-	public IList<HeroSkillData> GetDropTileItemEffects() {
-		HeroSkillType[] types = new HeroSkillType[1];
-		types[0] = HeroSkillType.ExcludeColor;
-		return GetSkills(types);
-	}
-
-	IList<HeroSkillData> GetSkills(HeroSkillType[] types) {
+		
+	public IList<HeroSkillData> GetSkills(HeroSkillType[] types) {
 		IList<HeroSkillData> res = new List<HeroSkillData>();
 
 		foreach(HeroSkillType type in types) {
