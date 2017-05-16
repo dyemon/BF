@@ -1,4 +1,6 @@
-﻿Shader "Custom/AlphaProgress" {
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Custom/AlphaProgress" {
 	Properties {
 		_MainTex ("Base (RGB) Trans (A)", 2D) = "white" {}
 		_MaskTex("Mask Tex", 2D)=""{}
@@ -19,7 +21,7 @@
 
 	v2f vert(appdata_base i){
 		v2f o;
-		o.pos = mul(UNITY_MATRIX_MVP,i.vertex);
+		o.pos = UnityObjectToClipPos(i.vertex);
 		o.uv = i.texcoord.xy;
 		return o;
 	}

@@ -84,7 +84,7 @@ public class FightProgressPanel : MonoBehaviour, IResizeListener {
 
 		EnemyPs.SetProgress(enemyController.CurrentTurns, true);
 		HeroPs.SetProgress(heroController.CurrentPowerPoints, true);
-		ShowFullIndicator(heroController.IsStrik);
+		ShowFullIndicator(heroController.IsStrike);
 	}
 
 	public void UpdateFightParams() {

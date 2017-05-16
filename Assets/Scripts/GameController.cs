@@ -689,20 +689,20 @@ public class GameController : MonoBehaviour {
 			bool enemyDeath = false;
 	//		isEnemyStrik = enemyController.IsStrik;
 
-			if(enemyController.IsStrik) {
+			if(enemyController.IsStrike) {
 				checkConsistencyConditions++;
 			}
 
-			if(heroController.IsStrik) {
-				heroController.Strik(OnHeroStrik);	
+			if(heroController.IsStrike) {
+				heroController.Strike(null, OnHeroStrike);	
 				if(!enemyController.IsDeath(heroController.Damage)) {
 					StartCoroutine(UpdateTilesWithDelay(true, bombExplosionDelay));
 				}
 				return;
 			}
 
-			if(enemyController.IsStrik) {
-				enemyController.Strik(OnEnemyStrik);			
+			if(enemyController.IsStrike) {
+				enemyController.Strike(OnEnemyStrike);			
 				StartCoroutine(UpdateTilesWithDelay(true, bombExplosionDelay));
 				return;
 			}
@@ -2162,15 +2162,15 @@ public class GameController : MonoBehaviour {
 
 	private void LevelFailure() {
 		if(imposibleCollect) {
-	//		SceneController.Instance.LoadSceneAsync("LevelFailure");
+			SceneController.Instance.LoadSceneAsync("LevelFailure");
 			return;
 		}
 		if(heroController != null && heroController.Health <= 0) {
-		//	SceneController.Instance.LoadSceneAsync("LevelFailure");
+			SceneController.Instance.LoadSceneAsync("LevelFailure");
 			return;
 		}
 		if(!restrictionsController.CheckRestrictions()) {
-	//		SceneController.Instance.LoadSceneAsync("LevelFailure");
+			SceneController.Instance.LoadSceneAsync("LevelFailure");
 			return;
 		}
 
@@ -2345,8 +2345,9 @@ public class GameController : MonoBehaviour {
 		}
 	}
 
-	private void OnHeroStrik() {
-		enemyController.DecreesHealt(heroController.Damage);
+	private void OnHeroStrike(HeroSkillData skill) {
+		int damage = (skill == null) ? heroController.Damage : (int)Mathf.Round(heroController.Damage * skill.Damage / 100);
+		enemyController.DecreesHealt(damage);
 		FPPanel.UpdateFightParams();
 
 		if(enemyController.IsDeath(0)) {
@@ -2357,16 +2358,21 @@ public class GameController : MonoBehaviour {
 			if(targetController.CheckSuccess()) {
 				Invoke("LevelSuccess", 0.5f);
 				return;
-			} else {
+			} else if(skill == null) {
 				checkConsistencyConditions = 0;
 				currentCheckConsistencyConditions = 0;
 				UpdateTiles(true);
 			}
-		} else if(enemyController.IsStrik) {
-			enemyController.Strik(OnEnemyStrik);
+		} else if(enemyController.IsStrike) {
+			enemyController.Strike(OnEnemyStrike);
 			return;
 		}
 			
+		if(skill != null) {
+			CompleteHeroSkill(false);
+			return;
+		}
+
 		if(!enemyController.IsDeath(0)) {
 			FPPanel.UpdateProgress();
 		}
@@ -2376,7 +2382,7 @@ public class GameController : MonoBehaviour {
 			
 	}
 
-	private void OnEnemyStrik() {
+	private void OnEnemyStrike() {
 		heroController.DecreesHealt(enemyController.Damage);
 		FPPanel.UpdateFightParams();
 		FPPanel.UpdateProgress();
@@ -2386,8 +2392,6 @@ public class GameController : MonoBehaviour {
 		if(heroController.IsDeath(0) || !restrictionsController.CheckRestrictions()) {
 			LevelFailure();
 		}
-			
-
 	}
 
 	private bool StartEnemySkill(bool strik) {
@@ -2550,7 +2554,7 @@ public class GameController : MonoBehaviour {
 	private IList<HeroSkillData> GetAvaliableHeroSkills() {
 		if(avaliableHeroSkills.Count == 0 || resetHeroSkillData) {
 			HeroSkillData[] skills = GameResources.Instance.GetGameData().HeroSkillData; 
-			HeroSkillData data = skills[7];
+			HeroSkillData data = skills[10];
 			avaliableHeroSkills.Add(data);
 		}
 
@@ -2566,8 +2570,17 @@ public class GameController : MonoBehaviour {
 
 	void UseHeroSkill(HeroSkillData skill) {
 		SetTileInputAvaliable(false);
-		heroController.UseSkill();
-		StartCoroutine(StartHeroSkill(skill, 2f));
+
+		if (skill.Damage > 0) {
+			StartDamageHeroSkill(skill);	
+		} else {
+			heroController.UseSkill ();
+			StartCoroutine(StartHeroSkill(skill, 2f));
+		}
+	}
+
+	void StartDamageHeroSkill(HeroSkillData skill) {
+		heroController.Strike(skill, OnHeroStrike);
 	}
 
 	IEnumerator StartHeroSkill(HeroSkillData skill, float delay) {

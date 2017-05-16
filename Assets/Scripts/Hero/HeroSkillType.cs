@@ -7,5 +7,6 @@ public enum HeroSkillType {
 	BombV, BombH, BombP, BombC,
 	Envelop,
 	ExcludeColor,
-	KillEater, KillAllEaters
+	KillEater, KillAllEaters,
+	Damage1, Damage2, Damage3
 }

@@ -94,5 +94,29 @@
 			"MinExperience": 70,
 			"PriceTypeAsString": "Money",
 			"PriceValue": 70
+		},{
+			"Name": "Задавить базаром",
+			"Description": "Урон врагу {0}%",
+			"TypeAsString": "Damage1",
+			"Damage":	10,
+			"MinExperience": 70,
+			"PriceTypeAsString": "Semka",
+			"PriceValue": 70
+		},{
+			"Name": "Удар с ноги ",
+			"Description": "Урон врагу {0}%",
+			"TypeAsString": "Damage2",
+			"Damage":	100,
+			"MinExperience": 70,
+			"PriceTypeAsString": "Money",
+			"PriceValue": 70
+		},{
+			"Name": "Двойной удар",
+			"Description": "Урон врагу {0}%",
+			"TypeAsString": "Damage3",
+			"Damage":	200,
+			"MinExperience": 70,
+			"PriceTypeAsString": "Ring",
+			"PriceValue": 70
 		}] 
 }

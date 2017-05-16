@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour {
-	public delegate void OnStrik();
+	public delegate void OnStrike();
 
 	public static float STRIKE_DELAY = 1;
 
@@ -51,7 +51,7 @@ public class EnemyController : MonoBehaviour {
 		}
 	}
 
-	public bool IsStrik {
+	public bool IsStrike {
 		get { return CurrentTurns >= TurnsSuccess; }
 	}
 
@@ -84,13 +84,13 @@ public class EnemyController : MonoBehaviour {
 		CurrentTurns = 0;
 	}
 
-	public void Strik(OnStrik onStrik) {
+	public void Strike(OnStrike onStrike) {
 		string animName = kickAnimationName;
 		spineAnimationState.SetAnimation(0, animName, false); 
 		spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
 		heroController.GetKick();
 	//	DisplayMessageController.DisplayMessage("Удар врага", Color.red);
-		StartCoroutine(StrikInternal(onStrik));
+		StartCoroutine(StrikeInternal(onStrike));
 
 	}
 
@@ -100,10 +100,10 @@ public class EnemyController : MonoBehaviour {
 		spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
 	}
 
-	private IEnumerator StrikInternal(OnStrik onStrik) {
+	private IEnumerator StrikeInternal(OnStrike onStrike) {
 		yield return new WaitForSeconds(STRIKE_DELAY);
 		ResetTurns();
-		onStrik();
+		onStrike();
 	}
 
 	public void DecreesHealt(int damage) {

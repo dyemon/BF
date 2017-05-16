@@ -4,7 +4,7 @@ using UnityEngine;
 using Spine;
 
 public class HeroController : MonoBehaviour {
-	public delegate void OnStrik();
+	public delegate void OnStrike(HeroSkillData skill);
 
 	public static float STRIKE_DELAY = 1;
 
@@ -53,7 +53,7 @@ public class HeroController : MonoBehaviour {
 		}
 	}
 
-	public bool IsStrik {
+	public bool IsStrike {
 		get { return CurrentPowerPoints >= PowerPointSuccess; }
 	}
 
@@ -85,13 +85,13 @@ public class HeroController : MonoBehaviour {
 		CurrentPowerPoints = 0;
 	}
 
-	public void Strik(OnStrik onStrik) {
+	public void Strike(HeroSkillData skill, OnStrike onStrike) {
 		string animName = kick1AnimationName;//(Random.Range(0, 2) >= 1)? kick1AnimationName : kick2AnimationName;
 		spineAnimationState.SetAnimation(0, animName, false); 
 		spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
 		enemyController.GetKick();
 	//	DisplayMessageController.DisplayMessage("Удар героя", Color.green);
-		StartCoroutine(StrikInternal(onStrik));
+		StartCoroutine(StrikeInternal(onStrike, skill));
 	}
 
 	public void GetKick() {
@@ -100,10 +100,10 @@ public class HeroController : MonoBehaviour {
 		spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
 	}
 
-	private IEnumerator StrikInternal(OnStrik onStrik) {
+	private IEnumerator StrikeInternal(OnStrike onStrike, HeroSkillData skill) {
 		yield return new WaitForSeconds(STRIKE_DELAY);
 		ResetPowerPoints();
-		onStrik();
+		onStrike(skill);
 	}
 
 	public void DecreesHealt(int damage) {

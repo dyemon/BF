@@ -23,6 +23,8 @@ public class HeroSkillData {
 
 	public TileItemType ExcludeColor;
 
+	public int Damage = 0;
+
 	public void init() {
 		if(!string.IsNullOrEmpty(TypeAsString)) {
 			Type = EnumUtill.Parse<HeroSkillType>(TypeAsString);
@@ -37,8 +39,10 @@ public class HeroSkillData {
 			DropTileItem.Level = 0;
 		}
 
-		if(Turns > 0) {
-			Description = string.Format(Description, Turns);
+		if (Turns > 0) {
+			Description = string.Format (Description, Turns);
+		} else if (Damage > 0) {
+			Description = string.Format (Description, Damage);
 		}
 	}
 
