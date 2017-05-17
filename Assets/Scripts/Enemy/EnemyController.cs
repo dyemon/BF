@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Spine;
 
 public class EnemyController : MonoBehaviour {
 	public delegate void OnStrike();
@@ -88,15 +89,23 @@ public class EnemyController : MonoBehaviour {
 		string animName = kickAnimationName;
 		spineAnimationState.SetAnimation(0, animName, false); 
 		spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
-		heroController.GetKick();
+		heroController.Kick();
 	//	DisplayMessageController.DisplayMessage("Удар врага", Color.red);
 		StartCoroutine(StrikeInternal(onStrike));
 
 	}
 
-	public void GetKick() {
+	public void Kick(HeroSkillData skill) {
 		spineAnimationState.SetAnimation(0, idleAnimationName, false); 
-		spineAnimationState.AddAnimation(0, damageAnimationName, false, 0.7f);
+		if(skill != null && skill.Type == HeroSkillType.Damage3) {
+			TrackEntry tEntry = spineAnimationState.AddAnimation(0, damageAnimationName, false, 0.7f);
+			tEntry.timeScale = 2f;
+			tEntry = spineAnimationState.AddAnimation(0, damageAnimationName, false, 0);
+			tEntry.timeScale = 2.2f;
+			tEntry = spineAnimationState.AddAnimation(0, damageAnimationName, false, 0);
+		} else {
+			spineAnimationState.AddAnimation(0, damageAnimationName, false, 0.7f);
+		}
 		spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
 	}
 

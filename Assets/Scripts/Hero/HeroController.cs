@@ -86,22 +86,28 @@ public class HeroController : MonoBehaviour {
 	}
 
 	public void Strike(HeroSkillData skill, OnStrike onStrike) {
-		string animName = kick1AnimationName;//(Random.Range(0, 2) >= 1)? kick1AnimationName : kick2AnimationName;
+		string animName = kick1AnimationName;
+		float delay = STRIKE_DELAY;
+		if(skill != null && skill.Type == HeroSkillType.Damage3) {
+			animName = kick2AnimationName;
+			delay = STRIKE_DELAY * 2;
+		}
+
 		spineAnimationState.SetAnimation(0, animName, false); 
 		spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
-		enemyController.GetKick();
-	//	DisplayMessageController.DisplayMessage("Удар героя", Color.green);
-		StartCoroutine(StrikeInternal(onStrike, skill));
+		enemyController.Kick(skill);
+	
+		StartCoroutine(StrikeInternal(onStrike, skill, delay));
 	}
 
-	public void GetKick() {
+	public void Kick() {
 		spineAnimationState.SetAnimation(0, idleAnimationName, false); 
 		spineAnimationState.AddAnimation(0, damageAnimationName, false, 0.7f);
 		spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
 	}
 
-	private IEnumerator StrikeInternal(OnStrike onStrike, HeroSkillData skill) {
-		yield return new WaitForSeconds(STRIKE_DELAY);
+	private IEnumerator StrikeInternal(OnStrike onStrike, HeroSkillData skill, float delay) {
+		yield return new WaitForSeconds(delay);
 		ResetPowerPoints();
 		onStrike(skill);
 	}
