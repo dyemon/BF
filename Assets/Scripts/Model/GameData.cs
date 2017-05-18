@@ -79,4 +79,5 @@ public class GameData {
 	public int CalculatePowerPoint(int itemCountSelect, int itemCountBomb, float ratio) {
 		return (int)Mathf.Round((itemCountSelect + itemCountBomb) * ratio * GameData.PowerPointByItem);
 	}		
+		
 }

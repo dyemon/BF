@@ -257,7 +257,7 @@ public class GameController : MonoBehaviour {
 		}
 
 		int[] dropPercent = levelData.TileItemDropPercent;
-		IList<HeroSkillData> skills = heroSkillController.GetSkills(HeroSkillData.GetDropTileItemEffects());
+		IList<HeroSkillData> skills = heroSkillController.GetSkills(HeroSkillData.DropTileItemEffects);
 		if(skills.Count > 0) {
 			dropPercent = new int[levelData.TileItemDropPercent.Length];
 			System.Array.Copy(levelData.TileItemDropPercent, dropPercent, dropPercent.Length);
@@ -2554,7 +2554,7 @@ public class GameController : MonoBehaviour {
 	private IList<HeroSkillData> GetAvaliableHeroSkills() {
 		if(avaliableHeroSkills.Count == 0 || resetHeroSkillData) {
 			HeroSkillData[] skills = GameResources.Instance.GetGameData().HeroSkillData; 
-			HeroSkillData data = skills[10];
+			HeroSkillData data = skills[11];
 			avaliableHeroSkills.Add(data);
 		}
 
@@ -2571,16 +2571,24 @@ public class GameController : MonoBehaviour {
 	void UseHeroSkill(HeroSkillData skill) {
 		SetTileInputAvaliable(false);
 
-		if (skill.Damage > 0) {
+		if (HeroSkillData.DamageEffects.Contains(skill.Type)) {
 			StartDamageHeroSkill(skill);	
+		} else if (HeroSkillData.StunEffects.Contains(skill.Type)) {
+			StartStunHeroSkill(skill);	
 		} else {
-			heroController.UseSkill ();
+			heroController.UseSkill();
 			StartCoroutine(StartHeroSkill(skill, 2f));
 		}
 	}
 
 	void StartDamageHeroSkill(HeroSkillData skill) {
 		heroController.Strike(skill, OnHeroStrike);
+	}
+
+	void StartStunHeroSkill(HeroSkillData skill) {
+		heroController.Stun(skill);
+		heroSkillController.AddSkill(skill);
+		CompleteHeroSkill(false);
 	}
 
 	IEnumerator StartHeroSkill(HeroSkillData skill, float delay) {
@@ -2686,7 +2694,7 @@ public class GameController : MonoBehaviour {
 			}
 		}
 
-		IList<HeroSkillData> skills = heroSkillController.GetSkills(HeroSkillData.GetDropTileItemEffects());
+		IList<HeroSkillData> skills = heroSkillController.GetSkills(HeroSkillData.DropTileItemEffects);
 		foreach(HeroSkillData data in skills) {
 			if(data.Type == HeroSkillType.ExcludeColor) {
 				groups.Remove((TileItemTypeGroup)data.ExcludeColor);

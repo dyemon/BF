@@ -118,5 +118,32 @@
 			"MinExperience": 70,
 			"PriceTypeAsString": "Ring",
 			"PriceValue": 70
+		},{
+			"Name": "Песок в глаза",
+			"Description": "Уменьшает накопление энергии врага на {0}% на {1} ходов",
+			"TypeAsString": "Stun1",
+			"StunRatio":	50,
+			"Turns": 10,
+			"MinExperience": 70,
+			"PriceTypeAsString": "Semka",
+			"PriceValue": 70
+		},{
+			"Name": "Сбить с ног",
+			"Description": "Оглушает врага на {1} хода",
+			"TypeAsString": "Stun2",
+			"StunRatio":	100,
+			"Turns": 4,
+			"MinExperience": 70,
+			"PriceTypeAsString": "Money",
+			"PriceValue": 70
+		},{
+			"Name": "Оглушить",
+			"Description": "Оглушает врага на {1} ходов",
+			"TypeAsString": "Stun3",
+			"StunRatio":	100,
+			"Turns": 8,
+			"MinExperience": 70,
+			"PriceTypeAsString": "Ring",
+			"PriceValue": 70
 		}] 
 }

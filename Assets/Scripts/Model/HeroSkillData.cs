@@ -24,6 +24,7 @@ public class HeroSkillData {
 	public TileItemType ExcludeColor;
 
 	public int Damage = 0;
+	public int StunRatio = 0;
 
 	public void init() {
 		if(!string.IsNullOrEmpty(TypeAsString)) {
@@ -39,16 +40,20 @@ public class HeroSkillData {
 			DropTileItem.Level = 0;
 		}
 
-		if (Turns > 0) {
+		if(Turns > 0 && StunRatio > 0) {
+			Description = string.Format (Description, StunRatio, Turns);
+		} else if (Turns > 0) {
 			Description = string.Format (Description, Turns);
 		} else if (Damage > 0) {
 			Description = string.Format (Description, Damage);
 		}
 	}
 
-	public static HeroSkillType[] GetDropTileItemEffects() {
-		HeroSkillType[] types = new HeroSkillType[1];
-		types[0] = HeroSkillType.ExcludeColor;
-		return types;
-	}
+	 
+	public static HeroSkillType[] DropTileItemEffects = new HeroSkillType[] {HeroSkillType.ExcludeColor};
+	public static HeroSkillType[] DamageEffects = new HeroSkillType[] 
+		{HeroSkillType.Damage1, HeroSkillType.Damage2, HeroSkillType.Damage3};
+	public static HeroSkillType[] StunEffects = new HeroSkillType[] 
+		{HeroSkillType.Stun1, HeroSkillType.Stun2, HeroSkillType.Stun3};
+
 }

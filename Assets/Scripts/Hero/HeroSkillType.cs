@@ -8,5 +8,6 @@ public enum HeroSkillType {
 	Envelop,
 	ExcludeColor,
 	KillEater, KillAllEaters,
-	Damage1, Damage2, Damage3
+	Damage1, Damage2, Damage3,
+	Stun1, Stun2, Stun3
 }

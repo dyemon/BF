@@ -100,6 +100,13 @@ public class HeroController : MonoBehaviour {
 		StartCoroutine(StrikeInternal(onStrike, skill, delay));
 	}
 
+	public void Stun(HeroSkillData skill) {
+		string animName = kick1AnimationName;
+		spineAnimationState.SetAnimation(0, animName, false); 
+		spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
+		enemyController.Stunned(skill);
+	}
+
 	public void Kick() {
 		spineAnimationState.SetAnimation(0, idleAnimationName, false); 
 		spineAnimationState.AddAnimation(0, damageAnimationName, false, 0.7f);

@@ -109,6 +109,14 @@ public class EnemyController : MonoBehaviour {
 		spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
 	}
 
+	public void Stunned(HeroSkillData skill) {
+		if(skill != null) {
+			spineAnimationState.SetAnimation(0, idleAnimationName, false);
+			spineAnimationState.AddAnimation(0, damageAnimationName, false, 0.7f);
+		}
+		spineAnimationState.AddAnimation(0, idl2eAnimationName, true, 0);
+	}
+
 	private IEnumerator StrikeInternal(OnStrike onStrike) {
 		yield return new WaitForSeconds(STRIKE_DELAY);
 		ResetTurns();
