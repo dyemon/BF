@@ -17,7 +17,6 @@ public class HeroSkillData {
 	public int PriceValue;
 
 	public int Turns = 0;
-	public int RemainTurns;
 
 	public int MinExperience;
 
@@ -25,6 +24,10 @@ public class HeroSkillData {
 
 	public int Damage = 0;
 	public int StunRatio = 0;
+	public int Energy;
+
+	public int RemainTurns;
+	public bool IsStun = true;
 
 	public void init() {
 		if(!string.IsNullOrEmpty(TypeAsString)) {
@@ -42,18 +45,29 @@ public class HeroSkillData {
 
 		if(Turns > 0 && StunRatio > 0) {
 			Description = string.Format (Description, StunRatio, Turns);
-		} else if (Turns > 0) {
+		} else if(Turns > 0 && Energy > 0) {
+			Description = string.Format (Description, Energy, Turns);
+		}else if (Turns > 0) {
 			Description = string.Format (Description, Turns);
 		} else if (Damage > 0) {
 			Description = string.Format (Description, Damage);
 		}
 	}
 
-	 
+	public void SetNexStunEffect() {
+		if(RemainTurns == 1) {
+			IsStun = false;
+		} else {
+			IsStun = Random.Range(1, 101) < StunRatio;
+		}
+	}
+
 	public static HeroSkillType[] DropTileItemEffects = new HeroSkillType[] {HeroSkillType.ExcludeColor};
 	public static HeroSkillType[] DamageEffects = new HeroSkillType[] 
 		{HeroSkillType.Damage1, HeroSkillType.Damage2, HeroSkillType.Damage3};
 	public static HeroSkillType[] StunEffects = new HeroSkillType[] 
 		{HeroSkillType.Stun1, HeroSkillType.Stun2, HeroSkillType.Stun3};
+	public static HeroSkillType[] EnergyEffects = new HeroSkillType[] 
+		{HeroSkillType.Energy};
 
 }

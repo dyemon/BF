@@ -40,6 +40,8 @@ public class EnemyController : MonoBehaviour {
 	public Spine.AnimationState spineAnimationState;
 	public Spine.Skeleton skeleton;
 
+	private string currentIdleAnimation;
+		
 	public int Damage {
 		get { 
 			return (enemyData == null)? 0 : enemyData.Damage; 
@@ -57,6 +59,7 @@ public class EnemyController : MonoBehaviour {
 	}
 
 	void Awake() {
+		currentIdleAnimation = idleAnimationName;
 		enemyData = GameResources.Instance.GetLevel(App.GetCurrentLevel()).EnemyData;
 		if(enemyData == null) {
 			return;
@@ -88,7 +91,7 @@ public class EnemyController : MonoBehaviour {
 	public void Strike(OnStrike onStrike) {
 		string animName = kickAnimationName;
 		spineAnimationState.SetAnimation(0, animName, false); 
-		spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
+		spineAnimationState.AddAnimation(0, currentIdleAnimation, true, 0);
 		heroController.Kick();
 	//	DisplayMessageController.DisplayMessage("Удар врага", Color.red);
 		StartCoroutine(StrikeInternal(onStrike));
@@ -96,7 +99,7 @@ public class EnemyController : MonoBehaviour {
 	}
 
 	public void Kick(HeroSkillData skill) {
-		spineAnimationState.SetAnimation(0, idleAnimationName, false); 
+		spineAnimationState.SetAnimation(0, currentIdleAnimation, false); 
 		if(skill != null && skill.Type == HeroSkillType.Damage3) {
 			TrackEntry tEntry = spineAnimationState.AddAnimation(0, damageAnimationName, false, 0.7f);
 			tEntry.timeScale = 2f;
@@ -106,15 +109,21 @@ public class EnemyController : MonoBehaviour {
 		} else {
 			spineAnimationState.AddAnimation(0, damageAnimationName, false, 0.7f);
 		}
-		spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
+		spineAnimationState.AddAnimation(0, currentIdleAnimation, true, 0);
 	}
 
 	public void Stunned(HeroSkillData skill) {
 		if(skill != null) {
-			spineAnimationState.SetAnimation(0, idleAnimationName, false);
+			spineAnimationState.SetAnimation(0, currentIdleAnimation, false);
 			spineAnimationState.AddAnimation(0, damageAnimationName, false, 0.7f);
 		}
-		spineAnimationState.AddAnimation(0, idl2eAnimationName, true, 0);
+		currentIdleAnimation = idl2eAnimationName;
+		spineAnimationState.AddAnimation(0, currentIdleAnimation, true, 0);
+	}
+
+	public void Idle() {
+		currentIdleAnimation = idleAnimationName;
+		spineAnimationState.SetAnimation(0, currentIdleAnimation, true);
 	}
 
 	private IEnumerator StrikeInternal(OnStrike onStrike) {
@@ -155,4 +164,6 @@ public class EnemyController : MonoBehaviour {
 		}
 		return null;
 	}
+
+
 }

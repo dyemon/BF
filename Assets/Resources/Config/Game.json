@@ -145,5 +145,22 @@
 			"MinExperience": 70,
 			"PriceTypeAsString": "Ring",
 			"PriceValue": 70
+		},{
+			"Name": "Энергия",
+			"Description": "{0}% заработанной в цепочке мощности урада. действует {1} ходов",
+			"TypeAsString": "Energy",
+			"Energy":	200,
+			"Turns": 8,
+			"MinExperience": 70,
+			"PriceTypeAsString": "Ring",
+			"PriceValue": 70
+		},{
+			"Name": "Неуязвимость",
+			"Description": "нулевой урон на {0} ходов",
+			"TypeAsString": "Invulnerability",
+			"Turns": 8,
+			"MinExperience": 70,
+			"PriceTypeAsString": "Ring",
+			"PriceValue": 70
 		}] 
 }

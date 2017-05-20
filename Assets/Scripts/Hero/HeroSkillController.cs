@@ -72,4 +72,19 @@ public class HeroSkillController : MonoBehaviour {
 		Transform tr = gameObject.transform.Find(type.ToString());
 		return tr == null? null : tr.gameObject.GetComponent<Image>();
 	}
+
+	public float GetPowerPointMultiplier() {
+		float mult = 1f;
+		foreach(HeroSkillData skill in effectiveSkills.Values) {
+			if(skill.Energy > 0) {
+				mult *= skill.Energy / 100f; 
+			}
+		}
+
+		return mult;
+	}
+
+	public bool IsInvulnerability() {
+		return effectiveSkills.Contains(HeroSkillType.Invulnerability);
+	}
 }

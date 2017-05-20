@@ -134,6 +134,8 @@ public class GameController : MonoBehaviour {
 	public GameObject StartHeroSkillPos;
 	public HeroSkillController heroSkillController;
 
+	private bool enemyStun = false;
+
 	void Start() {
 		Instance = this;
 
@@ -684,7 +686,12 @@ public class GameController : MonoBehaviour {
 		usingForSkillsTiles.Clear();
 		if(fightActive) {
 			heroController.IncreesPowerPoints(evaluatePowerPoints);
-			enemyController.IncreesTurns(1);
+
+			if(!enemyStun) {
+				enemyController.IncreesTurns(1);
+			}
+			SetEnemyStun();
+
 			FPPanel.UpdateProgress();
 			bool enemyDeath = false;
 	//		isEnemyStrik = enemyController.IsStrik;
@@ -1133,8 +1140,12 @@ public class GameController : MonoBehaviour {
 			UpdateTiles(false);
 		} else {
 			CheckConsistency();
-			heroSkillController.OnTurnComplete();
+			TurnComplete();
 		}
+	}
+
+	void TurnComplete() {
+		heroSkillController.OnTurnComplete();
 	}
 
 	private void UpdateTiles(bool first) {
@@ -2331,7 +2342,7 @@ public class GameController : MonoBehaviour {
 		}
 
 		evaluatePowerItems = selectedItems + bombItems;
-		powerMultiplier = gameData.GetPowerMultiplier(selectedItems);
+		powerMultiplier = gameData.GetPowerMultiplier(selectedItems) * heroSkillController.GetPowerPointMultiplier();
 		evaluatePowerPoints = gameData.CalculatePowerPoint(selectedItems, bombItems, powerMultiplier);
 		ShowCurrentPowerPoints();
 	}
@@ -2383,7 +2394,9 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void OnEnemyStrike() {
-		heroController.DecreesHealt(enemyController.Damage);
+		if(!heroSkillController.IsInvulnerability()) {
+			heroController.DecreesHealt(enemyController.Damage);
+		}
 		FPPanel.UpdateFightParams();
 		FPPanel.UpdateProgress();
 
@@ -2554,7 +2567,7 @@ public class GameController : MonoBehaviour {
 	private IList<HeroSkillData> GetAvaliableHeroSkills() {
 		if(avaliableHeroSkills.Count == 0 || resetHeroSkillData) {
 			HeroSkillData[] skills = GameResources.Instance.GetGameData().HeroSkillData; 
-			HeroSkillData data = skills[11];
+			HeroSkillData data = skills[15];
 			avaliableHeroSkills.Add(data);
 		}
 
@@ -2586,6 +2599,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	void StartStunHeroSkill(HeroSkillData skill) {
+		enemyStun = true;
 		heroController.Stun(skill);
 		heroSkillController.AddSkill(skill);
 		CompleteHeroSkill(false);
@@ -2613,7 +2627,12 @@ public class GameController : MonoBehaviour {
 		case HeroSkillType.KillEater:
 		case HeroSkillType.KillAllEaters:
 			success = StartHeroSkillKillEater(skill);
-			break;			
+			break;		
+		case HeroSkillType.Energy:
+		case HeroSkillType.Invulnerability:
+			success = true;
+			CompleteHeroSkill(false);
+			break;
 		}
 
 		if(!success) {
@@ -2784,6 +2803,21 @@ public class GameController : MonoBehaviour {
 
 	void SetTileInputAvaliable(bool val) {
 		IsTileInputAvaliable = val;
+	}
+
+	void SetEnemyStun() {
+		enemyStun = false;
+
+		foreach(HeroSkillData skill in heroSkillController.GetSkills(HeroSkillData.StunEffects)) {
+			skill.SetNexStunEffect();
+			enemyStun = enemyStun || skill.IsStun;
+		}
+
+		if(enemyStun) {
+			enemyController.Stunned(null);
+		} else {
+			enemyController.Idle();
+		}	
 	}
 }
 
