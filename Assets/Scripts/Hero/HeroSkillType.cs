@@ -11,5 +11,6 @@ public enum HeroSkillType {
 	Damage1, Damage2, Damage3,
 	Stun1, Stun2, Stun3,
 	Energy,
-	Invulnerability
+	Invulnerability,
+	Health1, Health2
 }

@@ -685,10 +685,10 @@ public class GameController : MonoBehaviour {
 		currentStartEnemySkillConditions = 0;
 		usingForSkillsTiles.Clear();
 		if(fightActive) {
-			heroController.IncreesPowerPoints(evaluatePowerPoints);
+			heroController.IncreasePowerPoints(evaluatePowerPoints);
 
 			if(!enemyStun) {
-				enemyController.IncreesTurns(1);
+				enemyController.IncreaseTurns(1);
 			}
 			SetEnemyStun();
 
@@ -2358,7 +2358,7 @@ public class GameController : MonoBehaviour {
 
 	private void OnHeroStrike(HeroSkillData skill) {
 		int damage = (skill == null) ? heroController.Damage : (int)Mathf.Round(heroController.Damage * skill.Damage / 100);
-		enemyController.DecreesHealt(damage);
+		enemyController.DecreaseHealt(damage);
 		FPPanel.UpdateFightParams();
 
 		if(enemyController.IsDeath(0)) {
@@ -2395,7 +2395,7 @@ public class GameController : MonoBehaviour {
 
 	private void OnEnemyStrike() {
 		if(!heroSkillController.IsInvulnerability()) {
-			heroController.DecreesHealt(enemyController.Damage);
+			heroController.DecreaseHealt(enemyController.Damage);
 		}
 		FPPanel.UpdateFightParams();
 		FPPanel.UpdateProgress();
@@ -2567,8 +2567,10 @@ public class GameController : MonoBehaviour {
 	private IList<HeroSkillData> GetAvaliableHeroSkills() {
 		if(avaliableHeroSkills.Count == 0 || resetHeroSkillData) {
 			HeroSkillData[] skills = GameResources.Instance.GetGameData().HeroSkillData; 
-			HeroSkillData data = skills[15];
-			avaliableHeroSkills.Add(data);
+		
+			avaliableHeroSkills.Add(skills[16]);
+			avaliableHeroSkills.Add(skills[14]);
+			avaliableHeroSkills.Add(skills[13]);
 		}
 
 		return avaliableHeroSkills;
@@ -2628,6 +2630,10 @@ public class GameController : MonoBehaviour {
 		case HeroSkillType.KillAllEaters:
 			success = StartHeroSkillKillEater(skill);
 			break;		
+		case HeroSkillType.Health1:
+		case HeroSkillType.Health2:
+			success = StartHeroSkillHealth(skill);
+			break;	
 		case HeroSkillType.Energy:
 		case HeroSkillType.Invulnerability:
 			success = true;
@@ -2641,6 +2647,13 @@ public class GameController : MonoBehaviour {
 		} else if(skill.Turns > 0) {
 			heroSkillController.AddSkill(skill);
 		}
+	}
+
+	bool StartHeroSkillHealth(HeroSkillData skill) {
+		heroController.IncreaseHealth(skill.Health, false);
+		FPPanel.UpdateFightParams();
+		CompleteHeroSkill(false);
+		return true;
 	}
 
 	bool StartHeroSkillDropTileItem(HeroSkillData skill) {

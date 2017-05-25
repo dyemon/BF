@@ -17,7 +17,6 @@ public class TileItemController : MonoBehaviour {
 	private Material markMaterial;
 	private TileItemRenderState currentRenderState = TileItemRenderState.Normal;
 	private ParticleSystem transitionPS;
-	private bool isMark = false;
 	private bool isRotate = false;
 	private MaterialPropertyBlock _propBlock;
 
@@ -32,9 +31,6 @@ public class TileItemController : MonoBehaviour {
 		if(currentRenderState != TileItemRenderState.Normal) {
 			SetRenderState(currentRenderState);
 		}
-	/*	if(isMark) {
-			Mark(true);	
-		}*/
 
 		if(TransitionPS != null) {
 			transitionPS = Instantiate(TransitionPS);
@@ -116,15 +112,7 @@ public class TileItemController : MonoBehaviour {
 		_propBlock.SetColor("_Color", sourceColor);
 		render.SetPropertyBlock(_propBlock);
 	}
-	/*
-	virtual public void Mark(bool isMark) {
-		this.isMark = isMark;
-			
-		if(render != null) {
-			render.material = (isMark) ? markMaterial : sourceMaterial;
-		}
-	}
-	*/
+
 	virtual public int Damage(int damage) {
 		return 1;
 	}

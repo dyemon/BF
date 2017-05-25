@@ -156,11 +156,27 @@
 			"PriceValue": 70
 		},{
 			"Name": "Неуязвимость",
-			"Description": "нулевой урон на {0} ходов",
+			"Description": "Нулевой урон на {0} ходов",
 			"TypeAsString": "Invulnerability",
 			"Turns": 8,
 			"MinExperience": 70,
 			"PriceTypeAsString": "Ring",
 			"PriceValue": 70
-		}] 
+		},{
+			"Name": "Лечение",
+			"Description": "Востанавливает {0}%",
+			"TypeAsString": "Health1",
+			"Health": 30,
+			"MinExperience": 0,
+			"PriceTypeAsString": "Semka",
+			"PriceValue": 30
+		},{
+			"Name": "Супер лечение",
+			"Description": "Востанавливает {0}%",
+			"TypeAsString": "Health2",
+			"Health": 90,
+			"MinExperience": 50,
+			"PriceTypeAsString": "Money",
+			"PriceValue": 30
+		}]
 }

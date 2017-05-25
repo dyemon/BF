@@ -80,7 +80,7 @@ public class EnemyController : MonoBehaviour {
 		skeleton = skeletonAnimation.Skeleton;
 	}
 
-	public void IncreesTurns(int turns) {
+	public void IncreaseTurns(int turns) {
 		CurrentTurns += turns;
 	}
 		
@@ -132,7 +132,7 @@ public class EnemyController : MonoBehaviour {
 		onStrike();
 	}
 
-	public void DecreesHealt(int damage) {
+	public void DecreaseHealt(int damage) {
 		Health -= damage;
 		if(Health < 0) {
 			Health = 0;

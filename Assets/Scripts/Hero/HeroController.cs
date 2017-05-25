@@ -41,6 +41,10 @@ public class HeroController : MonoBehaviour {
 
 	private EnemyController enemyController;
 
+	public HeroSkillController heroSkillController;
+
+	private int startHealth;
+
 	public int Damage {
 		get { 
 			return userData.Damage; 
@@ -63,7 +67,7 @@ public class HeroController : MonoBehaviour {
 
 	void Awake() {
 		userData = GameResources.Instance.GetUserData();
-		Health = userData.Health;
+		startHealth = Health = userData.Health;
 		ResetPowerPoints();
 	}
 
@@ -75,11 +79,17 @@ public class HeroController : MonoBehaviour {
 	
 	}
 		
-	public void IncreesPowerPoints(int points) {
+	public void IncreasePowerPoints(int points) {
 		CurrentPowerPoints += points;
 	}
 
-
+	public void IncreaseHealth(int ratio, bool updateStart) {
+		int health = (int)Mathf.Round(startHealth * ratio / 100f);
+		Health += health;
+		if(updateStart) {
+			startHealth = Health;
+		}
+	}
 
 	public void ResetPowerPoints() {
 		CurrentPowerPoints = 0;
@@ -108,9 +118,13 @@ public class HeroController : MonoBehaviour {
 	}
 
 	public void Kick() {
-		spineAnimationState.SetAnimation(0, idleAnimationName, false); 
-		spineAnimationState.AddAnimation(0, damageAnimationName, false, 0.7f);
-		spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
+		if(!heroSkillController.IsInvulnerability()) {
+			spineAnimationState.SetAnimation(0, idleAnimationName, false); 
+			spineAnimationState.AddAnimation(0, damageAnimationName, false, 0.7f);
+			spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
+		} else {
+			StartCoroutine(TemporarilyDeactivate(0.6f, 0.2f));
+		}
 	}
 
 	private IEnumerator StrikeInternal(OnStrike onStrike, HeroSkillData skill, float delay) {
@@ -119,7 +133,7 @@ public class HeroController : MonoBehaviour {
 		onStrike(skill);
 	}
 
-	public void DecreesHealt(int damage) {
+	public void DecreaseHealt(int damage) {
 		Health -= damage;
 		if(Health < 0) {
 			Health = 0;
@@ -135,5 +149,10 @@ public class HeroController : MonoBehaviour {
 		spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
 	}
 
-
+	private IEnumerator TemporarilyDeactivate(float duration1, float duration2) {
+		yield return new WaitForSeconds(duration1);
+		gameObject.GetComponent<Renderer>().enabled = false;
+		yield return new WaitForSeconds(duration2);
+		gameObject.GetComponent<Renderer>().enabled = true;
+	}
 }

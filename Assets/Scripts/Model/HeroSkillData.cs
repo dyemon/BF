@@ -25,6 +25,7 @@ public class HeroSkillData {
 	public int Damage = 0;
 	public int StunRatio = 0;
 	public int Energy;
+	public int Health;
 
 	public int RemainTurns;
 	public bool IsStun = true;
@@ -51,6 +52,8 @@ public class HeroSkillData {
 			Description = string.Format (Description, Turns);
 		} else if (Damage > 0) {
 			Description = string.Format (Description, Damage);
+		} else if (Health > 0) {
+			Description = string.Format (Description, Health);
 		}
 	}
 
@@ -69,5 +72,6 @@ public class HeroSkillData {
 		{HeroSkillType.Stun1, HeroSkillType.Stun2, HeroSkillType.Stun3};
 	public static HeroSkillType[] EnergyEffects = new HeroSkillType[] 
 		{HeroSkillType.Energy};
-
+	public static HeroSkillType[] HealthEffects = new HeroSkillType[] 
+		{HeroSkillType.Health1, HeroSkillType.Health2};
 }
