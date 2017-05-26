@@ -74,7 +74,7 @@
 			"PriceValue": 60
 		},{
 			"Name": "Розовые очки",
-			"Description": "Убрать один цвет с поля на (0) ходов",
+			"Description": "Убрать один цвет с поля на {0} ходов",
 			"TypeAsString": "ExcludeColor",
 			"MinExperience": 70,
 			"PriceTypeAsString": "Ring",
@@ -120,7 +120,7 @@
 			"PriceValue": 70
 		},{
 			"Name": "Песок в глаза",
-			"Description": "Уменьшает накопление энергии врага на {0}% на {1} ходов",
+			"Description": "Снизит активность врага на {0}% на {1} ходов",
 			"TypeAsString": "Stun1",
 			"StunRatio":	50,
 			"Turns": 10,

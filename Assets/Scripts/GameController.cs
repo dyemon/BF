@@ -2591,9 +2591,8 @@ public class GameController : MonoBehaviour {
 				   HeroSkillData.InvulnerabilityEffects.Contains(skill.Type)) {
 					if(needSave) {
 						avaliable3.Add(skill);
-					} else {
-						continue;
 					}
+					continue;
 				}
 
 				if((HeroSkillData.DropTileItemEffects.Contains(skill.Type) &&
@@ -2615,7 +2614,7 @@ public class GameController : MonoBehaviour {
 
 				IList<HeroSkillData> avaliableList = avaliable2;
 				if(!needSave) {
-					avaliableList = avaliable2.Count > avaliable1.Count ? avaliable1 : avaliable2;
+					avaliableList = avaliable2.Count > avaliable3.Count ? avaliable3 : avaliable2;
 				}
 
 				avaliableList.Add(skill);
@@ -2628,7 +2627,7 @@ public class GameController : MonoBehaviour {
 				int damage = (int)Mathf.Round(heroController.Damage * aSkill.Damage / 100);
 				aSkill.ResultText = "";
 				if(enemyController.IsDeath(damage)) {
-					aSkill.ResultText = "УБЬЁТ ВРАГА!";
+					aSkill.ResultText = "УБЬЁТ!";
 				}
 				avaliableHeroSkills.Add(aSkill);
 			}

@@ -13,7 +13,7 @@ public class HeroSkillData {
 	public int Count = 1;
 
 	public UserAssetType PricaType;
-	public string PricaTypeAsString;
+	public string PriceTypeAsString;
 	public int PriceValue;
 
 	public int Turns = 0;
@@ -36,8 +36,8 @@ public class HeroSkillData {
 		if(!string.IsNullOrEmpty(TypeAsString)) {
 			Type = EnumUtill.Parse<HeroSkillType>(TypeAsString);
 		}
-		if(!string.IsNullOrEmpty(PricaTypeAsString)) {
-			PricaType = EnumUtill.Parse<UserAssetType>(PricaTypeAsString);
+		if(!string.IsNullOrEmpty(PriceTypeAsString)) {
+			PricaType = EnumUtill.Parse<UserAssetType>(PriceTypeAsString);
 		}
 
 		if((int)Type < (int)HeroSkillType.Envelop) {
