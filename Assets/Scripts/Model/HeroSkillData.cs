@@ -30,6 +30,8 @@ public class HeroSkillData {
 	public int RemainTurns;
 	public bool IsStun = true;
 
+	public string ResultText;
+
 	public void init() {
 		if(!string.IsNullOrEmpty(TypeAsString)) {
 			Type = EnumUtill.Parse<HeroSkillType>(TypeAsString);
@@ -74,4 +76,8 @@ public class HeroSkillData {
 		{HeroSkillType.Energy};
 	public static HeroSkillType[] HealthEffects = new HeroSkillType[] 
 		{HeroSkillType.Health1, HeroSkillType.Health2};
+	public static HeroSkillType[] InvulnerabilityEffects = new HeroSkillType[] 
+		{HeroSkillType.Invulnerability};
+	public static HeroSkillType[] KillEaterEffects = new HeroSkillType[] 
+		{HeroSkillType.KillEater, HeroSkillType.KillAllEaters};
 }

@@ -2567,10 +2567,106 @@ public class GameController : MonoBehaviour {
 	private IList<HeroSkillData> GetAvaliableHeroSkills() {
 		if(avaliableHeroSkills.Count == 0 || resetHeroSkillData) {
 			HeroSkillData[] skills = GameResources.Instance.GetGameData().HeroSkillData; 
-		
-			avaliableHeroSkills.Add(skills[16]);
-			avaliableHeroSkills.Add(skills[14]);
-			avaliableHeroSkills.Add(skills[13]);
+			IList<HeroSkillData> avaliable1 = new List<HeroSkillData>();
+			IList<HeroSkillData> avaliable2 = new List<HeroSkillData>();
+			IList<HeroSkillData> avaliable3 = new List<HeroSkillData>();
+			UserData userData = GameResources.Instance.GetUserData();
+			avaliableHeroSkills.Clear();
+
+			bool isDeath = heroController.IsDeath(enemyController.Damage);
+			bool needSave = heroController.NeedSave() || isDeath;
+			bool colorNecessary = targetController.GetColorNecessaryGroup().Count > 0;
+
+			foreach(HeroSkillData skill in skills) {
+				if(userData.Experience < skill.MinExperience) {
+					continue;
+				}
+
+				if(HeroSkillData.DamageEffects.Contains(skill.Type)) {
+					avaliable1.Add(skill);
+					continue;
+				}
+
+				if(HeroSkillData.HealthEffects.Contains(skill.Type) ||
+				   HeroSkillData.InvulnerabilityEffects.Contains(skill.Type)) {
+					if(needSave) {
+						avaliable3.Add(skill);
+					} else {
+						continue;
+					}
+				}
+
+				if((HeroSkillData.DropTileItemEffects.Contains(skill.Type) &&
+				   heroSkillController.GetSkills(HeroSkillData.DropTileItemEffects).Count > 0)
+				   ||
+				   (HeroSkillData.StunEffects.Contains(skill.Type) &&
+				   heroSkillController.GetSkills(HeroSkillData.StunEffects).Count > 0)
+				   ||
+				   (HeroSkillData.EnergyEffects.Contains(skill.Type) &&
+				   heroSkillController.GetSkills(HeroSkillData.EnergyEffects).Count > 0)
+				   ||
+				   (HeroSkillData.KillEaterEffects.Contains(skill.Type) &&
+				   eaters.Count == 0)
+				   ||
+				   (skill.Type == HeroSkillType.Envelop &&
+				   colorNecessary)) {
+					continue;
+				}
+
+				IList<HeroSkillData> avaliableList = avaliable2;
+				if(!needSave) {
+					avaliableList = avaliable2.Count > avaliable1.Count ? avaliable1 : avaliable2;
+				}
+
+				avaliableList.Add(skill);
+			}
+
+			HeroSkillData aSkill;
+
+			if(avaliable1.Count > 0) {
+				aSkill = avaliable1[Random.Range(0, avaliable1.Count)];
+				int damage = (int)Mathf.Round(heroController.Damage * aSkill.Damage / 100);
+				aSkill.ResultText = "";
+				if(enemyController.IsDeath(damage)) {
+					aSkill.ResultText = "УБЬЁТ ВРАГА!";
+				}
+				avaliableHeroSkills.Add(aSkill);
+			}
+
+			if(avaliable2.Count > 0) {
+				aSkill = avaliable2[Random.Range(0, avaliable2.Count)];
+				aSkill.ResultText = "";
+				if(HeroSkillData.StunEffects.Contains(aSkill.Type)) {
+					aSkill.ResultText = "ВЫРУБИТ!";
+				}
+				avaliableHeroSkills.Add(aSkill);
+			}
+
+			if(avaliable3.Count > 0) {
+				aSkill = avaliable3[Random.Range(0, avaliable3.Count)];
+				aSkill.ResultText = "";
+				if(HeroSkillData.StunEffects.Contains(aSkill.Type)) {
+					aSkill.ResultText = "ВЫРУБИТ!";
+				}
+
+
+				if(isDeath) {
+					if(HeroSkillData.InvulnerabilityEffects.Contains(aSkill.Type)) {
+						aSkill.ResultText = "СПАСЁТ!";
+					} else if(HeroSkillData.HealthEffects.Contains(aSkill.Type)) {
+						int newHealth = heroController.CalcNewHealth(aSkill.Health);
+						if(newHealth > enemyController.Damage) {
+							aSkill.ResultText = "СПАСЁТ!";
+						}
+					}
+				}
+					
+				avaliableHeroSkills.Add(aSkill);
+			}
+
+	//		avaliableHeroSkills.Add(skills[16]);
+	//		avaliableHeroSkills.Add(skills[14]);
+	//		avaliableHeroSkills.Add(skills[13]);
 		}
 
 		return avaliableHeroSkills;

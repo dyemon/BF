@@ -84,11 +84,14 @@ public class HeroController : MonoBehaviour {
 	}
 
 	public void IncreaseHealth(int ratio, bool updateStart) {
-		int health = (int)Mathf.Round(startHealth * ratio / 100f);
-		Health += health;
+		Health = CalcNewHealth(ratio);
 		if(updateStart) {
 			startHealth = Health;
 		}
+	}
+
+	public int CalcNewHealth(int ratio) {
+		return Health + (int)Mathf.Round(startHealth * ratio / 100f);
 	}
 
 	public void ResetPowerPoints() {
@@ -154,5 +157,9 @@ public class HeroController : MonoBehaviour {
 		gameObject.GetComponent<Renderer>().enabled = false;
 		yield return new WaitForSeconds(duration2);
 		gameObject.GetComponent<Renderer>().enabled = true;
+	}
+
+	public bool NeedSave() {
+		return Health < startHealth * 0.3;
 	}
 }

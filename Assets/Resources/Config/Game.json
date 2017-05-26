@@ -147,7 +147,7 @@
 			"PriceValue": 70
 		},{
 			"Name": "Энергия",
-			"Description": "{0}% заработанной в цепочке мощности урада. действует {1} ходов",
+			"Description": "{0}% мощности, действует {1} ходов",
 			"TypeAsString": "Energy",
 			"Energy":	200,
 			"Turns": 8,
@@ -164,7 +164,7 @@
 			"PriceValue": 70
 		},{
 			"Name": "Лечение",
-			"Description": "Востанавливает {0}%",
+			"Description": "Востанавливает {0}% здоровья",
 			"TypeAsString": "Health1",
 			"Health": 30,
 			"MinExperience": 0,
@@ -172,7 +172,7 @@
 			"PriceValue": 30
 		},{
 			"Name": "Супер лечение",
-			"Description": "Востанавливает {0}%",
+			"Description": "Востанавливает {0}% здоровья",
 			"TypeAsString": "Health2",
 			"Health": 90,
 			"MinExperience": 50,

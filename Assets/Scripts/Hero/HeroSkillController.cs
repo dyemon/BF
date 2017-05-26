@@ -85,6 +85,11 @@ public class HeroSkillController : MonoBehaviour {
 	}
 
 	public bool IsInvulnerability() {
-		return effectiveSkills.ContainsKey(HeroSkillType.Invulnerability);
+		foreach(HeroSkillData skill in effectiveSkills.Values) {
+			if(HeroSkillData.InvulnerabilityEffects.Contains(skill.Type)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

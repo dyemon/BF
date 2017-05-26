@@ -52,6 +52,7 @@ public class UserData {
 		QuestsData.Add(new QuestData("1", 1));
 		QuestsData.Add(new QuestData("2", 2));
 		*/
+		Experience = 100;
 	}
 
 	public void Init() {

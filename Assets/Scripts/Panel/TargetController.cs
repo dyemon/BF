@@ -6,9 +6,8 @@ using System;
 
 public class TargetController : MonoBehaviour {
 	private LevelData levelData;
+	public GameObjectResources GameObjectResources;
 
-	private Dictionary<TargetType, Sprite> targetIcons = new Dictionary<TargetType, Sprite>();
-	public Sprite[] Icons;
 	public GameObject TargetGO;
 	public Image successImage;
 	private bool[] success;
@@ -18,17 +17,6 @@ public class TargetController : MonoBehaviour {
 		levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
 		success = new bool[levelData.TargetData.Length];
 
-		foreach(TargetType type in Enum.GetValues(typeof(TargetType))) {
-			if(TileItem.IsColorItem((TileItemType)type)) {
-				targetIcons.Add(type, Icons[((int)type)/TileItem.TILE_ITEM_GROUP_WEIGHT]);
-			} else if(TileItem.IsSpecialCollectItem((TileItemType)type)) {
-				targetIcons.Add(type, Icons[5 + (int)type - (int)TileItemTypeGroup.Special]);
-			} 
-		}
-
-		targetIcons.Add(TargetType.BombAll, Icons[7]);
-		targetIcons.Add(TargetType.Box, Icons[8]);
-		targetIcons.Add(TargetType.Enemy, Icons[9]);
 
 		int index = 0;
 		foreach(TargetData data in levelData.TargetData) {
@@ -36,7 +24,7 @@ public class TargetController : MonoBehaviour {
 			target.transform.SetParent(gameObject.transform);
 			target.transform.localScale = new Vector3(1, 1, 1);
 			Image icon = target.transform.Find("Image").gameObject.GetComponent<Image>();
-			icon.sprite = targetIcons[data.Type];
+			icon.sprite = GameObjectResources.GetTargetIcon(data.Type);
 			Text text = target.transform.Find("Text").gameObject.GetComponent<Text>();
 			text.text = data.Count.ToString();
 			success[index++] = (data.Count > 0)? false : true;

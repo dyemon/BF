@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SelectButton : MonoBehaviour {
+public class BuyButton : MonoBehaviour {
 	public GameObjectResources GameObjectResources;
 
 	protected void Init(Sprite bg, Sprite icon, string buttonText,UserAssetType priceType, int priceValue) {
@@ -15,23 +15,33 @@ public class SelectButton : MonoBehaviour {
 
 	protected void SetPrice(UserAssetType priceType, int priceValue) {
 		Image img = (Image)transform.FindChild("Button/Price Image").GetComponent<Image>();
-		img.sprite = GameObjectResources.GetUserAssetIcone(priceType);
+		if(img != null) {
+			img.sprite = GameObjectResources.GetUserAssetIcone(priceType);
+		}
 		Text text = transform.FindChild("Button/Price Text").GetComponent<Text>();
-		text.text = priceValue.ToString();
+		if(text != null) {
+			text.text = priceValue.ToString();
+		}
 	}
 
 	protected void SetBg(Sprite bg) {
 		Image img = (Image)transform.FindChild("Button").GetComponent<Image>();
-		img.sprite = bg;
+		if(img != null) {
+			img.sprite = bg;
+		}
 	}
 
 	protected void SetIcon(Sprite icon) {
 		Image img = (Image)transform.FindChild("Icon").GetComponent<Image>();
-		img.sprite = icon;
+		if(img != null) {
+			img.sprite = icon;
+		}
 	}
 
 	protected void SetButtonText(string str) {
 		Text text = transform.FindChild("Button/Text").GetComponent<Text>();
-		text.text = str.ToString();
+		if(text != null) {
+			text.text = str.ToString();
+		}
 	}
 }

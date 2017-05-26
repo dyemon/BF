@@ -10,6 +10,15 @@ public class GameObjectResources : ScriptableObject {
 	public Sprite[] HeroSkillIcon;
 	public Sprite[] HeroSkillButtonBg;
 
+	[System.Serializable]
+	public class TargetIcon {
+		public TargetType Type;
+		public Sprite Icon;
+	}
+
+	public TargetIcon[] TargetIcons;
+
+
 	public Sprite GetUserAssetIcone(UserAssetType type) {
 		return UserAssetsIcone[(int)type];
 	}
@@ -19,7 +28,7 @@ public class GameObjectResources : ScriptableObject {
 	}
 
 	public Sprite GetHeroSkillButtonBg(HeroSkillType type) {
-		return HeroSkillIcon[GetHeroSkillButtonBgIndex(type)];
+		return HeroSkillButtonBg[GetHeroSkillButtonBgIndex(type)];
 	}
 
 	int GetHeroSkillButtonBgIndex(HeroSkillType type) {
@@ -35,4 +44,12 @@ public class GameObjectResources : ScriptableObject {
 		return 2;
 	}
 
+	public Sprite GetTargetIcon(TargetType type) {
+		foreach(TargetIcon icon in TargetIcons) {
+			if(type == icon.Type) {
+				return icon.Icon;
+			}
+		}
+		return null;
+	}
 }
