@@ -80,4 +80,7 @@ public class HeroSkillData {
 		{HeroSkillType.Invulnerability};
 	public static HeroSkillType[] KillEaterEffects = new HeroSkillType[] 
 		{HeroSkillType.KillEater, HeroSkillType.KillAllEaters};
+	public static HeroSkillType[] NotFightingSkills = new HeroSkillType[] 
+	{HeroSkillType.BombC, HeroSkillType.BombV, HeroSkillType.BombH, HeroSkillType.BombP,
+		HeroSkillType.Envelop, HeroSkillType.ExcludeColor};
 }

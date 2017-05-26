@@ -2582,6 +2582,30 @@ public class GameController : MonoBehaviour {
 					continue;
 				}
 
+				if((HeroSkillData.DropTileItemEffects.Contains(skill.Type) &&
+					heroSkillController.GetSkills(HeroSkillData.DropTileItemEffects).Count > 0)
+					||
+					(HeroSkillData.StunEffects.Contains(skill.Type) &&
+						heroSkillController.GetSkills(HeroSkillData.StunEffects).Count > 0)
+					||
+					(HeroSkillData.EnergyEffects.Contains(skill.Type) &&
+						heroSkillController.GetSkills(HeroSkillData.EnergyEffects).Count > 0)
+					||
+					(HeroSkillData.KillEaterEffects.Contains(skill.Type) &&
+						eaters.Count == 0)
+					||
+					(skill.Type == HeroSkillType.Envelop &&
+						!colorNecessary)) {
+					continue;
+				}
+
+				if(!fightActive) {
+					if(HeroSkillData.NotFightingSkills.Contains(skill.Type)){ 
+						avaliable1.Add(skill);
+					}
+					continue;
+				}
+
 				if(HeroSkillData.DamageEffects.Contains(skill.Type)) {
 					avaliable1.Add(skill);
 					continue;
@@ -2589,28 +2613,14 @@ public class GameController : MonoBehaviour {
 
 				if(HeroSkillData.HealthEffects.Contains(skill.Type) ||
 				   HeroSkillData.InvulnerabilityEffects.Contains(skill.Type)) {
+			
 					if(needSave) {
 						avaliable3.Add(skill);
 					}
 					continue;
 				}
 
-				if((HeroSkillData.DropTileItemEffects.Contains(skill.Type) &&
-				   heroSkillController.GetSkills(HeroSkillData.DropTileItemEffects).Count > 0)
-				   ||
-				   (HeroSkillData.StunEffects.Contains(skill.Type) &&
-				   heroSkillController.GetSkills(HeroSkillData.StunEffects).Count > 0)
-				   ||
-				   (HeroSkillData.EnergyEffects.Contains(skill.Type) &&
-				   heroSkillController.GetSkills(HeroSkillData.EnergyEffects).Count > 0)
-				   ||
-				   (HeroSkillData.KillEaterEffects.Contains(skill.Type) &&
-				   eaters.Count == 0)
-				   ||
-				   (skill.Type == HeroSkillType.Envelop &&
-				   colorNecessary)) {
-					continue;
-				}
+
 
 				IList<HeroSkillData> avaliableList = avaliable2;
 				if(!needSave) {
@@ -2620,7 +2630,18 @@ public class GameController : MonoBehaviour {
 				avaliableList.Add(skill);
 			}
 
+			resetHeroSkillData = false;
 			HeroSkillData aSkill;
+
+			if(!fightActive) {
+				for(int i = 0; i < 3; i++) {
+					aSkill = avaliable1[Random.Range(0, avaliable1.Count)];
+					avaliableHeroSkills.Add(aSkill);
+					avaliable1.Remove(aSkill);
+				}
+
+				return avaliableHeroSkills;
+			}
 
 			if(avaliable1.Count > 0) {
 				aSkill = avaliable1[Random.Range(0, avaliable1.Count)];
@@ -2661,6 +2682,7 @@ public class GameController : MonoBehaviour {
 				}
 					
 				avaliableHeroSkills.Add(aSkill);
+
 			}
 
 	//		avaliableHeroSkills.Add(skills[16]);
@@ -2675,6 +2697,7 @@ public class GameController : MonoBehaviour {
 		if(name == HeroSkillScene.SceneName && retVal != null) {
 			HeroSkillData skill = (HeroSkillData)retVal;
 			UseHeroSkill(skill);
+			resetHeroSkillData = true;
 		}
 	}
 
