@@ -160,12 +160,19 @@
     },
 
 	"EnemyData": {
-		"TypeAsString": "",
+		"TypeAsString": "Botanik",
 		"Health": 80,
 		"Damage": 30,
 		"SkillRatio": 1,
 		"SkillData": [{
 				"TypeAsString": "Eater",
+				"Count": 2
+			},{
+				"TypeAsString": "Slime",
+				"Count": 2,
+				"Health": 1
+			},{
+				"TypeAsString": "Simple",
 				"Count": 2
 			}]
 	}

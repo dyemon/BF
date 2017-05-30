@@ -24,6 +24,7 @@ public class GameController : MonoBehaviour {
 	private int numRows;
 	public LayerMask tilesItemLayer = -1;
 
+	public GameObject2DArray tileItemsColorAll;
 	public GameObject[] tileItemsColor;
 	public GameObject[] tileItemsColorBombH;
 	public GameObject[] tileItemsColorBombV;
@@ -110,6 +111,7 @@ public class GameController : MonoBehaviour {
 
 	public GameObject Hero;
 	public GameObject EnemyPos;
+	public GameObject[] Enemies;
 
 	private HeroController heroController;
 	private EnemyController enemyController;
@@ -162,6 +164,9 @@ public class GameController : MonoBehaviour {
 	//	GameObject tileBgObj = Instantiate (tilesBg);
 	//	tileBgObj.transform.position = IndexToPosition (3.0f, 3.0f);
 
+		InitFight();
+		ShowCurrentPowerPoints();
+
 		InitTiles();
 		InitBarriers();
 		InitHeroes();
@@ -170,11 +175,8 @@ public class GameController : MonoBehaviour {
 
 		DetectUnavaliableTiles();
 
+
 		UpdateTiles(true);
-
-		InitFight();
-		ShowCurrentPowerPoints();
-
 	}
 	// Update is called once per frame
 	void Update() {
@@ -214,9 +216,12 @@ public class GameController : MonoBehaviour {
 		}
 
 		EnemyData eData = levelData.EnemyData;
+		tileItemsColor = tileItemsColorAll.GetRow((int)eData.Type);
 
 		fightActive = true;
-		enemyController = EnemyPos.GetComponent<EnemyController>();
+		GameObject enemy = Instantiate(Enemies[(int)eData.Type]);
+		enemy.transform.position = EnemyPos.transform.position;
+		enemyController = enemy.GetComponent<EnemyController>();
 
 		heroController.SetEnemyController(enemyController);
 		enemyController.SetHeroController(heroController);
@@ -2985,7 +2990,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	void EnableHeroSkillButton(bool enable) {
-		enable = true;
+	//	enable = true;
 		heroSkillButton.interactable = enable;
 	}
 }

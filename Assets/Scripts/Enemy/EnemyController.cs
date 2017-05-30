@@ -9,6 +9,7 @@ public class EnemyController : MonoBehaviour {
 	public static float STRIKE_DELAY = 1;
 
 	public EnemyData enemyData;
+	public Vector3 StartOffset = new Vector3();
 
 	private HeroController heroController;
 
@@ -78,6 +79,8 @@ public class EnemyController : MonoBehaviour {
 		if(enemyData == null) {
 			return;
 		}
+
+		transform.position += StartOffset;
 
 		skeletonAnimation = GetComponent<SkeletonAnimation>();
 		spineAnimationState = skeletonAnimation.state;
