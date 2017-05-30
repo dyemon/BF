@@ -13,9 +13,13 @@ public class EnemyController : MonoBehaviour {
 	private HeroController heroController;
 
 	public int Health { get; set; }
-	public int CurrentTurns { get; set; }
+	public int CurrentTurns { 
+		get { return Health > 0? currentTurns : 0; }
+		set { currentTurns = value; }
+	}
 
 	private int currentSkillRatio;
+	private int currentTurns;
 
 	#region Inspector
 	// [SpineAnimation] attribute allows an Inspector dropdown of Spine animation names coming form SkeletonAnimation.

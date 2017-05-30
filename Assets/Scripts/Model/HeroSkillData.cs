@@ -82,5 +82,5 @@ public class HeroSkillData {
 		{HeroSkillType.KillEater, HeroSkillType.KillAllEaters};
 	public static HeroSkillType[] NotFightingSkills = new HeroSkillType[] 
 	{HeroSkillType.BombC, HeroSkillType.BombV, HeroSkillType.BombH, HeroSkillType.BombP,
-		HeroSkillType.Envelop, HeroSkillType.ExcludeColor};
+		HeroSkillType.Envelop, HeroSkillType.ExcludeColor, HeroSkillType.Energy};
 }

@@ -24,11 +24,11 @@ public class HeroSkillScene : WindowScene {
 			GameObject button = Instantiate(HeroSkillButton);
 			button.transform.SetParent(SkillsPanel.transform);
 			button.transform.localScale = new Vector3(1, 1, 1);
-			button.GetComponent<HeroSkillButton>().Init(skill);
+			button.GetComponent<HeroSkillButton>().Init(skill, OnSelectSkill);
 		}
 	}
 
-	public void OnSelectSkill() {
-		Close(skills[0]);
+	public void OnSelectSkill(HeroSkillData skill) {
+		Close(skill);
 	}
 }

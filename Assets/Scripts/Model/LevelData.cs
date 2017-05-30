@@ -21,7 +21,7 @@ public class LevelData {
 	public TileItemData[] AutoDropOnCollectData = new TileItemData[0];
 	public AutoDropData[] AutoDropData = new AutoDropData[0];
 
-	public EnemyData EnemyData;
+	public EnemyData EnemyData = null;
 
 	public void Init() {
 		if(TileData != null) {
@@ -84,7 +84,12 @@ public class LevelData {
 			}
 		}
 
-		EnemyData.Init();
+		if(EnemyData != null) {
+			EnemyData.Init();
+		}
 	}
 
+	public bool HasEnemy() {
+		return EnemyData != null && EnemyData.Health > 0;
+	}
 }

@@ -4,13 +4,13 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
 
-public class HeroSkillButton : BuyButton {
+public class HeroSkillButton : BuyButton<HeroSkillData> {
 
-	public void Init(HeroSkillData skill) {
+	public void Init(HeroSkillData skill, OnClickListener<HeroSkillData> onClickListener) {
 		Sprite bg = GameObjectResources.GetHeroSkillButtonBg(skill.Type);
 		Sprite icon = GameObjectResources.GetHeroSkillIcon(skill.Type);
 
-		base.Init(bg, icon, skill.Name, skill.PricaType, skill.PriceValue);
+		base.Init(bg, icon, skill.Name, skill.PricaType, skill.PriceValue, skill, onClickListener);
 
 		Text text = transform.FindChild("Button/Description").GetComponent<Text>();
 		text.text = skill.Description;

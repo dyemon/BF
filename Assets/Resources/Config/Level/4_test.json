@@ -145,7 +145,7 @@
         }], 
 		
    "TargetData": [{
-		"Count": 10, 
+		"Count": 100, 
 		"TypeAsString": "Red"
 	}, {
 		"Count": 10, 

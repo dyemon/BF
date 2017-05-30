@@ -136,6 +136,9 @@ public class GameController : MonoBehaviour {
 
 	private bool enemyStun = false;
 
+	public Button heroSkillButton;
+	public Text heroSkillCountText;
+
 	void Start() {
 		Instance = this;
 
@@ -171,6 +174,7 @@ public class GameController : MonoBehaviour {
 
 		InitFight();
 		ShowCurrentPowerPoints();
+
 	}
 	// Update is called once per frame
 	void Update() {
@@ -201,14 +205,19 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void InitFight() {
-		EnemyData eData = levelData.EnemyData;
-		if(eData == null) {
+		heroController = Hero.GetComponent<HeroController>();
+
+		if(!levelData.HasEnemy()) {
+			FPPanel.Init(heroController, null);
+		//	heroController.Hide();
 			return;
 		}
 
+		EnemyData eData = levelData.EnemyData;
+
 		fightActive = true;
 		enemyController = EnemyPos.GetComponent<EnemyController>();
-		heroController = Hero.GetComponent<HeroController>();
+
 		heroController.SetEnemyController(enemyController);
 		enemyController.SetHeroController(heroController);
 
@@ -684,9 +693,11 @@ public class GameController : MonoBehaviour {
 		currentCheckConsistencyConditions = 0;
 		currentStartEnemySkillConditions = 0;
 		usingForSkillsTiles.Clear();
-		if(fightActive) {
-			heroController.IncreasePowerPoints(evaluatePowerPoints);
 
+		heroController.IncreasePowerPoints(evaluatePowerPoints);
+
+		if(fightActive) {
+			
 			if(!enemyStun) {
 				enemyController.IncreaseTurns(1);
 			}
@@ -694,7 +705,7 @@ public class GameController : MonoBehaviour {
 
 			FPPanel.UpdateProgress();
 			bool enemyDeath = false;
-	//		isEnemyStrik = enemyController.IsStrik;
+			//		isEnemyStrik = enemyController.IsStrik;
 
 			if(enemyController.IsStrike) {
 				checkConsistencyConditions++;
@@ -713,6 +724,12 @@ public class GameController : MonoBehaviour {
 				StartCoroutine(UpdateTilesWithDelay(true, bombExplosionDelay));
 				return;
 			}
+		} else {
+			if(heroController.IsStrike) {
+				heroController.ResetPowerPoints();
+				IncreaseHeroSkillCount(1);
+			}
+			FPPanel.UpdateProgress();
 		}
 	
 
@@ -2350,16 +2367,20 @@ public class GameController : MonoBehaviour {
 	private void ShowCurrentPowerPoints() {
 		PowerItemsText.text = evaluatePowerItems.ToString();
 
-		if(fightActive) {
+	//	if(fightActive) {
 			PowerMultiplierText.SetValue(powerMultiplier);
 			FPPanel.UpdateHeroEvaluatePowerPoints(evaluatePowerPoints);
-		}
+	//	}
 	}
 
 	private void OnHeroStrike(HeroSkillData skill) {
 		int damage = (skill == null) ? heroController.Damage : (int)Mathf.Round(heroController.Damage * skill.Damage / 100);
 		enemyController.DecreaseHealt(damage);
 		FPPanel.UpdateFightParams();
+
+		if(skill == null) {
+			IncreaseHeroSkillCount(1);
+		}
 
 		if(enemyController.IsDeath(0)) {
 			fightActive = false;
@@ -2384,9 +2405,7 @@ public class GameController : MonoBehaviour {
 			return;
 		}
 
-		if(!enemyController.IsDeath(0)) {
-			FPPanel.UpdateProgress();
-		}
+		FPPanel.UpdateProgress();
 		if (!restrictionsController.CheckRestrictions()){
 			LevelFailure();
 		}
@@ -2560,6 +2579,9 @@ public class GameController : MonoBehaviour {
 	}
 		
 	public void ShowHeroSkillsWindow() {
+		if(!IsTileInputAvaliable) {
+			return;
+		}
 		IList<HeroSkillData> skills = GetAvaliableHeroSkills();
 		SceneControllerHelper.instance.LoadSceneAdditive(HeroSkillScene.SceneName, skills);
 	}
@@ -2573,7 +2595,7 @@ public class GameController : MonoBehaviour {
 			UserData userData = GameResources.Instance.GetUserData();
 			avaliableHeroSkills.Clear();
 
-			bool isDeath = heroController.IsDeath(enemyController.Damage);
+			bool isDeath = (enemyController != null)? heroController.IsDeath(enemyController.Damage) : false;
 			bool needSave = heroController.NeedSave() || isDeath;
 			bool colorNecessary = targetController.GetColorNecessaryGroup().Count > 0;
 
@@ -2698,6 +2720,7 @@ public class GameController : MonoBehaviour {
 			HeroSkillData skill = (HeroSkillData)retVal;
 			UseHeroSkill(skill);
 			resetHeroSkillData = true;
+			IncreaseHeroSkillCount(-1);
 		}
 	}
 
@@ -2934,6 +2957,7 @@ public class GameController : MonoBehaviour {
 
 	void SetTileInputAvaliable(bool val) {
 		IsTileInputAvaliable = val;
+		//EnableHeroSkillButton(val);
 	}
 
 	void SetEnemyStun() {
@@ -2949,6 +2973,20 @@ public class GameController : MonoBehaviour {
 		} else {
 			enemyController.Idle();
 		}	
+	}
+
+	void IncreaseHeroSkillCount(int count) {
+		count = System.Int32.Parse(heroSkillCountText.text) + count;
+		if(count < 0) {
+			count = 0;
+		}
+		heroSkillCountText.text = count.ToString();
+		EnableHeroSkillButton(count > 0);
+	}
+
+	void EnableHeroSkillButton(bool enable) {
+		enable = true;
+		heroSkillButton.interactable = enable;
 	}
 }
 

@@ -56,13 +56,13 @@ public class FightProgressPanel : MonoBehaviour, IResizeListener {
 		heroController = hc;
 		enemyController = ec;
 
-		HeroDamageText.text = heroController.Damage.ToString();
-		HeroHealthText.text = heroController.Health.ToString();
-		EnemyDamageText.text = enemyController.Damage.ToString();
-		EnemyHealthText.text = enemyController.Health.ToString();
+		HeroDamageText.text = (enemyController != null)? heroController.Damage.ToString() : "";
+		HeroHealthText.text = (enemyController != null)? heroController.Health.ToString() : "";
+		EnemyDamageText.text = (enemyController != null)? enemyController.Damage.ToString() : "";
+		EnemyHealthText.text = (enemyController != null)? enemyController.Health.ToString() : "";
 
 		HeroPs.SetMaxValue(heroController.PowerPointSuccess);
-		EnemyPs.SetMaxValue(enemyController.TurnsSuccess);
+		EnemyPs.SetMaxValue((enemyController != null)? enemyController.TurnsSuccess : 0);
 	}
 
 	private void ShowFullIndicator(bool show) {
@@ -78,11 +78,11 @@ public class FightProgressPanel : MonoBehaviour, IResizeListener {
 	}
 
 	public void UpdateProgress() {
-		if(heroController == null || enemyController == null) {
+		if(heroController == null) {
 			return;
 		}
 
-		EnemyPs.SetProgress(enemyController.CurrentTurns, true);
+		EnemyPs.SetProgress((enemyController != null)? enemyController.CurrentTurns : 0, true);
 		HeroPs.SetProgress(heroController.CurrentPowerPoints, true);
 		ShowFullIndicator(heroController.IsStrike);
 	}

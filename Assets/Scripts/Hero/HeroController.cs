@@ -132,7 +132,9 @@ public class HeroController : MonoBehaviour {
 
 	private IEnumerator StrikeInternal(OnStrike onStrike, HeroSkillData skill, float delay) {
 		yield return new WaitForSeconds(delay);
-		ResetPowerPoints();
+		if(skill == null) {
+			ResetPowerPoints();
+		}
 		onStrike(skill);
 	}
 
@@ -161,5 +163,9 @@ public class HeroController : MonoBehaviour {
 
 	public bool NeedSave() {
 		return Health < startHealth * 0.3;
+	}
+
+	public void Hide() {
+		gameObject.GetComponent<Renderer>().enabled = false;
 	}
 }
