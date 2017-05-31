@@ -124,7 +124,8 @@ public class EnemyController : MonoBehaviour {
 	public void Stunned(HeroSkillData skill) {
 		if(skill != null) {
 			spineAnimationState.SetAnimation(0, currentIdleAnimation, false);
-			spineAnimationState.AddAnimation(0, damageAnimationName, false, 0.7f);
+			TrackEntry tEntry = spineAnimationState.AddAnimation(0, damageAnimationName, false, 0.7f);
+	//		tEntry.EndTime = 0.3f;
 		}
 		currentIdleAnimation = idl2eAnimationName;
 		spineAnimationState.AddAnimation(0, currentIdleAnimation, true, 0);

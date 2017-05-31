@@ -3,5 +3,5 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum EnemyType {
-	Derganniy, Botanik, Karapuz,
+	Derganniy, Botanik, Karapuz, Bycheps, Lysyiy
 }
