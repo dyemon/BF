@@ -12,6 +12,7 @@ public class EnemyController : MonoBehaviour {
 	public Vector3 StartOffset = new Vector3();
 
 	private HeroController heroController;
+	private HeroSkillController heroSkillController;
 
 	public int Health { get; set; }
 	public int CurrentTurns { 
@@ -47,6 +48,7 @@ public class EnemyController : MonoBehaviour {
 
 	private string currentIdleAnimation;
 		
+
 	public int Damage {
 		get { 
 			return (enemyData == null)? 0 : enemyData.Damage; 
@@ -55,7 +57,7 @@ public class EnemyController : MonoBehaviour {
 		
 	public int TurnsSuccess {
 		get { 
-			return GameData.EnemyTurns; 
+			return GameData.EnemyTurns + ((heroSkillController == null)? 0 : heroSkillController.GetSlowdownEffect()); 
 		}
 	}
 
@@ -153,6 +155,10 @@ public class EnemyController : MonoBehaviour {
 
 	public void SetHeroController(HeroController hc) {
 		heroController = hc;
+	}
+
+	public void SetHeroSkillController(HeroSkillController hc) {
+		heroSkillController = hc;
 	}
 
 	public void Death() {

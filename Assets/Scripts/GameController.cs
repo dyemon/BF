@@ -204,6 +204,8 @@ public class GameController : MonoBehaviour {
 		if(SceneControllerHelper.instance != null) {
 			SceneControllerHelper.instance.onUnloadScene += OnUnloadScene;
 		}
+
+		heroSkillController.onCompleteSkill += OnCompleteHeroSkill;
 	}
 
 	private void InitFight() {
@@ -225,6 +227,7 @@ public class GameController : MonoBehaviour {
 
 		heroController.SetEnemyController(enemyController);
 		enemyController.SetHeroController(heroController);
+		enemyController.SetHeroSkillController(heroSkillController);
 
 		FPPanel.Init(heroController, enemyController); 
 	}
@@ -630,9 +633,6 @@ public class GameController : MonoBehaviour {
 		foreach(Tile tile in bombMarkTiles) {
 			InitBombExplosion(tile);
 
-			if(tile.GetTileItem() != null && tile.GetTileItem().IsBomb) {
-				int a = 5;
-			}
 			tile.MarkBomb(false);
 		//	bool isNotStatic = tile.IsEmpty || tile.GetTileItem().IsNotStatic || tile.GetTileItem().IsSlime;
 			if(tile.IsEmpty && BreakBarriers(tile.X, tile.Y, 5)) {
@@ -706,7 +706,6 @@ public class GameController : MonoBehaviour {
 			if(!enemyStun) {
 				enemyController.IncreaseTurns(1);
 			}
-			SetEnemyStun();
 
 			FPPanel.UpdateProgress();
 			bool enemyDeath = false;
@@ -2615,6 +2614,9 @@ public class GameController : MonoBehaviour {
 					(HeroSkillData.StunEffects.Contains(skill.Type) &&
 						heroSkillController.GetSkills(HeroSkillData.StunEffects).Count > 0)
 					||
+					(HeroSkillData.SlowdownEffects.Contains(skill.Type) &&
+						heroSkillController.GetSkills(HeroSkillData.SlowdownEffects).Count > 0)
+					||
 					(HeroSkillData.EnergyEffects.Contains(skill.Type) &&
 						heroSkillController.GetSkills(HeroSkillData.EnergyEffects).Count > 0)
 					||
@@ -2760,6 +2762,7 @@ public class GameController : MonoBehaviour {
 		Destroy(flash.gameObject, flash.main.duration);
 		UnityUtill.SetSortingOrder(flash.gameObject, BOMB_EXPLOSION_SORTING_ORDER);
 		bool success = false;
+		bool skillAdded = false;
 
 		switch(skill.Type) {
 		case HeroSkillType.BombC:
@@ -2779,6 +2782,10 @@ public class GameController : MonoBehaviour {
 		case HeroSkillType.Health1:
 		case HeroSkillType.Health2:
 			success = StartHeroSkillHealth(skill);
+			break;
+		case HeroSkillType.Slowdown1:
+			success = StartHeroSkillSlowdown(skill);
+			skillAdded = true;
 			break;	
 		case HeroSkillType.Energy:
 		case HeroSkillType.Invulnerability:
@@ -2790,7 +2797,7 @@ public class GameController : MonoBehaviour {
 		if(!success) {
 			DisplayMessageController.DisplayMessage("Невозможно использовать данную магию", Color.red);
 			CompleteHeroSkill(false);
-		} else if(skill.Turns > 0) {
+		} else if(skill.Turns > 0 && !skillAdded) {
 			heroSkillController.AddSkill(skill);
 		}
 	}
@@ -2798,6 +2805,13 @@ public class GameController : MonoBehaviour {
 	bool StartHeroSkillHealth(HeroSkillData skill) {
 		heroController.IncreaseHealth(skill.Health, false);
 		FPPanel.UpdateFightParams();
+		CompleteHeroSkill(false);
+		return true;
+	}
+
+	bool StartHeroSkillSlowdown(HeroSkillData skill) {
+		heroSkillController.AddSkill(skill);
+		FPPanel.UpdateProgressMaxValue(true);
 		CompleteHeroSkill(false);
 		return true;
 	}
@@ -2964,21 +2978,7 @@ public class GameController : MonoBehaviour {
 		IsTileInputAvaliable = val;
 		//EnableHeroSkillButton(val);
 	}
-
-	void SetEnemyStun() {
-		enemyStun = false;
-
-		foreach(HeroSkillData skill in heroSkillController.GetSkills(HeroSkillData.StunEffects)) {
-			skill.SetNexStunEffect();
-			enemyStun = enemyStun || skill.IsStun;
-		}
-
-		if(enemyStun) {
-			enemyController.Stunned(null);
-		} else {
-			enemyController.Idle();
-		}	
-	}
+		
 
 	void IncreaseHeroSkillCount(int count) {
 		count = System.Int32.Parse(heroSkillCountText.text) + count;
@@ -2990,8 +2990,18 @@ public class GameController : MonoBehaviour {
 	}
 
 	void EnableHeroSkillButton(bool enable) {
-	//	enable = true;
+		enable = true;
 		heroSkillButton.interactable = enable;
+	}
+
+	void OnCompleteHeroSkill(HeroSkillData skill) {
+		if(HeroSkillData.StunEffects.Contains(skill.Type)) {
+			enemyStun = false;
+			enemyController.Idle();
+		} else if(HeroSkillData.SlowdownEffects.Contains(skill.Type)) {
+			FPPanel.UpdateProgressMaxValue(true);
+		}
+			
 	}
 }
 

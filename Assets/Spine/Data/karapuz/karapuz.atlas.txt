@@ -1,0 +1,157 @@
+
+karapuz.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+ayeangry
+  rotate: true
+  xy: 1827, 884
+  size: 440, 151
+  orig: 442, 153
+  offset: 1, 1
+  index: -1
+ayeclth
+  rotate: false
+  xy: 1122, 31
+  size: 429, 104
+  orig: 431, 106
+  offset: 1, 1
+  index: -1
+ayeclth2
+  rotate: false
+  xy: 1553, 2
+  size: 429, 159
+  orig: 431, 161
+  offset: 1, 1
+  index: -1
+ayezra
+  rotate: true
+  xy: 835, 1336
+  size: 304, 79
+  orig: 306, 81
+  offset: 1, 1
+  index: -1
+beard
+  rotate: false
+  xy: 1450, 163
+  size: 463, 343
+  orig: 465, 345
+  offset: 1, 1
+  index: -1
+body
+  rotate: false
+  xy: 2, 814
+  size: 831, 1232
+  orig: 833, 1234
+  offset: 1, 1
+  index: -1
+chik
+  rotate: true
+  xy: 916, 1433
+  size: 207, 165
+  orig: 209, 167
+  offset: 1, 1
+  index: -1
+ear
+  rotate: true
+  xy: 835, 1642
+  size: 200, 235
+  orig: 202, 237
+  offset: 1, 1
+  index: -1
+handL1
+  rotate: false
+  xy: 835, 836
+  size: 351, 488
+  orig: 353, 490
+  offset: 1, 1
+  index: -1
+handL3
+  rotate: false
+  xy: 582, 69
+  size: 538, 743
+  orig: 540, 745
+  offset: 1, 1
+  index: -1
+handR3
+  rotate: false
+  xy: 1122, 137
+  size: 326, 697
+  orig: 328, 699
+  offset: 1, 1
+  index: -1
+hat
+  rotate: true
+  xy: 2, 15
+  size: 797, 578
+  orig: 799, 580
+  offset: 1, 1
+  index: -1
+head
+  rotate: true
+  xy: 1122, 1326
+  size: 720, 898
+  orig: 722, 900
+  offset: 1, 1
+  index: -1
+kulak
+  rotate: false
+  xy: 1450, 508
+  size: 570, 349
+  orig: 572, 351
+  offset: 1, 1
+  index: -1
+neck
+  rotate: true
+  xy: 1188, 859
+  size: 465, 637
+  orig: 467, 639
+  offset: 1, 1
+  index: -1
+vorot
+  rotate: false
+  xy: 835, 1844
+  size: 237, 202
+  orig: 239, 204
+  offset: 1, 1
+  index: -1
+
+karapuz2.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+beard2
+  rotate: false
+  xy: 1248, 532
+  size: 463, 343
+  orig: 465, 345
+  offset: 1, 1
+  index: -1
+gum
+  rotate: true
+  xy: 1713, 537
+  size: 338, 330
+  orig: 340, 332
+  offset: 1, 1
+  index: -1
+handL2
+  rotate: false
+  xy: 2, 2
+  size: 511, 434
+  orig: 513, 436
+  offset: 1, 1
+  index: -1
+handR
+  rotate: false
+  xy: 630, 549
+  size: 616, 326
+  orig: 618, 328
+  offset: 1, 1
+  index: -1
+handR2
+  rotate: false
+  xy: 2, 438
+  size: 626, 437
+  orig: 628, 439
+  offset: 1, 1
+  index: -1

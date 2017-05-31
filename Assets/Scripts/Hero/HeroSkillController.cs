@@ -8,6 +8,9 @@ public class HeroSkillController : MonoBehaviour {
 	public GameObjectResources GameObjectResources;
 	public Image ActiveHeroSkillIcon;
 
+	public delegate void OnCompleteSkill(HeroSkillData skill);
+	public event OnCompleteSkill onCompleteSkill;
+
 	private IDictionary<HeroSkillType, HeroSkillData> effectiveSkills = new Dictionary<HeroSkillType, HeroSkillData>();
 
 	void Start () {
@@ -56,6 +59,9 @@ public class HeroSkillController : MonoBehaviour {
 			if(--skill.RemainTurns == 0) {
 				effectiveSkills.Remove(skill.Type);
 				Destroy(icon.gameObject);
+				if(onCompleteSkill != null) {
+					onCompleteSkill(skill);
+				}
 			} else {
 				Text text = icon.transform.Find("Text").gameObject.GetComponent<Text>();
 				text.text = skill.RemainTurns.ToString();
@@ -91,5 +97,25 @@ public class HeroSkillController : MonoBehaviour {
 			}
 		}
 		return false;
+	}
+
+	public bool IsEnemyStuned() {
+		foreach(HeroSkillData skill in effectiveSkills.Values) {
+			if(HeroSkillData.StunEffects.Contains(skill.Type)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public int GetSlowdownEffect() {
+		int currentTurns = GameData.EnemyTurns;
+
+		foreach(HeroSkillData skill in effectiveSkills.Values) {
+			if(skill.Slowdown > 0) {
+				currentTurns += (int)Mathf.Round(currentTurns * skill.Slowdown / 100f);
+			}
+		}
+		return currentTurns - GameData.EnemyTurns;
 	}
 }

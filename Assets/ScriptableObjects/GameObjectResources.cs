@@ -33,7 +33,8 @@ public class GameObjectResources : ScriptableObject {
 
 	int GetHeroSkillButtonBgIndex(HeroSkillType type) {
 		if(HeroSkillData.DamageEffects.Contains(type) ||
-		    HeroSkillData.StunEffects.Contains(type)) {
+		    HeroSkillData.StunEffects.Contains(type) ||
+			HeroSkillData.SlowdownEffects.Contains(type)) {
 			return 0;
 		} else if(HeroSkillData.HealthEffects.Contains(type) ||
 		          HeroSkillData.EnergyEffects.Contains(type) ||

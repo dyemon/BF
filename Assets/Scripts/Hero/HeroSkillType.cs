@@ -9,7 +9,8 @@ public enum HeroSkillType {
 	ExcludeColor,
 	KillEater, KillAllEaters,
 	Damage1, Damage2, Damage3,
-	Stun1, Stun2, Stun3,
+	Slowdown1,
+	Stun1, Stun2,
 	Energy,
 	Invulnerability,
 	Health1, Health2

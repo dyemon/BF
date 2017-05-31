@@ -82,12 +82,20 @@ public class ProgressBar : MonoBehaviour {
 		UpdateText();
 	}
 
-	public bool ChangeMaxValue(int newValue) {
+	public int ChangeMaxValue(int newValue) {
+		int newCurValue = curValue;
+		if(newValue < MaxValue) {
+			float percent = ((float)curValue) / MaxValue;
+			newCurValue = (int)Mathf.Floor(percent * newValue);
+			if(newCurValue >= newValue) {
+				newCurValue = newValue - 1;
+			}
+		}
 		MaxValue = newValue;
 		SetEvaluteProgress(curEvaluteOffset);
-		SetProgress(curValue, false);
+		SetProgress(newCurValue, true);
 
-		return curValue >= MaxValue;
+		return newCurValue;
 	}
 
 	public void OnResize() {

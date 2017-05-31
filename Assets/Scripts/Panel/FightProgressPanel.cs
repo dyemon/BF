@@ -61,8 +61,19 @@ public class FightProgressPanel : MonoBehaviour, IResizeListener {
 		EnemyDamageText.text = (enemyController != null)? enemyController.Damage.ToString() : "";
 		EnemyHealthText.text = (enemyController != null)? enemyController.Health.ToString() : "";
 
-		HeroPs.SetMaxValue(heroController.PowerPointSuccess);
-		EnemyPs.SetMaxValue((enemyController != null)? enemyController.TurnsSuccess : 0);
+		UpdateProgressMaxValue(false);
+
+	}
+
+	public void UpdateProgressMaxValue(bool recalc) {
+		if(!recalc) {
+			HeroPs.SetMaxValue(heroController.PowerPointSuccess);
+			EnemyPs.SetMaxValue((enemyController != null) ? enemyController.TurnsSuccess : 0);
+		} else {
+		//	HeroPs.ChangeMaxValue(heroController.PowerPointSuccess);
+			int newCurValue = EnemyPs.ChangeMaxValue((enemyController != null)? enemyController.TurnsSuccess : 0);
+			enemyController.CurrentTurns = newCurValue;
+		}
 	}
 
 	private void ShowFullIndicator(bool show) {
