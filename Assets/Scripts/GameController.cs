@@ -92,6 +92,7 @@ public class GameController : MonoBehaviour {
 	public ParticleSystem BombExplosionBombPS;
 	public ParticleSystem EnemySkillPS;
 	public ParticleSystem HeroSkillPS;
+	public ParticleSystem TileItemCollectPS;
 
 	private float bombExplosionDelay = 0;
 	private bool existBombAll;
@@ -659,6 +660,7 @@ public class GameController : MonoBehaviour {
 			if(tile.GetTileItem() == null) {
 				continue;
 			}
+			InitTileItemCollectPS(tile);
 			bool isNotStatic = tile.GetTileItem().IsNotStatic;
 			CollectTileItem(tile);
 			if(BreakTileItems(tile.X, tile.Y, 1, isNotStatic)) {
@@ -2341,6 +2343,23 @@ public class GameController : MonoBehaviour {
 		foreach(ParticleSystem ps in children) {
 			ps.GetComponent<Renderer>().sortingOrder = BOMB_EXPLOSION_SORTING_ORDER;
 		}*/
+	}
+
+	private void InitTileItemCollectPS(Tile tile) {
+		TileItem ti = tile.GetTileItem();
+		if(ti == null || !ti.IsColor) {
+			return;
+		}
+
+		ParticleSystem collectPS = Instantiate(TileItemCollectPS, IndexToPosition(tile.X, tile.Y), Quaternion.identity);
+		ParticleSystem.MainModule main = collectPS.main;
+		main.startColor = TileItem.ConvertToColor(ti.Type);
+
+		Destroy(collectPS.gameObject, collectPS.main.duration);
+	//	if(explosion.main.duration > bombExplosionDelay) {
+	//		bombExplosionDelay = explosion.main.duration;
+	//	}
+		collectPS.GetComponent<Renderer>().sortingOrder = BOMB_EXPLOSION_SORTING_ORDER;
 	}
 
 	private void UpdateCurrentPowerPoints(bool reset) {

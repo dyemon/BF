@@ -444,15 +444,15 @@ public class TileItem {
 
 		switch(group) {
 		case TileItemTypeGroup.Red:
-			return Color.red;
+			return new Color(1f, 0.2f, 0.2f);
 		case TileItemTypeGroup.Green:
-			return Color.green;
+			return new Color(0.5f, 1f, 0.32f);
 		case TileItemTypeGroup.Blue:
-			return Color.blue;
+			return new Color(0.25f, 0.85f, 1f);
 		case TileItemTypeGroup.Yellow:
-			return Color.yellow;
+			return new Color(1f, 0.85f, 0.173f);
 		case TileItemTypeGroup.Purple:
-			return new Color(1, 0, 1);
+			return new Color(0.42f, 0.3f, 1f);
 		default:
 			throw new System.ArgumentException(string.Format("Can not convert to Color fot type {0)", type.ToString()));
 
