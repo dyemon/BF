@@ -160,7 +160,7 @@
     },
 
 	"EnemyData": {
-		"TypeAsString": "Lysyiy",
+		"TypeAsString": "Sipliy",
 		"Health": 80,
 		"Damage": 30,
 		"SkillRatio": 1,

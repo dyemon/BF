@@ -1,0 +1,145 @@
+
+skeleton.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+body_top
+  rotate: false
+  xy: 2, 97
+  size: 272, 411
+  orig: 274, 413
+  offset: 1, 1
+  index: -1
+body_top2
+  rotate: false
+  xy: 2, 2
+  size: 138, 93
+  orig: 140, 95
+  offset: 1, 1
+  index: -1
+elbowL
+  rotate: false
+  xy: 472, 270
+  size: 209, 103
+  orig: 211, 105
+  offset: 1, 1
+  index: -1
+elbowR
+  rotate: false
+  xy: 470, 158
+  size: 182, 110
+  orig: 184, 112
+  offset: 1, 1
+  index: -1
+eyes_angry
+  rotate: false
+  xy: 142, 24
+  size: 132, 71
+  orig: 134, 73
+  offset: 1, 1
+  index: -1
+eyes_close
+  rotate: false
+  xy: 276, 23
+  size: 132, 71
+  orig: 134, 73
+  offset: 1, 1
+  index: -1
+eyes_mid_close
+  rotate: false
+  xy: 470, 85
+  size: 132, 71
+  orig: 134, 73
+  offset: 1, 1
+  index: -1
+eyes_norm
+  rotate: true
+  xy: 683, 241
+  size: 132, 71
+  orig: 134, 73
+  offset: 1, 1
+  index: -1
+head
+  rotate: false
+  xy: 276, 282
+  size: 194, 226
+  orig: 196, 228
+  offset: 1, 1
+  index: -1
+lips_Ups
+  rotate: true
+  xy: 410, 28
+  size: 66, 44
+  orig: 68, 46
+  offset: 1, 1
+  index: -1
+lips_angry
+  rotate: true
+  xy: 870, 162
+  size: 126, 50
+  orig: 128, 52
+  offset: 1, 1
+  index: -1
+lips_big_close
+  rotate: true
+  xy: 922, 166
+  size: 122, 50
+  orig: 124, 52
+  offset: 1, 1
+  index: -1
+lips_mid_close
+  rotate: true
+  xy: 975, 292
+  size: 97, 44
+  orig: 99, 46
+  offset: 1, 1
+  index: -1
+nec
+  rotate: false
+  xy: 276, 96
+  size: 192, 184
+  orig: 194, 186
+  offset: 1, 1
+  index: -1
+shoulder
+  rotate: true
+  xy: 472, 375
+  size: 133, 260
+  orig: 135, 262
+  offset: 1, 1
+  index: -1
+shoulderL
+  rotate: true
+  xy: 734, 391
+  size: 117, 266
+  orig: 119, 268
+  offset: 1, 1
+  index: -1
+wristL_back_close
+  rotate: false
+  xy: 861, 290
+  size: 112, 99
+  orig: 114, 101
+  offset: 1, 1
+  index: -1
+wristL_open
+  rotate: false
+  xy: 654, 139
+  size: 111, 100
+  orig: 113, 102
+  offset: 1, 1
+  index: -1
+wristR_dop1
+  rotate: false
+  xy: 756, 272
+  size: 103, 117
+  orig: 105, 119
+  offset: 1, 1
+  index: -1
+wristR_dop2
+  rotate: false
+  xy: 767, 164
+  size: 101, 106
+  orig: 103, 108
+  offset: 1, 1
+  index: -1

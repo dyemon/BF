@@ -84,7 +84,7 @@ public class LevelData {
 			}
 		}
 
-		if(EnemyData != null) {
+		if(HasEnemy()) {
 			EnemyData.Init();
 		}
 	}

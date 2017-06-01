@@ -1,0 +1,129 @@
+
+shyplyi.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+ayesclose
+  rotate: true
+  xy: 1818, 798
+  size: 345, 184
+  orig: 347, 186
+  offset: 1, 1
+  index: -1
+body
+  rotate: false
+  xy: 2, 349
+  size: 783, 1681
+  orig: 785, 1683
+  offset: 1, 1
+  index: -1
+handL2
+  rotate: false
+  xy: 1401, 115
+  size: 588, 226
+  orig: 590, 228
+  offset: 1, 1
+  index: -1
+handL3
+  rotate: true
+  xy: 2, 2
+  size: 345, 967
+  orig: 347, 969
+  offset: 1, 1
+  index: -1
+handR2
+  rotate: false
+  xy: 787, 433
+  size: 651, 248
+  orig: 653, 250
+  offset: 1, 1
+  index: -1
+handR3
+  rotate: true
+  xy: 787, 683
+  size: 375, 1029
+  orig: 377, 1031
+  offset: 1, 1
+  index: -1
+hat
+  rotate: true
+  xy: 1510, 1145
+  size: 885, 536
+  orig: 887, 538
+  offset: 1, 1
+  index: -1
+head
+  rotate: false
+  xy: 787, 1060
+  size: 721, 970
+  orig: 723, 972
+  offset: 1, 1
+  index: -1
+kulak
+  rotate: false
+  xy: 1440, 343
+  size: 586, 338
+  orig: 588, 340
+  offset: 1, 1
+  index: -1
+neck
+  rotate: false
+  xy: 971, 49
+  size: 428, 382
+  orig: 430, 384
+  offset: 1, 1
+  index: -1
+pupils
+  rotate: false
+  xy: 1510, 1076
+  size: 224, 67
+  orig: 226, 69
+  offset: 1, 1
+  index: -1
+
+shyplyi2.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+ear
+  rotate: false
+  xy: 701, 282
+  size: 199, 221
+  orig: 201, 223
+  offset: 1, 1
+  index: -1
+handL1
+  rotate: true
+  xy: 376, 198
+  size: 305, 323
+  orig: 307, 325
+  offset: 1, 1
+  index: -1
+handR1
+  rotate: false
+  xy: 2, 192
+  size: 372, 311
+  orig: 374, 313
+  offset: 1, 1
+  index: -1
+mouth
+  rotate: true
+  xy: 2, 2
+  size: 188, 229
+  orig: 190, 231
+  offset: 1, 1
+  index: -1
+mouth2
+  rotate: true
+  xy: 233, 44
+  size: 146, 217
+  orig: 148, 219
+  offset: 1, 1
+  index: -1
+skladka
+  rotate: false
+  xy: 452, 51
+  size: 233, 145
+  orig: 235, 147
+  offset: 1, 1
+  index: -1

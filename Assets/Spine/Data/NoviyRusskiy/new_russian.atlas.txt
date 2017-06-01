@@ -1,0 +1,122 @@
+
+new_russian.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+ayecloseL
+  rotate: true
+  xy: 837, 50
+  size: 82, 57
+  orig: 84, 59
+  offset: 1, 1
+  index: -1
+ayecloseR
+  rotate: false
+  xy: 535, 16
+  size: 145, 116
+  orig: 147, 118
+  offset: 1, 1
+  index: -1
+beard
+  rotate: true
+  xy: 1349, 116
+  size: 253, 201
+  orig: 255, 203
+  offset: 1, 1
+  index: -1
+body
+  rotate: false
+  xy: 2, 371
+  size: 1512, 1671
+  orig: 1514, 1673
+  offset: 1, 1
+  index: -1
+brouL
+  rotate: true
+  xy: 682, 43
+  size: 89, 82
+  orig: 91, 84
+  offset: 1, 1
+  index: -1
+brouR
+  rotate: true
+  xy: 766, 42
+  size: 90, 69
+  orig: 92, 71
+  offset: 1, 1
+  index: -1
+handL1
+  rotate: true
+  xy: 2, 2
+  size: 367, 531
+  orig: 369, 533
+  offset: 1, 1
+  index: -1
+handL2
+  rotate: false
+  xy: 1516, 594
+  size: 478, 703
+  orig: 480, 705
+  offset: 1, 1
+  index: -1
+handR1
+  rotate: true
+  xy: 1552, 34
+  size: 558, 425
+  orig: 560, 427
+  offset: 1, 1
+  index: -1
+handR2
+  rotate: true
+  xy: 1516, 1299
+  size: 743, 465
+  orig: 745, 467
+  offset: 1, 1
+  index: -1
+mouth1
+  rotate: false
+  xy: 535, 134
+  size: 405, 235
+  orig: 407, 237
+  offset: 1, 1
+  index: -1
+mouth2
+  rotate: false
+  xy: 942, 134
+  size: 405, 235
+  orig: 407, 237
+  offset: 1, 1
+  index: -1
+
+new_russian2.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+handL3
+  rotate: true
+  xy: 1279, 425
+  size: 544, 684
+  orig: 546, 686
+  offset: 1, 1
+  index: -1
+handR3
+  rotate: false
+  xy: 717, 260
+  size: 560, 709
+  orig: 562, 711
+  offset: 1, 1
+  index: -1
+head
+  rotate: false
+  xy: 2, 96
+  size: 713, 873
+  orig: 715, 875
+  offset: 1, 1
+  index: -1
+kulak
+  rotate: false
+  xy: 1279, 2
+  size: 630, 421
+  orig: 632, 423
+  offset: 1, 1
+  index: -1
