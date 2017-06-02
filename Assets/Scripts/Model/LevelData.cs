@@ -12,6 +12,9 @@ public class LevelData {
 	public int SlimeRatio;
 	public int[] TileItemDropPercent;
 
+	public FightLocationType FightLocationType;
+	public string FightLocationTypeAsString;
+
 	public TileItemData[] TileData = new TileItemData[0];
 	public BarrierData[] BarrierData = new BarrierData[0];
 	public TargetData[] TargetData = new TargetData[0];
@@ -24,6 +27,8 @@ public class LevelData {
 	public EnemyData EnemyData = null;
 
 	public void Init() {
+		FightLocationType = EnumUtill.Parse<FightLocationType>(FightLocationTypeAsString);
+
 		if(TileData != null) {
 			foreach(TileItemData item in TileData) {
 				item.Type = (TileItemType)Enum.Parse(typeof(TileItemType), item.TypeAsString);

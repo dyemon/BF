@@ -142,6 +142,10 @@ public class GameController : MonoBehaviour {
 	public Button heroSkillButton;
 	public Text heroSkillCountText;
 
+	public Sprite[] FightLocation;
+
+	public BackgroundMS bg;
+
 	void Start() {
 		Instance = this;
 
@@ -150,6 +154,8 @@ public class GameController : MonoBehaviour {
 
 		numColumns = GameData.NumColumns;
 		numRows = GameData.NumRows;
+
+		bg.SetSprite(FightLocation[(int)levelData.FightLocationType], 0);
 
 		autoDropTileItems = new AutoDropTileItems(levelData.AutoDropData);
 		slime = new Slime(levelData.SlimeRatio);
@@ -214,7 +220,6 @@ public class GameController : MonoBehaviour {
 
 		if(!levelData.HasEnemy()) {
 			FPPanel.Init(heroController, null);
-		//	heroController.Hide();
 			return;
 		}
 
@@ -3009,7 +3014,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	void EnableHeroSkillButton(bool enable) {
-		enable = true;
+	//	enable = true;
 		heroSkillButton.interactable = enable;
 	}
 

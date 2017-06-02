@@ -8,7 +8,13 @@ public class BackgroundMS : MonoBehaviour {
 
 	public float centerYOffset;
 	public GameObject[] resizeListeners;
-	
+
+	public GameObject[] Parts;
+
+	public void SetSprite(Sprite sprite, int indexer) {
+		Parts[indexer].GetComponent<SpriteRenderer>().sprite = sprite;
+	}
+
 	void Start() {
 	}
 
