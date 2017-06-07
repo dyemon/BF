@@ -146,6 +146,21 @@ public class GameController : MonoBehaviour {
 
 	public BackgroundMS bg;
 
+	void OnEnable() {
+		if(SceneControllerHelper.instance != null) {
+			SceneControllerHelper.instance.onUnloadScene += OnUnloadScene;
+		}
+	}
+
+	void OnDisable() {
+		if(SceneControllerHelper.instance != null) {
+			SceneControllerHelper.instance.onUnloadScene -= OnUnloadScene;
+		}
+	}
+
+	void Awake() {
+	}
+
 	void Start() {
 		Instance = this;
 
@@ -208,9 +223,7 @@ public class GameController : MonoBehaviour {
 
 		onTurnComplete += restrictionsController.DecrementMoveScore;
 
-		if(SceneControllerHelper.instance != null) {
-			SceneControllerHelper.instance.onUnloadScene += OnUnloadScene;
-		}
+
 
 		heroSkillController.onCompleteSkill += OnCompleteHeroSkill;
 	}

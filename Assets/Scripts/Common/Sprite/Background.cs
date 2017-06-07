@@ -12,7 +12,7 @@ public class Background : MonoBehaviour {
 	}
 	// Update is called once per frame
 	void Update() {
-		  ResizeSpriteToScreen();
+	//	  ResizeSpriteToScreen();
 		  return;
 		if(Screen.width != screenWidth || Screen.height != screenHeight) {
 			//  transform.localScale = new Vector3(1,1,1);
