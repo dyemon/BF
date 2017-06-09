@@ -30,12 +30,12 @@ public class UserData {
 	[SerializeField]
 	private List<UserAssetData> Assets = new List<UserAssetData>();
 	[SerializeField]
-	public List<UserHeroData> HeroesData = new List<UserHeroData>();
-	[SerializeField]
+	//public List<UserHeroData> HeroesData = new List<UserHeroData>();
+//	[SerializeField]
 	public List<QuestData> QuestsData = new List<QuestData>();
 
 	public void InitTest() {
-		HeroesData.Clear();
+	//	HeroesData.Clear();
 		/*
 		HeroesData.Add(new UserHeroData("redEnvelop",0));
 		HeroesData.Add(new UserHeroData("yellowEnvelop",0));

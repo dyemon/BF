@@ -12,7 +12,7 @@ public class HeroSkillButton : BuyButton<HeroSkillData> {
 
 		base.Init(bg, icon, skill.Name, skill.PricaType, skill.PriceValue, skill, onClickListener);
 
-		Text text = transform.FindChild("Button/Description").GetComponent<Text>();
+		Text text = transform.FindChild("Bg/Description").GetComponent<Text>();
 		text.text = skill.Description;
 
 		Image img = transform.FindChild("Result Text").GetComponent<Image>();
@@ -25,5 +25,7 @@ public class HeroSkillButton : BuyButton<HeroSkillData> {
 		}
 	}
 
-
+	override protected Button GetButton() {
+		return transform.Find("Bg").GetComponent<Button>();;
+	}
 }

@@ -72,11 +72,38 @@ public class UnityUtill {
 		}
 	}
 
-	public static void Destroy(GameObject go) {
-		foreach(Transform child in go.transform) {
-			GameObject.Destroy(child);
+	public static Transform FindByName(Transform root, string name) {
+		Transform res = root.Find(name);
+		if(res != null) {
+			return res;
 		}
 
-		GameObject.Destroy(go);
+		foreach(Transform tr in root.transform) {
+			res = FindByName(tr, name);
+			if(res != null) {
+				return res;
+			}
+		}
+
+		return null;
 	}
+
+	public static IList<Transform> FindByTag(Transform root, string tag) {
+		IList<Transform> res = new List<Transform>();
+
+		foreach(Transform tr in root.transform) {
+			if(tr.tag == tag) {
+				res.Add(tr);
+			}
+		}
+
+		return res;
+	}
+
+	public static void DestroyByTag(Transform root, string tag) {
+		foreach(Transform tr in FindByTag(root, tag)) {
+			GameObject.Destroy(tr.gameObject);
+		}
+	}
+		
 }

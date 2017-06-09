@@ -19,39 +19,50 @@ public class BuyButton<T> : MonoBehaviour {
 		SetIcon(icon);
 		SetButtonText(buttonText);
 
-		Button btn = transform.FindChild("Button").GetComponent<Button>();
-		btn.onClick.AddListener(OnClick);
+		Button btn = GetButton();
+		if(btn != null) {
+			btn.onClick.AddListener(OnClick);
+		}
+	}
+
+	virtual protected Button GetButton() {
+		Transform btn = UnityUtill.FindByName(transform, "Button");
+		if(btn != null) {
+			return btn.GetComponent<Button>();
+		}
+		return null;
 	}
 
 	protected void SetPrice(UserAssetType priceType, int priceValue) {
-		Image img = (Image)transform.FindChild("Button/Price Image").GetComponent<Image>();
+		Transform img = UnityUtill.FindByName(transform, "Price Image");
 		if(img != null) {
-			img.sprite = GameObjectResources.GetUserAssetIcone(priceType);
+			img.GetComponent<Image>().sprite = GameObjectResources.GetUserAssetIcone(priceType);
 		}
-		Text text = transform.FindChild("Button/Price Text").GetComponent<Text>();
+		Transform text = UnityUtill.FindByName(transform, "Price Text"); 
 		if(text != null) {
-			text.text = priceValue.ToString();
+			text.GetComponent<Text>().text = priceValue.ToString();
+			text.GetComponent<Text>().color = priceType.ToColor();
 		}
 	}
 
 	protected void SetBg(Sprite bg) {
-		Image img = (Image)transform.FindChild("Button").GetComponent<Image>();
-		if(img != null) {
-			img.sprite = bg;
+		Transform img = UnityUtill.FindByName(transform, "Bg"); 
+		if(img != null && bg != null) {
+			img.GetComponent<Image>().sprite = bg;
 		}
 	}
 
 	protected void SetIcon(Sprite icon) {
-		Image img = (Image)transform.FindChild("Icon").GetComponent<Image>();
-		if(img != null) {
-			img.sprite = icon;
+		Transform img = UnityUtill.FindByName(transform, "Icon"); 
+		if(img != null && icon != null) {
+			img.GetComponent<Image>().sprite = icon;
 		}
 	}
 
 	protected void SetButtonText(string str) {
-		Text text = transform.FindChild("Button/Text").GetComponent<Text>();
-		if(text != null) {
-			text.text = str.ToString();
+		Transform text = UnityUtill.FindByName(transform, "Text"); ;
+		if(text != null && str != null) {
+			text.GetComponent<Text>().text = str.ToString();
 		}
 	}
 

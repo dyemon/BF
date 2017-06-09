@@ -1301,10 +1301,10 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void InitHeroes() {
-		foreach(UserHeroData data in GameResources.Instance.GetUserData().HeroesData) {
-			gameData.HeroData[data.Id].Level = data.Level;
-			heroes[data.Id] = new Hero(gameData.HeroData[data.Id]);
-		}
+	//	foreach(UserHeroData data in GameResources.Instance.GetUserData().HeroesData) {
+	//		gameData.HeroData[data.Id].Level = data.Level;
+	//		heroes[data.Id] = new Hero(gameData.HeroData[data.Id]);
+	//	}
 	}
 
 	private bool UpdateTilesColumns() {

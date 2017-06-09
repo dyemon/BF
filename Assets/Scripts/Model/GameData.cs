@@ -17,6 +17,9 @@ public class GameData {
 	public GoodsData[] GoodsData = new GoodsData[0];
 	public HeroSkillData[] HeroSkillData = new HeroSkillData[0];
 
+	public PriceData[] PriceData;
+	public UserAssetsShopData UserAssetsShopData;
+
 	public void Init() {
 		/*
 		HeroData["redHBomb"] = new HeroData(TileItemType.RedBombH, 5);
@@ -56,6 +59,10 @@ public class GameData {
 		foreach(HeroSkillData item in HeroSkillData) {
 			item.init();
 		}
+
+		foreach(PriceData item in PriceData) {
+			item.Type = EnumUtill.Parse<UserAssetType>(item.TypeAsString);
+		}
 	}
 
 	public int GetBombRatio(int level) {
@@ -80,4 +87,13 @@ public class GameData {
 		return (int)Mathf.Round((itemCountSelect + itemCountBomb) * ratio * GameData.PowerPointByItem);
 	}		
 		
+	public int GetPriceValue(UserAssetType type) {
+		foreach(PriceData item in PriceData) {
+			if(item.Type == type) {
+				return item.Value;
+			}
+		}
+
+		throw new System.Exception("Price for " + type.ToString() + " is not define");
+	}
 }
