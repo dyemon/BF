@@ -6,6 +6,7 @@ using System;
 
 public class AnimatedObject : MonoBehaviour {
 	public delegate void OnStopAnimation(System.Object[] param);
+	public delegate void OnStopAnimationSimple();
 
 	private bool isPlay = false;
 
@@ -19,6 +20,7 @@ public class AnimatedObject : MonoBehaviour {
 	private bool clearOnStop = true;
 
 	private OnStopAnimation onStop;
+	private OnStopAnimationSimple onStopSimple;
 	private System.Object[] onStopParam;
 
 	public bool IsDone {
@@ -89,6 +91,7 @@ public class AnimatedObject : MonoBehaviour {
 			sourceLayerSortingOrder = null;
 		}
 		onStop = null;
+		onStopSimple = null;
 		onStopParam = null;
 		destroyOnStop = false;
 		clearOnStop = true;
@@ -116,6 +119,10 @@ public class AnimatedObject : MonoBehaviour {
 
 		if(onStop != null) {
 			onStop(onStopParam);
+		}
+
+		if(onStopSimple != null) {
+			onStopSimple();
 		}
 
 		if(clearOnStop) {
@@ -194,6 +201,11 @@ public class AnimatedObject : MonoBehaviour {
 	public AnimatedObject OnStop(OnStopAnimation onStop, System.Object[] param) {
 		this.onStop = onStop;
 		this.onStopParam = param;
+		return this;
+	}
+
+	public AnimatedObject OnStop(OnStopAnimationSimple onStop) {
+		this.onStopSimple = onStop;
 		return this;
 	}
 

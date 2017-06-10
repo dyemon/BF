@@ -10,6 +10,7 @@ public class LombardScene : WindowScene {
 	public RectTransform Offers;
 	public string BuyButtonTag;
 	public ToggleGroup UserAssetTypeToggleGroup;
+	public UserAssetsPanel userDataPanel;
 
 	public GameObject[] BuyButtons;
 
@@ -47,11 +48,13 @@ public class LombardScene : WindowScene {
 
 			button.transform.SetParent(Offers.transform);
 			button.transform.localScale = new Vector3(1, 1 ,1);
+			button.name = "BuyButton" + count; 
 		}
 	}
 
 	void ToggleUserAsset(UserAssetType type) {
-		Toggle tg = GameObject.Find(type.ToString()).GetComponent<Toggle>();
+		GameObject obj = GameObject.Find(type.ToString());
+		Toggle tg =	obj.GetComponent<Toggle>();
 		tg.isOn = true;
 	}
 
@@ -59,10 +62,6 @@ public class LombardScene : WindowScene {
 		GameObject button = buttons[currentAsset];
 
 		return Instantiate(button);
-	}
-
-	void OnClickBuy(int count) {
-		Debug.Log(count);
 	}
 
 	public void OnChangeCurrentUserAsset(bool selected) {
@@ -74,5 +73,35 @@ public class LombardScene : WindowScene {
 		currentAsset = EnumUtill.Parse<UserAssetType>(name);
 
 		UpdateOffers();
+	}
+
+	void OnClickBuy(int count) {
+		if(currentAsset == UserAssetType.Money) {
+			return;
+		}
+
+		TryBuyUserAsset(count);
+	}
+
+	void TryBuyUserAsset(int count) {
+		GameObject assetImg = UnityUtill.FindByName(Offers.transform, "BuyButton" + count)
+			.Find("Icon/Image").gameObject;
+		
+		GameObject animImg = Instantiate(assetImg, assetImg.transform);
+		AnimatedObject ao = animImg.AddComponent<AnimatedObject>();
+
+		float speed = App.GetTileItemSpeed(TileItemMoveType.BUY_USERASSET);
+		Vector3 end = userDataPanel.GetUserAssetsIcon(currentAsset).transform.position;
+		float time = AMove.CalcTime(animImg.transform.position, end, speed);
+
+		ao.AddMove(null, end, speed).AddResize(null, new Vector3(0.5f, 0.5f, 1f), time)
+		.OnStop(() => BuyUserAsset(currentAsset, count, animImg) )
+		.Build().Run();
+
+	}
+
+	void BuyUserAsset(UserAssetType type, int count, GameObject animImg) {
+		Destroy(animImg);
+		Debug.Log(type + " " + count); 
 	}
 }
