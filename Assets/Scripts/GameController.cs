@@ -1431,6 +1431,7 @@ public class GameController : MonoBehaviour {
 			if(!chosen.GetTileItem().IsRotateOnDrop) {
 				rotate = 0;
 			}
+			rotate = 0;
 			MoveTileItem(chosen, tile, TileItemMoveType.OFFSET, rotate);
 			res = true;
 			tileColumnAvalibleForOffset[chosen.X] = false;
