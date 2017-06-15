@@ -29,10 +29,10 @@ public class UserData {
 	
 	[SerializeField]
 	private List<UserAssetData> Assets = new List<UserAssetData>();
-	[SerializeField]
+//	[SerializeField]
 	//public List<UserHeroData> HeroesData = new List<UserHeroData>();
 //	[SerializeField]
-	public List<QuestData> QuestsData = new List<QuestData>();
+	//public List<QuestData> QuestsData = new List<QuestData>();
 
 	public void InitTest() {
 	//	HeroesData.Clear();
@@ -52,7 +52,7 @@ public class UserData {
 		QuestsData.Add(new QuestData("1", 1));
 		QuestsData.Add(new QuestData("2", 2));
 		*/
-		Experience = 100;
+		//Experience = 100;
 	}
 
 	public void Init() {
@@ -74,7 +74,7 @@ public class UserData {
 		
 		Assets.Add(new UserAssetData(UserAssetType.Money, 5));
 		Assets.Add(new UserAssetData(UserAssetType.Semka, 100));
-		Assets.Add(new UserAssetData(UserAssetType.Ring, 0));
+		Assets.Add(new UserAssetData(UserAssetType.Ring, 10));
 		Assets.Add(new UserAssetData(UserAssetType.Star, 0));
 		Assets.Add(new UserAssetData(UserAssetType.Mobile, 0));
 	}

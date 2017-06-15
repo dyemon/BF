@@ -10,7 +10,7 @@ public class LombardScene : WindowScene {
 	public RectTransform Offers;
 	public string BuyButtonTag;
 	public ToggleGroup UserAssetTypeToggleGroup;
-	public UserAssetsPanel userDataPanel;
+	public UserDataPanel userDataPanel;
 
 	public GameObject[] BuyButtons;
 
@@ -76,14 +76,19 @@ public class LombardScene : WindowScene {
 	}
 
 	void OnClickBuy(int count) {
-		if(currentAsset == UserAssetType.Money) {
+	//	if(currentAsset == UserAssetType.Money) {
+	//		return;
+	//	}
+
+		BuyUserAsset(count);
+	}
+
+	void BuyUserAsset(int count) {
+		if(!GameResources.Instance.Buy(currentAsset, count, false)) {
+			ToggleUserAsset(UserAssetType.Money);
 			return;
 		}
 
-		TryBuyUserAsset(count);
-	}
-
-	void TryBuyUserAsset(int count) {
 		GameObject assetImg = UnityUtill.FindByName(Offers.transform, "BuyButton" + count)
 			.Find("Icon/Image").gameObject;
 		
@@ -95,13 +100,13 @@ public class LombardScene : WindowScene {
 		float time = AMove.CalcTime(animImg.transform.position, end, speed);
 
 		ao.AddMove(null, end, speed).AddResize(null, new Vector3(0.5f, 0.5f, 1f), time)
-		.OnStop(() => BuyUserAsset(currentAsset, count, animImg) )
+		.OnStop(() => CompleteBuyUserAsset(currentAsset, count, animImg) )
 		.Build().Run();
 
 	}
 
-	void BuyUserAsset(UserAssetType type, int count, GameObject animImg) {
+	void CompleteBuyUserAsset(UserAssetType type, int count, GameObject animImg) {
 		Destroy(animImg);
-		Debug.Log(type + " " + count); 
+		userDataPanel.UpdateUserAssets();
 	}
 }

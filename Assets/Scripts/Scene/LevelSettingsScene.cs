@@ -24,7 +24,7 @@ public class LevelSettingsScene : WindowScene {
 	}
 
 	public void OnCapitulateYes () {
-		GameResources.Instance.SaveUserData(true);
+		GameResources.Instance.SaveUserData(null, true);
 		SceneController.Instance.LoadSceneAsync("Map");
 	}
 		

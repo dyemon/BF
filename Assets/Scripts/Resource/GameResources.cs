@@ -79,6 +79,7 @@ public class GameResources {
 		//clearUserData();
 		LoadUserData();
 		UserData uData = JsonUtility.FromJson<UserData>(B64X.Decode(this.userData));
+		uData.Init();
 		return uData;
 	}
 
@@ -97,14 +98,16 @@ public class GameResources {
 				data.InitTest();
 			}
 			this.userData = B64X.Encode((JsonUtility.ToJson(data)));
-			SaveUserData(false);
+			SaveUserData(userData, false);
 		} else if(data.Version < userData.Version) {
 			SaveUserDataToServer(userData);
 		}
 	}	
 
-	public void SaveUserData(bool saveToServer) {
-		UserData data = GetUserData();
+	public void SaveUserData(UserData data, bool saveToServer) {
+		if(data == null) {
+			data = GetUserData();
+		}
 
 		if(saveToServer) {
 			SaveUserDataToServer(data);
@@ -165,38 +168,20 @@ public class GameResources {
 		return true;
 	}
 
-	public bool ChangeUserAssets(UserAssetData[] assets) {
-		UserData userData = GetUserData();
-
-		foreach(UserAssetData asset in assets) {
-			if(!CanChangeAsset(userData, asset.Type, asset.Value)) {
-				return false;
-			}
-		}
-		foreach(UserAssetData asset in assets) {
-			ChangeUserAsset(userData, asset);
-		}
-		saveUserDataLocal(userData);
-
-		return true;
-	}
-
-	public bool ChangeUserAsset(UserAssetData asset) {
-		return ChangeUserAsset(asset.Type, asset.Value);
-	}
-
-	public bool ChangeUserAsset(UserAssetType type, int value) {
+	public bool ChangeUserAsset(UserAssetType type, int value, bool saveToServer) {
 		UserData userData = GetUserData();
 		if(!ChangeUserAsset(userData, type, value)) {
 			return false;
 		}
 		saveUserDataLocal(userData);
+
+		if(saveToServer) {
+			SaveUserData(userData, true);
+		}
+
 		return true;
 	}
 
-	public bool ChangeUserAsset(UserData userData, UserAssetData asset) {
-		return ChangeUserAsset(userData, asset.Type, asset.Value);
-	}
 
 	public bool ChangeUserAsset(UserData data, UserAssetType type, int value) {
 		UserAssetData asset = data.GetAsset(type);
@@ -230,5 +215,19 @@ public class GameResources {
 		string data = JsonUtility.ToJson(localSettings);
 		PlayerPrefs.SetString("localSettings", data);
 		PlayerPrefs.Save();
+	}
+
+	public bool Buy(UserAssetType type, int count, bool showUserAssetsScene) {
+		if(type != UserAssetType.Money) {
+			GameData gData = GetGameData();
+			int val = gData.GetPriceValue(type);
+			
+			if(!ChangeUserAsset(UserAssetType.Money, -val * count, false)) {
+				return false;
+			}
+		}
+
+		ChangeUserAsset(type, count, true);
+		return true;
 	}
 }

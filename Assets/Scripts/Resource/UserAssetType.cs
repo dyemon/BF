@@ -19,7 +19,7 @@ static class UserAssetTypeExtension {
 		case UserAssetType.Mobile:
 			return new Color(0.65f, 0.73f, 0.85f);
 		case UserAssetType.Star:
-			return new Color(1f, 0.5f, 0.5f);
+			return new Color(0.87f, 0.77f, 0.66f);
 		}
 
 		return Color.white;
