@@ -3028,7 +3028,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	void EnableHeroSkillButton(bool enable) {
-	//	enable = true;
+		enable = true;
 		heroSkillButton.interactable = enable;
 	}
 

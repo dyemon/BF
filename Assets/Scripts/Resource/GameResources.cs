@@ -107,6 +107,8 @@ public class GameResources {
 	public void SaveUserData(UserData data, bool saveToServer) {
 		if(data == null) {
 			data = GetUserData();
+		} else {
+			saveUserDataLocal(data);
 		}
 
 		if(saveToServer) {
@@ -168,15 +170,10 @@ public class GameResources {
 		return true;
 	}
 
-	public bool ChangeUserAsset(UserAssetType type, int value, bool saveToServer) {
+	public bool ChangeUserAsset(UserAssetType type, int value) {
 		UserData userData = GetUserData();
 		if(!ChangeUserAsset(userData, type, value)) {
 			return false;
-		}
-		saveUserDataLocal(userData);
-
-		if(saveToServer) {
-			SaveUserData(userData, true);
 		}
 
 		return true;
@@ -190,6 +187,7 @@ public class GameResources {
 			return false;
 		}
 		asset.Value = newVal;
+		saveUserDataLocal(data);
 
 		return true;
 	}
@@ -222,12 +220,25 @@ public class GameResources {
 			GameData gData = GetGameData();
 			int val = gData.GetPriceValue(type);
 			
-			if(!ChangeUserAsset(UserAssetType.Money, -val * count, false)) {
+			if(!ChangeUserAsset(UserAssetType.Money, -val * count)) {
 				return false;
 			}
 		}
 
-		ChangeUserAsset(type, count, true);
+		ChangeUserAsset(type, count);
+		SaveUserData(null, true);
+
+		return true;
+	}
+
+	public bool Buy(HeroSkillData skill, bool showUserAssetsScene) {
+		if(!ChangeUserAsset(skill.PricaType, -skill.PriceValue)) {
+			if(showUserAssetsScene) {
+				SceneController.Instance.ShowUserAssetsScene(skill.PricaType, true);
+			}
+			return false;
+		}
+		SaveUserData(null, true);
 		return true;
 	}
 }

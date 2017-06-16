@@ -172,4 +172,20 @@ public class SceneController : MonoBehaviour {
 	public System.Object GetParameter(string name) {
 		return parameters[name];
 	}
+
+	public void ShowUserAssetsScene(UserAssetType type, bool showMessage) {
+		string sceneName;
+
+		switch(type) {
+		case UserAssetType.Money:
+		case UserAssetType.Ring:
+		case UserAssetType.Mobile:
+			sceneName = LombardScene.SceneName;
+			break;
+		default:
+			throw new System.Exception("Invalid user asset type: " + type);
+		}
+
+		LoadSceneAdditive(sceneName, type, false);
+	}
 }
