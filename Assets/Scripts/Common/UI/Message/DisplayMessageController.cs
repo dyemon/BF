@@ -54,4 +54,30 @@ public class DisplayMessageController : MonoBehaviour {
 			.AddFadeUIText(null, 0f, FadeTime).Build()
 			.DestroyOnStop(true).Run();
 	}
+
+	public static void DisplayNotEnoughMessage(UserAssetType type) {
+		string t;
+
+		switch(type) {
+		case UserAssetType.Money:
+			t = "бабла";
+			break;
+		case UserAssetType.Mobile:
+			t = "мобилок";
+			break;
+		case UserAssetType.Semka:
+			t = "семак";
+			break;
+		case UserAssetType.Ring:
+			t = "печатак";
+			break;
+		case UserAssetType.Star:
+			t = "звёзд";
+			break;
+		default:
+			throw new System.Exception("Invalid user asset type: " + type);
+		}
+
+		DisplayMessage(string.Format("Не хватает {0}", t));
+	}
 }

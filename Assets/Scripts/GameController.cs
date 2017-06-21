@@ -197,8 +197,8 @@ public class GameController : MonoBehaviour {
 
 		DetectUnavaliableTiles();
 
-
 		UpdateTiles(true);
+
 	}
 	// Update is called once per frame
 	void Update() {

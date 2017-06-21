@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
-using UnityEditor;
+//using UnityEditor;
 
 
 public class SceneController : MonoBehaviour {
@@ -184,6 +184,10 @@ public class SceneController : MonoBehaviour {
 			break;
 		default:
 			throw new System.Exception("Invalid user asset type: " + type);
+		}
+
+		if(showMessage) {
+			DisplayMessageController.DisplayNotEnoughMessage(type);
 		}
 
 		LoadSceneAdditive(sceneName, type, false);

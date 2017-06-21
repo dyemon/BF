@@ -26,6 +26,10 @@ public class LombardScene : WindowScene {
 		buttons.Add(UserAssetType.Mobile, BuyButtons[2]);
 
 		shopData = GameResources.Instance.GetGameData().UserAssetsShopData;
+		currentAsset = (UserAssetType)SceneControllerHelper.instance.GetParameter(SceneName);
+		if(currentAsset == null) {
+			currentAsset = UserAssetType.Money;
+		}
 
 		ToggleUserAsset(currentAsset);
 	}
@@ -85,6 +89,7 @@ public class LombardScene : WindowScene {
 
 	void BuyUserAsset(int count) {
 		if(!GameResources.Instance.Buy(currentAsset, count, false)) {
+			DisplayMessageController.DisplayNotEnoughMessage(UserAssetType.Money);
 			ToggleUserAsset(UserAssetType.Money);
 			return;
 		}

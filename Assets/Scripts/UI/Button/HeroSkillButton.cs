@@ -12,11 +12,11 @@ public class HeroSkillButton : BuyButton<HeroSkillData> {
 
 		base.Init(bg, icon, skill.Name, skill.PricaType, skill.PriceValue, skill, onClickListener);
 
-		Text text = transform.FindChild("Bg/Description").GetComponent<Text>();
+		Text text = transform.Find("Bg/Description").GetComponent<Text>();
 		text.text = skill.Description;
 
-		Image img = transform.FindChild("Result Text").GetComponent<Image>();
-		text = img.transform.FindChild("Text").GetComponent<Text>();
+		Image img = transform.Find("Result Text").GetComponent<Image>();
+		text = img.transform.Find("Text").GetComponent<Text>();
 		if(string.IsNullOrEmpty(skill.ResultText)) {
 			img.enabled = false;
 			text.enabled = false;
