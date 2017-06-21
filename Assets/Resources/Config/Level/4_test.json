@@ -62,7 +62,7 @@
 		},{
       "X": 3, 
       "Y": 3, 
-			"Health": 2,
+	  "Health": 2,
       "TypeAsString": "StaticSlime_1",
 			"ChildTileItemData": {
 					"TypeAsString": "RedEnvelop",
@@ -71,7 +71,7 @@
       },{
       "X": 2, 
       "Y": 3, 
-			"Health": 1,
+	  "Health": 1,
       "TypeAsString": "StaticSlime_1",
 			"ChildTileItemData": {
 					"TypeAsString": "BombP",
@@ -176,5 +176,16 @@
 				"TypeAsString": "Simple",
 				"Count": 2
 			}]
-	}
+	},
+
+	"AutoDropData" : [{
+		"Ratio": 5,
+		"TileItem" : { "TypeAsString": "Mobile" }
+	},{
+		"Ratio": 10,
+		"TileItem" : { "TypeAsString": "Ring" }
+	},{
+		"Ratio": 20,
+		"TileItem" : { "TypeAsString": "Star" }
+	}]
 }

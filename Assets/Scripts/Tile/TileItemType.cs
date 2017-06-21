@@ -51,15 +51,18 @@ public enum TileItemType {
 	Slime = TileItemTypeGroup.SpecialStatic,
 	EnemySkillEater = TileItemTypeGroup.SpecialStatic + 1,
 		
-	Brilliant = TileItemTypeGroup.Special + TileItem.BRILLIANT_OFFSET,
-	Key = TileItemTypeGroup.Special + TileItem.KEY_OFFSET,
-	BombAll = TileItemTypeGroup.Special + TileItem.BOMBALL_OFFSET,
+
 
 	BombH = TileItemTypeGroup.Bomb,
 	BombV = TileItemTypeGroup.Bomb + 1,
 	BombP = TileItemTypeGroup.Bomb + 2,
 	BombC = TileItemTypeGroup.Bomb + 3,
 
+	Mobile = TileItemTypeGroup.Special,
+	Ring = TileItemTypeGroup.Special + 1,
+	Star = TileItemTypeGroup.Special + 2,
+
+	BombAll = TileItemTypeGroup.Special + TileItem.BOMBALL_OFFSET,
 	EnemySkillSimple = TileItemTypeGroup.Special + TileItem.ENEMY_SKILL
 
 

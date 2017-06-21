@@ -7,8 +7,6 @@ public enum TargetType {
 	Blue = TileItemTypeGroup.Blue,
 	Yellow = TileItemTypeGroup.Yellow,
 	Purple = TileItemTypeGroup.Purple,
-	Brilliant = TileItemType.Brilliant,
-	Key = TileItemType.Key,
 	BombAll = TileItemType.BombAll,
 	Box = TileItemTypeGroup.Box,
 	Enemy = TileItemTypeGroup.Special + 1000

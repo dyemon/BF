@@ -13,12 +13,11 @@ public class TileItem {
 	public const int BOMBP_OFFSET = 5;
 	public const int BOMBC_OFFSET = 6;
 
-	public const int BOMBALL_OFFSET = 5;
+	public const int ENEMY_SKILL = 8;
 
-	public const int BRILLIANT_OFFSET = 0;
-	public const int KEY_OFFSET = 1;
+	public const int BOMBALL_OFFSET = 11;
 
-	public const int ENEMY_SKILL = 6;
+
 
 	private TileItemType type;
 	private TileItemTypeGroup typeGroup;
@@ -184,7 +183,7 @@ public class TileItem {
 	}
 
 	public static bool IsSpecialCollectItem(TileItemType type) {
-		return type == TileItemType.Brilliant || type == TileItemType.Key || type == TileItemType.EnemySkillEater || type == TileItemType.EnemySkillSimple;
+		return ((int)type >= (int)TileItemTypeGroup.Special && type < TileItemType.BombAll) || type == TileItemType.EnemySkillEater;
 	}
 	public bool IsSpecialCollect {
 		get { return IsSpecialCollectItem(Type); }
