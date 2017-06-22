@@ -182,7 +182,7 @@
 		"Ratio": 5,
 		"TileItem" : { "TypeAsString": "Mobile" }
 	},{
-		"Ratio": 10,
+		"Ratio": 1,
 		"TileItem" : { "TypeAsString": "Ring" }
 	},{
 		"Ratio": 20,

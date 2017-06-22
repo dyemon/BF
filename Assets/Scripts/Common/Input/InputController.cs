@@ -199,4 +199,13 @@ public class InputController : MonoBehaviour {
 
 		return camera.ScreenPointToRay(Preconditions.NotNull(touch.position)); 
 	}
+
+	public static int GetFingerId() {
+		if(useTouch) {
+			if(Input.touchCount > 0) {
+				return Input.GetTouch(0).fingerId;
+			}
+		}
+		return -1;
+	}
 }

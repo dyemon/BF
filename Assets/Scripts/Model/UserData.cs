@@ -14,6 +14,8 @@ public class UserData {
 	public GoodsType DamageEquipmentType = GoodsType.None;
 	public GoodsType HealthEquipmentType = GoodsType.None;
 
+	public SerializableDictionary<int, LevelSaveData> LevelData = new SerializableDictionary<int, LevelSaveData>();
+
 	public int Health {
 		get { 
 			GoodsData data = GameResources.Instance.GetGameData().GetGoodsData(HealthEquipmentType);
@@ -68,7 +70,7 @@ public class UserData {
 	public void InitDefalt() {
 		Version = 2;
 		Level = 1;
-		Experience = 0;
+		Experience = 1000;
 		OwnHealth = 100;
 		OwnDamage = 10;
 		
@@ -91,6 +93,43 @@ public class UserData {
 
 		return newAsset;
 	}
-	
 
+	private LevelSaveData GetLevelData(int level) {
+		LevelSaveData data;
+		LevelData.TryGetValue(level, out data);
+		if(data == null) {
+			data = new LevelSaveData();
+			LevelData[level] = data;
+		}
+		return data;
+	}
+
+	public bool IncreaseTileItemCollect(int level, TileItemType type) {
+		if(type != TileItemType.Star) {
+			return false;
+		}
+
+		LevelSaveData data = GetLevelData(level);
+		data.StarCollectCount++;
+		return true;
+	}
+
+	public bool CheckTileItemCollect(int level, TileItemType type) {
+		if(type != TileItemType.Star) {
+			return true;
+		}
+
+		LevelSaveData data = GetLevelData(level);
+		return data.StarCollectCount == 0;
+	}
+
+	public void OnSuccessLevel(int level) {
+		LevelSaveData data = GetLevelData(level);
+		data.SuccessCount++;
+	}
+
+	public int GetSuccessCount(int level) {
+		LevelSaveData data = GetLevelData(level);
+		return data.SuccessCount;
+	}
 }

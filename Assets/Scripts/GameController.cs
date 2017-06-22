@@ -146,6 +146,9 @@ public class GameController : MonoBehaviour {
 
 	public BackgroundMS bg;
 
+	public GameObject AwardTileItem;
+	public Canvas canvas;
+
 	void OnEnable() {
 		if(SceneControllerHelper.instance != null) {
 			SceneControllerHelper.instance.onUnloadScene += OnUnloadScene;
@@ -202,9 +205,7 @@ public class GameController : MonoBehaviour {
 	}
 	// Update is called once per frame
 	void Update() {
-		if(EventSystem.current.IsPointerOverGameObject()) {
-			return;
-		}
+
 		ProcessInput();
 	
 	}
@@ -390,6 +391,10 @@ public class GameController : MonoBehaviour {
 		InputController.Touch[] touches = InputController.getTouches();
 
 		if(touches.Length > 0) {
+			if(EventSystem.current.IsPointerOverGameObject(InputController.GetFingerId())) {
+				return;
+			}
+
 			InputController.Touch touch = touches[0];
 			if(!IsTileInputAvaliable) {
 				return;
@@ -829,6 +834,8 @@ public class GameController : MonoBehaviour {
 				slime.Collect();
 			}
 		}
+
+		OnAwardTileItem(tileItem);
 	}
 
 	private void SelectTileItem(Tile tile, bool isSelect, TileItemRenderState unSelectedState = TileItemRenderState.Normal, TileItem transitionTileItem = null) {
@@ -3040,6 +3047,26 @@ public class GameController : MonoBehaviour {
 			FPPanel.UpdateProgressMaxValue(true);
 		}
 			
+	}
+
+	void OnAwardTileItem(TileItem tileItem) {
+		AwardItem award = gameData.GetAward(tileItem.Type);
+		if(award == null) {
+			return;
+		}
+
+		Vector3 start = Camera.main.WorldToScreenPoint(tileItem.GetGameObject().transform.position);
+		Vector3 end = Camera.main.WorldToScreenPoint(Hero.transform.position);
+
+		GameObject animAward = Instantiate(AwardTileItem, canvas.transform);
+		AnimatedObject ao = animAward.AddComponent<AnimatedObject>();
+
+		float speed = App.GetTileItemSpeed(TileItemMoveType.BUY_USERASSET);
+		float time = AMove.CalcTime(start, end, speed);
+
+		ao.AddMove(start, end, speed)//.AddResize(null, new Vector3(0.5f, 0.5f, 1f), time)
+			.OnStop(() => {} )
+			.Build().Run();
 	}
 }
 

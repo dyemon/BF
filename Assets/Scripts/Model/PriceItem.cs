@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class PriceData {
+public class PriceItem {
 	public UserAssetType Type;
 	public string TypeAsString;
 	public int Value;

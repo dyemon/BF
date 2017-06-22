@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 [System.Serializable]
 public class GameData {
@@ -17,8 +18,10 @@ public class GameData {
 	public GoodsData[] GoodsData = new GoodsData[0];
 	public HeroSkillData[] HeroSkillData = new HeroSkillData[0];
 
-	public PriceData[] PriceData;
+	public PriceItem[] PriceData;
 	public UserAssetsShopData UserAssetsShopData;
+
+	public AwardData AwardData;
 
 	public void Init() {
 		/*
@@ -60,9 +63,11 @@ public class GameData {
 			item.init();
 		}
 
-		foreach(PriceData item in PriceData) {
+		foreach(PriceItem item in PriceData) {
 			item.Type = EnumUtill.Parse<UserAssetType>(item.TypeAsString);
 		}
+
+		AwardData.init();
 	}
 
 	public int GetBombRatio(int level) {
@@ -88,12 +93,20 @@ public class GameData {
 	}		
 		
 	public int GetPriceValue(UserAssetType type) {
-		foreach(PriceData item in PriceData) {
+		foreach(PriceItem item in PriceData) {
 			if(item.Type == type) {
 				return item.Value;
 			}
 		}
 
 		throw new System.Exception("Price for " + type.ToString() + " is not define");
+	}
+
+	public AwardItem GetAward(TileItemType type) {
+		AwardTileItemCollectItem res = AwardData.TileItemCollectData.FirstOrDefault<AwardTileItemCollectItem>(i => i.TileItemType == type);
+		if(res == null) {
+			return null;
+		}
+		return new AwardItem() { Type = res.AwardType, Value = res.Count };
 	}
 }

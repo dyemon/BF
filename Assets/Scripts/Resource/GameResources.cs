@@ -8,7 +8,7 @@ using Common.Net.Http;
 public class GameResources {
 	public static GameResources Instance = new GameResources();
 
-	private string currentLevelId = null;
+	private int currentLevelId = 0;
 	private LevelData currentLevelData = null;
 	private GameData gameData = null;
 	private LocalSettingsData localSettings = null;
@@ -25,9 +25,9 @@ public class GameResources {
 		return res;
 	}
 
-	public LevelData GetLevel(string id) {
-		if(currentLevelId == null || currentLevelId != id) {
-			TextAsset aText = Resources.Load(Path.Combine(Path.Combine("Config", "Level"), id)) as TextAsset;
+	public LevelData GetLevel(int id) {
+		if(currentLevelId == 0 || currentLevelId != id) {
+			TextAsset aText = Resources.Load(Path.Combine(Path.Combine("Config", "Level"), id.ToString())) as TextAsset;
 			Preconditions.NotNull(aText, "Can not load level {0}", id);
 			currentLevelData = JsonUtility.FromJson<LevelData>(aText.text);
 			currentLevelData.Init();

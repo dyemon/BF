@@ -20,6 +20,8 @@ public class App {
 		tileItemMoveType.Add(TileItemMoveType.EATER, 10f);
 		tileItemMoveType.Add(TileItemMoveType.HERO_SKILL, 15f);
 		tileItemMoveType.Add(TileItemMoveType.BUY_USERASSET, 1500f);
+		tileItemMoveType.Add(TileItemMoveType.AWARDTILEITEM_1, 150f);
+		tileItemMoveType.Add(TileItemMoveType.AWARDTILEITEM_2, 150f);
 	}
 
 	public static float MoveTileItemTimeUnit {
@@ -36,8 +38,8 @@ public class App {
 		return tileItemMoveType[type];
 	}
 
-	public static string GetCurrentLevel() {
-		return "4_test";
+	public static int GetCurrentLevel() {
+		return 1004;
 	}
 		
 }
