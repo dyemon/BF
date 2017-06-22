@@ -3,6 +3,7 @@
     "Name": "Level 3", 
     "Description": "", 
 	"TileItemDropPercent": [20, 20, 20, 20, 20],
+	"FightLocationTypeAsString": "Rayon5",
     "TileData": [  {
             "X": 0, 
             "Y": 5, 
@@ -18,7 +19,7 @@
         }, {
             "X": 5, 
             "Y": 6, 
-            "TypeAsString": "PurpleEnvelop"
+            "TypeAsString": "Mobile"
         }, {
             "X": 4, 
             "Y": 6, 
@@ -26,7 +27,7 @@
         }, {
             "X": 6, 
             "Y": 6, 
-            "TypeAsString": "YellowEnvelop"
+            "TypeAsString": "Red"
         },{
             "X": 4, 
             "Y": 5, 
@@ -34,7 +35,7 @@
         },{
             "X": 3, 
             "Y": 5, 
-            "TypeAsString": "Blue"
+            "TypeAsString": "Red"
         },{
             "X": 5, 
             "Y": 5, 
@@ -136,5 +137,4 @@
 	"RestrictionData": {
         "Turns": 25
     }
-
 }

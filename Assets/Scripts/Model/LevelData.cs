@@ -8,7 +8,7 @@ public class LevelData {
 	public string Id;
 	public string Name;
 	public string Description;
-	public int SuccessCount = 3;
+	public int SuccessCount = 10;
 	public int SlimeRatio;
 	public int[] TileItemDropPercent;
 

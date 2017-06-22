@@ -179,13 +179,14 @@
 	},
 
 	"AutoDropData" : [{
-		"Ratio": 5,
+		"Ratio": 1,
 		"TileItem" : { "TypeAsString": "Mobile" }
 	},{
 		"Ratio": 1,
 		"TileItem" : { "TypeAsString": "Ring" }
 	},{
-		"Ratio": 20,
+		"Ratio": 1,
 		"TileItem" : { "TypeAsString": "Star" }
 	}]
+
 }

@@ -11,6 +11,8 @@ public class GameController : MonoBehaviour {
 
 	public static GameController Instance;
 
+	public GameObjectResources GameObjectResources;
+
 	public delegate void OnCollectTileItem(TileItem tileItem);
 	public event OnCollectTileItem onCollectTileItem;
 	public delegate void OnMoveComplete();
@@ -1699,6 +1701,7 @@ public class GameController : MonoBehaviour {
 			LevelFailureByColorCount();
 			return;
 		}
+		Debug.Log(group);
 
 		TileItemData[,] data = GenerateTileItemDataFromCurrentTiles();
 		bool validPosition = true;
@@ -1884,12 +1887,16 @@ public class GameController : MonoBehaviour {
 					continue;
 				}
 
+				TileItemType curType = itemData.Type;
+				TileItemTypeGroup? currentTypeGroup = TileItem.IsColorItem(curType) ? 
+					TileItem.TypeToTypeGroup(curType) : (TileItemTypeGroup?)null;
+				
 				Vector2 pos = new Vector2(x, y);
 
 				chain.Clear();
 				chain.Add(pos, null);
 
-				if(CheckTileItemsPositionChain(pos, chain, data)) {
+				if(CheckTileItemsPositionChain(pos, chain, data, currentTypeGroup)) {
 
 					DebugUtill.Log(bestChain);
 					Debug.Log("Check position success " +pos);
@@ -1904,9 +1911,9 @@ public class GameController : MonoBehaviour {
 
 	IDictionary<Vector2, Object> bestChain;
 
-	private bool CheckTileItemsPositionChain(Vector2 pos, IDictionary<Vector2, Object> chain, TileItemData[,] data) {
-		TileItemType type = data[(int)pos.x, (int)pos.y].Type;
-		TileItemTypeGroup typeGroup = TileItem.TypeToTypeGroup(type);
+	private bool CheckTileItemsPositionChain(Vector2 pos, IDictionary<Vector2, Object> chain, TileItemData[,] data, TileItemTypeGroup? currentTypeGroup) {
+	//	TileItemType type = data[(int)pos.x, (int)pos.y].Type;
+	//	TileItemTypeGroup typeGroup = TileItem.TypeToTypeGroup(type);
 
 		for(int x = (int)pos.x - 1; x <= pos.x + 1; x++) {
 			for(int y = (int)pos.y - 1; y <= pos.y + 1; y++) {
@@ -1915,10 +1922,16 @@ public class GameController : MonoBehaviour {
 					continue;
 				}
 				Vector2 curPos = new Vector2(x, y);
-				if(chain.ContainsKey(curPos) || (TileItem.TypeToTypeGroup(itemData.Type) != typeGroup && !TileItem.IsColorIndependedItem(itemData.Type)
-					&& !TileItem.IsColorIndependedItem(type))) {
+				if(chain.ContainsKey(curPos) 
+					|| (
+						currentTypeGroup != null
+						&& TileItem.TypeToTypeGroup(itemData.Type) != currentTypeGroup.Value 
+						&& !TileItem.IsColorIndependedItem(itemData.Type)
+					)) {
 					continue;
 				}
+
+
 
 				if(!CheckAvailabilityWithBarriers((int)pos.x, (int)pos.y, x, y)) {
 					continue;
@@ -1933,7 +1946,11 @@ public class GameController : MonoBehaviour {
 				IDictionary<Vector2, Object> chainNew = new Dictionary<Vector2, Object>(chain);
 				chainNew.Add(curPos, null);
 
-				if(CheckTileItemsPositionChain(curPos, chainNew, data)) {
+				if(currentTypeGroup == null && !TileItem.IsColorIndependedItem(itemData.Type)) {
+					currentTypeGroup = TileItem.TypeToTypeGroup(itemData.Type);
+				}
+
+				if(CheckTileItemsPositionChain(curPos, chainNew, data, currentTypeGroup)) {
 					return true;
 				}
 					
@@ -1943,7 +1960,7 @@ public class GameController : MonoBehaviour {
 						IList<TileItemData> old = ReplaceTileItemsData(replace, data);
 						chainNew = new Dictionary<Vector2, Object>(chain);
 						chainNew.Add(curPos, null);
-						if(CheckTileItemsPositionChain(curPos, chainNew, data)) {
+						if(CheckTileItemsPositionChain(curPos, chainNew, data, currentTypeGroup)) {
 							ReplaceTileItemsData(old, data);
 							return true;
 						}
@@ -3050,6 +3067,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	void OnAwardTileItem(TileItem tileItem) {
+		Debug.Log(tileItem.Type);
 		AwardItem award = gameData.GetAward(tileItem.Type);
 		if(award == null) {
 			return;
@@ -3059,6 +3077,11 @@ public class GameController : MonoBehaviour {
 		Vector3 end = Camera.main.WorldToScreenPoint(Hero.transform.position);
 
 		GameObject animAward = Instantiate(AwardTileItem, canvas.transform);
+		Image img = animAward.transform.Find("Image").gameObject.GetComponent<Image>();
+		img.sprite = GameObjectResources.GetUserAssetIcone(award.Type);
+		Text text = animAward.transform.Find("Text").gameObject.GetComponent<Text>();
+		text.text = award.Value.ToString();
+
 		AnimatedObject ao = animAward.AddComponent<AnimatedObject>();
 
 		float speed = App.GetTileItemSpeed(TileItemMoveType.BUY_USERASSET);
