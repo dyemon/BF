@@ -158,8 +158,8 @@ public class AnimatedObject : MonoBehaviour {
 		return this;
 	}
 
-	public AnimatedObject AddMoveByTime(Vector3? start, Vector3 end, float time, bool ui = false) {
-		AMove a = new AMove(start, end, ui);
+	public AnimatedObject AddMoveByTime(Vector3? start, Vector3 end, float time) {
+		AMove a = new AMove(start, end);
 		a.SetTime(time);
 		getCurrentAnimation().AddAnimation(AnimationType.Move, a);
 		return this;

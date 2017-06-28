@@ -29,7 +29,7 @@ public class HeroSkillScene : WindowScene {
 	}
 
 	public void OnSelectSkill(HeroSkillData skill) {
-		if(!GameResources.Instance.Buy(skill, true)) {
+		if(!GameResources.Instance.Buy(skill)) {
 			return;
 		}
 

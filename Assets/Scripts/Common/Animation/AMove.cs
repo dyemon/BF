@@ -7,7 +7,6 @@ public class AMove : IABase {
 	private Vector3 movePos;
 	private float time;
 	private float speed;
-	private bool ui;
 
 	private float startTime;
 	private float startDurationTime;
@@ -17,16 +16,14 @@ public class AMove : IABase {
 		this.startPos = startPos;
 		this.movePos = movePos;
 		this.speed = speed;
-		this.ui = ui;
 		if(startPos != null) {
 			time = CalcTime(startPos.Value, movePos, speed);
 		}
 	}
 
-	public AMove(Vector3? startPos, Vector3 movePos, bool ui) {
+	public AMove(Vector3? startPos, Vector3 movePos) {
 		this.startPos = startPos;
 		this.movePos = movePos;
-		this.ui = ui;
 	}
 
 	public static float CalcTime(Vector3 startPos, Vector3 movePos, float speed) {
@@ -66,12 +63,8 @@ public class AMove : IABase {
 		time = startDurationTime - delta;
 		float t = (time <= 0)? 1f : delta/startDurationTime;
 
-		if(ui) {
-			RectTransform rt = gameObject.GetComponent<RectTransform>();
-			rt.localPosition = Vector3.Lerp(startPos.Value, movePos, t);
-		} else {
-			gameObject.transform.position = Vector3.Lerp(startPos.Value, movePos, t);
-		}
+		gameObject.transform.position = Vector3.Lerp(startPos.Value, movePos, t);
+
 		isComplete = !(time > 0);
 
 		return (time > 0);

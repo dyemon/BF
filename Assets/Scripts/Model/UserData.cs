@@ -14,8 +14,6 @@ public class UserData {
 	public GoodsType DamageEquipmentType = GoodsType.None;
 	public GoodsType HealthEquipmentType = GoodsType.None;
 
-	public SerializableDictionary<int, LevelSaveData> LevelData = new SerializableDictionary<int, LevelSaveData>();
-
 	public int Health {
 		get { 
 			GoodsData data = GameResources.Instance.GetGameData().GetGoodsData(HealthEquipmentType);
@@ -28,9 +26,11 @@ public class UserData {
 			return OwnDamage  + ((data != null)? data.Damage : 0); 
 		}
 	}
-	
+
 	[SerializeField]
-	private List<UserAssetData> Assets = new List<UserAssetData>();
+	private List<LevelSaveData> levelData = new List<LevelSaveData>();
+	[SerializeField]
+	private List<UserAssetData> assets = new List<UserAssetData>();
 //	[SerializeField]
 	//public List<UserHeroData> HeroesData = new List<UserHeroData>();
 //	[SerializeField]
@@ -58,7 +58,7 @@ public class UserData {
 	}
 
 	public void Init() {
-		foreach(UserAssetData data in Assets) {
+		foreach(UserAssetData data in assets) {
 			data.Init();
 		}
 
@@ -74,33 +74,36 @@ public class UserData {
 		OwnHealth = 100;
 		OwnDamage = 10;
 		
-		Assets.Add(new UserAssetData(UserAssetType.Money, 5));
-		Assets.Add(new UserAssetData(UserAssetType.Semka, 100));
-		Assets.Add(new UserAssetData(UserAssetType.Ring, 10));
-		Assets.Add(new UserAssetData(UserAssetType.Star, 0));
-		Assets.Add(new UserAssetData(UserAssetType.Mobile, 0));
+		assets.Add(new UserAssetData(UserAssetType.Money, 5));
+		assets.Add(new UserAssetData(UserAssetType.Semka, 100));
+		assets.Add(new UserAssetData(UserAssetType.Ring, 10));
+		assets.Add(new UserAssetData(UserAssetType.Star, 0));
+		assets.Add(new UserAssetData(UserAssetType.Mobile, 0));
 	}
 
 	public UserAssetData GetAsset(UserAssetType type) {
-		foreach(UserAssetData data in Assets) {
+		foreach(UserAssetData data in assets) {
 			if(type == data.Type) {
 				return data;
 			}
 		}
 
 		UserAssetData newAsset = new UserAssetData(type, 0);
-		Assets.Add(newAsset);
+		assets.Add(newAsset);
 
 		return newAsset;
 	}
 
 	private LevelSaveData GetLevelData(int level) {
-		LevelSaveData data;
-		LevelData.TryGetValue(level, out data);
-		if(data == null) {
-			data = new LevelSaveData();
-			LevelData[level] = data;
+		for(int i = levelData.Count - 1; i >= 0; i--) {
+			if(levelData[i].Level == level) {
+				return levelData[i];
+			}
 		}
+
+		LevelSaveData data = new LevelSaveData();
+		data.Level = level;
+		levelData.Add(data);
 		return data;
 	}
 

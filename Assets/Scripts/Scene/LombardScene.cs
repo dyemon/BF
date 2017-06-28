@@ -20,13 +20,27 @@ public class LombardScene : WindowScene {
 	private UserAssetsShopData shopData;
 	private UserAssetType currentAsset = UserAssetType.Money;
 
+	private bool isBuy = false;
+
+	void OnEnable() {
+		isBuy = false;
+	}
+
+	void OnDisable() {
+		if(isBuy) {
+			GameResources.Instance.SaveUserData(null, false);
+		}
+	}
+
 	void Start () {
 		buttons.Add(UserAssetType.Money, BuyButtons[0]);
 		buttons.Add(UserAssetType.Ring, BuyButtons[1]);
 		buttons.Add(UserAssetType.Mobile, BuyButtons[2]);
 
 		shopData = GameResources.Instance.GetGameData().UserAssetsShopData;
-		currentAsset = (UserAssetType)SceneControllerHelper.instance.GetParameter(SceneName);
+		if(SceneControllerHelper.instance != null) {
+			currentAsset = (UserAssetType)SceneControllerHelper.instance.GetParameter(SceneName);
+		}
 		if(currentAsset == null) {
 			currentAsset = UserAssetType.Money;
 		}
@@ -88,11 +102,13 @@ public class LombardScene : WindowScene {
 	}
 
 	void BuyUserAsset(int count) {
-		if(!GameResources.Instance.Buy(currentAsset, count, false)) {
+		if(!GameResources.Instance.Buy(currentAsset, count)) {
 			DisplayMessageController.DisplayNotEnoughMessage(UserAssetType.Money);
 			ToggleUserAsset(UserAssetType.Money);
 			return;
 		}
+
+		isBuy = true;
 
 		GameObject assetImg = UnityUtill.FindByName(Offers.transform, "BuyButton" + count)
 			.Find("Icon/Image").gameObject;

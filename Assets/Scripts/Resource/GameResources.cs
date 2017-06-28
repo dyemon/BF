@@ -31,6 +31,7 @@ public class GameResources {
 			Preconditions.NotNull(aText, "Can not load level {0}", id);
 			currentLevelData = JsonUtility.FromJson<LevelData>(aText.text);
 			currentLevelData.Init();
+			currentLevelId = id;
 		}
 	
 		return currentLevelData;
@@ -156,19 +157,7 @@ public class GameResources {
 
 		return settings;
 	}
-
-	public bool SetUserLevel(int level) {
-		UserData data = GetUserData();
-
-		if(level != data.Level + 1) {
-			return false;
-		}
-
-		data.Level++;
-		saveUserDataLocal(data);
-
-		return true;
-	}
+		
 
 	public bool ChangeUserAsset(UserAssetType type, int value) {
 		UserData userData = GetUserData();
@@ -215,7 +204,7 @@ public class GameResources {
 		PlayerPrefs.Save();
 	}
 
-	public bool Buy(UserAssetType type, int count, bool showUserAssetsScene) {
+	public bool Buy(UserAssetType type, int count) {
 		if(type != UserAssetType.Money) {
 			GameData gData = GetGameData();
 			int val = gData.GetPriceValue(type);
@@ -226,19 +215,28 @@ public class GameResources {
 		}
 
 		ChangeUserAsset(type, count);
-		SaveUserData(null, true);
+	//	SaveUserData(null, type == UserAssetType.Money);
 
 		return true;
 	}
 
-	public bool Buy(HeroSkillData skill, bool showUserAssetsScene) {
+	public bool Buy(HeroSkillData skill) {
 		if(!ChangeUserAsset(skill.PricaType, -skill.PriceValue)) {
-			if(showUserAssetsScene) {
-				SceneController.Instance.ShowUserAssetsScene(skill.PricaType, true);
-			}
+			SceneController.Instance.ShowUserAssetsScene(skill.PricaType, true);
 			return false;
 		}
-		SaveUserData(null, true);
+		SaveUserData(null, false);
 		return true;
+	}
+
+	public void IncreaseTileItemCollect(TileItemType type, int level) {
+		if(type != TileItemType.Star) {
+			return;
+		}
+
+		UserData data = GetUserData();
+		data.IncreaseTileItemCollect(level, type);
+
+		saveUserDataLocal(data);
 	}
 }

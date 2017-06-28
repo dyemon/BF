@@ -26,8 +26,8 @@ public class DisplayMessageController : MonoBehaviour {
 	}
 
 	private void init() {
-		Vector3 pos = DisplayText.GetComponent<RectTransform>().localPosition;
-		endPos = new Vector3(pos.x, EndDispalyMessagePosition.GetComponent<RectTransform>().localPosition.y, pos.z);
+		Vector3 pos = DisplayText.transform.position;
+		endPos = new Vector3(pos.x, EndDispalyMessagePosition.transform.position.y, pos.z);
 	}
 
 	public static void DisplayMessage(string message, Color color) {
@@ -44,13 +44,13 @@ public class DisplayMessageController : MonoBehaviour {
 
 		text.transform.SetParent(c.transform);
 		text.transform.localScale = new Vector3(1, 1, 1);
-		text.transform.position = DisplayText.GetComponent<RectTransform>().localPosition;
+		text.transform.position = DisplayText.transform.position;
 
 		text.text = message;
 		text.color = color;
 
 		AnimatedObject ao = text.GetComponent<AnimatedObject>();
-		ao.AddMove(null, endPos, MoveSpeed, true).Build()
+		ao.AddMove(null, endPos, MoveSpeed).Build()
 			.AddFadeUIText(null, 0f, FadeTime).Build()
 			.DestroyOnStop(true).Run();
 	}

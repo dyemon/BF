@@ -202,7 +202,11 @@
 
 	"AwardData": {
 		"TileItemCollectData": [
-			 {"TileItemTypeAsString": "Mobile", "AwardTypeAsString": "Mobile", "Count": 1}
+			 {"TileItemTypeAsString": "Mobile", "AwardTypeAsString": "Mobile", "Count": 1},
+			 {"TileItemTypeAsString": "Ring", "AwardTypeAsString": "Ring", "Count": 1},
+			 {"TileItemTypeAsString": "Star", "AwardTypeAsString": "Star", "Count": 1},
+			 {"TileItemTypeAsString": "EnemySkillSimple", "AwardTypeAsString": "Money", "Count":2},
+			 {"TileItemTypeAsString": "EnemySkillEater", "AwardTypeAsString": "Semka", "Count": 2}
 		]
 	}
 }

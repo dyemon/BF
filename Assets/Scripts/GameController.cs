@@ -151,6 +151,8 @@ public class GameController : MonoBehaviour {
 	public GameObject AwardTileItem;
 	public Canvas canvas;
 
+	private bool saveUserData = false;
+
 	void OnEnable() {
 		if(SceneControllerHelper.instance != null) {
 			SceneControllerHelper.instance.onUnloadScene += OnUnloadScene;
@@ -161,6 +163,8 @@ public class GameController : MonoBehaviour {
 		if(SceneControllerHelper.instance != null) {
 			SceneControllerHelper.instance.onUnloadScene -= OnUnloadScene;
 		}
+
+		GameResources.Instance.SaveUserData(null, true);
 	}
 
 	void Awake() {
@@ -292,8 +296,9 @@ public class GameController : MonoBehaviour {
 			return InstantiateTileItem(itemData.Type, 0, -10, true);
 		}
 
+		UserData userData = GameResources.Instance.GetUserData();
 		itemData = autoDropTileItems.GetDropeItem();
-		if(itemData != null) {
+		if(itemData != null && userData.CheckTileItemCollect(App.GetCurrentLevel(), itemData.Type)) {
 			return InstantiateTileItem(itemData.Type, 0, -10, true);
 		}
 
@@ -995,7 +1000,7 @@ public class GameController : MonoBehaviour {
 		for(int x = 0; x < numColumns; x++) {
 			for(int y = 0; y < numRows; y++) {
 				Tile tile = tiles[x, y];
-				if(tile.GetTileItem() == null || selectedTiles.Contains(tile)) {
+				if(tile.GetTileItem() == null || selectedTiles.Contains(tile) || specialSelectedTiles.Contains(tile)) {
 					continue;
 				}
 				TileItem tileItem = tile.GetTileItem().GetChildTileItem() != null? tile.GetTileItem().GetChildTileItem() : tile.GetTileItem();
@@ -3067,14 +3072,16 @@ public class GameController : MonoBehaviour {
 	}
 
 	void OnAwardTileItem(TileItem tileItem) {
-		Debug.Log(tileItem.Type);
 		AwardItem award = gameData.GetAward(tileItem.Type);
 		if(award == null) {
 			return;
 		}
 
 		Vector3 start = Camera.main.WorldToScreenPoint(tileItem.GetGameObject().transform.position);
-		Vector3 end = Camera.main.WorldToScreenPoint(Hero.transform.position);
+		Vector3 end =  Camera.main.WorldToScreenPoint(Hero.transform.position + new Vector3(0f, 0.5f, 0f));
+		Vector3 direction = (end - start).normalized;
+		float dist = Vector3.Distance(start, end);
+		Vector3 end1 = start + direction * dist * 0.05f;
 
 		GameObject animAward = Instantiate(AwardTileItem, canvas.transform);
 		Image img = animAward.transform.Find("Image").gameObject.GetComponent<Image>();
@@ -3082,14 +3089,25 @@ public class GameController : MonoBehaviour {
 		Text text = animAward.transform.Find("Text").gameObject.GetComponent<Text>();
 		text.text = award.Value.ToString();
 
-		AnimatedObject ao = animAward.AddComponent<AnimatedObject>();
+		AnimatedObject ao = animAward.GetComponent<AnimatedObject>();
 
-		float speed = App.GetTileItemSpeed(TileItemMoveType.BUY_USERASSET);
-		float time = AMove.CalcTime(start, end, speed);
+		float speed1 = App.GetTileItemSpeed(TileItemMoveType.AWARDTILEITEM_1);
+		float time1 = AMove.CalcTime(start, end1, speed1);
+		float speed2 = App.GetTileItemSpeed(TileItemMoveType.AWARDTILEITEM_2);
+		float time2 = AMove.CalcTime(end1, end, speed2);
 
-		ao.AddMove(start, end, speed)//.AddResize(null, new Vector3(0.5f, 0.5f, 1f), time)
-			.OnStop(() => {} )
-			.Build().Run();
+		ao.AddMove(start, end1, speed1).AddResize(null, new Vector3(1.7f, 1.7f, 1f), time1).Build()
+			.AddIdle(0.2f).Build()
+			.AddMove(null, end, speed2).AddResize(null, new Vector3(1f, 1f, 1f), time2)
+			.OnStop(() => {} ).Build()
+			.Run();
+
+		Destroy(animAward, time1 + time2 + 0.3f);
+
+		GameResources.Instance.ChangeUserAsset(award.Type, award.Value);
+		GameResources.Instance.IncreaseTileItemCollect(tileItem.Type, App.GetCurrentLevel());
+
+	//	saveUserData = true;
 	}
 }
 
