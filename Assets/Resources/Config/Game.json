@@ -100,7 +100,7 @@
 			"TypeAsString": "Damage1",
 			"Damage":	10,
 			"MinExperience": 70,
-			"PriceTypeAsString": "Money",
+			"PriceTypeAsString": "Semka",
 			"PriceValue": 70
 		},{
 			"Name": "Удар с ноги ",
@@ -108,7 +108,7 @@
 			"TypeAsString": "Damage2",
 			"Damage":	100,
 			"MinExperience": 70,
-			"PriceTypeAsString": "Mobile",
+			"PriceTypeAsString": "Semka",
 			"PriceValue": 70
 		},{
 			"Name": "Двойной удар",
@@ -116,7 +116,7 @@
 			"TypeAsString": "Damage3",
 			"Damage":	200,
 			"MinExperience": 70,
-			"PriceTypeAsString": "Ring",
+			"PriceTypeAsString": "Semka",
 			"PriceValue": 70
 		},{
 			"Name": "Песок в глаза",

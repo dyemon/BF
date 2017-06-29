@@ -3088,6 +3088,7 @@ public class GameController : MonoBehaviour {
 		img.sprite = GameObjectResources.GetUserAssetIcone(award.Type);
 		Text text = animAward.transform.Find("Text").gameObject.GetComponent<Text>();
 		text.text = award.Value.ToString();
+	//	text.color = award.Type.ToColor();
 
 		AnimatedObject ao = animAward.GetComponent<AnimatedObject>();
 

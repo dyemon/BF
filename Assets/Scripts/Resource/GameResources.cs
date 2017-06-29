@@ -8,6 +8,9 @@ using Common.Net.Http;
 public class GameResources {
 	public static GameResources Instance = new GameResources();
 
+	public delegate void OnUpdateUserAsset(UserAssetType type, int value);
+	public event OnUpdateUserAsset onUpdateUserAsset;
+
 	private int currentLevelId = 0;
 	private LevelData currentLevelData = null;
 	private GameData gameData = null;
@@ -164,7 +167,7 @@ public class GameResources {
 		if(!ChangeUserAsset(userData, type, value)) {
 			return false;
 		}
-
+			
 		return true;
 	}
 
@@ -177,6 +180,10 @@ public class GameResources {
 		}
 		asset.Value = newVal;
 		saveUserDataLocal(data);
+
+		if(onUpdateUserAsset != null) {
+			onUpdateUserAsset(type, value);
+		}
 
 		return true;
 	}
