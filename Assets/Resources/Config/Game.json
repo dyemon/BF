@@ -5,7 +5,7 @@
 			"Health": 0,
 			"Damage": 10,
 			"MinExperience": 10,
-			"PriceTypeAsString": "Semka",
+			"PriceTypeAsString": "Energy",
 			"PriceValue": 10
 	},{
 			"TypeAsString":	"Gruzilo",
@@ -100,7 +100,7 @@
 			"TypeAsString": "Damage1",
 			"Damage":	10,
 			"MinExperience": 70,
-			"PriceTypeAsString": "Semka",
+			"PriceTypeAsString": "Energy",
 			"PriceValue": 70
 		},{
 			"Name": "Удар с ноги ",
@@ -108,7 +108,7 @@
 			"TypeAsString": "Damage2",
 			"Damage":	100,
 			"MinExperience": 70,
-			"PriceTypeAsString": "Semka",
+			"PriceTypeAsString": "Energy",
 			"PriceValue": 70
 		},{
 			"Name": "Двойной удар",
@@ -116,7 +116,7 @@
 			"TypeAsString": "Damage3",
 			"Damage":	200,
 			"MinExperience": 70,
-			"PriceTypeAsString": "Semka",
+			"PriceTypeAsString": "Energy",
 			"PriceValue": 70
 		},{
 			"Name": "Песок в глаза",
@@ -179,7 +179,7 @@
 		}],
 
 	"PriceData": [{
-			"TypeAsString": "Semka",
+			"TypeAsString": "Energy",
 			"Value":	1
 		},{
 			"TypeAsString": "Mobile",
@@ -194,9 +194,9 @@
 
 	"UserAssetsShopData": {
 			"Money": [10, 20, 50, 100, 200],
-			"Semka": [10, 20, 50, 100, 200],
-			"Ring": [10, 20, 50, 100, 200],
-			"Mobile": [10, 20, 50, 100, 200],
+			"Energy": [10, 20, 50, 100],
+			"Ring": [15, 25, 50, 150, 200],
+			"Mobile": [5, 10, 20, 50, 100],
 			"Star": [10, 20, 50, 100, 200]
 		},
 
@@ -206,7 +206,7 @@
 			 {"TileItemTypeAsString": "Ring", "AwardTypeAsString": "Ring", "Count": 1},
 			 {"TileItemTypeAsString": "Star", "AwardTypeAsString": "Star", "Count": 1},
 			 {"TileItemTypeAsString": "EnemySkillSimple", "AwardTypeAsString": "Money", "Count":2},
-			 {"TileItemTypeAsString": "EnemySkillEater", "AwardTypeAsString": "Semka", "Count": 2}
+			 {"TileItemTypeAsString": "EnemySkillEater", "AwardTypeAsString": "Energy", "Count": 2}
 		]
 	}
 }

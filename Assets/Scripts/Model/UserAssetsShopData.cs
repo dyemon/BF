@@ -7,6 +7,6 @@ public class UserAssetsShopData {
 	public int[] Money;
 	public int[] Ring;
 	public int[] Mobile;
-	public int[] Semka;
+	public int[] Energy;
 	public int[] Star;
 }

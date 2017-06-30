@@ -3,7 +3,7 @@ using UnityEngine;
 
 
 public enum UserAssetType {
-	Money, Semka, Mobile, Ring, Star
+	Money, Energy, Mobile, Ring, Star
 }
 
 static class UserAssetTypeExtension {
@@ -12,7 +12,7 @@ static class UserAssetTypeExtension {
 		switch (type) {
 		case UserAssetType.Money:
 			return new Color(0.7f, 1, 0.7f); //179 255 179
-		case UserAssetType.Semka:
+		case UserAssetType.Energy:
 			return new Color(1, 1, 1);
 		case UserAssetType.Ring:
 			return new Color(1f, 0.84f, 0f);  // 255 214 0 

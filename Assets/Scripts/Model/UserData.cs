@@ -75,7 +75,7 @@ public class UserData {
 		OwnDamage = 10;
 		
 		assets.Add(new UserAssetData(UserAssetType.Money, 5));
-		assets.Add(new UserAssetData(UserAssetType.Semka, 100));
+		assets.Add(new UserAssetData(UserAssetType.Energy, 100));
 		assets.Add(new UserAssetData(UserAssetType.Ring, 10));
 		assets.Add(new UserAssetData(UserAssetType.Star, 0));
 		assets.Add(new UserAssetData(UserAssetType.Mobile, 0));

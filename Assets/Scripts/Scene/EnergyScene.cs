@@ -4,18 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 
-public class LombardScene : WindowScene {
-	public static string SceneName = "Lombard";
+public class EnergyScene : WindowScene {
+	public static string SceneName = "Energy";
 
+	public Sprite[] EnergyIcons;
 	public RectTransform Offers;
 	public string BuyButtonTag;
-	public ToggleGroup UserAssetTypeToggleGroup;
 	public UserDataPanel userDataPanel;
 
-	public GameObject[] BuyButtons;
+	public GameObject BuyButtons;
 
-	private IDictionary<UserAssetType, GameObject> buttons = new Dictionary<UserAssetType, GameObject>();
-	private IDictionary<string, UserAssetType> toggleNames = new Dictionary<string, UserAssetType>();
 
 	private UserAssetsShopData shopData;
 	private UserAssetType currentAsset = UserAssetType.Money;
@@ -33,9 +31,6 @@ public class LombardScene : WindowScene {
 	}
 
 	void Start () {
-		buttons.Add(UserAssetType.Money, BuyButtons[0]);
-		buttons.Add(UserAssetType.Ring, BuyButtons[1]);
-		buttons.Add(UserAssetType.Mobile, BuyButtons[2]);
 
 		shopData = GameResources.Instance.GetGameData().UserAssetsShopData;
 		if(SceneControllerHelper.instance != null) {
@@ -45,22 +40,14 @@ public class LombardScene : WindowScene {
 			currentAsset = UserAssetType.Money;
 		}
 
-		ToggleUserAsset(currentAsset);
+		UpdateOffers();
 	}
 	
 	void UpdateOffers() {
-		UnityUtill.DestroyByTag(Offers.transform, BuyButtonTag);
 		GameData gameData = GameResources.Instance.GetGameData();
-		int[] offers = shopData.Money;
-		if(currentAsset == UserAssetType.Mobile) {
-			offers = shopData.Mobile;
-		} else if(currentAsset == UserAssetType.Ring) {
-			offers = shopData.Ring;
-		}
 
-		foreach(int count in offers) {
+		foreach(int count in shopData.Energy) {
 			GameObject button = GetButtonPrefab();
-			button.transform.tag = BuyButtonTag;
 
 			UnityUtill.FindByName(button.transform, "Purchase Count").GetComponent<Text>().text = count.ToString();
 			Transform priceTr = UnityUtill.FindByName(button.transform, "Price Text");
@@ -76,28 +63,12 @@ public class LombardScene : WindowScene {
 		}
 	}
 
-	void ToggleUserAsset(UserAssetType type) {
-		GameObject obj = GameObject.Find(type.ToString());
-		Toggle tg =	obj.GetComponent<Toggle>();
-		tg.isOn = true;
-	}
 
 	GameObject GetButtonPrefab() {
-		GameObject button = buttons[currentAsset];
-
-		return Instantiate(button);
+		return Instantiate(BuyButtons);
 	}
 
-	public void OnChangeCurrentUserAsset(bool selected) {
-		if(!selected) {
-			return;
-		}
 
-		string name = UserAssetTypeToggleGroup.ActiveToggles().FirstOrDefault().name;
-		currentAsset = EnumUtill.Parse<UserAssetType>(name);
-
-		UpdateOffers();
-	}
 
 	void OnClickBuy(int count) {
 	//	if(currentAsset == UserAssetType.Money) {
@@ -110,7 +81,6 @@ public class LombardScene : WindowScene {
 	void BuyUserAsset(int count) {
 		if(!GameResources.Instance.Buy(currentAsset, count)) {
 			DisplayMessageController.DisplayNotEnoughMessage(UserAssetType.Money);
-			ToggleUserAsset(UserAssetType.Money);
 			return;
 		}
 

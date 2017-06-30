@@ -65,7 +65,7 @@ public class DisplayMessageController : MonoBehaviour {
 		case UserAssetType.Mobile:
 			t = "мобилок";
 			break;
-		case UserAssetType.Semka:
+		case UserAssetType.Energy:
 			t = "семак";
 			break;
 		case UserAssetType.Ring:
