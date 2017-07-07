@@ -10,7 +10,7 @@ public class EnergyScene : WindowScene {
 	public Sprite[] EnergyIcons;
 	public RectTransform Offers;
 	public string BuyButtonTag;
-	public UserDataPanel userDataPanel;
+	public UserAssetsPanel userDataPanel;
 
 	public GameObject BuyButtons;
 

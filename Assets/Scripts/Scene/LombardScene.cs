@@ -10,7 +10,7 @@ public class LombardScene : WindowScene {
 	public RectTransform Offers;
 	public string BuyButtonTag;
 	public ToggleGroup UserAssetTypeToggleGroup;
-	public UserDataPanel userDataPanel;
+	public UserAssetsPanel userDataPanel;
 
 	public GameObject[] BuyButtons;
 
