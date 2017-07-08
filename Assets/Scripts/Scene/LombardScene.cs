@@ -33,13 +33,18 @@ public class LombardScene : WindowScene {
 	}
 
 	void Start () {
+		userDataPanel.SetCurrentScene(SceneName, this);
+
 		buttons.Add(UserAssetType.Money, BuyButtons[0]);
 		buttons.Add(UserAssetType.Ring, BuyButtons[1]);
 		buttons.Add(UserAssetType.Mobile, BuyButtons[2]);
 
 		shopData = GameResources.Instance.GetGameData().UserAssetsShopData;
 		if(SceneControllerHelper.instance != null) {
-			currentAsset = (UserAssetType)SceneControllerHelper.instance.GetParameter(SceneName);
+			System.Object param = SceneControllerHelper.instance.GetParameter(SceneName);
+			if(param != null) {
+				currentAsset = (UserAssetType)param;
+			}
 		}
 		if(currentAsset == null) {
 			currentAsset = UserAssetType.Money;

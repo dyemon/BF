@@ -15,6 +15,20 @@ public class UserAssetsPanel : MonoBehaviour {
 	public RectTransform RightAssets;
 	public RectTransform RightButton;
 
+	private string currentSceneName;
+	private WindowScene currentScene;
+	public GameObject InfinityEnergy;
+
+	void OnEnable() {
+		GameResources.Instance.onUpdateUserAsset += OnUpdateUserAssets;
+		GameResources.Instance.onUpdateInfinityEnergy += OnUpdateInfinityEnergy;
+	}
+
+	void OnDisable() {
+		GameResources.Instance.onUpdateUserAsset -= OnUpdateUserAssets;
+		GameResources.Instance.onUpdateInfinityEnergy -= OnUpdateInfinityEnergy;
+	}
+
 	void Start () {
 		UserData userData = GameResources.Instance.GetUserData();
 
@@ -30,7 +44,19 @@ public class UserAssetsPanel : MonoBehaviour {
 		}
 
 		ExperienceText.text = userData.Experience.ToString();
+		UpdateInfinityEnergy(0);
 	//	StartCoroutine(AlignButtons());
+	}
+
+	public void SetCurrentScene(string name, WindowScene scene) {
+		currentSceneName = name;
+		currentScene = scene;
+
+		if(name == LombardScene.SceneName && RightButton != null) {
+			RightButton.GetComponent<Button>().interactable = false;
+		}else if(name == EnergyScene.SceneName && LeftButton != null) {
+			LeftButton.GetComponent<Button>().interactable = false;
+		}
 	}
 
 	public GameObject GetUserAssetsIcon(UserAssetType type) {
@@ -42,11 +68,8 @@ public class UserAssetsPanel : MonoBehaviour {
 		return UnityUtill.FindByName(gameObject.transform, name);
 	}
 
-	IEnumerator AlignButtons() {
-		yield return new WaitForEndOfFrame();
-		yield return new WaitForEndOfFrame();
-	//		yield return new WaitForFixedUpdate();
-		Vector3 pos = new Vector3(RightAssets.localPosition.x - RightAssets.rect.width - 30, RightAssets.localPosition.y);
+	void AlignButtons() {
+		Vector3 pos = new Vector3(RightAssets.localPosition.x - RightAssets.rect.width, RightAssets.localPosition.y);
 		RightButton.transform.localPosition = pos;
 		pos = new Vector3(LeftAssets.localPosition.x + LeftAssets.rect.width + 30, LeftAssets.localPosition.y);
 	//	Debug.Log(LeftAssets.rect.width);
@@ -61,10 +84,75 @@ public class UserAssetsPanel : MonoBehaviour {
 			Text text = GetUserAssetItem(type).Find("Text").GetComponent<Text>();
 			text.text = userData.GetAsset(type).Value.ToString();
 		}
+
+	//	LayoutRebuilder.ForceRebuildLayoutImmediate(GetComponent<RectTransform>());
 	//	StartCoroutine(AlignButtons());
 	}
+		
 
-	void Update() {
-	//	AlignButtons();
+	void OnUpdateUserAssets(UserAssetType type, int value) {
+		if(!string.IsNullOrEmpty(currentSceneName)) {
+			if(currentSceneName == LombardScene.SceneName &&
+			   (type == UserAssetType.Money || type == UserAssetType.Mobile || type == UserAssetType.Ring)) {
+				return;
+			}
+			if(currentSceneName == EnergyScene.SceneName &&
+				(type == UserAssetType.Energy )) {
+				return;
+			}
+		}
+
+		UserData userData = GameResources.Instance.GetUserData();
+		Text text = GetUserAssetItem(type).Find("Text").GetComponent<Text>();
+		text.text = userData.GetAsset(type).Value.ToString();
+	}
+
+	public bool UpdateInfinityEnergy(int decreaseValue) {
+		UserData uData = GameResources.Instance.GetUserData();
+		uData.DecresaeInfinityEnergy(decreaseValue);
+
+		if(uData.InfinityEnergyDuration > 0) {
+			InfinityEnergy.SetActive(true);
+			Text time = InfinityEnergy.transform.Find("Text").GetComponent<Text>();
+			time.text = DateTimeUtill.FormatMinutes(uData.InfinityEnergyDuration);
+			return true;
+		} else {
+			InfinityEnergy.SetActive(false);
+			return false;
+		}
+	}
+
+	public void OnUpdateInfinityEnergy(int value) {
+		if(!string.IsNullOrEmpty(currentSceneName) && currentSceneName == EnergyScene.SceneName) {
+			return;
+		}
+
+		UserData userData = GameResources.Instance.GetUserData();
+		Text text = GetUserAssetItem(UserAssetType.Money).Find("Text").GetComponent<Text>();
+		text.text = userData.GetAsset(UserAssetType.Money).Value.ToString();
+
+		UpdateInfinityEnergy(0);
+	}
+
+	public void OnLombardClick() {
+		if(!string.IsNullOrEmpty(currentSceneName) && currentScene != null) {
+			if(currentSceneName == EnergyScene.SceneName && SceneController.Instance.IsSceneEist(LombardScene.SceneName)) {
+				currentScene.Close();
+				return;
+			}
+		}
+
+		SceneController.Instance.LoadSceneAdditive(LombardScene.SceneName);
+	}
+
+	public void OnEnergyClick() {
+		if(!string.IsNullOrEmpty(currentSceneName) && currentScene != null) {
+			if(currentSceneName == LombardScene.SceneName && SceneController.Instance.IsSceneEist(EnergyScene.SceneName)) {
+				currentScene.Close();
+				return;
+			}
+		}
+
+		SceneController.Instance.LoadSceneAdditive(EnergyScene.SceneName);
 	}
 }

@@ -14,6 +14,12 @@ public class UserData {
 	public GoodsType DamageEquipmentType = GoodsType.None;
 	public GoodsType HealthEquipmentType = GoodsType.None;
 
+	public long StartTimestamp;
+	public long LastSavedTimestamp;
+
+	public long StartInfinityEnergyTimestamp;
+	public int InfinityEnergyDuration;
+
 	public int Health {
 		get { 
 			GoodsData data = GameResources.Instance.GetGameData().GetGoodsData(HealthEquipmentType);
@@ -58,6 +64,7 @@ public class UserData {
 	}
 
 	public void Init() {
+		
 		foreach(UserAssetData data in assets) {
 			data.Init();
 		}
@@ -75,10 +82,46 @@ public class UserData {
 		OwnDamage = 10;
 		
 		assets.Add(new UserAssetData(UserAssetType.Money, 5));
-		assets.Add(new UserAssetData(UserAssetType.Energy, 100));
+		assets.Add(new UserAssetData(UserAssetType.Energy, 20));
 		assets.Add(new UserAssetData(UserAssetType.Ring, 10));
 		assets.Add(new UserAssetData(UserAssetType.Star, 0));
 		assets.Add(new UserAssetData(UserAssetType.Mobile, 0));
+
+		StartTimestamp = DateTimeUtill.ConvertToUnixTimestamp(DateTime.Now);
+		LastSavedTimestamp = StartTimestamp;
+
+	//	StartInfinityEnergyTimestamp = 0;
+		InfinityEnergyDuration = 0;
+	}
+
+	public void InitOnStart() {
+		InitTimestampOnStart();
+	}
+
+	public void Merge(UserData uData) {
+		InitTimestampOnStart();
+	}
+
+	public void InitTimestampOnStart() {
+		StartTimestamp = GetCurrentTimestamp();
+
+		if(InfinityEnergyDuration > 0) {
+			InfinityEnergyDuration -= (int)Math.Round((StartTimestamp - LastSavedTimestamp)/60f);
+		}
+		if(InfinityEnergyDuration <= 0) {
+			ResetInfinityEnergy();
+		}
+
+		GameData gData = GameResources.Instance.GetGameData();
+		EnergyData eData = gData.EnergyData;
+
+		UserAssetData energy = GetAsset(UserAssetType.Energy);
+		if(energy.Value < eData.MaxIncreaseCount) {
+			energy.Value +=  (int)Math.Round((StartTimestamp - LastSavedTimestamp)/(60f * eData.IncreaseTimeOffline));
+			if(energy.Value > eData.MaxIncreaseCount) {
+				energy.Value = eData.MaxIncreaseCount;
+			}
+		}
 	}
 
 	public UserAssetData GetAsset(UserAssetType type) {
@@ -134,5 +177,30 @@ public class UserData {
 	public int GetSuccessCount(int level) {
 		LevelSaveData data = GetLevelData(level);
 		return data.SuccessCount;
+	}
+
+	public long GetCurrentTimestamp() {
+		long now = DateTimeUtill.ConvertToUnixTimestamp(DateTime.Now);
+		return now > LastSavedTimestamp ? now : LastSavedTimestamp;
+	}
+
+	public void AddInfinityEnergy(int duration) {
+		InfinityEnergyDuration += duration;
+	}
+
+	public void ResetInfinityEnergy() {
+	//	StartInfinityEnergyTimestamp = 0;
+		InfinityEnergyDuration = 0;
+	}
+
+	public void DecresaeInfinityEnergy(int value) {
+		InfinityEnergyDuration -= value;
+		if(InfinityEnergyDuration <= 0) {
+			ResetInfinityEnergy();
+		}
+	}
+
+	public void UpdateLastSaved() {
+		LastSavedTimestamp = GetCurrentTimestamp();
 	}
 }

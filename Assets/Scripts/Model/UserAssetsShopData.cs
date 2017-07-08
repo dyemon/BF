@@ -9,4 +9,5 @@ public class UserAssetsShopData {
 	public int[] Mobile;
 	public int[] Energy;
 	public int[] Star;
+	public int[] InfinityEnergy;
 }

@@ -23,6 +23,8 @@ public class GameData {
 
 	public AwardData AwardData;
 
+	public EnergyData EnergyData;
+
 	public void Init() {
 		/*
 		HeroData["redHBomb"] = new HeroData(TileItemType.RedBombH, 5);

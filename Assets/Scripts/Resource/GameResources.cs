@@ -11,6 +11,9 @@ public class GameResources {
 	public delegate void OnUpdateUserAsset(UserAssetType type, int value);
 	public event OnUpdateUserAsset onUpdateUserAsset;
 
+	public delegate void OnUpdateInfinityEnergy(int value);
+	public event OnUpdateInfinityEnergy onUpdateInfinityEnergy;
+
 	private int currentLevelId = 0;
 	private LevelData currentLevelData = null;
 	private GameData gameData = null;
@@ -49,6 +52,7 @@ public class GameResources {
 			} else {
 				string json = StringCipher.Decrypt(data, getKey());
 				uData = JsonUtility.FromJson<UserData>(json);
+				uData.InitOnStart();
 			}
 			uData.Init();
 	//	if(Application.isEditor) {
@@ -69,6 +73,7 @@ public class GameResources {
 	}
 	
 	private void saveUserDataLocal(UserData userData) {
+		userData.UpdateLastSaved();
 		string json = JsonUtility.ToJson(userData);
 		this.userData = B64X.Encode(json);
 	}
@@ -101,6 +106,7 @@ public class GameResources {
 			if(Application.isEditor) {
 				data.InitTest();
 			}
+			data.Merge(userData);
 			this.userData = B64X.Encode((JsonUtility.ToJson(data)));
 			SaveUserData(userData, false);
 		} else if(data.Version < userData.Version) {
@@ -111,6 +117,7 @@ public class GameResources {
 	public void SaveUserData(UserData data, bool saveToServer) {
 		if(data == null) {
 			data = GetUserData();
+			data.UpdateLastSaved();
 		} else {
 			saveUserDataLocal(data);
 		}
@@ -211,6 +218,17 @@ public class GameResources {
 		PlayerPrefs.Save();
 	}
 
+	public void IncreaseTileItemCollect(TileItemType type, int level) {
+		if(type != TileItemType.Star) {
+			return;
+		}
+
+		UserData data = GetUserData();
+		data.IncreaseTileItemCollect(level, type);
+
+		saveUserDataLocal(data);
+	}
+
 	public bool Buy(UserAssetType type, int count) {
 		if(type != UserAssetType.Money) {
 			GameData gData = GetGameData();
@@ -236,14 +254,23 @@ public class GameResources {
 		return true;
 	}
 
-	public void IncreaseTileItemCollect(TileItemType type, int level) {
-		if(type != TileItemType.Star) {
-			return;
+	public bool BuyInfinityEnergy(int count) {
+		GameData gData = GetGameData();
+		UserData uData = GetUserData();
+
+		if(!ChangeUserAsset(uData, UserAssetType.Money, -gData.EnergyData.InfinityPrice * count)) {
+			return false;
 		}
 
-		UserData data = GetUserData();
-		data.IncreaseTileItemCollect(level, type);
+		uData.AddInfinityEnergy(count * 60);
+		saveUserDataLocal(uData);
 
-		saveUserDataLocal(data);
+		if(onUpdateInfinityEnergy != null) {
+			onUpdateInfinityEnergy(uData.InfinityEnergyDuration);
+		}
+
+		return true;
 	}
+
+
 }

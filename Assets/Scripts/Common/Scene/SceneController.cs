@@ -68,10 +68,10 @@ public class SceneController : MonoBehaviour {
 			}
 			loaddedScenes.Add(name);
 			SceneManager.SetActiveScene(SceneManager.GetSceneByName(name));
-		}else if(unloadOther) {
+		} else if(unloadOther) {
 			Clear();
 			loaddedScenes.Add(name);
-		}
+		} 
 
 		parameters[name] = param;
 	}
@@ -81,10 +81,18 @@ public class SceneController : MonoBehaviour {
 
 	}
 
+	public bool IsSceneEist(string name) {
+		return loaddedScenes.Contains(name);
+	}
+
 	public void UnloadCurrentScene(System.Object retVal = null) {
 		Preconditions.Check(loaddedScenes.Count > 0, "Can not detect current scene"); 
-		string name = loaddedScenes[loaddedScenes.Count - 1];
+		string name = GetCurrentScene();
 		StartCoroutine(UnloadSceneInternal(name, retVal));
+	}
+
+	public string GetCurrentScene() {
+		return loaddedScenes.Count > 0? loaddedScenes[loaddedScenes.Count - 1] : null;
 	}
 
 	private IEnumerator UnloadSceneInternal(string name, System.Object retVal) {
@@ -181,6 +189,9 @@ public class SceneController : MonoBehaviour {
 		case UserAssetType.Ring:
 		case UserAssetType.Mobile:
 			sceneName = LombardScene.SceneName;
+			break;
+		case UserAssetType.Energy:
+			sceneName = EnergyScene.SceneName;
 			break;
 		default:
 			throw new System.Exception("Invalid user asset type: " + type);
