@@ -1,6 +1,3 @@
-скинул в папку гопники, сразу там папка шрифты
-KabelCTT Ultra Regular.ttf - про запас, я им делал заголовки, но там цифры не очень
-так что лучше использовать другой
-a_PlakatCmpl ExtraBold - используется везде кроме описания тонким шрифтом
-для тонкого шрифта идет:
-ofont.ru_Kelson Sans RU
+font1: KabelCTT Ultra Regular.ttf
+font2: a_PlakatCmpl ExtraBold.ttf
+font3: ofont.ru_Kelson Sans RU.ttf

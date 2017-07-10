@@ -216,5 +216,12 @@
 		"IncreaseTimeOffline":	60,
 		"MaxIncreaseCount":			30,
 		"InfinityPrice": 10
-	}
+	},
+
+	"LevelFailureHelpData": {
+		"Health": 3,
+		"Turns":	5,
+		"PriceTypeAsString":	"Money",
+		"PriceValue":	50
+	} 
 }

@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: d2feac79fc9852d4c93ec77106ddc0d7
-timeCreated: 1491143375
+guid: 1f5f0591b59fe3f4a99d6a3f24bd7baf
+timeCreated: 1499705052
 licenseType: Free
 TrueTypeFontImporter:
   serializedVersion: 4
@@ -9,9 +9,9 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: KabelCTT Ultra
+  fontName: Kelson Sans RU
   fontNames:
-  - KabelCTT Ultra
+  - Kelson Sans RU
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

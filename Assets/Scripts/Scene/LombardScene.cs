@@ -113,13 +113,16 @@ public class LombardScene : WindowScene {
 	}
 
 	void BuyUserAsset(int count) {
+		userDataPanel.DisableUpdate(true);
 		if(!GameResources.Instance.Buy(currentAsset, count)) {
 			DisplayMessageController.DisplayNotEnoughMessage(UserAssetType.Money);
 			ToggleUserAsset(UserAssetType.Money);
+			userDataPanel.DisableUpdate(false);
 			return;
 		}
 
 		isBuy = true;
+
 
 		GameObject assetImg = UnityUtill.FindByName(Offers.transform, "BuyButton" + count)
 			.Find("Icon/Image").gameObject;
@@ -139,6 +142,7 @@ public class LombardScene : WindowScene {
 
 	void CompleteBuyUserAsset(UserAssetType type, int count, GameObject animImg) {
 		Destroy(animImg);
+		userDataPanel.DisableUpdate(false);
 		userDataPanel.UpdateUserAssets();
 	}
 }

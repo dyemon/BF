@@ -19,6 +19,8 @@ public class UserAssetsPanel : MonoBehaviour {
 	private WindowScene currentScene;
 	public GameObject InfinityEnergy;
 
+	private bool disableUpdate = false;
+
 	void OnEnable() {
 		GameResources.Instance.onUpdateUserAsset += OnUpdateUserAssets;
 		GameResources.Instance.onUpdateInfinityEnergy += OnUpdateInfinityEnergy;
@@ -44,7 +46,7 @@ public class UserAssetsPanel : MonoBehaviour {
 		}
 
 		ExperienceText.text = userData.Experience.ToString();
-		UpdateInfinityEnergy(0);
+		UpdateInfinityEnergy();
 	//	StartCoroutine(AlignButtons());
 	}
 
@@ -59,8 +61,15 @@ public class UserAssetsPanel : MonoBehaviour {
 		}
 	}
 
+	public void DisableUpdate(bool val) {
+		disableUpdate = val;
+	}
+
 	public GameObject GetUserAssetsIcon(UserAssetType type) {
 		return GetUserAssetItem(type).gameObject;
+	}
+	public GameObject GetInfinityEnergyObject() {
+		return InfinityEnergy;
 	}
 
 	Transform GetUserAssetItem(UserAssetType type) {
@@ -91,15 +100,8 @@ public class UserAssetsPanel : MonoBehaviour {
 		
 
 	void OnUpdateUserAssets(UserAssetType type, int value) {
-		if(!string.IsNullOrEmpty(currentSceneName)) {
-			if(currentSceneName == LombardScene.SceneName &&
-			   (type == UserAssetType.Money || type == UserAssetType.Mobile || type == UserAssetType.Ring)) {
-				return;
-			}
-			if(currentSceneName == EnergyScene.SceneName &&
-				(type == UserAssetType.Energy )) {
-				return;
-			}
+		if(disableUpdate) {
+			return;
 		}
 
 		UserData userData = GameResources.Instance.GetUserData();
@@ -107,9 +109,8 @@ public class UserAssetsPanel : MonoBehaviour {
 		text.text = userData.GetAsset(type).Value.ToString();
 	}
 
-	public bool UpdateInfinityEnergy(int decreaseValue) {
+	public bool UpdateInfinityEnergy() {
 		UserData uData = GameResources.Instance.GetUserData();
-		uData.DecresaeInfinityEnergy(decreaseValue);
 
 		if(uData.InfinityEnergyDuration > 0) {
 			InfinityEnergy.SetActive(true);
@@ -123,7 +124,7 @@ public class UserAssetsPanel : MonoBehaviour {
 	}
 
 	public void OnUpdateInfinityEnergy(int value) {
-		if(!string.IsNullOrEmpty(currentSceneName) && currentSceneName == EnergyScene.SceneName) {
+		if(disableUpdate) {
 			return;
 		}
 
@@ -131,7 +132,7 @@ public class UserAssetsPanel : MonoBehaviour {
 		Text text = GetUserAssetItem(UserAssetType.Money).Find("Text").GetComponent<Text>();
 		text.text = userData.GetAsset(UserAssetType.Money).Value.ToString();
 
-		UpdateInfinityEnergy(0);
+		UpdateInfinityEnergy();
 	}
 
 	public void OnLombardClick() {

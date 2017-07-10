@@ -39,7 +39,7 @@ public class App {
 	}
 
 	public static int GetCurrentLevel() {
-		return 1004;
+		return 1005;
 	}
 		
 }

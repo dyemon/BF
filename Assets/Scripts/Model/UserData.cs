@@ -92,14 +92,19 @@ public class UserData {
 
 	//	StartInfinityEnergyTimestamp = 0;
 		InfinityEnergyDuration = 0;
+		EnergyTimers.Instance.Init(this);
 	}
 
 	public void InitOnStart() {
 		InitTimestampOnStart();
+		EnergyTimers.Instance.Init(this);
 	}
 
 	public void Merge(UserData uData) {
 		InitTimestampOnStart();
+		if(InfinityEnergyDuration > 0) {
+			EnergyTimers.Instance.StartInfinityTimer();
+		}
 	}
 
 	public void InitTimestampOnStart() {
@@ -193,7 +198,7 @@ public class UserData {
 		InfinityEnergyDuration = 0;
 	}
 
-	public void DecresaeInfinityEnergy(int value) {
+	public void DecreaseInfinityEnergy(int value) {
 		InfinityEnergyDuration -= value;
 		if(InfinityEnergyDuration <= 0) {
 			ResetInfinityEnergy();

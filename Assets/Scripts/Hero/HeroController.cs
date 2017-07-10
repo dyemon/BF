@@ -44,6 +44,9 @@ public class HeroController : MonoBehaviour {
 	public HeroSkillController heroSkillController;
 
 	private int startHealth;
+	public int StartHealth {
+		get { return startHealth; }
+	}
 
 	public int Damage {
 		get { 
@@ -85,6 +88,13 @@ public class HeroController : MonoBehaviour {
 
 	public void IncreaseHealth(int ratio, bool updateStart) {
 		Health = CalcNewHealth(ratio);
+		if(updateStart) {
+			startHealth = Health;
+		}
+	}
+
+	public void IncreaseHealthByValue(int value, bool updateStart) {
+		Health += value;
 		if(updateStart) {
 			startHealth = Health;
 		}

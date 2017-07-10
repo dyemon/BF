@@ -11,7 +11,7 @@ public class GameData {
 
 	public static readonly int PowerPointSuccess = 100; 
 	public static readonly int PowerPointByItem = 3; 
-	public static readonly int EnemyTurns = 4; 
+	public static readonly int EnemyTurns = 2; 
 	
 	public IDictionary<string, HeroData> HeroData = new Dictionary<string, HeroData>();
 
@@ -22,8 +22,8 @@ public class GameData {
 	public UserAssetsShopData UserAssetsShopData;
 
 	public AwardData AwardData;
-
 	public EnergyData EnergyData;
+	public LevelFailureHelpData LevelFailureHelpData;
 
 	public void Init() {
 		/*
@@ -70,6 +70,7 @@ public class GameData {
 		}
 
 		AwardData.init();
+		LevelFailureHelpData.Init();
 	}
 
 	public int GetBombRatio(int level) {

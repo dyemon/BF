@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: e43eff0da55059448b8e8b5822871967
-timeCreated: 1491143375
+guid: 399bc8936576ae5418949133556f7872
+timeCreated: 1499704981
 licenseType: Free
 TrueTypeFontImporter:
   serializedVersion: 4
@@ -9,10 +9,11 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: Kelson Sans RU
+  fontName: a_PlakatCmpl
   fontNames:
-  - Kelson Sans RU
-  fallbackFontReferences: []
+  - a_PlakatCmpl
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 64a0bc44034643047ae8e974fa216416, type: 3}
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1

@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 046fa08343067ee48b177c563c6145c8
-timeCreated: 1491143375
+guid: 64a0bc44034643047ae8e974fa216416
+timeCreated: 1499704981
 licenseType: Free
 TrueTypeFontImporter:
   serializedVersion: 4
@@ -9,10 +9,11 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: a_PlakatCmpl
+  fontName: KabelCTT Ultra
   fontNames:
-  - a_PlakatCmpl
-  fallbackFontReferences: []
+  - KabelCTT Ultra
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 399bc8936576ae5418949133556f7872, type: 3}
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1

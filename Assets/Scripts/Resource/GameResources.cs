@@ -49,12 +49,14 @@ public class GameResources {
 			string data = PlayerPrefs.GetString("data");
 			if(string.IsNullOrEmpty(data)) {
 				uData = initDefaltUserData();
+				uData.Init();
 			} else {
 				string json = StringCipher.Decrypt(data, getKey());
 				uData = JsonUtility.FromJson<UserData>(json);
+				uData.Init();
 				uData.InitOnStart();
 			}
-			uData.Init();
+
 	//	if(Application.isEditor) {
 				uData.InitTest();
 	//		}
@@ -180,6 +182,10 @@ public class GameResources {
 
 
 	public bool ChangeUserAsset(UserData data, UserAssetType type, int value) {
+		if(type == UserAssetType.Energy && value < 0 && data.InfinityEnergyDuration > 0) {
+			return true;
+		}
+
 		UserAssetData asset = data.GetAsset(type);
 		int newVal = asset.Value + value;
 		if(newVal < 0) {
@@ -194,12 +200,12 @@ public class GameResources {
 
 		return true;
 	}
-
+	/*
 	public bool CanChangeAsset(UserData data, UserAssetType type, int value) {
 		UserAssetData asset = data.GetAsset(type);
 		return asset.Value + value >= 0;
 	}
-
+	*/
 	public LocalSettingsData GetLocalSettings() {
 		if(localSettings == null) {
 			string data = PlayerPrefs.GetString("localSettings");
@@ -272,5 +278,15 @@ public class GameResources {
 		return true;
 	}
 
+	public bool DecreaseInfinityEnergy(int val) {
+		UserData uData = GetUserData();
+		uData.DecreaseInfinityEnergy(val);
+		saveUserDataLocal(uData);
 
+		if(onUpdateInfinityEnergy != null) {
+			onUpdateInfinityEnergy(uData.InfinityEnergyDuration);
+		}
+
+		return uData.InfinityEnergyDuration > 0;
+	}
 }

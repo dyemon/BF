@@ -116,12 +116,17 @@ public class EnergyScene : WindowScene {
 	void OnClickBuy(int count, bool isInfinity) {
 		bool canBuy = false;
 
+		userDataPanel.DisableUpdate(true);
 		if(!isInfinity) {
 			canBuy = GameResources.Instance.Buy(UserAssetType.Energy, count);
 		} else {
 			canBuy = GameResources.Instance.BuyInfinityEnergy(count);
 		}
 		if(!canBuy) {
+			userDataPanel.DisableUpdate(false);
+			if(SceneController.Instance.IsSceneEist(LombardScene.SceneName)) {
+				Close();
+			}
 			SceneControllerHelper.instance.ShowUserAssetsScene(UserAssetType.Money, true);
 			return;
 		}
@@ -140,7 +145,12 @@ public class EnergyScene : WindowScene {
 		AnimatedObject ao = animImg.AddComponent<AnimatedObject>();
 
 		float speed = App.GetTileItemSpeed(TileItemMoveType.BUY_USERASSET);
-		Vector3 end = userDataPanel.GetUserAssetsIcon(UserAssetType.Energy).transform.position;
+		Vector3 end;
+		if(!isInfinity) {
+			end = userDataPanel.GetUserAssetsIcon(UserAssetType.Energy).transform.position;
+		} else {
+			end = userDataPanel.GetInfinityEnergyObject().transform.position;
+		}
 		float time = AMove.CalcTime(animImg.transform.position, end, speed);
 
 		ao.AddMove(null, end, speed).AddResize(null, new Vector3(0.5f, 0.5f, 1f), time)
@@ -152,8 +162,10 @@ public class EnergyScene : WindowScene {
 
 	void CompleteBuyUserAsset(UserAssetType type, int count, GameObject animImg, bool isInfinity) {
 		Destroy(animImg);
+		userDataPanel.DisableUpdate(false);
 		if(isInfinity) {
-			userDataPanel.UpdateInfinityEnergy(0);
+			userDataPanel.OnUpdateInfinityEnergy(count);
+			EnergyTimers.Instance.StartInfinityTimer();
 		} else {
 			userDataPanel.UpdateUserAssets();
 		}

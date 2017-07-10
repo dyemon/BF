@@ -3,5 +3,5 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum LevelFailureType {
-	TurnsComplete, HealthComplete
+	HealthEnded, TurnsEnded 
 }

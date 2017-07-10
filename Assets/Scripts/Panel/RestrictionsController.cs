@@ -4,23 +4,37 @@ using System.Collections;
 
 public class RestrictionsController : MonoBehaviour {
 	private LevelData levelData;
-	private int currentMovesCount;
-	private Text textMovesScore;
+	private int currentTurnsCount;
+	private Text textTurnsScore;
+	private int turnsCount;
 
 	public void LoadCurrentLevel () {
 		levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
-		currentMovesCount = levelData.RestrictionData.Turns;
+		turnsCount = currentTurnsCount = levelData.RestrictionData.Turns;
 
-		textMovesScore = Preconditions.NotNull(transform.Find("Image").Find("Moves Score").gameObject.GetComponent<Text>(),"Can not get moves score");
-		textMovesScore.text = currentMovesCount.ToString();
+		if(turnsCount > 0) {
+			textTurnsScore = Preconditions.NotNull(transform.Find("Image").Find("Moves Score").gameObject.GetComponent<Text>(), "Can not get moves score");
+			textTurnsScore.text = turnsCount.ToString();
+		} else {
+			gameObject.SetActive(false);
+		}
 	}
 
 	public void DecrementMoveScore() {
-		currentMovesCount--;
-		textMovesScore.text = currentMovesCount.ToString();
+		if(turnsCount == 0) {
+			return;
+		}
+
+		currentTurnsCount--;
+		textTurnsScore.text = currentTurnsCount.ToString();
 	}
 
 	public bool CheckRestrictions() {
-		return (currentMovesCount > 0);
+		return (currentTurnsCount > 0 || turnsCount == 0);
+	}
+
+	public void IncreaseCurrentTurns(int turns) {
+		currentTurnsCount += turns;
+		textTurnsScore.text = currentTurnsCount.ToString();
 	}
 }

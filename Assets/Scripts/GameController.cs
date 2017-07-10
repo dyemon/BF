@@ -164,7 +164,7 @@ public class GameController : MonoBehaviour {
 			SceneControllerHelper.instance.onUnloadScene -= OnUnloadScene;
 		}
 
-		GameResources.Instance.SaveUserData(null, true);
+		GameResources.Instance.SaveUserData(null, false);
 	}
 
 	void Awake() {
@@ -773,7 +773,7 @@ public class GameController : MonoBehaviour {
 			Invoke("LevelSuccess", bombExplosionDelay);
 			return;
 		} else if (!restrictionsController.CheckRestrictions()){
-			Invoke("LevelFailure", 2);
+			Invoke("LevelFailure", 0.5f);
 		}
 
 		StartCoroutine(UpdateTilesWithDelay(true, bombExplosionDelay));
@@ -2248,11 +2248,11 @@ public class GameController : MonoBehaviour {
 			return;
 		}
 		if(heroController != null && heroController.Health <= 0) {
-			SceneController.Instance.LoadSceneAsync("LevelFailure");
+			SceneController.Instance.LoadSceneAdditive(LevelFailureHelpScene.SceneName, new System.Object[] {LevelFailureType.HealthEnded, heroController, restrictionsController});
 			return;
 		}
 		if(!restrictionsController.CheckRestrictions()) {
-			SceneController.Instance.LoadSceneAsync("LevelFailure");
+			SceneController.Instance.LoadSceneAdditive(LevelFailureHelpScene.SceneName, new System.Object[] {LevelFailureType.TurnsEnded, heroController, restrictionsController});
 			return;
 		}
 
@@ -2795,6 +2795,8 @@ public class GameController : MonoBehaviour {
 			UseHeroSkill(skill);
 			resetHeroSkillData = true;
 			IncreaseHeroSkillCount(-1);
+		} else if(name == LevelFailureHelpScene.SceneName) {
+			FPPanel.UpdateFightParams();
 		}
 	}
 

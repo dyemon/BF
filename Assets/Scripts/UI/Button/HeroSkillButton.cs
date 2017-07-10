@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
 
-public class HeroSkillButton : BuyButton<HeroSkillData> {
+public class HeroSkillButton : BaseBuyButton<HeroSkillData> {
 
 	public void Init(HeroSkillData skill, OnClickListener<HeroSkillData> onClickListener) {
 		Sprite bg = GameObjectResources.GetHeroSkillButtonBg(skill.Type);
