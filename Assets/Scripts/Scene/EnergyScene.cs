@@ -55,7 +55,7 @@ public class EnergyScene : WindowScene {
 
 			GameObject button = GetButtonPrefab(false);
 
-			UnityUtill.FindByName(button.transform, "Purchase Count").GetComponent<Text>().text = count.ToString();
+			UnityUtill.FindByName(button.transform, "PriceAmount").GetComponent<Text>().text = count.ToString();
 			Transform priceTr = UnityUtill.FindByName(button.transform, "Price Text");
 			if(priceTr != null) {
 				priceTr.GetComponent<Text>().text = (count * gameData.GetPriceValue(UserAssetType.Energy)).ToString();

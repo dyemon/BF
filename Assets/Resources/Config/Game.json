@@ -206,7 +206,8 @@
 			 {"TileItemTypeAsString": "Mobile", "AwardTypeAsString": "Mobile", "Count": 1},
 			 {"TileItemTypeAsString": "Ring", "AwardTypeAsString": "Ring", "Count": 1},
 			 {"TileItemTypeAsString": "Star", "AwardTypeAsString": "Star", "Count": 1},
-			 {"TileItemTypeAsString": "EnemySkillSimple", "AwardTypeAsString": "Money", "Count":2},
+			 {"TileItemTypeAsString": "Energy", "AwardTypeAsString": "Energy", "Count": 1},
+			 {"TileItemTypeAsString": "EnemySkillSimple", "AwardTypeAsString": "Mobile", "Count":2},
 			 {"TileItemTypeAsString": "EnemySkillEater", "AwardTypeAsString": "Energy", "Count": 2}
 		]
 	},

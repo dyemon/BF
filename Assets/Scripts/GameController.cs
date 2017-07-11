@@ -153,6 +153,8 @@ public class GameController : MonoBehaviour {
 
 	private bool saveUserData = false;
 
+	public static readonly LevelAwardData CollectLevelAward = new LevelAwardData();
+
 	void OnEnable() {
 		if(SceneControllerHelper.instance != null) {
 			SceneControllerHelper.instance.onUnloadScene += OnUnloadScene;
@@ -208,7 +210,9 @@ public class GameController : MonoBehaviour {
 
 		UpdateTiles(true);
 
+		CollectLevelAward.Reset();
 	}
+
 	// Update is called once per frame
 	void Update() {
 
@@ -2471,6 +2475,11 @@ public class GameController : MonoBehaviour {
 			return;
 		}
 			
+		if(targetController.CheckSuccess()) {
+			Invoke("LevelSuccess", 0.5f);
+			return;
+		}
+
 		if(skill != null) {
 			CompleteHeroSkill(false);
 			return;
@@ -2484,6 +2493,11 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void OnEnemyStrike() {
+		if(targetController.CheckSuccess()) {
+			Invoke("LevelSuccess", 0.5f);
+			return;
+		}
+
 		if(!heroSkillController.IsInvulnerability()) {
 			heroController.DecreaseHealt(enemyController.Damage);
 		}
@@ -3104,6 +3118,8 @@ public class GameController : MonoBehaviour {
 			.AddMove(null, end, speed2).AddResize(null, new Vector3(1f, 1f, 1f), time2)
 			.OnStop(() => {} ).Build()
 			.Run();
+
+		CollectLevelAward.IncreaseAsset(award.Type, award.Value);
 
 		Destroy(animAward, time1 + time2 + 0.3f);
 

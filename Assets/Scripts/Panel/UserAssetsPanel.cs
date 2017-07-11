@@ -8,7 +8,7 @@ public class UserAssetsPanel : MonoBehaviour {
 
 	//public GameObject UserAssetsPanelItem;
 	//public Transform userAssetsPanel;
-	public Text ExperienceText;
+	public GameObject Experience;
 
 	public RectTransform LeftAssets;
 	public RectTransform LeftButton;
@@ -43,11 +43,20 @@ public class UserAssetsPanel : MonoBehaviour {
 			Text text = item.transform.Find("Text").GetComponent<Text>();
 			text.text = data.Value.ToString();
 			text.color = type.ToColor();
+			LayoutRebuilder.ForceRebuildLayoutImmediate(item.GetComponent<RectTransform>());
 		}
 
-		ExperienceText.text = userData.Experience.ToString();
+		UpdateExperience(userData);
+
 		UpdateInfinityEnergy();
 	//	StartCoroutine(AlignButtons());
+	}
+
+	public void UpdateExperience(UserData userData) {
+		Text ExperienceText = Experience.transform.Find("Text").GetComponent<Text>();
+		ExperienceText.text = userData.Experience.ToString();
+		ExperienceText.color = UserAssetTypeExtension.ExperienceColor;
+		LayoutRebuilder.ForceRebuildLayoutImmediate(Experience.GetComponent<RectTransform>());
 	}
 
 	public void SetCurrentScene(string name, WindowScene scene) {
@@ -85,28 +94,32 @@ public class UserAssetsPanel : MonoBehaviour {
 		LeftButton.transform.localPosition = pos;
 
 	}
+		
 
 	public void UpdateUserAssets() {
 		UserData userData = GameResources.Instance.GetUserData();
 
 		foreach(UserAssetType type in EnumUtill.GetValues<UserAssetType>()) {
-			Text text = GetUserAssetItem(type).Find("Text").GetComponent<Text>();
-			text.text = userData.GetAsset(type).Value.ToString();
+			UpdateUserAsset(type, userData.GetAsset(type).Value);
 		}
 
 	//	LayoutRebuilder.ForceRebuildLayoutImmediate(GetComponent<RectTransform>());
 	//	StartCoroutine(AlignButtons());
 	}
 		
+	void UpdateUserAsset( UserAssetType type, int value) {
+		Transform item = GetUserAssetItem(type);
+		Text text = item.Find("Text").GetComponent<Text>();
+		text.text = value.ToString();
+		LayoutRebuilder.ForceRebuildLayoutImmediate(item.GetComponent<RectTransform>());
+	}
 
 	void OnUpdateUserAssets(UserAssetType type, int value) {
 		if(disableUpdate) {
 			return;
 		}
 
-		UserData userData = GameResources.Instance.GetUserData();
-		Text text = GetUserAssetItem(type).Find("Text").GetComponent<Text>();
-		text.text = userData.GetAsset(type).Value.ToString();
+		UpdateUserAsset(type, value);
 	}
 
 	public bool UpdateInfinityEnergy() {

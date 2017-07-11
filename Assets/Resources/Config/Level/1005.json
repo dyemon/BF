@@ -146,24 +146,21 @@
         }], 
 		
    "TargetData": [{
-		"Count": 100, 
+		"Count": 5, 
 		"TypeAsString": "Red"
 	}, {
-		"Count": 10, 
+		"Count": 5, 
 		"TypeAsString": "Green"
-	}, {
-		"Count": 1, 
-		"TypeAsString": "Enemy"
 	}],
 
 	"RestrictionData": {
-        "Turns": 1
+        "Turns": 10
     },
 
 	"EnemyData": {
 		"TypeAsString": "Sipliy",
 		"Health": 80,
-		"Damage": 300,
+		"Damage": 10,
 		"SkillRatio": 1,
 		"SkillData": [{
 				"TypeAsString": "Eater",
@@ -179,7 +176,7 @@
 	},
 
 	"AutoDropData" : [{
-		"Ratio": 10,
+		"Ratio": 20,
 		"TileItem" : { "TypeAsString": "Mobile" }
 	},{
 		"Ratio": 20,
@@ -187,6 +184,30 @@
 	},{
 		"Ratio": 1,
 		"TileItem" : { "TypeAsString": "Star" }
-	}]
+	},{
+		"Ratio": 20,
+		"TileItem" : { "TypeAsString": "Energy" }
+	}],
+
+
+	"SuccessAwardData": {
+		"Experience": 10,
+		"UserAssets": [
+		 {"TypeAsString": "Energy", "Value":	1},
+		 {"TypeAsString": "Mobile", "Value":	1},
+		 {"TypeAsString": "Ring", "Value":	5},
+		 {"TypeAsString": "Star", "Value":	1}
+		]
+	},
+
+	"FailureAwardData": {
+		"Experience": 0,
+		"UserAssets": [
+		 {"TypeAsString": "Energy", "Value":	1},
+		 {"TypeAsString": "Mobile", "Value":	2},
+		 {"TypeAsString": "Ring", "Value":	1},
+		 {"TypeAsString": "Star", "Value":	0}
+		]
+	}
 
 }

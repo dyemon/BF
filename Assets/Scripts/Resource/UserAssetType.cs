@@ -6,7 +6,7 @@ public enum UserAssetType {
 	Money, Energy, Mobile, Ring, Star
 }
 
-static class UserAssetTypeExtension {
+public static class UserAssetTypeExtension {
 
 	public static Color ToColor(this UserAssetType type){
 		switch (type) {
@@ -24,6 +24,9 @@ static class UserAssetTypeExtension {
 
 		return Color.white;
 	}
+
+	public static Color ExperienceColor = new Color(0.9f, 0.56f, 0.16f);
+
 }
 
 

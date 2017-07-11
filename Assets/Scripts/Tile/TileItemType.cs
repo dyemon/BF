@@ -61,6 +61,7 @@ public enum TileItemType {
 	Mobile = TileItemTypeGroup.Special,
 	Ring = TileItemTypeGroup.Special + 1,
 	Star = TileItemTypeGroup.Special + 2,
+	Energy = TileItemTypeGroup.Special + 3,
 
 	BombAll = TileItemTypeGroup.Special + TileItem.BOMBALL_OFFSET,
 	EnemySkillSimple = TileItemTypeGroup.Special + TileItem.ENEMY_SKILL

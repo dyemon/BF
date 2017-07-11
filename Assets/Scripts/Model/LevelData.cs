@@ -26,6 +26,9 @@ public class LevelData {
 
 	public EnemyData EnemyData = null;
 
+	public LevelAwardData SuccessAwardData;
+	public LevelAwardData FailureAwardData;
+
 	public void Init() {
 		FightLocationType = EnumUtill.Parse<FightLocationType>(FightLocationTypeAsString);
 
@@ -92,6 +95,9 @@ public class LevelData {
 		if(HasEnemy()) {
 			EnemyData.Init();
 		}
+
+		SuccessAwardData.Init();
+		FailureAwardData.Init();
 	}
 
 	public bool HasEnemy() {
