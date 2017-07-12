@@ -1,14 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class LevelSuccessScene : MonoBehaviour {
 	public GameObject AwardItem;
 	public HorizontalLayoutGroup Awards1;
 	public HorizontalLayoutGroup Awards2;
 	public GameObject Experience;
+	public Text Description;
+	public UserAssetsPanel AssetPanel;
 
 	private int successCount = 1;
+
+	private IList<NumberScroller> awardUpdat = new List<NumberScroller>();
+	private IList<BuyButton> awardUpdatBuyButtons = new List<BuyButton>();
 
 	void OnDisable() {
 		GameResources.Instance.SaveUserData(null, successCount == 1);
@@ -16,10 +22,14 @@ public class LevelSuccessScene : MonoBehaviour {
 
 	void Start () {
 		int i = 0;
-		LevelAwardData awardData = GameResources.Instance.GetLevel(App.GetCurrentLevel()).SuccessAwardData;
+		LevelData levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
+		LevelAwardData awardData = levelData.SuccessAwardData;
 		UserData uData = GameResources.Instance.GetUserData();
 		successCount = 1;//uData.GetSuccessCount(App.GetCurrentLevel()); 
 		Preconditions.Check(successCount > 0, "Success level count for level {0} = 0", App.GetCurrentLevel());
+
+		Description.text = levelData.Id + ": " + levelData.Name;
+		AssetPanel.DisableUpdate(true);
 
 		foreach(UserAssetType type in EnumUtill.GetValues<UserAssetType>()) {
 			int collectVal = GameController.CollectLevelAward.GetAsset(type);
@@ -28,13 +38,15 @@ public class LevelSuccessScene : MonoBehaviour {
 			if(collectVal > 0 || awardVal > 0) {
 				HorizontalLayoutGroup layout = (i++ > 1) ? Awards2 : Awards1;
 				GameObject go = Instantiate(AwardItem, layout.transform);
+				go.name = type.ToString() + "AwardItem";
 				go.GetComponent<BuyButton>().Init(type, collectVal, null);
-			}
-
-			if(awardVal > 0) {
-				int award = (int)Mathf.Floor(awardVal / Mathf.Pow(2, successCount - 1));
-				if(award > 0) {
-					GameResources.Instance.ChangeUserAsset(uData, type, award);
+				if(awardVal > 0) {
+					int award = (int)Mathf.Floor(awardVal / Mathf.Pow(2, successCount - 1));
+					if(award > 0) {
+						GameResources.Instance.ChangeUserAsset(uData, type, award);
+					}
+					awardUpdat.Add(InitNumberScroller(go, awardVal + collectVal));
+					awardUpdatBuyButtons.Add(go.GetComponent<BuyButton>());
 				}
 			}
 		}
@@ -43,7 +55,39 @@ public class LevelSuccessScene : MonoBehaviour {
 		LayoutRebuilder.ForceRebuildLayoutImmediate(Awards2.GetComponent<RectTransform>());
 
 		Experience.GetComponent<BuyButton>().Init(null, GameController.CollectLevelAward.Experience, null, UserAssetTypeExtension.ExperienceColor);
+
+		if(awardData.Experience > 0) {
+			awardUpdat.Add(InitNumberScroller(Experience, awardData.Experience + GameController.CollectLevelAward.Experience));
+			Experience.name = "ExperienceAwardItem";
+			awardUpdatBuyButtons.Add(Experience.GetComponent<BuyButton>());
+			GameResources.Instance.IncreaseExperience(awardData.Experience);
+		}
+
+		AssetPanel.DisableUpdate(false);
+		Invoke("UpdateAward", 1);
 	}
 	
+	void UpdateAward() {
+		foreach(NumberScroller ns in awardUpdat) {
+			ns.Run();
+		}
 
+		Invoke("CompleteUpdateAward", 1.2f);
+	}
+
+	NumberScroller InitNumberScroller(GameObject go, int endVal) {
+		NumberScroller ns = go.transform.Find("PriceAmount").GetComponent<NumberScroller>();
+		ns.EndValue(endVal).Speed(1).MaxDuration(1);
+
+		return ns;
+	}
+
+	void CompleteUpdateAward() {
+		foreach(BuyButton bb in awardUpdatBuyButtons) {
+			bb.UpdateLayout();
+		}
+
+		AssetPanel.UpdateExperience();
+		AssetPanel.UpdateUserAssets();
+	}
 }

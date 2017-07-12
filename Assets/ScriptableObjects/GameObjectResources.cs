@@ -9,6 +9,7 @@ public class GameObjectResources : ScriptableObject {
 	public Sprite[] UserAssetsIcone;
 	public Sprite[] HeroSkillIcon;
 	public Sprite[] HeroSkillButtonBg;
+	public Sprite ExperienceIcon;
 
 	[System.Serializable]
 	public class TargetIcon {
@@ -52,5 +53,9 @@ public class GameObjectResources : ScriptableObject {
 			}
 		}
 		return null;
+	}
+
+	public Sprite GetUserExperienceIcone() {
+		return ExperienceIcon;
 	}
 }

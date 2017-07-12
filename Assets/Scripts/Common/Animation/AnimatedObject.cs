@@ -182,6 +182,12 @@ public class AnimatedObject : MonoBehaviour {
 		return this;
 	}
 
+	public AnimatedObject AddFadeUI(float? startAlpha, float endAlpha, float time) {
+		IABase a = new AFadeUI(startAlpha, endAlpha, time);
+		getCurrentAnimation().AddAnimation(AnimationType.Fade, a);
+		return this;
+	}
+
 	public AnimatedObject Build() {
 		animations.Add(currentAnimation);
 		currentAnimation = null;

@@ -24,11 +24,13 @@ public class UserAssetsPanel : MonoBehaviour {
 	void OnEnable() {
 		GameResources.Instance.onUpdateUserAsset += OnUpdateUserAssets;
 		GameResources.Instance.onUpdateInfinityEnergy += OnUpdateInfinityEnergy;
+		GameResources.Instance.onUpdateExperience += OnUpdateExperience;
 	}
 
 	void OnDisable() {
 		GameResources.Instance.onUpdateUserAsset -= OnUpdateUserAssets;
 		GameResources.Instance.onUpdateInfinityEnergy -= OnUpdateInfinityEnergy;
+		GameResources.Instance.onUpdateExperience -= OnUpdateExperience;
 	}
 
 	void Start () {
@@ -46,15 +48,15 @@ public class UserAssetsPanel : MonoBehaviour {
 			LayoutRebuilder.ForceRebuildLayoutImmediate(item.GetComponent<RectTransform>());
 		}
 
-		UpdateExperience(userData);
+		UpdateExperience(userData.Experience);
 
 		UpdateInfinityEnergy();
 	//	StartCoroutine(AlignButtons());
 	}
 
-	public void UpdateExperience(UserData userData) {
+	public void UpdateExperience(int exp) {
 		Text ExperienceText = Experience.transform.Find("Text").GetComponent<Text>();
-		ExperienceText.text = userData.Experience.ToString();
+		ExperienceText.text = exp.ToString();
 		ExperienceText.color = UserAssetTypeExtension.ExperienceColor;
 		LayoutRebuilder.ForceRebuildLayoutImmediate(Experience.GetComponent<RectTransform>());
 	}
@@ -168,5 +170,18 @@ public class UserAssetsPanel : MonoBehaviour {
 		}
 
 		SceneController.Instance.LoadSceneAdditive(EnergyScene.SceneName);
+	}
+
+	public void OnUpdateExperience(int exp) {
+		if(disableUpdate) {
+			return;
+		}
+			
+		UpdateExperience(exp);
+	}
+
+	public void UpdateExperience() {
+		UserData uData = GameResources.Instance.GetUserData();
+		UpdateExperience(uData.Experience);
 	}
 }

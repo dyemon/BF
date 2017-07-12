@@ -2481,7 +2481,7 @@ public class GameController : MonoBehaviour {
 		}
 
 		if(skill != null) {
-			CompleteHeroSkill(false);
+			CompleteHeroSkill(true, false, skill);
 			return;
 		}
 
@@ -2835,7 +2835,7 @@ public class GameController : MonoBehaviour {
 		enemyStun = true;
 		heroController.Stun(skill);
 		heroSkillController.AddSkill(skill);
-		CompleteHeroSkill(false);
+		CompleteHeroSkill(true, false, skill);
 	}
 
 	IEnumerator StartHeroSkill(HeroSkillData skill, float delay) {
@@ -2873,13 +2873,13 @@ public class GameController : MonoBehaviour {
 		case HeroSkillType.Energy:
 		case HeroSkillType.Invulnerability:
 			success = true;
-			CompleteHeroSkill(false);
+			CompleteHeroSkill(true, false, skill);
 			break;
 		}
 
 		if(!success) {
 			DisplayMessageController.DisplayMessage("Невозможно использовать данную магию", Color.red);
-			CompleteHeroSkill(false);
+			CompleteHeroSkill(false, false, skill);
 		} else if(skill.Turns > 0 && !skillAdded) {
 			heroSkillController.AddSkill(skill);
 		}
@@ -2888,14 +2888,14 @@ public class GameController : MonoBehaviour {
 	bool StartHeroSkillHealth(HeroSkillData skill) {
 		heroController.IncreaseHealth(skill.Health, false);
 		FPPanel.UpdateFightParams();
-		CompleteHeroSkill(false);
+		CompleteHeroSkill(true, false, skill);
 		return true;
 	}
 
 	bool StartHeroSkillSlowdown(HeroSkillData skill) {
 		heroSkillController.AddSkill(skill);
 		FPPanel.UpdateProgressMaxValue(true);
-		CompleteHeroSkill(false);
+		CompleteHeroSkill(true, false, skill);
 		return true;
 	}
 
@@ -2923,10 +2923,10 @@ public class GameController : MonoBehaviour {
 			}
 		}
 
-		return HeroSkillDropTileItem(tileItemsType, avaliabe, checkConsistensy);
+		return HeroSkillDropTileItem(tileItemsType, avaliabe, checkConsistensy, skill);
 	}
 
-	bool HeroSkillDropTileItem(TileItemType[] tileItemsType, IList<Tile> avaliabe, bool checkConsistensy) {
+	bool HeroSkillDropTileItem(TileItemType[] tileItemsType, IList<Tile> avaliabe, bool checkConsistensy, HeroSkillData skill) {
 		Vector3 pos = StartHeroSkillPos.transform.position;
 		animationGroup.Clear();
 		foreach(TileItemType itemType in tileItemsType) {
@@ -2953,6 +2953,7 @@ public class GameController : MonoBehaviour {
 
 		if(animationGroup.AnimationExist()) {
 			animationGroup.Run(CompleteHeroSkill, checkConsistensy);
+			IncreaseExperience(skill.Experience); 
 			return true;
 		}
 
@@ -3003,8 +3004,8 @@ public class GameController : MonoBehaviour {
 			tiTypes[i] = (TileItemType)groupsForGenerate[Random.Range(0, groupsForGenerate.Count)];
 		}
 
-		if(!HeroSkillDropTileItem(tiTypes, avaliable, true)) {
-			CompleteHeroSkill(false);
+		if(!HeroSkillDropTileItem(tiTypes, avaliable, true, skill)) {
+			CompleteHeroSkill(false, false, skill);
 		}
 
 		return true;
@@ -3036,7 +3037,7 @@ public class GameController : MonoBehaviour {
 			}
 		}
 
-		bool res = HeroSkillDropTileItem(tileItemsType, avaliabe, false);
+		bool res = HeroSkillDropTileItem(tileItemsType, avaliabe, false, skill);
 
 		if(res && lastEater != null) {
 			if(count == 1) {
@@ -3050,10 +3051,18 @@ public class GameController : MonoBehaviour {
 	}
 
 	void CompleteHeroSkill(bool checkConsistensy) {
+		CompleteHeroSkill(true, checkConsistensy, null);
+	}
+
+	void CompleteHeroSkill(bool success, bool checkConsistensy, HeroSkillData skill) {
 		if(checkConsistensy) {
 			CheckConsistency();
 		} else {
 			SetTileInputAvaliable(true);
+		}
+
+		if(skill != null && success) {
+			IncreaseExperience(skill.Experience);
 		}
 	}
 
@@ -3127,6 +3136,39 @@ public class GameController : MonoBehaviour {
 		GameResources.Instance.IncreaseTileItemCollect(tileItem.Type, App.GetCurrentLevel());
 
 	//	saveUserData = true;
+	}
+
+	void IncreaseExperience(int exp) {
+		if(exp <= 0) {
+			return;
+		}
+
+		GameObject animAward = Instantiate(AwardTileItem, canvas.transform);
+		Image img = animAward.transform.Find("Image").gameObject.GetComponent<Image>();
+		img.sprite = GameObjectResources.GetUserExperienceIcone();
+		Text text = animAward.transform.Find("Text").gameObject.GetComponent<Text>();
+		text.text = exp.ToString();
+
+		Vector3 start = Camera.main.WorldToScreenPoint(Hero.transform.position);
+		start.x = Screen.width/2;
+		Vector3 end1 = start + new Vector3(0, 300, 0);
+		Vector3 end2 = start + new Vector3(0, 500, 0);
+
+		float speed1 = App.GetTileItemSpeed(TileItemMoveType.AWARD_EXPERIENCE_1);
+		float time1 = AMove.CalcTime(start, end1, speed1);
+		float speed2 = App.GetTileItemSpeed(TileItemMoveType.AWARD_EXPERIENCE_2);
+		float time2 = AMove.CalcTime(end1, end2, speed2);
+
+		AnimatedObject ao = animAward.GetComponent<AnimatedObject>();
+		ao.AddMove(start, end1, speed1).Build()
+			.AddMove(null, end2, speed2).AddFadeUI(null, 0f, time2)
+			.OnStop(() => {} ).Build()
+			.Run();
+		
+		Destroy(animAward, time1 + time2 + 0.3f);
+
+		GameResources.Instance.IncreaseExperience(exp);
+		CollectLevelAward.Experience += exp;
 	}
 }
 

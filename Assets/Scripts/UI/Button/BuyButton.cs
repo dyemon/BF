@@ -28,13 +28,15 @@ public class BuyButton : MonoBehaviour {
 			text.text = name;
 		}
 
+		UpdateLayout();
+	}
+
+	public void UpdateLayout() {
 		Transform pi = UnityUtill.FindByName(transform, "PriceItem");
 		if(pi != null) {
 			LayoutRebuilder.ForceRebuildLayoutImmediate(pi.GetComponent<RectTransform>());
 		} else {
 			LayoutRebuilder.ForceRebuildLayoutImmediate(transform.GetComponent<RectTransform>());
-
 		}
 	}
-
 }

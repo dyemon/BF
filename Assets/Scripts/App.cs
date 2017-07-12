@@ -22,6 +22,8 @@ public class App {
 		tileItemMoveType.Add(TileItemMoveType.BUY_USERASSET, 1500f);
 		tileItemMoveType.Add(TileItemMoveType.AWARDTILEITEM_1, 300f);
 		tileItemMoveType.Add(TileItemMoveType.AWARDTILEITEM_2, 800f);
+		tileItemMoveType.Add(TileItemMoveType.AWARD_EXPERIENCE_1, 400f);
+		tileItemMoveType.Add(TileItemMoveType.AWARD_EXPERIENCE_2, 300f);
 	}
 
 	public static float MoveTileItemTimeUnit {

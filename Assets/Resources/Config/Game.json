@@ -40,7 +40,8 @@
 			"MinExperience": 20,
 			"PriceTypeAsString": "Mobile",
 			"PriceValue": 20,
-			"Count": 1
+			"Count": 1,
+			"Experience": 1
 		},{
 			"Name": "Бомба горизонтали",
 			"Description": "Взрывает все элементы по горизонтали",
@@ -48,7 +49,8 @@
 			"MinExperience": 30,
 			"PriceTypeAsString": "Mobile",
 			"PriceValue": 30,
-			"Count": 1
+			"Count": 1,
+			"Experience": 1
 		},{
 			"Name": "Бомба по периметру",
 			"Description": "Взрывает все соседние элементы",
@@ -56,7 +58,8 @@
 			"MinExperience": 40,
 			"PriceTypeAsString": "Ring",
 			"PriceValue": 40,
-			"Count": 1
+			"Count": 1,
+			"Experience": 1
 		},{
 			"Name": "Бомба любой цвет",
 			"Description": "Взрывает все элементы одного цвета",
@@ -64,14 +67,16 @@
 			"MinExperience": 50,
 			"PriceTypeAsString": "Mobile",
 			"PriceValue": 50,
-			"Count": 1
+			"Count": 1,
+			"Experience": 1
 		},{
 			"Name": "Конвертер",
 			"Description": "Меняет цвет соседних элементов",
 			"TypeAsString": "Envelop",
 			"MinExperience": 60,
 			"PriceTypeAsString": "Mobile",
-			"PriceValue": 60
+			"PriceValue": 60,
+			"Experience": 1
 		},{
 			"Name": "Розовые очки",
 			"Description": "Убрать один цвет с поля на {0} ходов",
@@ -79,21 +84,24 @@
 			"MinExperience": 70,
 			"PriceTypeAsString": "Ring",
 			"PriceValue": 70,
-			"Turns": 5
+			"Turns": 5,
+			"Experience": 2
 		},{
 			"Name": "Пырнуть голубя",
 			"Description": "Убирает одного голубя",
 			"TypeAsString": "KillEater",
 			"MinExperience": 70,
 			"PriceTypeAsString": "Money",
-			"PriceValue": 70
+			"PriceValue": 70,
+			"Experience": 1
 		},{
 			"Name": "Воздушка",
 			"Description": "Убрать всех голубей",
 			"TypeAsString": "KillAllEaters",
 			"MinExperience": 70,
 			"PriceTypeAsString": "Money",
-			"PriceValue": 70
+			"PriceValue": 70,
+			"Experience": 2
 		},{
 			"Name": "Задавить базаром",
 			"Description": "Урон врагу {0}%",
@@ -101,7 +109,8 @@
 			"Damage":	10,
 			"MinExperience": 70,
 			"PriceTypeAsString": "Energy",
-			"PriceValue": 70
+			"PriceValue": 70,
+			"Experience": 1
 		},{
 			"Name": "Удар с ноги ",
 			"Description": "Урон врагу {0}%",
@@ -109,7 +118,8 @@
 			"Damage":	100,
 			"MinExperience": 70,
 			"PriceTypeAsString": "Energy",
-			"PriceValue": 70
+			"PriceValue": 70,
+			"Experience": 2
 		},{
 			"Name": "Двойной удар",
 			"Description": "Урон врагу {0}%",
@@ -117,7 +127,8 @@
 			"Damage":	200,
 			"MinExperience": 70,
 			"PriceTypeAsString": "Energy",
-			"PriceValue": 70
+			"PriceValue": 70,
+			"Experience": 3
 		},{
 			"Name": "Песок в глаза",
 			"Description": "Замедлить врага на {0}% на {1} ходов",
@@ -126,7 +137,8 @@
 			"Turns": 6,
 			"MinExperience": 70,
 			"PriceTypeAsString": "Money",
-			"PriceValue": 70
+			"PriceValue": 70,
+			"Experience": 1
 		},{
 			"Name": "Сбить с ног",
 			"Description": "Оглушает врага на {0} хода",
@@ -134,7 +146,8 @@
 			"Turns": 4,
 			"MinExperience": 70,
 			"PriceTypeAsString": "Money",
-			"PriceValue": 70
+			"PriceValue": 70,
+			"Experience": 2
 		},{
 			"Name": "Оглушить",
 			"Description": "Оглушает врага на {0} ходов",
@@ -142,7 +155,8 @@
 			"Turns": 8,
 			"MinExperience": 70,
 			"PriceTypeAsString": "Ring",
-			"PriceValue": 70
+			"PriceValue": 70,
+			"Experience": 2
 		},{
 			"Name": "Энергия",
 			"Description": "{0}% мощности, действует {1} ходов",
@@ -151,7 +165,8 @@
 			"Turns": 8,
 			"MinExperience": 70,
 			"PriceTypeAsString": "Ring",
-			"PriceValue": 70
+			"PriceValue": 70,
+			"Experience": 1
 		},{
 			"Name": "Неуязвимость",
 			"Description": "Нулевой урон на {0} ходов",
@@ -159,7 +174,8 @@
 			"Turns": 8,
 			"MinExperience": 70,
 			"PriceTypeAsString": "Ring",
-			"PriceValue": 70
+			"PriceValue": 70,
+			"Experience": 1
 		},{
 			"Name": "Лечение",
 			"Description": "Востанавливает {0}% здоровья",
@@ -167,7 +183,8 @@
 			"Health": 30,
 			"MinExperience": 0,
 			"PriceTypeAsString": "Money",
-			"PriceValue": 30
+			"PriceValue": 30,
+			"Experience": 1
 		},{
 			"Name": "Супер лечение",
 			"Description": "Востанавливает {0}% здоровья",
@@ -175,7 +192,8 @@
 			"Health": 90,
 			"MinExperience": 50,
 			"PriceTypeAsString": "Money",
-			"PriceValue": 30
+			"PriceValue": 30,
+			"Experience": 2
 		}],
 
 	"PriceData": [{

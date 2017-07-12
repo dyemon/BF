@@ -31,6 +31,7 @@ public class HeroSkillData {
 	public bool IsStun = true;
 
 	public string ResultText;
+	public int Experience;
 
 	public void init() {
 		if(!string.IsNullOrEmpty(TypeAsString)) {

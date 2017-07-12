@@ -14,6 +14,9 @@ public class GameResources {
 	public delegate void OnUpdateInfinityEnergy(int value);
 	public event OnUpdateInfinityEnergy onUpdateInfinityEnergy;
 
+	public delegate void OnUpdateExperience(int value);
+	public event OnUpdateExperience onUpdateExperience;
+
 	private int currentLevelId = 0;
 	private LevelData currentLevelData = null;
 	private GameData gameData = null;
@@ -195,7 +198,7 @@ public class GameResources {
 		saveUserDataLocal(data);
 
 		if(onUpdateUserAsset != null) {
-			onUpdateUserAsset(type, value);
+			onUpdateUserAsset(type, asset.Value);
 		}
 
 		return true;
@@ -288,5 +291,15 @@ public class GameResources {
 		}
 
 		return uData.InfinityEnergyDuration > 0;
+	}
+
+	public void IncreaseExperience(int exp) {
+		UserData uData = GetUserData();
+		uData.Experience += exp;
+		saveUserDataLocal(uData);
+
+		if(onUpdateExperience != null) {
+			onUpdateExperience(uData.Experience);
+		}
 	}
 }
