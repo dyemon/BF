@@ -203,4 +203,14 @@ public class SceneController : MonoBehaviour {
 
 		LoadSceneAdditive(sceneName, type, false);
 	}
+
+	public void LoadCurrentLevel() {
+		LevelData levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
+		if(!GameResources.Instance.ChangeUserAsset(UserAssetType.Energy, -levelData.LevelPrice)) {
+			ShowUserAssetsScene(UserAssetType.Energy, true);
+			return;
+		}
+		LoadSceneAsync(GameController.SceneName);
+	
+	}
 }

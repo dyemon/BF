@@ -7,6 +7,7 @@ using System.Linq;
 
 [RequireComponent(typeof(AnimationGroup))]
 public class GameController : MonoBehaviour {
+	public const string SceneName = "Game";
 	private static float TILESYOFFSET = 0.25f;
 
 	public static GameController Instance;
@@ -2243,6 +2244,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void LevelSuccess() {
+		GameResources.Instance.LevelSuccess(App.GetCurrentLevel());
 		SceneController.Instance.LoadSceneAsync("LevelSuccess");
 	}
 
@@ -3106,7 +3108,7 @@ public class GameController : MonoBehaviour {
 		Vector3 end =  Camera.main.WorldToScreenPoint(Hero.transform.position + new Vector3(0f, 0.5f, 0f));
 		Vector3 direction = (end - start).normalized;
 		float dist = Vector3.Distance(start, end);
-		Vector3 end1 = start + direction * dist * 0.05f;
+		Vector3 end1 = start + direction * dist * 0.1f;
 
 		GameObject animAward = Instantiate(AwardTileItem, canvas.transform);
 		Image img = animAward.transform.Find("Image").gameObject.GetComponent<Image>();
@@ -3116,15 +3118,12 @@ public class GameController : MonoBehaviour {
 	//	text.color = award.Type.ToColor();
 
 		AnimatedObject ao = animAward.GetComponent<AnimatedObject>();
+		float time1 = App.GetMoveTime(UIMoveType.AWARDTILEITEM_1);
+		float time2 = App.GetMoveTime(UIMoveType.AWARDTILEITEM_2);
 
-		float speed1 = App.GetTileItemSpeed(TileItemMoveType.AWARDTILEITEM_1);
-		float time1 = AMove.CalcTime(start, end1, speed1);
-		float speed2 = App.GetTileItemSpeed(TileItemMoveType.AWARDTILEITEM_2);
-		float time2 = AMove.CalcTime(end1, end, speed2);
-
-		ao.AddMove(start, end1, speed1).AddResize(null, new Vector3(1.7f, 1.7f, 1f), time1).Build()
-			.AddIdle(0.2f).Build()
-			.AddMove(null, end, speed2).AddResize(null, new Vector3(1f, 1f, 1f), time2)
+		ao.AddMoveByTime(start, end1, time1).AddResize(null, new Vector3(1.5f, 1.5f, 1f), time1).Build()
+			.AddIdle(0.1f).Build()
+			.AddMoveByTime(null, end, time2).AddResize(null, new Vector3(1f, 1f, 1f), time2)
 			.OnStop(() => {} ).Build()
 			.Run();
 
@@ -3151,17 +3150,17 @@ public class GameController : MonoBehaviour {
 
 		Vector3 start = Camera.main.WorldToScreenPoint(Hero.transform.position);
 		start.x = Screen.width/2;
-		Vector3 end1 = start + new Vector3(0, 300, 0);
-		Vector3 end2 = start + new Vector3(0, 500, 0);
+		float dist = Screen.height / 2f + Screen.height / 3f - start.y;
+		float dist1 = dist * 2 / 3;
+		Vector3 end1 = start + new Vector3(0, dist1, 0);
+		Vector3 end2 = start + new Vector3(0, dist, 0);
 
-		float speed1 = App.GetTileItemSpeed(TileItemMoveType.AWARD_EXPERIENCE_1);
-		float time1 = AMove.CalcTime(start, end1, speed1);
-		float speed2 = App.GetTileItemSpeed(TileItemMoveType.AWARD_EXPERIENCE_2);
-		float time2 = AMove.CalcTime(end1, end2, speed2);
+		float time1 = App.GetMoveTime(UIMoveType.AWARD_EXPERIENCE_1);
+		float time2 = App.GetMoveTime(UIMoveType.AWARD_EXPERIENCE_2);
 
 		AnimatedObject ao = animAward.GetComponent<AnimatedObject>();
-		ao.AddMove(start, end1, speed1).Build()
-			.AddMove(null, end2, speed2).AddFadeUI(null, 0f, time2)
+		ao.AddMoveByTime(start, end1, time1).Build()
+			.AddMoveByTime(null, end2, time2).AddFadeUI(null, 0f, time2)
 			.OnStop(() => {} ).Build()
 			.Run();
 		

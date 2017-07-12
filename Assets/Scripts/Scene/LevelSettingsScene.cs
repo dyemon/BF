@@ -7,16 +7,21 @@ public class LevelSettingsScene : WindowScene {
 	public OnOffButton SoundButton;
 	public OnOffButton MusicButton;
 	public Text Description;
+	public GameObject RepeatButton;
 
 	private LocalSettingsData localSettings;
 
 	void Start() {
+		LevelData levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
+
 		localSettings = GameResources.Instance.GetLocalSettings();
 		SoundButton.Toggle(localSettings.SoundOn);
 		MusicButton.Toggle(localSettings.MusicOn);
 
-		LevelData levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
 		Description.text = App.GetCurrentLevel().ToString() + ": " + levelData.Name;
+
+		RepeatButton.GetComponent<BuyButton>().Init(UserAssetType.Energy, levelData.LevelPrice, null);
+
 	}
 
 	public void OnCapitulate () {

@@ -129,12 +129,10 @@ public class LombardScene : WindowScene {
 		
 		GameObject animImg = Instantiate(assetImg, assetImg.transform);
 		AnimatedObject ao = animImg.AddComponent<AnimatedObject>();
-
-		float speed = App.GetTileItemSpeed(TileItemMoveType.BUY_USERASSET);
+		float time = App.GetMoveTime(UIMoveType.BUY_USERASSET);
 		Vector3 end = userDataPanel.GetUserAssetsIcon(currentAsset).transform.position;
-		float time = AMove.CalcTime(animImg.transform.position, end, speed);
 
-		ao.AddMove(null, end, speed).AddResize(null, new Vector3(0.5f, 0.5f, 1f), time)
+		ao.AddMoveByTime(null, end, time).AddResize(null, new Vector3(0.5f, 0.5f, 1f), time)
 		.OnStop(() => CompleteBuyUserAsset(currentAsset, count, animImg) )
 		.Build().Run();
 

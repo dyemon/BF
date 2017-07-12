@@ -143,17 +143,16 @@ public class EnergyScene : WindowScene {
 		}
 
 		AnimatedObject ao = animImg.AddComponent<AnimatedObject>();
-
-		float speed = App.GetTileItemSpeed(TileItemMoveType.BUY_USERASSET);
+		float time = App.GetMoveTime(UIMoveType.BUY_USERASSET);
+	
 		Vector3 end;
 		if(!isInfinity) {
 			end = userDataPanel.GetUserAssetsIcon(UserAssetType.Energy).transform.position;
 		} else {
 			end = userDataPanel.GetInfinityEnergyObject().transform.position;
 		}
-		float time = AMove.CalcTime(animImg.transform.position, end, speed);
 
-		ao.AddMove(null, end, speed).AddResize(null, new Vector3(0.5f, 0.5f, 1f), time)
+		ao.AddMoveByTime(null, end, time).AddResize(null, new Vector3(0.5f, 0.5f, 1f), time)
 			.OnStop(() => CompleteBuyUserAsset(UserAssetType.Energy, count, animImg, isInfinity) )
 			.Build().Run();
 	}

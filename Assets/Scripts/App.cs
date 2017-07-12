@@ -8,6 +8,7 @@ public class App {
 	public static readonly float SlimeAnimationTime = 0.2f;
 
 	private static IDictionary<TileItemMoveType, float> tileItemMoveType = new Dictionary<TileItemMoveType, float>();
+	private static IDictionary<UIMoveType, float> uiMoveType = new Dictionary<UIMoveType, float>();
 
 	private static float moveTileItemTimeUnit = 0f;
 
@@ -19,11 +20,14 @@ public class App {
 		tileItemMoveType.Add(TileItemMoveType.GENERATED_TILEITEM_DROP, 5f);
 		tileItemMoveType.Add(TileItemMoveType.EATER, 10f);
 		tileItemMoveType.Add(TileItemMoveType.HERO_SKILL, 15f);
-		tileItemMoveType.Add(TileItemMoveType.BUY_USERASSET, 1500f);
-		tileItemMoveType.Add(TileItemMoveType.AWARDTILEITEM_1, 300f);
-		tileItemMoveType.Add(TileItemMoveType.AWARDTILEITEM_2, 800f);
-		tileItemMoveType.Add(TileItemMoveType.AWARD_EXPERIENCE_1, 400f);
-		tileItemMoveType.Add(TileItemMoveType.AWARD_EXPERIENCE_2, 300f);
+
+		uiMoveType.Add(UIMoveType.BUY_USERASSET, 0.7f);
+		uiMoveType.Add(UIMoveType.AWARDTILEITEM_1, 0.2f);
+		uiMoveType.Add(UIMoveType.AWARDTILEITEM_2, 0.5f);
+		uiMoveType.Add(UIMoveType.AWARD_EXPERIENCE_1, 0.7f);
+		uiMoveType.Add(UIMoveType.AWARD_EXPERIENCE_2, 0.5f);
+		uiMoveType.Add(UIMoveType.FAILURE_AWARD_1, 0.3f);
+		uiMoveType.Add(UIMoveType.FAILURE_AWARD_2, 0.5f);
 	}
 
 	public static float MoveTileItemTimeUnit {
@@ -38,6 +42,10 @@ public class App {
 
 	public static float GetTileItemSpeed(TileItemMoveType type) {
 		return tileItemMoveType[type];
+	}
+
+	public static float GetMoveTime(UIMoveType type) {
+		return uiMoveType[type];
 	}
 
 	public static int GetCurrentLevel() {

@@ -2,6 +2,7 @@
 	"Id": "1",
     "Name": "Level 4", 
     "Description": "",
+	"LevelPrice": 30,
 	"FightLocationTypeAsString": "Rayon5",
 	 "TileItemDropPercent": [20, 20, 20, 20, 20],
 
@@ -151,6 +152,9 @@
 	}, {
 		"Count": 5, 
 		"TypeAsString": "Green"
+	}, {
+		"Count": 1, 
+		"TypeAsString": "Enemy"
 	}],
 
 	"RestrictionData": {
@@ -160,7 +164,7 @@
 	"EnemyData": {
 		"TypeAsString": "Sipliy",
 		"Health": 80,
-		"Damage": 10,
+		"Damage": 40,
 		"SkillRatio": 1,
 		"SkillData": [{
 				"TypeAsString": "Eater",
@@ -193,7 +197,7 @@
 	"SuccessAwardData": {
 		"Experience": 10,
 		"UserAssets": [
-		 {"TypeAsString": "Energy", "Value":	1},
+		 {"TypeAsString": "Energy", "Value":	2},
 		 {"TypeAsString": "Mobile", "Value":	1},
 		 {"TypeAsString": "Ring", "Value":	5},
 		 {"TypeAsString": "Star", "Value":	1}
@@ -205,8 +209,7 @@
 		"UserAssets": [
 		 {"TypeAsString": "Energy", "Value":	1},
 		 {"TypeAsString": "Mobile", "Value":	2},
-		 {"TypeAsString": "Ring", "Value":	1},
-		 {"TypeAsString": "Star", "Value":	0}
+		 {"TypeAsString": "Ring", "Value":	1}
 		]
 	}
 

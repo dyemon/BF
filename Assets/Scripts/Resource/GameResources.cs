@@ -302,4 +302,14 @@ public class GameResources {
 			onUpdateExperience(uData.Experience);
 		}
 	}
+
+	public void LevelSuccess(int level) {
+		UserData uData = GetUserData();
+	//	Preconditions.Check(level <= uData.Level, "Level {0} grater then user current level {1}", level, uData.Level);
+		uData.OnSuccessLevel(level);
+		if(level == uData.Level) {
+			uData.Level++;
+		}
+		saveUserDataLocal(uData);
+	}
 }

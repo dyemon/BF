@@ -19,6 +19,10 @@ public class SceneControllerHelper : Singleton<SceneController>  {
 		instance.UnloadScene(name);
 	}
 
+	public void LoadCurrentLevel() {
+		instance.LoadCurrentLevel();
+	}
+
 	public void Quit() {
 		Application.Quit();
 	}

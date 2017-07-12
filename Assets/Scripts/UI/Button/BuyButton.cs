@@ -13,8 +13,12 @@ public class BuyButton : MonoBehaviour {
 		}
 
 		if(amount != null) {
+			bool forNothing = false;
+			if(type != null && type == UserAssetType.Energy) {
+				forNothing = GameResources.Instance.GetUserData().InfinityEnergyDuration > 0;
+			}
 			Text text = UnityUtill.FindByName(transform, "PriceAmount").GetComponent<Text>();
-			text.text = amount.ToString();
+			text.text = (forNothing)? "0" : amount.ToString();
 			if(textColor != null) {
 				text.color = textColor.Value;
 			} else if(type != null) {

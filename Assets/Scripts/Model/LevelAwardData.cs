@@ -11,7 +11,8 @@ public class LevelAwardData {
 
 	public void Init() {
 		foreach(AwardItem item in UserAssets) {
-			assets[EnumUtill.Parse<UserAssetType>(item.TypeAsString)] = item.Value;
+			item.Type = EnumUtill.Parse<UserAssetType>(item.TypeAsString);
+			assets[item.Type] = item.Value;
 		}
 	}
 
@@ -30,5 +31,9 @@ public class LevelAwardData {
 
 	public int GetAsset(UserAssetType type) {
 		return assets.ContainsKey(type) ? assets[type] : 0;
+	}
+
+	public AwardItem GetRandomAwardItem() {
+		return UserAssets.Length > 0? UserAssets[Random.Range(0, UserAssets.Length)] : null;
 	}
 }

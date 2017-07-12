@@ -55,7 +55,9 @@ public class AMove : IABase {
 	public bool Animate(GameObject gameObject) {
 		if(startPos == null) {
 			startPos = gameObject.transform.position;
-			time = CalcTime(startPos.Value, movePos, speed);
+			if(time == 0 && speed > 0) {
+				time = CalcTime(startPos.Value, movePos, speed);
+			}
 			startDurationTime = time;
 		}
 
