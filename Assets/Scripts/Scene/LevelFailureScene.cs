@@ -16,6 +16,7 @@ public class LevelFailureScene : MonoBehaviour {
 	public UserAssetsPanel AssetPanel;
 	public Button[] AwardButtons;
 
+
 	public GameObject AwardTileItem;
 
 	public GameObject CloseButton;
@@ -53,7 +54,9 @@ public class LevelFailureScene : MonoBehaviour {
 
 		Experience.GetComponent<BuyButton>().Init(null, GameController.CollectLevelAward.Experience, null, UserAssetTypeExtension.ExperienceColor);
 
-		bool showAward = successCount == 0; 
+		bool capNotEnded = ParametersController.Instance.GetBool(ParametersController.CAPITULATE_NOT_ENDED);
+		ParametersController.Instance.SetParameter(ParametersController.CAPITULATE_NOT_ENDED, false);
+		bool showAward = successCount == 0 && !capNotEnded; 
 
 		foreach(Button b in AwardButtons) {
 			b.gameObject.SetActive(showAward);

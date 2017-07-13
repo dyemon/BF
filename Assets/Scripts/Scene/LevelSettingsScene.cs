@@ -25,17 +25,10 @@ public class LevelSettingsScene : WindowScene {
 	}
 
 	public void OnCapitulate () {
-		ModalPanels.Show(ModalPanelName.ConfirmPanel, "Вы действительно хотите сдаться?", OnCapitulateYes, null, null);
+		ParametersController.Instance.SetParameter(ParametersController.CAPITULATE_NOT_ENDED, true);
+		SceneController.Instance.LoadSceneAsync(LevelFailureScene.SceneName);
 	}
 
-	public void OnCapitulateYes () {
-		GameResources.Instance.SaveUserData(null, true);
-		SceneController.Instance.LoadSceneAsync("Map");
-	}
-		
-	public void OnCapitulateCancel () {
-		ModalPanels.ClosePanel(ModalPanelName.ConfirmPanel);
-	}
 
 	public void OnSoundButton() {
 		localSettings.SoundOn	= !localSettings.SoundOn;

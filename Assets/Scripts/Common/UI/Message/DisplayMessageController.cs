@@ -13,11 +13,11 @@ public class DisplayMessageController : MonoBehaviour {
 
 	private Vector3 endPos;
 
-	private Canvas c;
+	public Canvas c;
 
 	void Awake () {
 		Instance = this;
-		c = Preconditions.NotNull(DisplayText.transform.GetComponentInParent<Canvas>(), "Can not get canvas");
+	//	c = Preconditions.NotNull(DisplayText.transform.GetComponentInParent<Canvas>(), "Can not get canvas");
 	}
 
 	void Start() {

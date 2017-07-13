@@ -147,10 +147,10 @@
         }], 
 		
    "TargetData": [{
-		"Count": 5, 
+		"Count": 20, 
 		"TypeAsString": "Red"
 	}, {
-		"Count": 5, 
+		"Count": 20, 
 		"TypeAsString": "Green"
 	}, {
 		"Count": 1, 
@@ -158,13 +158,13 @@
 	}],
 
 	"RestrictionData": {
-        "Turns": 10
+        "Turns": 25
     },
 
 	"EnemyData": {
 		"TypeAsString": "Sipliy",
 		"Health": 80,
-		"Damage": 40,
+		"Damage": 30,
 		"SkillRatio": 1,
 		"SkillData": [{
 				"TypeAsString": "Eater",
