@@ -18,4 +18,16 @@ public class DateTimeUtill {
 		int min = minutes % 60;
 		return string.Format("{0}:{1}", ((hour > 9) ? hour.ToString() : "0" + hour), ((min > 9) ? min.ToString() : "0" + min));
 	}
+
+	public static bool IsYesterday(long now, long check) {
+		DateTime nowdt = ConvertFromUnixTimestamp(now);
+		DateTime checkdt = ConvertFromUnixTimestamp(check);
+		return nowdt.Date.AddDays(-1) == checkdt.Date;
+	}
+
+	public static bool IsToday(long now, long check) {
+		DateTime nowdt = ConvertFromUnixTimestamp(now);
+		DateTime checkdt = ConvertFromUnixTimestamp(check);
+		return nowdt.Date == checkdt.Date;
+	}
 }

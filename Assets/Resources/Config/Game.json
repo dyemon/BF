@@ -242,5 +242,14 @@
 		"Turns":	5,
 		"PriceTypeAsString":	"Money",
 		"PriceValue":	50
-	} 
+	},
+
+	"DailyBonusData": {
+		"GreatestBonus":  {"TypeAsString": "Money", "Value":	3},
+		"DailyBonuses": [
+		 {"TypeAsString": "Mobile", "Value":	2},
+		 {"TypeAsString": "Ring", "Value":	2},
+		 {"TypeAsString": "Money", "Value":	1}
+		]
+	}
 }

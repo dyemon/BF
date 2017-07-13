@@ -98,7 +98,9 @@ public class SceneController : MonoBehaviour {
 	private IEnumerator UnloadSceneInternal(string name, System.Object retVal) {
 		yield return SceneManager.UnloadSceneAsync(name);
 		loaddedScenes.Remove(name);
-		onUnloadScene(name, retVal);
+		if(onUnloadScene != null) {
+			onUnloadScene(name, retVal);
+		}
 	}
 
 	public void LoadSceneAsync(string name) {

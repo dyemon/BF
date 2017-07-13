@@ -147,14 +147,11 @@
         }], 
 		
    "TargetData": [{
-		"Count": 20, 
+		"Count": 2, 
 		"TypeAsString": "Red"
 	}, {
-		"Count": 20, 
+		"Count": 2, 
 		"TypeAsString": "Green"
-	}, {
-		"Count": 1, 
-		"TypeAsString": "Enemy"
 	}],
 
 	"RestrictionData": {

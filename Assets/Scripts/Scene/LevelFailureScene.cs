@@ -56,6 +56,10 @@ public class LevelFailureScene : MonoBehaviour {
 
 		bool capNotEnded = ParametersController.Instance.GetBool(ParametersController.CAPITULATE_NOT_ENDED);
 		ParametersController.Instance.SetParameter(ParametersController.CAPITULATE_NOT_ENDED, false);
+		if(!capNotEnded) {
+			ParametersController.Instance.SetParameter(ParametersController.CAN_SHOW_DAILYBONUS, true);
+		}
+
 		bool showAward = successCount == 0 && !capNotEnded; 
 
 		foreach(Button b in AwardButtons) {
@@ -83,29 +87,13 @@ public class LevelFailureScene : MonoBehaviour {
 			OnCompleteAward(null);
 			return;
 		}
-
+			
 		Vector3 start = target.transform.position;
 		Vector3 end = AssetPanel.GetUserAssetsIcon(award.Type).transform.position;
-		Vector3 direction = (end - start).normalized;
-		float dist = Vector3.Distance(start, end);
-		Vector3 end1 = start + direction * dist * 0.1f;
-
 		GameObject animAward = Instantiate(AwardTileItem, transform);
-		Image img = animAward.transform.Find("Image").gameObject.GetComponent<Image>();
-		img.sprite = GOResources.GetUserAssetIcone(award.Type);
-		Text text = animAward.transform.Find("Text").gameObject.GetComponent<Text>();
-		text.text = award.Value.ToString();
-		//	text.color = award.Type.ToColor();
-
-		AnimatedObject ao = animAward.GetComponent<AnimatedObject>();
-		float time1 = App.GetMoveTime(UIMoveType.FAILURE_AWARD_1);
-		float time2 = App.GetMoveTime(UIMoveType.FAILURE_AWARD_2);
-
-		ao.AddMoveByTime(start, end1, time1).AddResize(null, new Vector3(1.5f, 1.5f, 1f), time1).Build()
-			.AddIdle(0.05f).Build()
-			.AddMoveByTime(null, end, time2).AddResize(null, new Vector3(1f, 1f, 1f), time2)
-			.OnStop(() => {OnCompleteAward(animAward);} ).Build()
-			.Run();
+		float time = Animations.CreateAwardAnimation(animAward, start, end, 
+			GOResources.GetUserAssetIcone(award.Type), award.Value);
+		animAward.GetComponent<AnimatedObject>().OnStop(() => {OnCompleteAward(animAward);} ).Run();
 
 		AssetPanel.DisableUpdate(true);
 		GameResources.Instance.ChangeUserAsset(award.Type, award.Value);

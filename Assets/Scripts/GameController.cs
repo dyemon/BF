@@ -12,7 +12,7 @@ public class GameController : MonoBehaviour {
 
 	public static GameController Instance;
 
-	public GameObjectResources GameObjectResources;
+	public GameObjectResources GOResources;
 
 	public delegate void OnCollectTileItem(TileItem tileItem);
 	public event OnCollectTileItem onCollectTileItem;
@@ -3106,30 +3106,14 @@ public class GameController : MonoBehaviour {
 
 		Vector3 start = Camera.main.WorldToScreenPoint(tileItem.GetGameObject().transform.position);
 		Vector3 end =  Camera.main.WorldToScreenPoint(Hero.transform.position + new Vector3(0f, 0.5f, 0f));
-		Vector3 direction = (end - start).normalized;
-		float dist = Vector3.Distance(start, end);
-		Vector3 end1 = start + direction * dist * 0.1f;
-
 		GameObject animAward = Instantiate(AwardTileItem, canvas.transform);
-		Image img = animAward.transform.Find("Image").gameObject.GetComponent<Image>();
-		img.sprite = GameObjectResources.GetUserAssetIcone(award.Type);
-		Text text = animAward.transform.Find("Text").gameObject.GetComponent<Text>();
-		text.text = award.Value.ToString();
-	//	text.color = award.Type.ToColor();
-
-		AnimatedObject ao = animAward.GetComponent<AnimatedObject>();
-		float time1 = App.GetMoveTime(UIMoveType.AWARDTILEITEM_1);
-		float time2 = App.GetMoveTime(UIMoveType.AWARDTILEITEM_2);
-
-		ao.AddMoveByTime(start, end1, time1).AddResize(null, new Vector3(1.5f, 1.5f, 1f), time1).Build()
-			.AddIdle(0.1f).Build()
-			.AddMoveByTime(null, end, time2).AddResize(null, new Vector3(1f, 1f, 1f), time2)
-			.OnStop(() => {} ).Build()
-			.Run();
+		float time = Animations.CreateAwardAnimation(animAward, start, end, 
+			           GOResources.GetUserAssetIcone(award.Type), award.Value);
+		animAward.GetComponent<AnimatedObject>().Run();
 
 		CollectLevelAward.IncreaseAsset(award.Type, award.Value);
 
-		Destroy(animAward, time1 + time2 + 0.3f);
+		Destroy(animAward, time + 0.1f);
 
 		GameResources.Instance.ChangeUserAsset(award.Type, award.Value);
 		GameResources.Instance.IncreaseTileItemCollect(tileItem.Type, App.GetCurrentLevel());
@@ -3144,7 +3128,7 @@ public class GameController : MonoBehaviour {
 
 		GameObject animAward = Instantiate(AwardTileItem, canvas.transform);
 		Image img = animAward.transform.Find("Image").gameObject.GetComponent<Image>();
-		img.sprite = GameObjectResources.GetUserExperienceIcone();
+		img.sprite = GOResources.GetUserExperienceIcone();
 		Text text = animAward.transform.Find("Text").gameObject.GetComponent<Text>();
 		text.text = exp.ToString();
 

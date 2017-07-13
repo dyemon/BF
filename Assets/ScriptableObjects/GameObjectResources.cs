@@ -10,6 +10,7 @@ public class GameObjectResources : ScriptableObject {
 	public Sprite[] HeroSkillIcon;
 	public Sprite[] HeroSkillButtonBg;
 	public Sprite ExperienceIcon;
+	public Sprite[] IconBackground;
 
 	[System.Serializable]
 	public class TargetIcon {
@@ -57,5 +58,22 @@ public class GameObjectResources : ScriptableObject {
 
 	public Sprite GetUserExperienceIcone() {
 		return ExperienceIcon;
+	}
+
+	public Sprite GetIconBackground(UserAssetType type) {
+		switch(type) {
+		case UserAssetType.Money:
+			return IconBackground[0];
+		case UserAssetType.Energy:
+			return IconBackground[4];
+		case UserAssetType.Ring:
+			return IconBackground[8];
+		case UserAssetType.Mobile:
+			return IconBackground[7];
+		case UserAssetType.Star:
+			return IconBackground[6];
+		default:
+			throw new System.Exception("Can not detect background icon for" + type);
+		}
 	}
 }

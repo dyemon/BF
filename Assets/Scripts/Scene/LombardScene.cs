@@ -128,14 +128,13 @@ public class LombardScene : WindowScene {
 			.Find("Icon/Image").gameObject;
 		
 		GameObject animImg = Instantiate(assetImg, assetImg.transform);
-		AnimatedObject ao = animImg.AddComponent<AnimatedObject>();
-		float time = App.GetMoveTime(UIMoveType.BUY_USERASSET);
+		animImg.AddComponent<AnimatedObject>();
 		Vector3 end = userDataPanel.GetUserAssetsIcon(currentAsset).transform.position;
+		Vector3 start = assetImg.transform.position;
 
-		ao.AddMoveByTime(null, end, time).AddResize(null, new Vector3(0.5f, 0.5f, 1f), time)
-		.OnStop(() => CompleteBuyUserAsset(currentAsset, count, animImg) )
-		.Build().Run();
-
+		Animations.CreateAwardAnimation(animImg, start, end, null, null); 
+		animImg.GetComponent<AnimatedObject>()
+			.OnStop(() => CompleteBuyUserAsset(currentAsset, count, animImg) ).Run();
 	}
 
 	void CompleteBuyUserAsset(UserAssetType type, int count, GameObject animImg) {

@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ParametersController : MonoBehaviour {
-	public static ParametersController Instance;
+public class ParametersController {
+	public static ParametersController Instance = new ParametersController();
 	private IDictionary<string, System.Object> param = new  Dictionary<string, System.Object>();
 
 	public const string CAPITULATE_NOT_ENDED = "CAPITULATE_NOT_ENDED";
-
-	void Awake() {
-		Instance = this;
-	}
+	public const string CAN_SHOW_DAILYBONUS = "CAN_SHOW_DAILYBONUS";
+	public const string DAILYBONUS_IS_SHOWN = "DAILYBONUS_IS_SHOWN";
 
 	public void SetParameter(string key, System.Object val) {
 		param[key] = val;

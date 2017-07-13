@@ -25,6 +25,8 @@ public class GameData {
 	public EnergyData EnergyData;
 	public LevelFailureHelpData LevelFailureHelpData;
 
+	public DailyBonusData DailyBonusData;
+
 	public void Init() {
 		/*
 		HeroData["redHBomb"] = new HeroData(TileItemType.RedBombH, 5);
@@ -71,6 +73,7 @@ public class GameData {
 
 		AwardData.init();
 		LevelFailureHelpData.Init();
+		DailyBonusData.Init();
 	}
 
 	public int GetBombRatio(int level) {

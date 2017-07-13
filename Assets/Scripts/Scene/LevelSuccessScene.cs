@@ -66,6 +66,8 @@ public class LevelSuccessScene : MonoBehaviour {
 
 		AssetPanel.DisableUpdate(false);
 		Invoke("UpdateAward", 1);
+
+		ParametersController.Instance.SetParameter(ParametersController.CAN_SHOW_DAILYBONUS, true);
 	}
 	
 	void UpdateAward() {

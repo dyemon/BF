@@ -312,4 +312,11 @@ public class GameResources {
 		}
 		saveUserDataLocal(uData);
 	}
+
+	public void IncrementDailyBonus() {
+		UserData uData = GetUserData();
+		uData.DailyBonus++;
+		uData.DailyBonusTaken = true;
+		saveUserDataLocal(uData);
+	}
 }

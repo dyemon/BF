@@ -19,6 +19,8 @@ public class UserData {
 
 	public long StartInfinityEnergyTimestamp;
 	public int InfinityEnergyDuration;
+	public int DailyBonus;
+	public bool DailyBonusTaken;
 
 	public int Health {
 		get { 
@@ -92,6 +94,8 @@ public class UserData {
 
 	//	StartInfinityEnergyTimestamp = 0;
 		InfinityEnergyDuration = 0;
+		DailyBonus = 1;
+		DailyBonusTaken = false;
 		EnergyTimers.Instance.Init(this);
 	}
 
@@ -108,7 +112,16 @@ public class UserData {
 	}
 
 	public void InitTimestampOnStart() {
-		StartTimestamp = GetCurrentTimestamp();
+		long currentTimestamp = GetCurrentTimestamp();
+
+		if(DateTimeUtill.IsYesterday(currentTimestamp, StartTimestamp)) {
+			DailyBonusTaken = false;
+		} else if(!DateTimeUtill.IsToday(currentTimestamp, StartTimestamp)) {
+			DailyBonusTaken = false;
+			DailyBonus = 1;
+		}
+
+		StartTimestamp = currentTimestamp;
 
 		if(InfinityEnergyDuration > 0) {
 			InfinityEnergyDuration -= (int)Math.Round((StartTimestamp - LastSavedTimestamp)/60f);
@@ -127,6 +140,8 @@ public class UserData {
 				energy.Value = eData.MaxIncreaseCount;
 			}
 		}
+
+
 	}
 
 	public UserAssetData GetAsset(UserAssetType type) {
@@ -186,7 +201,7 @@ public class UserData {
 
 	public long GetCurrentTimestamp() {
 		long now = DateTimeUtill.ConvertToUnixTimestamp(DateTime.Now);
-		return now > LastSavedTimestamp ? now : LastSavedTimestamp;
+		return now;// > LastSavedTimestamp ? now : LastSavedTimestamp;
 	}
 
 	public void AddInfinityEnergy(int duration) {
