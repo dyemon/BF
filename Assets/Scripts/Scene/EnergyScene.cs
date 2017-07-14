@@ -164,7 +164,7 @@ public class EnergyScene : WindowScene {
 		userDataPanel.DisableUpdate(false);
 		if(isInfinity) {
 			userDataPanel.OnUpdateInfinityEnergy(count);
-			EnergyTimers.Instance.StartInfinityTimer();
+			GameTimers.Instance.StartInfinityEnergyTimer();
 		} else {
 			userDataPanel.UpdateUserAssets();
 		}

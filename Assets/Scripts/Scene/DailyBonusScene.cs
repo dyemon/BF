@@ -11,6 +11,7 @@ public class DailyBonusScene : WindowScene {
 	public GameObject BonusesPanel;
 	public Sprite CurrentBonusBg;
 	public UserAssetsPanel AssetsPanel;
+	public GameObject AwardItem;
 
 	void OnDisable() {
 		GameResources.Instance.SaveUserData(null, false);
@@ -68,12 +69,13 @@ public class DailyBonusScene : WindowScene {
 
 		GameObject assetImg = UnityUtill.FindByName(button.transform, "AwardType").gameObject;
 
-		GameObject animImg = Instantiate(assetImg, assetImg.transform);
+		GameObject animImg = Instantiate(AwardItem, assetImg.transform);
 		animImg.AddComponent<AnimatedObject>();
 		Vector3 end = AssetsPanel.GetUserAssetsIcon(award.Type).transform.position;
 		Vector3 start = assetImg.transform.position;
+		Sprite icon = GOResources.GetUserAssetIcone(award.Type);
 
-		Animations.CreateAwardAnimation(animImg, start, end, null, null); 
+		Animations.CreateAwardAnimation(animImg, start, end, icon, award.Value); 
 		animImg.GetComponent<AnimatedObject>()
 			.OnStop(() => {CompleteTakeBonus(animImg);} ).Run();
 

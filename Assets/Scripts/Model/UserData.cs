@@ -96,18 +96,18 @@ public class UserData {
 		InfinityEnergyDuration = 0;
 		DailyBonus = 1;
 		DailyBonusTaken = false;
-		EnergyTimers.Instance.Init(this);
+		GameTimers.Instance.Init(this);
 	}
 
 	public void InitOnStart() {
 		InitTimestampOnStart();
-		EnergyTimers.Instance.Init(this);
+		GameTimers.Instance.Init(this);
 	}
 
 	public void Merge(UserData uData) {
 		InitTimestampOnStart();
 		if(InfinityEnergyDuration > 0) {
-			EnergyTimers.Instance.StartInfinityTimer();
+			GameTimers.Instance.StartInfinityEnergyTimer();
 		}
 	}
 

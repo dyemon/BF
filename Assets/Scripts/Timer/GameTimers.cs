@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Common.Timer;
 
-public class EnergyTimers {
-	public static readonly EnergyTimers Instance = new EnergyTimers();
+public class GameTimers {
+	public static readonly GameTimers Instance = new GameTimers();
 
 	public const string ENERGY_TIMER_CODE = "ENERGY_TIMER_CODE";
 	public const string INFINITY_ENERGY_TIMER_CODE = "INFINITY_ENERGY_TIMER_CODE";
@@ -24,14 +24,14 @@ public class EnergyTimers {
 			.SetPeriod(gData.EnergyData.IncreaseTime * 60).Start();
 
 		if(uData.InfinityEnergyDuration > 0) {
-			StartInfinityTimer();
+			StartInfinityEnergyTimer();
 		}
 
 		TimerController.Instance.onTimer += OnTimer;
 		init = true;
 	}
 
-	public void StartInfinityTimer() {
+	public void StartInfinityEnergyTimer() {
 		Timer t = TimerController.Instance.GetTimer(INFINITY_ENERGY_TIMER_CODE);
 		if(t == null) {
 			t = TimerController.Instance.AddTimer(INFINITY_ENERGY_TIMER_CODE).SetPeriod(60);
@@ -39,7 +39,7 @@ public class EnergyTimers {
 		t.Start();
 	}
 
-	public void StopInfinityTimer() {
+	public void StopInfinityEnergyTimer() {
 		TimerController.Instance.RemoveTimer(INFINITY_ENERGY_TIMER_CODE);
 	}
 
@@ -56,7 +56,7 @@ public class EnergyTimers {
 		case INFINITY_ENERGY_TIMER_CODE:
 			bool live = GameResources.Instance.DecreaseInfinityEnergy(1);
 			if(!live) {
-				StopInfinityTimer();
+				StopInfinityEnergyTimer();
 			}
 			break;
 		}
