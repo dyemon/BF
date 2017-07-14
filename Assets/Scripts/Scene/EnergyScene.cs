@@ -152,7 +152,7 @@ public class EnergyScene : WindowScene {
 			end = userDataPanel.GetInfinityEnergyObject().transform.position;
 		}
 
-		Animations.CreateAwardAnimation(animImg, animImg.transform.position , end, null, null); 
+		Animations.CreateAwardAnimation(animImg, animImg.transform.position , end, null, null, new Vector3(0.5f, 0.5f,1)); 
 		animImg.GetComponent<AnimatedObject>()
 			.OnStop(() => CompleteBuyUserAsset(UserAssetType.Energy, count, animImg, isInfinity) ).Run();
 	}

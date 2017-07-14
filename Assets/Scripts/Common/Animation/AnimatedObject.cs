@@ -140,33 +140,38 @@ public class AnimatedObject : MonoBehaviour {
 		return this;
 	}
 		
-	public AnimatedObject AddMove(Vector3? start, Vector3 end, float speed, bool ui = false) {
-		IABase a = new AMove(start, end, speed, ui);
+	public AnimatedObject AddMove(Vector3? start, Vector3 end, float speed, ABase.BezierPoints points = null) {
+		ABase a = new AMove(start, end, speed);
+		a.SetBezierPoints(points);
 		getCurrentAnimation().AddAnimation(AnimationType.Move, a);
 		return this;
 	}
 		
-	public AnimatedObject AddResize(Vector3? start, Vector3 end, float time) {
-		IABase a = new AResize(start, end, time);
+	public AnimatedObject AddResize(Vector3? start, Vector3 end, float time, ABase.BezierPoints points = null) {
+		ABase a = new AResize(start, end, time);
+		a.SetBezierPoints(points);
 		getCurrentAnimation().AddAnimation(AnimationType.Resize, a);
 		return this;
 	}
 
-	public AnimatedObject AddRotate(Vector3? start, Vector3 end, float time) {
-		IABase a = new ARotate(start, end, time);
+	public AnimatedObject AddRotate(Vector3? start, Vector3 end, float time, ABase.BezierPoints points = null) {
+		ABase a = new ARotate(start, end, time);
+		a.SetBezierPoints(points);
 		getCurrentAnimation().AddAnimation(AnimationType.Rotate, a);
 		return this;
 	}
 
-	public AnimatedObject AddMoveByTime(Vector3? start, Vector3 end, float time) {
+	public AnimatedObject AddMoveByTime(Vector3? start, Vector3 end, float time, ABase.BezierPoints points = null) {
 		AMove a = new AMove(start, end);
 		a.SetTime(time);
+		a.SetBezierPoints(points);
 		getCurrentAnimation().AddAnimation(AnimationType.Move, a);
 		return this;
 	}
 
-	public AnimatedObject AddFade(float? startAlpha, float endAlpha, float time) {
-		IABase a = new AFade(startAlpha, endAlpha, time);
+	public AnimatedObject AddFade(float? startAlpha, float endAlpha, float time, ABase.BezierPoints points = null) {
+		ABase a = new AFade(startAlpha, endAlpha, time);
+		a.SetBezierPoints(points);
 		getCurrentAnimation().AddAnimation(AnimationType.Fade, a);
 		return this;
 	}
@@ -176,14 +181,16 @@ public class AnimatedObject : MonoBehaviour {
 		return this;
 	}
 
-	public AnimatedObject AddFadeUIText(float? startAlpha, float endAlpha, float time) {
-		IABase a = new AFadeUIText(startAlpha, endAlpha, time);
+	public AnimatedObject AddFadeUIText(float? startAlpha, float endAlpha, float time, ABase.BezierPoints points = null) {
+		ABase a = new AFadeUIText(startAlpha, endAlpha, time);
+		a.SetBezierPoints(points);
 		getCurrentAnimation().AddAnimation(AnimationType.Fade, a);
 		return this;
 	}
 
-	public AnimatedObject AddFadeUI(float? startAlpha, float endAlpha, float time) {
-		IABase a = new AFadeUI(startAlpha, endAlpha, time);
+	public AnimatedObject AddFadeUI(float? startAlpha, float endAlpha, float time, ABase.BezierPoints points = null) {
+		ABase a = new AFadeUI(startAlpha, endAlpha, time);
+		a.SetBezierPoints(points);
 		getCurrentAnimation().AddAnimation(AnimationType.Fade, a);
 		return this;
 	}
@@ -221,7 +228,7 @@ public class AnimatedObject : MonoBehaviour {
 			return false;
 		}
 
-		IABase a = animation.GetAnimation(type);
+		ABase a = animation.GetAnimation(type);
 		if(a == null) {
 			return false;
 		}

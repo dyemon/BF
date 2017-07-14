@@ -127,12 +127,13 @@ public class LombardScene : WindowScene {
 		GameObject assetImg = UnityUtill.FindByName(Offers.transform, "BuyButton" + count)
 			.Find("Icon/Image").gameObject;
 		
-		GameObject animImg = Instantiate(assetImg, assetImg.transform);
+		GameObject animImg = Instantiate(assetImg, assetImg.transform.position, Quaternion.identity);
+		animImg.transform.SetParent(transform);
 		animImg.AddComponent<AnimatedObject>();
 		Vector3 end = userDataPanel.GetUserAssetsIcon(currentAsset).transform.position;
 		Vector3 start = assetImg.transform.position;
 
-		Animations.CreateAwardAnimation(animImg, start, end, null, null); 
+		Animations.CreateAwardAnimation(animImg, start, end, null, null, new Vector3(0.5f, 0.5f,1)); 
 		animImg.GetComponent<AnimatedObject>()
 			.OnStop(() => CompleteBuyUserAsset(currentAsset, count, animImg) ).Run();
 	}

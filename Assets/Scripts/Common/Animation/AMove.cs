@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class AMove : IABase {
+public class AMove : ABase {
 
 	private Vector3? startPos;
 	private Vector3 movePos;
@@ -12,7 +12,7 @@ public class AMove : IABase {
 	private float startDurationTime;
 	private bool isComplete = false;
 
-	public AMove(Vector3? startPos, Vector3 movePos, float speed, bool ui) {
+	public AMove(Vector3? startPos, Vector3 movePos, float speed) {
 		this.startPos = startPos;
 		this.movePos = movePos;
 		this.speed = speed;
@@ -47,12 +47,12 @@ public class AMove : IABase {
 		return speed;
 	}
 
-	public void Run() {
+	public override void Run() {
 		startTime = UnityEngine.Time.time;
 		startDurationTime = time;
 	}
 
-	public bool Animate(GameObject gameObject) {
+	public override bool Animate(GameObject gameObject) {
 		if(startPos == null) {
 			startPos = gameObject.transform.position;
 			if(time == 0 && speed > 0) {
@@ -64,15 +64,17 @@ public class AMove : IABase {
 		float delta = UnityEngine.Time.time - startTime;
 		time = startDurationTime - delta;
 		float t = (time <= 0)? 1f : delta/startDurationTime;
+		t = SmothTime(t);
 
-		gameObject.transform.position = Vector3.Lerp(startPos.Value, movePos, t);
+		gameObject.transform.position = Vector3.Lerp(startPos.Value, movePos, t );
 
 		isComplete = !(time > 0);
+		Debug.Log(gameObject.transform.position);
 
 		return (time > 0);
 	}
 
-	public bool IsCompleteAnimation() {
+	public override bool IsCompleteAnimation() {
 		return isComplete;
 	}
 }

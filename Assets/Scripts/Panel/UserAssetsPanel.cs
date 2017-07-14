@@ -77,7 +77,7 @@ public class UserAssetsPanel : MonoBehaviour {
 	}
 
 	public GameObject GetUserAssetsIcon(UserAssetType type) {
-		return GetUserAssetItem(type).gameObject;
+		return GetUserAssetItem(type).Find("Image").gameObject;
 	}
 	public GameObject GetInfinityEnergyObject() {
 		return InfinityEnergy;

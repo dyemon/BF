@@ -3,23 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Animation {
-	private IDictionary<AnimationType, List<IABase>> animations = new Dictionary<AnimationType, List<IABase>>();
+	private IDictionary<AnimationType, List<ABase>> animations = new Dictionary<AnimationType, List<ABase>>();
 	public int? LayerSortingOrder { get; set;}
 
-	public void AddAnimation(AnimationType type, IABase a) {
+	public void AddAnimation(AnimationType type, ABase a) {
 		if(!animations.ContainsKey(type)) {
-			animations.Add(type, new List<IABase>());
+			animations.Add(type, new List<ABase>());
 		}
 		animations[type].Add(a);
 	}
 
-	public IABase GetAnimation(AnimationType type) {
-		List<IABase> val;
+	public ABase GetAnimation(AnimationType type) {
+		List<ABase> val;
 		animations.TryGetValue(type, out val);
 		if(val == null || val.Count == 0) {
 			return null;
 		}
-		IABase a = val[0];
+		ABase a = val[0];
 		if(!a.IsCompleteAnimation()) {
 			return a;
 		}
@@ -33,7 +33,7 @@ public class Animation {
 	}
 		
 	public void Run() {
-		foreach(List<IABase> list in animations.Values) {
+		foreach(List<ABase> list in animations.Values) {
 			if(list.Count > 0) {
 				list[0].Run();
 			}

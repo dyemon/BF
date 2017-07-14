@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-public class AFade : IABase {
+public class AFade : ABase {
 	protected float? startAlpha;
 	private float endAlpha;
 	private float time;
@@ -17,12 +17,12 @@ public class AFade : IABase {
 		this.time = time;
 	}
 
-	public void Run() {
+	public override void Run() {
 		startTime = UnityEngine.Time.time;
 		startDurationTime = time;
 	}
 
-	public bool Animate(GameObject gameObject) {
+	public override bool Animate(GameObject gameObject) {
 		if(startAlpha == null) {
 			SetStartAlpha(gameObject);
 		}
@@ -51,7 +51,7 @@ public class AFade : IABase {
 		startAlpha = renderer.material.color.a;
 	}
 
-	public bool IsCompleteAnimation() {
+	public override bool IsCompleteAnimation() {
 		return isComplete;
 	}
 }

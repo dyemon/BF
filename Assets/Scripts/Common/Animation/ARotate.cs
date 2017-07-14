@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ARotate : IABase {
+public class ARotate : ABase {
 
 	private Vector3? startAngle;
 	private Vector3 rotateAngle;
@@ -18,12 +18,12 @@ public class ARotate : IABase {
 		this.time = time;
 	}
 
-	public void Run() {
+	public override void Run() {
 		startTime = UnityEngine.Time.time;
 		startDurationTime = time;
 	}
 
-	public bool Animate(GameObject gameObject) {
+	public override bool Animate(GameObject gameObject) {
 		if(startAngle == null) {
 			startAngle = gameObject.transform.eulerAngles;
 		}
@@ -35,14 +35,14 @@ public class ARotate : IABase {
 		time = startDurationTime - delta;
 		float t = (time <= 0)? 1f : delta/startDurationTime;
 
-	//	gameObject.transform.Rotate( Vector3.Lerp(startAngle.Value, endAngle, t));
+		t = SmothTime(t);
 		gameObject.transform.rotation = Quaternion.Euler( Vector3.Lerp(startAngle.Value, endAngle.Value, t));
 
 		isComplete = !(time > 0);
 		return (time > 0); 
 	}
 
-	public bool IsCompleteAnimation() {
+	public override bool IsCompleteAnimation() {
 		return isComplete;
 	}
 }

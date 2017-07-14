@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class AResize : IABase {
+public class AResize : ABase {
 	
 	private Vector3? startSize;
 	private Vector3 endSize;
@@ -17,12 +17,12 @@ public class AResize : IABase {
 		this.time = time;
 	}
 
-	public void Run() {
+	public override void Run() {
 		startTime = UnityEngine.Time.time;
 		startDurationTime = time;
 	}
 
-	public bool Animate(GameObject gameObject) {
+	public override bool Animate(GameObject gameObject) {
 		if(startSize == null) {
 			startSize = gameObject.transform.localScale;
 		}
@@ -37,7 +37,7 @@ public class AResize : IABase {
 		return (time > 0); 
 	}
 
-	public bool IsCompleteAnimation() {
+	public override bool IsCompleteAnimation() {
 		return isComplete;
 	}
 }

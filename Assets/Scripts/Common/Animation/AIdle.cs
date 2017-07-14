@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class AIdle : IABase{
+public class AIdle : ABase{
 
 	private float time;
 	private float startTime;
@@ -12,18 +12,18 @@ public class AIdle : IABase{
 		this.time = time;
 	}
 
-	public void Run() {
+	public override void Run() {
 		startTime = Time.time;
 		startDurationTime = time;
 	}
 
-	public bool Animate(GameObject go) {
+	public override bool Animate(GameObject go) {
 		time = startDurationTime - (Time.time - startTime);
 		isComplete = !(time > 0);
 		return (time > 0); 
 	}
 
-	public bool IsCompleteAnimation() {
+	public override bool IsCompleteAnimation() {
 		return isComplete;
 	}
 }
