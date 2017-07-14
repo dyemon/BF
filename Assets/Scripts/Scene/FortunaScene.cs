@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FortunaScene : WindowScene {
 	public const string SceneName = "Fortuna";
@@ -9,9 +10,15 @@ public class FortunaScene : WindowScene {
 
 	private bool rotateRuletka;
 	private int angle;
+	public Button StartButton;
+	public GameObject PrizeItem;
+
+	void OnDisable() {
+		GameResources.Instance.SaveUserData(null, false);
+	}
 
 	void Start () {
-		
+		FortunaData fData = GameResources.Instance.GetGameData().FortunaData;
 	}
 	
 	public void OnRuletkaStart() {
@@ -24,6 +31,8 @@ public class FortunaScene : WindowScene {
 				OnRuletkaStop();
 			})
 			.Build().Run();	
+
+		StartButton.interactable = false;
 	}
 
 	void Update() {
@@ -47,5 +56,8 @@ public class FortunaScene : WindowScene {
 
 		int index = (int)Mathf.Floor(angle / deg);
 		Debug.Log(angle + " " + index);
+
+		StartButton.interactable = true;
+
 	}
 }

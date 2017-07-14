@@ -251,5 +251,18 @@
 		 {"TypeAsString": "Ring", "Value":	2},
 		 {"TypeAsString": "Money", "Value":	1}
 		]
+	},
+
+	"FortunaData" : {
+		"Prizes": [
+			{"UserAssetTypeAsString": "Ring", "min": 10, "max": 30},
+			{"UserAssetTypeAsString": "Mobile", "min": 10, "max": 30},
+			{"UserAssetTypeAsString": "Energy", "min": 10, "max": 30}
+		],
+		"Jackpot": [
+			{"UserAssetTypeAsString": "Ring", "min": 50, "max": 100},
+			{"UserAssetTypeAsString": "Mobile", "min": 50, "max": 100},
+			{"UserAssetTypeAsString": "Energy", "min": 50, "max": 100}
+		]								
 	}
 }

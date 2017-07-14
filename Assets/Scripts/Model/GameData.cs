@@ -24,8 +24,8 @@ public class GameData {
 	public AwardData AwardData;
 	public EnergyData EnergyData;
 	public LevelFailureHelpData LevelFailureHelpData;
-
 	public DailyBonusData DailyBonusData;
+	public FortunaData FortunaData;
 
 	public void Init() {
 		/*
@@ -74,6 +74,7 @@ public class GameData {
 		AwardData.init();
 		LevelFailureHelpData.Init();
 		DailyBonusData.Init();
+		FortunaData.Init();
 	}
 
 	public int GetBombRatio(int level) {
