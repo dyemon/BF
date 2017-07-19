@@ -19,6 +19,12 @@ public class DateTimeUtill {
 		return string.Format("{0}:{1}", ((hour > 9) ? hour.ToString() : "0" + hour), ((min > 9) ? min.ToString() : "0" + min));
 	}
 
+	public static string FormatSeconds(int seconds) {
+		int min = (int)(seconds / 60);
+		int sec = seconds % 60;
+		return string.Format("{0}:{1}", ((min > 9) ? min.ToString() : "0" + min), ((sec > 9) ? sec.ToString() : "0" + sec));
+	}
+
 	public static bool IsYesterday(long now, long check) {
 		DateTime nowdt = ConvertFromUnixTimestamp(now);
 		DateTime checkdt = ConvertFromUnixTimestamp(check);

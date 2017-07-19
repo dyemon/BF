@@ -58,6 +58,8 @@ public class LevelFailureScene : MonoBehaviour {
 		ParametersController.Instance.SetParameter(ParametersController.CAPITULATE_NOT_ENDED, false);
 		if(!capNotEnded) {
 			ParametersController.Instance.SetParameter(ParametersController.CAN_SHOW_DAILYBONUS, true);
+			ParametersController.Instance.SetParameter(ParametersController.CAN_SHOW_FORTUNA, true);
+
 		}
 
 		bool showAward = successCount == 0 && !capNotEnded; 

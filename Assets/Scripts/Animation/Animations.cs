@@ -11,7 +11,7 @@ public class Animations {
 		Vector3 end1 = start + direction * dist * 0.1f;
 
 		if(endSize == null) {
-			endSize = new Vector3(1f, 1f, 1f);
+			endSize = new Vector3(0.82f, 0.82f, 1f);
 		}
 
 		if(icon != null) {
@@ -26,12 +26,15 @@ public class Animations {
 
 		AnimatedObject ao = target.GetComponent<AnimatedObject>();
 		float time1 = 0.3f;
-		float time2 = 0.5f;
+		float time2 = 1f;
 		float idle = 0.1f;
 
-		ao.AddMoveByTime(start, end1, time1).AddResize(null, new Vector3(1.5f, 1.5f, 1f), time1).Build()
+		ao.AddMoveByTime(start, end1, time1)
+			.AddResize(null, new Vector3(1.5f, 1.5f, 1f), time1)
+			.Build()
 			.AddIdle(idle).Build()
-			.AddMoveByTime(null, end, time2).AddResize(null, endSize.Value, time2)
+			.AddMoveByTime(null, end, time2, ABase.BezierPoints.EaseInOut)
+			.AddResize(null, endSize.Value, time2)
 			.Build();
 		
 		//ao.AddMoveByTime(start, end, 3f).Build();

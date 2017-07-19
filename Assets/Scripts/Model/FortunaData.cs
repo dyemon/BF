@@ -4,6 +4,8 @@ using UnityEngine;
 
 [System.Serializable]
 public class FortunaData {
+	public int TryCount;
+	public uint Delay;
 	public FortunaPrizeItem[] Prizes;
 	public FortunaPrizeItem[] Jackpot;
 
@@ -25,5 +27,9 @@ public class FortunaData {
 		}
 
 		return null;
+	}
+
+	public FortunaPrizeItem GetJackpotItem() {
+		return Jackpot[Random.Range(0, Jackpot.Length)];
 	}
 }

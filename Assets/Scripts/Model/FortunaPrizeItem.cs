@@ -6,8 +6,8 @@ using UnityEngine;
 public class FortunaPrizeItem {
 	public UserAssetType UserAssetType;
 	public string UserAssetTypeAsString;
-	int min;
-	int max;
+	public int min;
+	public int max;
 
 	public void Init() {
 		if(UserAssetTypeAsString != null) {
@@ -17,5 +17,9 @@ public class FortunaPrizeItem {
 
 	public bool IsUserAssetPrize() {
 		return UserAssetTypeAsString != null;
+	}
+
+	public int GetPrizeAmount() {
+		return Random.Range(min, max);
 	}
 }

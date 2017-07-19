@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MapScene : MonoBehaviour {
+public class MapScene : BaseScene {
 	public const string SceneName = "Map";
 
 	void Start () {
@@ -16,14 +16,5 @@ public class MapScene : MonoBehaviour {
 		}
 	}
 
-	void ShowAdditionScenes() {
-		UserData uData = GameResources.Instance.GetUserData();
 
-		bool canShowDailyBonus = ParametersController.Instance.GetBool(ParametersController.CAN_SHOW_DAILYBONUS);
-		bool dailyBonusIsShown = ParametersController.Instance.GetBool(ParametersController.DAILYBONUS_IS_SHOWN);
-
-		if(!uData.DailyBonusTaken && canShowDailyBonus && !dailyBonusIsShown) {
-			SceneController.Instance.LoadSceneAdditive(DailyBonusScene.SceneName);
-		}
-	}
 }

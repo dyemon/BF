@@ -319,4 +319,22 @@ public class GameResources {
 		uData.DailyBonusTaken = true;
 		saveUserDataLocal(uData);
 	}
+
+	public int DecreaseFortunaTryCount(int count) {
+		UserData uData = GetUserData();
+		uData.FortunaTryCount -= count;
+		if(uData.FortunaTryCount <= 0) {
+			uData.FortunaTryCount = 0;
+			uData.FortunaLastTry = uData.GetCurrentTimestamp();
+			GameTimers.Instance.StartFortunaTimer(0);
+		}
+		saveUserDataLocal(uData);
+		return uData.FortunaTryCount;
+	}
+
+	public void ResetFortunaTryCount() {
+		UserData uData = GetUserData();
+		uData.ResetFortunaTryCount();
+		saveUserDataLocal(uData);
+	}
 }

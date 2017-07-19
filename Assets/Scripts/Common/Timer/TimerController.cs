@@ -8,7 +8,7 @@ namespace Common.Timer {
 	public class TimerController : MonoBehaviour {
 		public static TimerController Instance;
 
-		public delegate void OnTimer(string code);
+		public delegate void OnTimer(string code, Timer timer);
 		public event OnTimer onTimer;
 
 		private IDictionary<string, Timer> timers = new Dictionary<string, Timer>();
@@ -43,7 +43,7 @@ namespace Common.Timer {
 				int fire = pair.Value.Update(Time.deltaTime);
 				while(fire-- > 0) {
 					if(onTimer != null) {
-						onTimer(pair.Key);
+						onTimer(pair.Key, pair.Value);
 					}
 				}
 

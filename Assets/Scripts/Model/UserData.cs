@@ -22,6 +22,9 @@ public class UserData {
 	public int DailyBonus;
 	public bool DailyBonusTaken;
 
+	public long FortunaLastTry;
+	public int FortunaTryCount;
+
 	public int Health {
 		get { 
 			GoodsData data = GameResources.Instance.GetGameData().GetGoodsData(HealthEquipmentType);
@@ -96,6 +99,9 @@ public class UserData {
 		InfinityEnergyDuration = 0;
 		DailyBonus = 1;
 		DailyBonusTaken = false;
+
+		ResetFortunaTryCount();
+
 		GameTimers.Instance.Init(this);
 	}
 
@@ -222,5 +228,10 @@ public class UserData {
 
 	public void UpdateLastSaved() {
 		LastSavedTimestamp = GetCurrentTimestamp();
+	}
+
+	public void ResetFortunaTryCount() {
+		GameData gData = GameResources.Instance.GetGameData();
+		FortunaTryCount = gData.FortunaData.TryCount;
 	}
 }

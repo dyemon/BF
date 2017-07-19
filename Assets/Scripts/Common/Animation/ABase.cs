@@ -10,6 +10,8 @@ public abstract class ABase {
 		public Vector2 p1;
 		public Vector2 p2;
 
+		public static readonly BezierPoints EaseInOut = new BezierPoints(0.42f, 0f, 0.58f, 1f);
+
 		public BezierPoints(float x1, float y1, float x2, float y2) {
 			this.p1 = new Vector2(x1, y1);
 			this.p2 = new Vector2(x2, y2);

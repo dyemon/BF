@@ -254,6 +254,8 @@
 	},
 
 	"FortunaData" : {
+		"TryCount": 2,
+		"Delay":	10,
 		"Prizes": [
 			{"UserAssetTypeAsString": "Ring", "min": 10, "max": 30},
 			{"UserAssetTypeAsString": "Mobile", "min": 10, "max": 30},
