@@ -129,6 +129,7 @@ public class LombardScene : WindowScene {
 		
 		GameObject animImg = Instantiate(assetImg, assetImg.transform.position, Quaternion.identity);
 		animImg.transform.SetParent(transform);
+		animImg.transform.localScale = Vector3.one;
 		animImg.AddComponent<AnimatedObject>();
 		Vector3 end = userDataPanel.GetUserAssetsIcon(currentAsset).transform.position;
 		Vector3 start = assetImg.transform.position;

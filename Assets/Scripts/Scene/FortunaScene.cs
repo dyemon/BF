@@ -136,9 +136,10 @@ public class FortunaScene : WindowScene {
 
 
 		Vector3 end = AssetsPanel.GetUserAssetsIcon(type).transform.position;
-		Vector3 start = pointer.transform.position + new Vector3(0, -100, 0);
+		Vector3 start = pointer.transform.position + new Vector3(0, 0, 0);
 		GameObject animImg = Instantiate(PrizeItem, start, Quaternion.identity);
 		animImg.transform.SetParent(transform);
+
 		animImg.AddComponent<AnimatedObject>();
 		Sprite icon = GOResources.GetUserAssetIcone(type);
 

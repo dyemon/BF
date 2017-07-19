@@ -139,6 +139,7 @@ public class EnergyScene : WindowScene {
 	//	GameObject icon = (isInfinity) ? assetImg : (GameObject)GameObjectResources.GetUserAssetIcone(UserAssetType.Energy);
 		GameObject animImg = Instantiate(assetImg, assetImg.transform.position, Quaternion.identity);
 		animImg.transform.SetParent(transform);
+		animImg.transform.localScale = Vector3.one;
 		if(!isInfinity) {
 			animImg.GetComponent<Image>().sprite = GameObjectResources.GetUserAssetIcone(UserAssetType.Energy);
 		}

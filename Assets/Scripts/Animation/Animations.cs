@@ -13,6 +13,7 @@ public class Animations {
 		if(endSize == null) {
 			endSize = new Vector3(0.82f, 0.82f, 1f);
 		}
+		target.transform.localScale = Vector3.one;
 
 		if(icon != null) {
 			Image img = target.transform.Find("Image").gameObject.GetComponent<Image>();
