@@ -2,7 +2,8 @@
 using System.Collections;
 using Common.Net.Http;
 
-public class FBNotLoggedScene : MonoBehaviour, IFBCallback {
+public class FBNotLoggedScene : WindowScene, IFBCallback {
+	public const string SceneName = "FBNotLogged";
 
 	public void OnFBInit() {
 	}
@@ -29,10 +30,10 @@ public class FBNotLoggedScene : MonoBehaviour, IFBCallback {
 
 	public void OnSuccessLoadUserData (HttpResponse response) {
 		GameResources.Instance.MergeUserData(response.FromJson<UserData>());
-		SceneController.Instance.LoadSceneAdditive("FBLogged", true);
+		SceneController.Instance.LoadSceneAdditive("FBLogged", null, true);
 	}
 
 	public void OnErrorLoadUserData (HttpResponse response) {
-		SceneController.Instance.LoadSceneAdditive("FBLogged", true);
+		SceneController.Instance.LoadSceneAdditive("FBLogged", null, true);
 	}
 }

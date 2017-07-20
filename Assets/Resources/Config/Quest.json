@@ -1,0 +1,22 @@
+{
+	"QuestItemsData": [{
+		"Id": "authorizeFB",
+		"Name": "Авторизация в facebook",
+		"Description": "Авторизуйтесь в facebook и получите в награду 20 мобилок и 5 очков крутости",
+		"TypeAsString": "SocialFB",
+		"ConditionTypeAsString":	"Authorize",
+		"ActionCount": 1,
+		"Award":  {"TypeAsString": "Mobile", "Value":	20},
+		"ExperienceAward": 5
+	}, {
+		"Id": "inviteFriends2FB",
+		"Name": "Пригласить двух друзей",
+		"Description": "Пригласите двух друзей и получите в награду 10 печаток и 5 очков крутости",
+		"TypeAsString": "SocialFB",
+		"ConditionTypeAsString":	"InviteFriends",
+		"ActionCount": 2,
+		"RequiredQuestId": "authorizeFB",
+		"Award":  {"TypeAsString": "Ring", "Value":	10},
+		"ExperienceAward": 5
+	}]
+}

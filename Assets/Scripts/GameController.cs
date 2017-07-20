@@ -175,6 +175,7 @@ public class GameController : MonoBehaviour {
 
 	void Start() {
 		Instance = this;
+		QuestData qData = GameResources.Instance.GetQuestData();
 
 		levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
 		gameData = GameResources.Instance.GetGameData();

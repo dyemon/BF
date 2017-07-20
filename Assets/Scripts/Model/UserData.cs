@@ -42,10 +42,11 @@ public class UserData {
 	private List<LevelSaveData> levelData = new List<LevelSaveData>();
 	[SerializeField]
 	private List<UserAssetData> assets = new List<UserAssetData>();
+	[SerializeField]
+	private List<QuestProgressData> quests = new List<QuestProgressData>();
 //	[SerializeField]
 	//public List<UserHeroData> HeroesData = new List<UserHeroData>();
-//	[SerializeField]
-	//public List<QuestData> QuestsData = new List<QuestData>();
+
 
 	public void InitTest() {
 	//	HeroesData.Clear();
@@ -103,11 +104,13 @@ public class UserData {
 		ResetFortunaTryCount();
 
 		GameTimers.Instance.Init(this);
+		UpDateQuests(null);
 	}
 
 	public void InitOnStart() {
 		InitTimestampOnStart();
 		GameTimers.Instance.Init(this);
+		UpDateQuests(null);
 	}
 
 	public void Merge(UserData uData) {
@@ -115,6 +118,7 @@ public class UserData {
 		if(InfinityEnergyDuration > 0) {
 			GameTimers.Instance.StartInfinityEnergyTimer();
 		}
+		UpDateQuests(null);
 	}
 
 	public void InitTimestampOnStart() {
@@ -234,4 +238,78 @@ public class UserData {
 		GameData gData = GameResources.Instance.GetGameData();
 		FortunaTryCount = gData.FortunaData.TryCount;
 	}
+
+	public QuestProgressData GetQuestById(string id) {
+		foreach(QuestProgressData item in quests) {
+			if(item.QuestId == id) {
+				return item;
+			}
+		}
+
+		return null;
+	}
+
+	public bool IsCompleteQuest(string id) {
+		QuestProgressData qpData = GetQuestById(id);
+		if(qpData == null) {
+			return false;
+		}
+		if(qpData.IsComplete) {
+			return true;
+		}
+
+		QuestItem qItem = GameResources.Instance.GetQuestData().GetById(id);
+		qpData.IsComplete = qItem.ActionCount <= qpData.Progress;
+		return qpData.IsComplete;
+	}
+
+	public bool IsTakenQuestAward(string id) {
+		QuestProgressData qpData = GetQuestById(id);
+		if(qpData == null) {
+			return false;
+		}
+		return qpData.IsTakenAward;
+	}
+
+	public void UpDateQuests(QuestType? type) {
+		QuestData qData = GameResources.Instance.GetQuestData();
+
+		foreach(QuestItem item in qData.QuestItemsData) {
+			if(type != null && type != item.Type) {
+				continue;
+			}
+
+			if(item.MinExperience > Experience) {
+				return;
+			}
+
+			if(item.RequiredQuestId != null) {
+				QuestProgressData qpData = GetQuestById(item.RequiredQuestId);
+				if(qpData == null || !qpData.IsTakenAward) {
+					continue;
+				}
+			}
+
+			QuestProgressData qp = GetQuestById(item.Id);
+			if(qp == null) {
+				quests.Add(new QuestProgressData(item.Id, item.Type));
+			}
+		}
+	}
+
+	public IList<QuestProgressData> GetActiveQuests(QuestType? type, bool notCompleteOnly) {
+		IList<QuestProgressData> res = new List<QuestProgressData>();
+
+		foreach(QuestProgressData item in quests) {
+			if(type != null && type != item.Type) {
+				continue;	
+			}
+			if(!item.IsComplete || (!notCompleteOnly && !item.IsTakenAward)) {
+				res.Add(item);
+			}
+		}
+
+		return res;
+	}
+		
 }

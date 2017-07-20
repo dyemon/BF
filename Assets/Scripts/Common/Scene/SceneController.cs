@@ -56,7 +56,7 @@ public class SceneController : MonoBehaviour {
 		if(unloadOther) {
 			foreach(string scene in loaddedScenes) {
 				if(name != scene) {
-					StartCoroutine(UnloadSceneInternal(name, null));
+					StartCoroutine(UnloadSceneInternal(scene, null));
 				}
 			}
 		}

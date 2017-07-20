@@ -21,6 +21,7 @@ public class GameResources {
 	private LevelData currentLevelData = null;
 	private GameData gameData = null;
 	private LocalSettingsData localSettings = null;
+	private QuestData questData;
 
 	private string userData;
 
@@ -76,7 +77,17 @@ public class GameResources {
 		}
 		return gameData;
 	}
-	
+
+	public QuestData GetQuestData() {
+		if(questData == null) {
+			TextAsset aText = Resources.Load(Path.Combine("Config", "Quest")) as TextAsset;
+			Preconditions.NotNull(aText, "Can not load Quest data");
+			questData = JsonUtility.FromJson<QuestData>(aText.text);
+			questData.Init();
+		}
+		return questData;
+	}
+
 	private void saveUserDataLocal(UserData userData) {
 		userData.UpdateLastSaved();
 		string json = JsonUtility.ToJson(userData);
@@ -335,6 +346,22 @@ public class GameResources {
 	public void ResetFortunaTryCount() {
 		UserData uData = GetUserData();
 		uData.ResetFortunaTryCount();
+		saveUserDataLocal(uData);
+	}
+
+	public void CompleteQuest(string id) {
+		UserData uData = GetUserData();
+		QuestProgressData qData = Preconditions.NotNull(uData.GetQuestById(id), "Quest with id {0} not activate", id);
+	
+		qData.IsComplete = true;
+		saveUserDataLocal(uData);
+	}
+
+	public void TakeQuestAward(string id) {
+		UserData uData = GetUserData();
+		QuestProgressData qData = Preconditions.NotNull(uData.GetQuestById(id), "Quest with id {0} not activate", id);
+
+		qData.IsTakenAward = true;
 		saveUserDataLocal(uData);
 	}
 }

@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FBLoggedScene : MonoBehaviour, IFBCallback {
+public class FBLoggedScene : WindowScene, IFBCallback {
+	public const string SceneName = "FBLogged";
 
 	public void OnFBInit() {
 	}
