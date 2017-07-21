@@ -1,0 +1,61 @@
+{
+	"CityData": [{
+		"Name": "Город 1",
+		"Description": "Описание города 1",
+		"LocationData" : [ {
+					"Name": "Локация 1",
+					"Id": "Location1",
+					"Description": "Описание локации 1",
+					"AccessOrder": 1,
+					"LevelData": []
+				},{
+					"Name": "Локация 2",
+					"Id": "Location2",
+					"Description": "Описание локации 2",
+					"AccessOrder": 2,
+					"LevelData": []
+				},{
+					"Name": "Локация 3",
+					"Id": "Location3",
+					"Description": "Описание локации 3",
+					"AccessOrder": 3,
+					"LevelData": []
+				},{
+					"Name": "Локация 4",
+					"Id": "Location4",
+					"Description": "Описание локации 4",
+					"AccessOrder": 4,
+					"LevelData": []
+				},{
+					"Name": "Локация 5",
+					"Id": "Location5",
+					"Description": "Описание локации 5",
+					"AccessOrder": 5,
+					"LevelData": []
+				},{
+					"Name": "Локация 6",
+					"Id": "Location6",
+					"Description": "Описание локации 6",
+					"AccessOrder": 6,
+					"LevelData": []
+				},{
+					"Name": "Локация 7",
+					"Id": "Location7",
+					"Description": "Описание локации 7",
+					"AccessOrder": 7,
+					"LevelData": []
+				},{
+					"Name": "Локация 8",
+					"Id": "Location8",
+					"Description": "Описание локации 8",
+					"AccessOrder": 8,
+					"LevelData": []
+				},{
+					"Name": "Локация 9",
+					"Id": "Location9",
+					"Description": "Описание локации 9",
+					"AccessOrder": 9,
+					"LevelData": []
+				}]
+		}]
+}

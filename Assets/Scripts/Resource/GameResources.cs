@@ -22,6 +22,7 @@ public class GameResources {
 	private GameData gameData = null;
 	private LocalSettingsData localSettings = null;
 	private QuestData questData;
+	private MapData mapData;
 
 	private string userData;
 
@@ -86,6 +87,16 @@ public class GameResources {
 			questData.Init();
 		}
 		return questData;
+	}
+
+	public MapData GetMapData() {
+		if(mapData == null) {
+			TextAsset aText = Resources.Load(Path.Combine("Config", "Map")) as TextAsset;
+			Preconditions.NotNull(aText, "Can not load Map data");
+			mapData = JsonUtility.FromJson<MapData>(aText.text);
+			mapData.Init();
+		}
+		return mapData;
 	}
 
 	private void saveUserDataLocal(UserData userData) {
@@ -349,12 +360,20 @@ public class GameResources {
 		saveUserDataLocal(uData);
 	}
 
-	public void CompleteQuest(string id) {
+	public void IncreasQuestAction(string id, int count, bool save) {
 		UserData uData = GetUserData();
 		QuestProgressData qData = Preconditions.NotNull(uData.GetQuestById(id), "Quest with id {0} not activate", id);
-	
-		qData.IsComplete = true;
-		saveUserDataLocal(uData);
+		qData.Progress += count;
+		QuestItem qItem = GetQuestData().GetById(id);
+		if(qData.Progress >= qItem.ActionCount) {
+			qData.IsComplete = true;
+		}
+
+		if(save) {
+			SaveUserData(uData, false);
+		} else {
+			saveUserDataLocal(uData);
+		}
 	}
 
 	public void TakeQuestAward(string id) {
@@ -362,6 +381,8 @@ public class GameResources {
 		QuestProgressData qData = Preconditions.NotNull(uData.GetQuestById(id), "Quest with id {0} not activate", id);
 
 		qData.IsTakenAward = true;
+		uData.UpDateQuests(qData.Type);
+
 		saveUserDataLocal(uData);
 	}
 }

@@ -21,6 +21,8 @@ public class QuestItem {
 	public AwardItem Award;
 	public int ExperienceAward;
 
+	public bool ShowProgressInfo;
+
 	public void Init() {
 		Type = EnumUtill.Parse<QuestType>(TypeAsString);
 		ConditionType = EnumUtill.Parse<QuestConditionType>(ConditionTypeAsString);

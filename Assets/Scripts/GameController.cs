@@ -3140,8 +3140,8 @@ public class GameController : MonoBehaviour {
 		Vector3 end1 = start + new Vector3(0, dist1, 0);
 		Vector3 end2 = start + new Vector3(0, dist, 0);
 
-		float time1 = App.GetMoveTime(UIMoveType.AWARD_EXPERIENCE_1);
-		float time2 = App.GetMoveTime(UIMoveType.AWARD_EXPERIENCE_2);
+		float time1 = App.GetMoveTime(UIMoveType.AWARD_EXPERIENCE);
+		float time2 = App.GetMoveTime(UIMoveType.AWARD_EXPERIENCE);
 
 		AnimatedObject ao = animAward.GetComponent<AnimatedObject>();
 		ao.AddMoveByTime(start, end1, time1).Build()

@@ -5,14 +5,22 @@ using Common.Net.Http;
 public class FBNotLoggedScene : WindowScene, IFBCallback {
 	public const string SceneName = "FBNotLogged";
 
+	public const string QUEST_ID_FB_AUTHORIZE = "authorizeFB";
+
 	public void OnFBInit() {
 	}
 
 	public void OnFBLoginSuccess() {
 		if(Account.Instance.IsLogged) {
+			QuestProgressData quest = GameResources.Instance.GetUserData().GetQuestById(QUEST_ID_FB_AUTHORIZE);
+			if(quest != null && !quest.IsComplete) {
+				GameResources.Instance.IncreasQuestAction(quest.QuestId, 1, true);
+			}
+
 			GameResources.Instance.LoadUserDataFromServer(Account.Instance.GetUserId(), true, OnSuccessLoadUserData, OnErrorLoadUserData);
+
 		} else {
-			ModalPanels.Show(ModalPanelName.ErrorPanel, "Не удалось авторизоваться в FaceBook");
+			ModalPanels.Show(ModalPanelName.ErrorPanel, "Не удалось авторизоваться в facebook");
 		}
 	}
 

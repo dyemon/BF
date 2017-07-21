@@ -97,4 +97,17 @@ public class FBController : MonoBehaviour {
 	public AccessToken GetAccessToken() {
 		return Facebook.Unity.AccessToken.CurrentAccessToken;
 	}
+
+	public void RequestFriendsList() {
+		FB.API ("/me/friends", HttpMethod.GET, FriendsListCallback);
+	}
+
+	void FriendsListCallback(IGraphResult result) {
+		if(result.Error != null) {
+			ModalPanels.Show(ModalPanelName.ErrorPanel, string.Format("Ошибка при запросе к facebook \n {0}", result.Error));
+			return;
+		}
+
+
+	}
 }

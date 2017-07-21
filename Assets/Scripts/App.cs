@@ -21,13 +21,8 @@ public class App {
 		tileItemMoveType.Add(TileItemMoveType.EATER, 10f);
 		tileItemMoveType.Add(TileItemMoveType.HERO_SKILL, 15f);
 
-		uiMoveType.Add(UIMoveType.BUY_USERASSET, 0.7f);
-		uiMoveType.Add(UIMoveType.AWARDTILEITEM_1, 0.2f);
-		uiMoveType.Add(UIMoveType.AWARDTILEITEM_2, 0.5f);
-		uiMoveType.Add(UIMoveType.AWARD_EXPERIENCE_1, 0.7f);
-		uiMoveType.Add(UIMoveType.AWARD_EXPERIENCE_2, 0.5f);
-		uiMoveType.Add(UIMoveType.FAILURE_AWARD_1, 0.3f);
-		uiMoveType.Add(UIMoveType.FAILURE_AWARD_2, 0.5f);
+		uiMoveType.Add(UIMoveType.AWARD_EXPERIENCE, 0.5f);
+
 	}
 
 	public static float MoveTileItemTimeUnit {
@@ -51,5 +46,7 @@ public class App {
 	public static int GetCurrentLevel() {
 		return 1005;
 	}
-		
+	public static int GetCurrentCity() {
+		return 0;
+	}
 }

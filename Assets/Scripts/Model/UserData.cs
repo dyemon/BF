@@ -297,6 +297,12 @@ public class UserData {
 		}
 	}
 
+	public QuestProgressData GetActiveQuestOne(QuestType? type, bool notCompleteOnly) {
+		IList<QuestProgressData> quests = GetActiveQuests(type, notCompleteOnly);
+		Preconditions.Check(quests.Count <= 1, "Active {0} quest count = {1}", new System.Object[] {type.Value, quests.Count});
+		return quests.Count == 0 ? null : quests[0];
+	}
+
 	public IList<QuestProgressData> GetActiveQuests(QuestType? type, bool notCompleteOnly) {
 		IList<QuestProgressData> res = new List<QuestProgressData>();
 
@@ -312,4 +318,5 @@ public class UserData {
 		return res;
 	}
 		
+
 }

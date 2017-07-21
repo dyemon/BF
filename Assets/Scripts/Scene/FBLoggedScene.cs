@@ -1,8 +1,29 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class FBLoggedScene : WindowScene, IFBCallback {
 	public const string SceneName = "FBLogged";
+
+	public GameObjectResources GOResources;
+
+	public Button TakenAwardBtn;
+	public GameObject QuestDescription;
+	public GameObject QuestInfo;
+	public FBController FBController;
+
+	private bool save;
+
+	void OnEnable() {
+		save = false;
+	}
+
+	void OnDisable() {
+		if(save) {
+			GameResources.Instance.SaveUserData(null, false);
+		}
+	}
 
 	public void OnFBInit() {
 	}
@@ -19,5 +40,115 @@ public class FBLoggedScene : WindowScene, IFBCallback {
 
 	public void OnFBLoginFail(string error) {
 
+	}
+
+	void Start() {
+		UserData uData = GameResources.Instance.GetUserData();
+		UpdateQuestInfo(uData.GetActiveQuestOne(QuestType.SocialFB, false));
+
+		FBController.RequestFriendsList();
+	}
+
+	void UpdateQuestInfo(QuestProgressData quest) {
+		if(quest == null) {
+			TakenAwardBtn.gameObject.SetActive(false);
+			QuestDescription.SetActive(false);
+			return;
+		}
+
+		QuestItem questItem = GameResources.Instance.GetQuestData().GetById(quest.QuestId);
+		Transform awardItem = TakenAwardBtn.transform.Find("AwardItem");
+		Image img = awardItem.Find("Image").GetComponent<Image>();
+		img.sprite = GOResources.GetUserAssetIcone(questItem.Award.Type);
+		Text text = awardItem.Find("Text").GetComponent<Text>();
+		text.text = questItem.Award.Value.ToString();
+
+		string descr = questItem.Description + (questItem.ShowProgressInfo? string.Format(" ({0}/{1})", quest.Progress, questItem.ActionCount) : "");
+		QuestDescription.transform.Find("Text").GetComponent<Text>().text = descr;
+
+		TakenAwardBtn.gameObject.SetActive(true);
+		QuestDescription.SetActive(true);
+
+		if(quest.IsComplete) {
+			TakenAwardBtn.GetComponent<CanvasGroup>().alpha = 1;
+			TakenAwardBtn.interactable = true;
+		} else {
+			TakenAwardBtn.GetComponent<CanvasGroup>().alpha = 0.5f;
+			TakenAwardBtn.interactable = false;
+		}
+	}
+
+	public void OnClickTakeAward() {
+		
+
+		UserData uData = GameResources.Instance.GetUserData();
+		QuestProgressData qData = uData.GetActiveQuestOne(QuestType.SocialFB, false);
+		QuestItem questItem = GameResources.Instance.GetQuestData().GetById(qData.QuestId);
+
+		GameResources.Instance.ChangeUserAsset(questItem.Award.Type, questItem.Award.Value);
+		if(questItem.ExperienceAward > 0) {
+			GameResources.Instance.IncreaseExperience(questItem.ExperienceAward);
+		}
+
+		StartCoroutine(AnimateAward(questItem, false));
+		if(questItem.ExperienceAward > 0) {
+			StartCoroutine(AnimateAward(questItem, true));
+		}
+
+		AnimatedObject ao = QuestInfo.GetComponent<AnimatedObject>();
+		ao.AddFadeUI(null, 0, 1).Build().Run();
+
+		GameResources.Instance.TakeQuestAward(questItem.Id);
+
+		save = true;
+
+		Invoke("UpdateQuest", 2);
+	}
+
+	IEnumerator AnimateAward(QuestItem questItem, bool isExperience) {
+		if(isExperience) {
+			yield return new WaitForSeconds(0.2f);
+		}
+
+		GameObject awardItem = TakenAwardBtn.transform.Find("AwardItem").gameObject;
+		GameObject animItem = Instantiate(awardItem, awardItem.transform.position, Quaternion.identity);
+		animItem.transform.SetParent(transform);
+		animItem.transform.localScale = Vector3.one;
+
+		if(isExperience) {
+			Image img = animItem.transform.Find("Image").GetComponent<Image>();
+			img.sprite = GOResources.GetUserExperienceIcone();
+			Text text = animItem.transform.Find("Text").GetComponent<Text>();
+			text.text = questItem.ExperienceAward.ToString();
+		}
+
+		Vector3 start = animItem.transform.position;
+		float dist = Screen.height / 2f;
+		Vector3 end1 = start + new Vector3(0, dist*0.5f, 0);
+		Vector3 end2 = start + new Vector3(0, dist, 0);
+
+		float time1 = App.GetMoveTime(UIMoveType.AWARD_EXPERIENCE);
+		float time2 = App.GetMoveTime(UIMoveType.AWARD_EXPERIENCE);
+
+		AnimatedObject ao = animItem.AddComponent<AnimatedObject>();
+		ao.AddMoveByTime(start, end1, time1).Build()
+			.AddMoveByTime(null, end2, time2).AddFadeUI(null, 0f, time2)
+			.OnStop(() => {} ).Build()
+			.Run();
+
+		Destroy(animItem, 2f);
+	}
+
+	void UpdateQuest() {
+		UserData uData = GameResources.Instance.GetUserData();
+		QuestProgressData qData = uData.GetActiveQuestOne(QuestType.SocialFB, false);
+
+		if(qData == null) {
+			return;
+		}
+
+		UpdateQuestInfo(qData);
+		AnimatedObject ao = QuestInfo.GetComponent<AnimatedObject>();
+		ao.AddFadeUI(null, 1, 1).Build().Run();
 	}
 }

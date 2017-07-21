@@ -6,20 +6,19 @@ using UnityEngine;
 public class QuestData {
 	public QuestItem[] QuestItemsData;
 
+	private IDictionary<string, QuestItem> quests = new Dictionary<string, QuestItem>();
+
 	public void Init() {
 		foreach(QuestItem item in QuestItemsData) {
 			item.Init();
+			quests.Add(item.Id, item);
 		}
 	}
 
 	public QuestItem GetById(string id) {
-		foreach(QuestItem item in QuestItemsData) {
-			if(item.Id == id) {
-				return item;
-			}
-		}
-
-		return null;
+		QuestItem item;
+		quests.TryGetValue(id, out item);
+		return item;
 	}
 
 	public QuestItem Get(QuestType type, QuestConditionType condType) {

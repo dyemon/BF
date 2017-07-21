@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using System.Linq;
 
 public class EnergyScene : WindowScene {
-	public GameObjectResources GameObjectResources;
+	public GameObjectResources GOResources;
 
 	public static string SceneName = "Energy";
 
@@ -141,11 +141,10 @@ public class EnergyScene : WindowScene {
 		animImg.transform.SetParent(transform);
 		animImg.transform.localScale = Vector3.one;
 		if(!isInfinity) {
-			animImg.GetComponent<Image>().sprite = GameObjectResources.GetUserAssetIcone(UserAssetType.Energy);
+			animImg.GetComponent<Image>().sprite = GOResources.GetUserAssetIcone(UserAssetType.Energy);
 		}
 
 		AnimatedObject ao = animImg.AddComponent<AnimatedObject>();
-		float time = App.GetMoveTime(UIMoveType.BUY_USERASSET);
 	
 		Vector3 end;
 		if(!isInfinity) {
