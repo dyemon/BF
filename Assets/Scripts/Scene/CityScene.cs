@@ -4,7 +4,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Map1Scene : BaseScene {
+public class CityScene : BaseScene {
+	public const string SceneName = "City";
+
 	public GameObject[] cities;
 	public Sprite UnavaliableLocationIcon;
 	public Sprite CurrentLocationIcon;
@@ -31,7 +33,7 @@ public class Map1Scene : BaseScene {
 	void Update() {
 		InputController.Touch[] touches = InputController.getTouches();
 
-		if(touches.Length > 0) {
+		if(touches.Length > 0 && touches[0].phase == TouchPhase.Began) {
 			if(EventSystem.current.IsPointerOverGameObject(InputController.GetFingerId())) {
 				return;
 			}
@@ -46,6 +48,7 @@ public class Map1Scene : BaseScene {
 	}
 
 	void OnSelectLocation(GameObject location) {
+		Debug.Log(location.name);
 		LocationData lData = mapData.CityData[App.CurrentCity - 1].GetLocationById(location.name);
 		Preconditions.NotNull(lData, "Can not get location data for id " + location.name);
 		int userLevel = 89;//GameResources.Instance.GetUserData().Level;
@@ -60,7 +63,13 @@ public class Map1Scene : BaseScene {
 			return;
 		}
 
-		location.SetActive(false);
+		App.CurrentLocation = lData.AccessOrder;
+	/*	location.transform.Find("Point").GetComponent<SpriteRenderer>().sprite = null;
+		AnimatedObject ao = location.AddComponent<AnimatedObject>();
+		ao.AddMove(null, new Vector3(0, 0, location.transform.position.z), 0.5f)
+			.AddResize(null, new Vector3(1.5f, 1.5f, 1), 0.5f)
+			.Build().Run();
+				*/
 	}
 
 	void UpdateLocationAvailability() {
