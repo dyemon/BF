@@ -12,13 +12,13 @@ public class LevelSettingsScene : WindowScene {
 	private LocalSettingsData localSettings;
 
 	void Start() {
-		LevelData levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
+		LevelData levelData = GameResources.Instance.GetLevel(App.CurrentLevel);
 
 		localSettings = GameResources.Instance.GetLocalSettings();
 		SoundButton.Toggle(localSettings.SoundOn);
 		MusicButton.Toggle(localSettings.MusicOn);
 
-		Description.text = App.GetCurrentLevel().ToString() + ": " + levelData.Name;
+		Description.text = App.CurrentLevel.ToString() + ": " + levelData.Name;
 
 		RepeatButton.GetComponent<BuyButton>().Init(UserAssetType.Energy, levelData.LevelPrice, null);
 

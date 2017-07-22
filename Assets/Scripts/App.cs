@@ -43,10 +43,27 @@ public class App {
 		return uiMoveType[type];
 	}
 
-	public static int GetCurrentLevel() {
-		return 1005;
+	private static int currentLevel = 1;
+	private static int currentLocation = 1;
+	private static int currentCity = 1;
+
+	public static int CurrentLevel {
+		get { return 1005; /*currentLevel; */}
+		set {currentLevel = value;}
 	}
-	public static int GetCurrentCity() {
-		return 0;
+	public static int CurrentLocation {
+		get { return currentLocation; }
+		set {currentLocation = value;}
+	}	
+	public static int CurrentCity {
+		get { return currentCity; }
+		set {currentCity = value;}
+	}	
+
+	public static void InitLocationParams(UserData uData) {
+		CurrentLevel = uData.Level;
+		Vector2 param = GameResources.Instance.GetMapData().CalcLocationParams(uData.Level);
+		CurrentCity = (int)param.x;
+		CurrentLocation = (int)param.y;
 	}
 }

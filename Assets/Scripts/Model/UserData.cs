@@ -105,12 +105,14 @@ public class UserData {
 
 		GameTimers.Instance.Init(this);
 		UpDateQuests(null);
+		App.InitLocationParams(this);
 	}
 
 	public void InitOnStart() {
 		InitTimestampOnStart();
 		GameTimers.Instance.Init(this);
 		UpDateQuests(null);
+		App.InitLocationParams(this);
 	}
 
 	public void Merge(UserData uData) {
@@ -119,6 +121,7 @@ public class UserData {
 			GameTimers.Instance.StartInfinityEnergyTimer();
 		}
 		UpDateQuests(null);
+		App.InitLocationParams(this);
 	}
 
 	public void InitTimestampOnStart() {

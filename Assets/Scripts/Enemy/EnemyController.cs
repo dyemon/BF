@@ -67,7 +67,7 @@ public class EnemyController : MonoBehaviour {
 
 	void Awake() {
 		currentIdleAnimation = idleAnimationName;
-		enemyData = GameResources.Instance.GetLevel(App.GetCurrentLevel()).EnemyData;
+		enemyData = GameResources.Instance.GetLevel(App.CurrentLevel).EnemyData;
 		if(enemyData == null) {
 			return;
 		}

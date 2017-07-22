@@ -25,4 +25,14 @@ public class CityData {
 		});
 	
 	}
+
+	public LocationData GetLocationById(string id) {
+		foreach(LocationData item in LocationData) {
+			if(item.Id == id) {
+				return item;
+			}
+		}
+
+		return null;
+	}
 }

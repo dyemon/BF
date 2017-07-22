@@ -41,13 +41,11 @@ public class FightProgressPanel : MonoBehaviour, IResizeListener {
 	}
 
 	void Start() {
-		levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
+		levelData = GameResources.Instance.GetLevel(App.CurrentLevel);
 		gameData = GameResources.Instance.GetGameData();
 		userData = GameResources.Instance.GetUserData();
 		currentUserHealth = userData.Health;
 		currentEnemyTurns = 0;
-
-
 
 		ShowFullIndicator(false);
 	}

@@ -177,7 +177,7 @@ public class GameController : MonoBehaviour {
 		Instance = this;
 		QuestData qData = GameResources.Instance.GetQuestData();
 
-		levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
+		levelData = GameResources.Instance.GetLevel(App.CurrentLevel);
 		gameData = GameResources.Instance.GetGameData();
 
 		numColumns = GameData.NumColumns;
@@ -304,7 +304,7 @@ public class GameController : MonoBehaviour {
 
 		UserData userData = GameResources.Instance.GetUserData();
 		itemData = autoDropTileItems.GetDropeItem();
-		if(itemData != null && userData.CheckTileItemCollect(App.GetCurrentLevel(), itemData.Type)) {
+		if(itemData != null && userData.CheckTileItemCollect(App.CurrentLevel, itemData.Type)) {
 			return InstantiateTileItem(itemData.Type, 0, -10, true);
 		}
 
@@ -2245,7 +2245,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void LevelSuccess() {
-		GameResources.Instance.LevelSuccess(App.GetCurrentLevel());
+		GameResources.Instance.LevelSuccess(App.CurrentLevel);
 		SceneController.Instance.LoadSceneAsync("LevelSuccess");
 	}
 
@@ -3117,7 +3117,7 @@ public class GameController : MonoBehaviour {
 		Destroy(animAward, time + 0.1f);
 
 		GameResources.Instance.ChangeUserAsset(award.Type, award.Value);
-		GameResources.Instance.IncreaseTileItemCollect(tileItem.Type, App.GetCurrentLevel());
+		GameResources.Instance.IncreaseTileItemCollect(tileItem.Type, App.CurrentLevel);
 
 	//	saveUserData = true;
 	}

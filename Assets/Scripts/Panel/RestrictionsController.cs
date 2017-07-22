@@ -9,7 +9,7 @@ public class RestrictionsController : MonoBehaviour {
 	private int turnsCount;
 
 	public void LoadCurrentLevel () {
-		levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
+		levelData = GameResources.Instance.GetLevel(App.CurrentLevel);
 		turnsCount = currentTurnsCount = levelData.RestrictionData.Turns;
 
 		if(turnsCount > 0) {

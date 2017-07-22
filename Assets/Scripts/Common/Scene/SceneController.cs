@@ -207,7 +207,7 @@ public class SceneController : MonoBehaviour {
 	}
 
 	public void LoadCurrentLevel() {
-		LevelData levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
+		LevelData levelData = GameResources.Instance.GetLevel(App.CurrentLevel);
 		if(!GameResources.Instance.ChangeUserAsset(UserAssetType.Energy, -levelData.LevelPrice)) {
 			ShowUserAssetsScene(UserAssetType.Energy, true);
 			return;

@@ -22,13 +22,13 @@ public class LevelSuccessScene : MonoBehaviour {
 
 	void Start () {
 		int i = 0;
-		LevelData levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
+		LevelData levelData = GameResources.Instance.GetLevel(App.CurrentLevel);
 		LevelAwardData awardData = levelData.SuccessAwardData;
 		UserData uData = GameResources.Instance.GetUserData();
-		successCount = uData.GetSuccessCount(App.GetCurrentLevel()); 
-		Preconditions.Check(successCount > 0, "Success level count for level {0} = 0", App.GetCurrentLevel());
+		successCount = uData.GetSuccessCount(App.CurrentLevel); 
+		Preconditions.Check(successCount > 0, "Success level count for level {0} = 0", App.CurrentLevel);
 
-		Description.text = App.GetCurrentLevel() + ": " + levelData.Name;
+		Description.text = App.CurrentLevel + ": " + levelData.Name;
 		AssetPanel.DisableUpdate(true);
 
 		foreach(UserAssetType type in EnumUtill.GetValues<UserAssetType>()) {

@@ -11,6 +11,6 @@ public class LocationData {
 	public LocationLevelData[] LevelData;
 
 	public int LevelsCount {
-		get { return LevelData.Length; }
+		get { return 10;/*LevelData.Length*/; }
 	}
 }

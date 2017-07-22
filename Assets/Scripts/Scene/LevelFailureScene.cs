@@ -32,11 +32,11 @@ public class LevelFailureScene : MonoBehaviour {
 
 	void Start () {
 		int i = 0;
-		LevelData levelData = GameResources.Instance.GetLevel(App.GetCurrentLevel());
+		LevelData levelData = GameResources.Instance.GetLevel(App.CurrentLevel);
 		UserData uData = GameResources.Instance.GetUserData();
-		successCount = uData.GetSuccessCount(App.GetCurrentLevel()); 
+		successCount = uData.GetSuccessCount(App.CurrentLevel); 
 
-		Description.text = App.GetCurrentLevel() + ": " + levelData.Name;
+		Description.text = App.CurrentLevel + ": " + levelData.Name;
 
 		foreach(UserAssetType type in EnumUtill.GetValues<UserAssetType>()) {
 			int collectVal = GameController.CollectLevelAward.GetAsset(type);
@@ -80,7 +80,7 @@ public class LevelFailureScene : MonoBehaviour {
 	}
 
 	void OnSelectAward(GameObject target) {
-		AwardItem award = GameResources.Instance.GetLevel(App.GetCurrentLevel()).FailureAwardData.GetRandomAwardItem();
+		AwardItem award = GameResources.Instance.GetLevel(App.CurrentLevel).FailureAwardData.GetRandomAwardItem();
 		foreach(Button b in AwardButtons) {
 			b.gameObject.SetActive(false);
 		}
