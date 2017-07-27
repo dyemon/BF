@@ -46,9 +46,10 @@ public class App {
 	private static int currentLevel = 1;
 	private static int currentLocation = 1;
 	private static int currentCity = 1;
+	private static int currentLocationLevel = 1;
 
 	public static int CurrentLevel {
-		get { return 1005; /*currentLevel; */}
+		get { return currentLevel; }
 		set {currentLevel = value;}
 	}
 	public static int CurrentLocation {
@@ -59,11 +60,16 @@ public class App {
 		get { return currentCity; }
 		set {currentCity = value;}
 	}	
+	public static int CurrentLocationLevel {
+		get { return currentLocationLevel; }
+		set {currentLocationLevel = value;}
+	}	
 
 	public static void InitLocationParams(UserData uData) {
 		CurrentLevel = uData.Level;
-		Vector2 param = GameResources.Instance.GetMapData().CalcLocationParams(uData.Level);
+		Vector3 param = GameResources.Instance.GetMapData().GetLocation(uData.Level);
 		CurrentCity = (int)param.x;
 		CurrentLocation = (int)param.y;
+		CurrentLocationLevel = (int)param.z;
 	}
 }

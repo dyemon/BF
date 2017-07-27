@@ -80,4 +80,8 @@ public class DisplayMessageController : MonoBehaviour {
 
 		DisplayMessage(string.Format("Не хватает {0}", t));
 	}
+
+	public static void ShowUnavaliableLevelMessage() {
+		DisplayMessage(string.Format("Уровень временно не доступен\n Дождитесь обновления"));
+	}
 }

@@ -18,6 +18,7 @@ public class CityScene : BaseScene {
 	private GameObject currentCity;
 
 	private int maxLevel;
+	private GameObject currentTouchObject;
 
 	void Start () {
 		mapData = GameResources.Instance.GetMapData();
@@ -33,7 +34,7 @@ public class CityScene : BaseScene {
 	void Update() {
 		InputController.Touch[] touches = InputController.getTouches();
 
-		if(touches.Length > 0 && touches[0].phase == TouchPhase.Began) {
+		if(touches.Length > 0 && (touches[0].phase == TouchPhase.Began || touches[0].phase == TouchPhase.Ended)) {
 			if(EventSystem.current.IsPointerOverGameObject(InputController.GetFingerId())) {
 				return;
 			}
@@ -42,7 +43,11 @@ public class CityScene : BaseScene {
 
 			RaycastHit2D hit = Physics2D.Raycast(ray.origin, Vector2.zero, Mathf.Infinity);
 			if(hit.collider != null) {		
-				OnSelectLocation(hit.collider.gameObject);
+				if(touches[0].phase == TouchPhase.Began) {
+					currentTouchObject = hit.collider.gameObject; 
+				} else if(hit.collider.gameObject == currentTouchObject) {
+					OnSelectLocation(hit.collider.gameObject);
+				}
 			}
 		}
 	}
@@ -52,7 +57,7 @@ public class CityScene : BaseScene {
 		LocationData lData = mapData.CityData[App.CurrentCity - 1].GetLocationById(location.name);
 		Preconditions.NotNull(lData, "Can not get location data for id " + location.name);
 		int userLevel = 89;//GameResources.Instance.GetUserData().Level;
-		Vector2 locationParams = mapData.CalcLocationParams(userLevel);
+		Vector3 locationParams = mapData.GetLocation(userLevel);
 
 		bool avaliable = userLevel > maxLevel;
 		if(!avaliable) {
@@ -80,7 +85,7 @@ public class CityScene : BaseScene {
 			return;
 		}
 
-		Vector2 locationParams = mapData.CalcLocationParams(usaerLevel);
+		Vector3 locationParams = mapData.GetLocation(usaerLevel);
 
 		foreach(LocationData lData in mapData.CityData[App.CurrentCity - 1].LocationData) {
 			Transform currentLocation = currentCity.transform.Find(lData.Id);

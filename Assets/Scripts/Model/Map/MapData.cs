@@ -12,7 +12,7 @@ public class MapData {
 		}
 	}
 
-	public  Vector2 CalcLocationParams(int level) {
+	public Vector3 GetLocation(int level) {
 		int curCity = 1;
 		int curLocation = 1;
 		int levelSum = 0;
@@ -39,7 +39,30 @@ public class MapData {
 			curCity = CityData.Length;
 		}
 
-		return new Vector2(curCity, curLocation);
+		return new Vector3(curCity, curLocation, level - levelSum);
+	}
+
+	public int GetLevel(int city, int location, int locationLevel) {
+		int levelSum = locationLevel;
+		bool find = false;
+
+		for(int i = 0; i <= CityData.Length; i++) {
+			if(i == city - 1) {
+				for(int k = 0; k <= CityData[i].LocationData.Length; k++) {
+					if(k == location - 1) {
+						find = true;
+						goto find;
+					}
+
+					levelSum += CityData[i].LocationData[k].LevelsCount;
+				}
+			}
+
+			levelSum += CityData[i].LevelsCount;
+		}
+
+		find:
+		return find ? levelSum : -1; 
 	}
 
 	public int GetMaxLevel() {
@@ -51,4 +74,6 @@ public class MapData {
 
 		return sum;
 	}
+
+
 }
