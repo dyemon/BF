@@ -2,16 +2,73 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class LocationScene : BaseScene {
 	public const string SceneName = "Location";
 
+	public GameObjectResources GOResources;
 	public UserAssetsPanel AssetPanel;
+	public GameObject[] LocationMaps;
+	public Sprite QuestionMark;
+	public PanCamera mCamera;
 
 	private GameObject currentTouchObject;
+	private GameObject currentLocationMap;
+	private LocationData locationData;
+
+	private Shader grayscale;
 
 	void Start () {
-		
+
+		currentLocationMap = Instantiate(LocationMaps[App.CurrentLocation - 1], Vector3.zero, Quaternion.identity);
+
+		locationData = GameResources.Instance.GetMapData().CityData[App.CurrentCity-1].LocationData[App.CurrentLocation-1];	
+
+		foreach(Transform tr in currentLocationMap.transform) {
+			tr.gameObject.SetActive(false);
+		}
+
+		int i = 1;
+		int startLevel = GameResources.Instance.GetMapData().GetLevel(App.CurrentCity, App.CurrentLocation, 1);
+		LocalSettingsData localData = GameResources.Instance.GetLocalSettings();
+		UserData uData = GameResources.Instance.GetUserData();
+
+		grayscale = Shader.Find("Custom/Greyscale");
+
+		bool locationContainLastLevel = startLevel <= localData.LastLevel && localData.LastLevel < startLevel + locationData.LevelsCount;
+		foreach(LocationLevelData levelData in locationData.LevelData) {
+			GameObject levelGO = currentLocationMap.transform.Find("Level" + i).gameObject;
+			levelGO.SetActive(true);
+			int curLevel = startLevel + i - 1;
+
+			SpriteRenderer sr = levelGO.transform.Find("Button").GetComponent<SpriteRenderer>();
+			sr.sprite = GOResources.GetCheckpoinButton(curLevel, uData.Level, localData.LastLevel);
+	//		sr.sprite = GOResources.GetCheckpoinButton(curLevel, 3,2);
+	//		uData.Level = 3;
+			sr = levelGO.transform.Find("Icon").GetComponent<SpriteRenderer>();
+			Sprite icon = null;
+			if(levelData.EnemyType != null && (!levelData.Hidden || curLevel <= uData.Level)) {
+				icon = GOResources.GetEnemyIcon(levelData.EnemyType.Value);
+			} else if(levelData.Hidden && curLevel > uData.Level) {
+				icon = QuestionMark;
+			}
+			sr.sprite = icon;
+
+			if(sr.sprite != null && curLevel > uData.Level) {
+				sr.material.shader = grayscale;
+			}
+
+			TextMeshPro levelText = levelGO.transform.Find("LevelText").GetComponent<TextMeshPro>();
+			levelText.text = curLevel.ToString();
+
+			if((locationContainLastLevel && curLevel == localData.LastLevel) ||
+				(!locationContainLastLevel && curLevel == uData.Level)) {
+		//		mCamera.SetPosition(levelGO.transform.position);
+			}
+
+			i++;
+		}
 	}
 	
 	void Update() {

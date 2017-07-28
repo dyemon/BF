@@ -66,8 +66,11 @@ public class App {
 	}	
 
 	public static void InitLocationParams(UserData uData) {
-		CurrentLevel = uData.Level;
-		Vector3 param = GameResources.Instance.GetMapData().GetLocation(uData.Level);
+		LocalSettingsData localData = GameResources.Instance.GetLocalSettings();
+		int level = localData.LastLevel;
+
+		CurrentLevel = level;
+		Vector3 param = GameResources.Instance.GetMapData().GetLocation(level);
 		CurrentCity = (int)param.x;
 		CurrentLocation = (int)param.y;
 		CurrentLocationLevel = (int)param.z;

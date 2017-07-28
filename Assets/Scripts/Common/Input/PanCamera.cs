@@ -19,7 +19,14 @@ public class PanCamera : MonoBehaviour {
 	Camera curCamera;
 
 	void Start() {
-		curCamera = GetComponent<Camera>();
+		curCamera = GetCamera();
+	}
+
+	Camera GetCamera() {
+		if(curCamera == null) {
+			curCamera = GetComponent<Camera>();
+		}
+		return curCamera;
 	}
 
 	void Update() {
@@ -34,8 +41,8 @@ public class PanCamera : MonoBehaviour {
 				return;
 			}
 			Vector2 touchDeltaPosition = touches[0].deltaPosition;
-			float height = curCamera.orthographicSize;
-			float width = height * curCamera.aspect;
+			float height = GetCamera().orthographicSize;
+			float width = height * GetCamera().aspect;
 
 			if(FixX || 2*width > (MaxX - MinX)) {
 				touchDeltaPosition.x = 0;
@@ -48,9 +55,9 @@ public class PanCamera : MonoBehaviour {
 		}
 	}
 
-	void SetPosition(Vector3 pos) {
-		float height = curCamera.orthographicSize;
-		float width = height * curCamera.aspect;
+	public void SetPosition(Vector3 pos) {
+		float height = GetCamera().orthographicSize;
+		float width = height * GetCamera().aspect;
 
 
 		if(!FixX && !(2*width > (MaxX - MinX))) {

@@ -6,4 +6,5 @@ using UnityEngine;
 public class LocalSettingsData {
 	public bool SoundOn = true;
 	public bool MusicOn = true;
+	public int LastLevel = 1;
 }

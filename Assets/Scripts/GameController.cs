@@ -213,6 +213,10 @@ public class GameController : MonoBehaviour {
 		UpdateTiles(true);
 
 		CollectLevelAward.Reset();
+
+		LocalSettingsData localData = GameResources.Instance.GetLocalSettings();
+		localData.LastLevel = App.CurrentLevel;
+		GameResources.Instance.SaveLocalSettings();
 	}
 
 	// Update is called once per frame

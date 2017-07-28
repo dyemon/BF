@@ -24,6 +24,9 @@ public class CityData {
 			return x.AccessOrder.CompareTo(y.AccessOrder);
 		});
 	
+		foreach(LocationData item in LocationData) {
+			item.Init();
+		}
 	}
 
 	public LocationData GetLocationById(string id) {

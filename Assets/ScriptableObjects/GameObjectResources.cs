@@ -11,6 +11,8 @@ public class GameObjectResources : ScriptableObject {
 	public Sprite[] HeroSkillButtonBg;
 	public Sprite ExperienceIcon;
 	public Sprite[] IconBackground;
+	public Sprite[] CheckpoinButton;
+	public Sprite[] EnemyIcon;
 
 	[System.Serializable]
 	public class TargetIcon {
@@ -75,5 +77,21 @@ public class GameObjectResources : ScriptableObject {
 		default:
 			throw new System.Exception("Can not detect background icon for" + type);
 		}
+	}
+
+	public Sprite GetCheckpoinButton(int level, int userLevel, int lastLevel) {
+		int index = 0;
+
+		if(userLevel > level) {
+			index = (level == lastLevel) ? 2 : 3;
+		} else if(userLevel == level) {
+			index = 1;
+		}
+
+		return CheckpoinButton[index];
+	}
+
+	public Sprite GetEnemyIcon(EnemyType type) {
+		return EnemyIcon[(int)type];
 	}
 }

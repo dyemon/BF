@@ -11,6 +11,12 @@ public class LocationData {
 	public LocationLevelData[] LevelData;
 
 	public int LevelsCount {
-		get { return 10;/*LevelData.Length*/; }
+		get { return LevelData.Length; }
+	}
+
+	public void Init() {
+		foreach(LocationLevelData item in LevelData) {
+			item.Init();
+		}
 	}
 }

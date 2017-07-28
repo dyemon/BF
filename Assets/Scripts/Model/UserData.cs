@@ -106,6 +106,7 @@ public class UserData {
 		GameTimers.Instance.Init(this);
 		UpDateQuests(null);
 		App.InitLocationParams(this);
+		Level = 25;
 	}
 
 	public void InitOnStart() {
@@ -113,6 +114,7 @@ public class UserData {
 		GameTimers.Instance.Init(this);
 		UpDateQuests(null);
 		App.InitLocationParams(this);
+
 	}
 
 	public void Merge(UserData uData) {
