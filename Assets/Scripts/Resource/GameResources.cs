@@ -20,7 +20,7 @@ public class GameResources {
 	private int currentLevelId = 0;
 	private LevelData currentLevelData = null;
 	private GameData gameData = null;
-	private LocalSettingsData localSettings = null;
+	private LocalData localData = null;
 	private QuestData questData;
 	private MapData mapData;
 
@@ -64,10 +64,7 @@ public class GameResources {
 				uData.Init();
 				uData.InitOnStart();
 			}
-
-	//	if(Application.isEditor) {
-				uData.InitTest();
-	//		}
+				
 			saveUserDataLocal(uData);
 		}
 	}
@@ -133,10 +130,12 @@ public class GameResources {
 
 		if(data.Version > userData.Version) {
 			data.Init();
-			if(Application.isEditor) {
-				data.InitTest();
-			}
+			LocalData lData = GetLocalData();
+			lData.LastLevel = data.Level;
+			SaveLocalData();
+
 			data.Merge(userData);
+
 			this.userData = B64X.Encode((JsonUtility.ToJson(data)));
 			SaveUserData(userData, false);
 		} else if(data.Version < userData.Version) {
@@ -234,20 +233,20 @@ public class GameResources {
 		return asset.Value + value >= 0;
 	}
 	*/
-	public LocalSettingsData GetLocalSettings() {
-		if(localSettings == null) {
+	public LocalData GetLocalData() {
+		if(localData == null) {
 			string data = PlayerPrefs.GetString("localSettings");
-			localSettings = JsonUtility.FromJson<LocalSettingsData>(data);
-			if(localSettings == null) {
-				localSettings = new LocalSettingsData();
+			localData = JsonUtility.FromJson<LocalData>(data);
+			if(localData == null) {
+				localData = new LocalData();
 			}
 		}
 
-		return localSettings;
+		return localData;
 	}
 
-	public void SaveLocalSettings() {
-		string data = JsonUtility.ToJson(localSettings);
+	public void SaveLocalData() {
+		string data = JsonUtility.ToJson(localData);
 		PlayerPrefs.SetString("localSettings", data);
 		PlayerPrefs.Save();
 	}

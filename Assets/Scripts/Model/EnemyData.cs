@@ -5,15 +5,15 @@ using System;
 
 [System.Serializable]
 public class EnemyData {
-	public EnemyType Type;
-	public string TypeAsString;
+	//public EnemyType Type;
+	//public string TypeAsString;
 	public int Health;
 	public int Damage;
 	public int SkillRatio;
 	public EnemySkillData[] SkillData;
 
 	public void Init() {
-		Type = EnumUtill.Parse<EnemyType>(TypeAsString);
+	//	Type = EnumUtill.Parse<EnemyType>(TypeAsString);
 
 		if(SkillData != null) {
 			foreach(EnemySkillData item in SkillData) {

@@ -1,0 +1,200 @@
+{
+	"Id": "1",
+    "Name": "Level 4", 
+    "Description": "",
+	"LevelPrice": 30,
+	"FightLocationTypeAsString": "Rayon5",
+	 "TileItemDropPercent": [20, 20, 20, 20, 20],
+
+	  "TileData": [{
+			"X": 1, 
+			"Y": 6, 
+			"TypeAsString": "Static_1"
+		}, {
+			"X": 2, 
+			"Y": 1, 
+			"TypeAsString": "Static_1"
+		}, {
+			"X": 5, 
+			"Y": 2, 
+			"TypeAsString": "Static_1"
+		}, {
+			"X": 5, 
+			"Y": 3, 
+			"TypeAsString": "Static_1"
+		}, {
+			"X": 2, 
+			"Y": 6, 
+			"TypeAsString": "Static_1"
+		}, {
+			"X": 3, 
+			"Y": 1, 
+			"TypeAsString": "BombH"
+		}, {
+			"X": 3, 
+			"Y": 0, 
+			"TypeAsString": "BombH"
+		}, {
+			"X": 6, 
+			"Y": 3, 
+			"TypeAsString": "BombP"
+		}, {
+			"X": 6, 
+			"Y": 4, 
+			"TypeAsString": "BombC"
+		}, {
+			"X": 3, 
+			"Y": 5, 
+			"TypeAsString": "GreenEnvelop"
+		}, {
+			"X": 4, 
+			"Y": 4, 
+			"Health": 2,
+			"TypeAsString": "Static_2"
+		}, {
+			"X": 5, 
+			"Y": 4, 
+			"Health": 1,
+			"TypeAsString": "Static_2"
+		}, {
+			"X": 2, 
+			"Y": 5, 
+			"TypeAsString": "Static_2"
+		},{
+      "X": 3, 
+      "Y": 3, 
+	  "Health": 2,
+      "TypeAsString": "StaticSlime_1",
+			"ChildTileItemData": {
+					"TypeAsString": "RedEnvelop",
+					"Level": 1
+					}
+      },{
+      "X": 2, 
+      "Y": 3, 
+	  "Health": 1,
+      "TypeAsString": "StaticSlime_1",
+			"ChildTileItemData": {
+					"TypeAsString": "BombP",
+					"Level": 1
+					}
+      },{
+      "X": 4, 
+      "Y": 3, 
+      "TypeAsString": "StaticSlime_1",
+			"ChildTileItemData": {
+					"TypeAsString": "Red",
+					"Level": 1
+					}
+      }],
+	
+	  "BarrierData": [{
+            "X1": 0, 
+            "Y1": 0, 
+            "X2": 1, 
+            "Y2": 0, 
+            "TypeAsString": "Barrier_2",
+						"Health": 2
+        }, {
+            "X1": 0, 
+            "Y1": 1, 
+            "X2": 1, 
+            "Y2": 1, 
+            "TypeAsString": "Barrier_2",
+						"Health": 1
+        },{
+            "X1": 0, 
+            "Y1": 0, 
+            "X2": 0, 
+            "Y2": 1, 
+            "TypeAsString": "Barrier_1"
+        },  {
+            "X1": 0, 
+            "Y1": 2, 
+            "X2": 1, 
+            "Y2": 2, 
+            "TypeAsString": "Barrier_2"
+        }, {
+            "X1": 2, 
+            "Y1": 2, 
+            "X2": 2, 
+            "Y2": 3, 
+            "TypeAsString": "Barrier_1"
+        },{
+            "X1": 4, 
+            "Y1": 2, 
+            "X2": 4, 
+            "Y2": 3, 
+            "TypeAsString": "Barrier_1"
+        }, {
+            "X1": 5, 
+            "Y1": 2, 
+            "X2": 5, 
+            "Y2": 3, 
+            "TypeAsString": "Barrier_1"
+        }, {
+            "X1": 6, 
+            "Y1": 4, 
+            "X2": 6, 
+            "Y2": 5, 
+            "TypeAsString": "Barrier_1"
+        }, {
+            "X1": 4, 
+            "Y1": 5, 
+            "X2": 5, 
+            "Y2": 5, 
+            "TypeAsString": "Barrier_1"
+        }], 
+		
+   "TargetData": [{
+		"Count": 10, 
+		"TypeAsString": "Yellow"
+	}, {
+		"Count": 10, 
+		"TypeAsString": "Purple"
+	},{
+		"Count": 10, 
+		"TypeAsString": "Blue"
+	}],
+
+	"RestrictionData": {
+        "Turns": 15
+    },
+
+
+
+	"AutoDropData" : [{
+		"Ratio": 20,
+		"TileItem" : { "TypeAsString": "Mobile" }
+	},{
+		"Ratio": 20,
+		"TileItem" : { "TypeAsString": "Ring" }
+	},{
+		"Ratio": 1,
+		"TileItem" : { "TypeAsString": "Star" }
+	},{
+		"Ratio": 20,
+		"TileItem" : { "TypeAsString": "Energy" }
+	}],
+
+
+	"SuccessAwardData": {
+		"Experience": 10,
+		"UserAssets": [
+		 {"TypeAsString": "Energy", "Value":	2},
+		 {"TypeAsString": "Mobile", "Value":	1},
+		 {"TypeAsString": "Ring", "Value":	5},
+		 {"TypeAsString": "Star", "Value":	1}
+		]
+	},
+
+	"FailureAwardData": {
+		"Experience": 0,
+		"UserAssets": [
+		 {"TypeAsString": "Energy", "Value":	1},
+		 {"TypeAsString": "Mobile", "Value":	2},
+		 {"TypeAsString": "Ring", "Value":	1}
+		]
+	}
+
+}

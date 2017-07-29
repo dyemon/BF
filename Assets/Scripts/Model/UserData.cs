@@ -48,27 +48,6 @@ public class UserData {
 	//public List<UserHeroData> HeroesData = new List<UserHeroData>();
 
 
-	public void InitTest() {
-	//	HeroesData.Clear();
-		/*
-		HeroesData.Add(new UserHeroData("redEnvelop",0));
-		HeroesData.Add(new UserHeroData("yellowEnvelop",0));
-		HeroesData.Add(new UserHeroData("greenEnvelop",0));		
-		HeroesData.Add(new UserHeroData("blueEnvelop",0));
-		HeroesData.Add(new UserHeroData("purpleEnvelop",0));
-
-		HeroesData.Add(new UserHeroData("BombH",0));
-		HeroesData.Add(new UserHeroData("BombV",0));		
-		HeroesData.Add(new UserHeroData("BombP",0));
-		HeroesData.Add(new UserHeroData("BombC",0));
-
-		QuestsData.Clear();
-		QuestsData.Add(new QuestData("1", 1));
-		QuestsData.Add(new QuestData("2", 2));
-		*/
-		//Experience = 100;
-	}
-
 	public void Init() {
 		
 		foreach(UserAssetData data in assets) {
@@ -106,7 +85,7 @@ public class UserData {
 		GameTimers.Instance.Init(this);
 		UpDateQuests(null);
 		App.InitLocationParams(this);
-		Level = 25;
+	//	Level = 50;
 	}
 
 	public void InitOnStart() {
@@ -114,7 +93,7 @@ public class UserData {
 		GameTimers.Instance.Init(this);
 		UpDateQuests(null);
 		App.InitLocationParams(this);
-
+		Level = 50;
 	}
 
 	public void Merge(UserData uData) {

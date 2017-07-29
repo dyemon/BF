@@ -9,14 +9,14 @@ public class LevelSettingsScene : WindowScene {
 	public Text Description;
 	public GameObject RepeatButton;
 
-	private LocalSettingsData localSettings;
+	private LocalData localData;
 
 	void Start() {
 		LevelData levelData = GameResources.Instance.GetLevel(App.CurrentLevel);
 
-		localSettings = GameResources.Instance.GetLocalSettings();
-		SoundButton.Toggle(localSettings.SoundOn);
-		MusicButton.Toggle(localSettings.MusicOn);
+		localData = GameResources.Instance.GetLocalData();
+		SoundButton.Toggle(localData.SoundOn);
+		MusicButton.Toggle(localData.MusicOn);
 
 		Description.text = App.CurrentLevel.ToString() + ": " + levelData.Name;
 
@@ -31,14 +31,14 @@ public class LevelSettingsScene : WindowScene {
 
 
 	public void OnSoundButton() {
-		localSettings.SoundOn	= !localSettings.SoundOn;
-		SoundButton.Toggle(localSettings.SoundOn);
-		GameResources.Instance.SaveLocalSettings();
+		localData.SoundOn	= !localData.SoundOn;
+		SoundButton.Toggle(localData.SoundOn);
+		GameResources.Instance.SaveLocalData();
 	}
 
 	public void OnMusicButton() {
-		localSettings.MusicOn	= !localSettings.MusicOn;
-		MusicButton.Toggle(localSettings.MusicOn);
-		GameResources.Instance.SaveLocalSettings();
+		localData.MusicOn	= !localData.MusicOn;
+		MusicButton.Toggle(localData.MusicOn);
+		GameResources.Instance.SaveLocalData();
 	}
 }

@@ -5,7 +5,7 @@ using System.Collections;
 public class DisplayMessageController : MonoBehaviour {
 
 	public Text DisplayText;
-	public float MoveSpeed;
+	public float MoveTime;
 	public float FadeTime;
 	public GameObject EndDispalyMessagePosition;
 
@@ -50,7 +50,7 @@ public class DisplayMessageController : MonoBehaviour {
 		text.color = color;
 
 		AnimatedObject ao = text.GetComponent<AnimatedObject>();
-		ao.AddMove(null, endPos, MoveSpeed).Build()
+		ao.AddMoveByTime(null, endPos, MoveTime).Build()
 			.AddFadeUIText(null, 0f, FadeTime).Build()
 			.DestroyOnStop(true).Run();
 	}
@@ -83,5 +83,10 @@ public class DisplayMessageController : MonoBehaviour {
 
 	public static void ShowUnavaliableLevelMessage() {
 		DisplayMessage(string.Format("Уровень временно не доступен\n Дождитесь обновления"));
+	}
+
+	public static void ShowUnavaliableLocationMessage() {
+		DisplayMessage(string.Format("Район временно не доступен\n Дождитесь обновления"));
+
 	}
 }

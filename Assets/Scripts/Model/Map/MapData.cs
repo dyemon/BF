@@ -18,18 +18,18 @@ public class MapData {
 		int levelSum = 0;
 
 		foreach(CityData city in CityData) {
-			if(levelSum + city.LevelsCount >= level) {
+			if(levelSum + city.LevelsCountActual >= level) {
 				foreach(LocationData location in city.LocationData) {
-					if(levelSum + location.LevelsCount >= level) {
+					if(levelSum + location.LevelsCountActual >= level) {
 						goto find;
 					}
 
-					levelSum += location.LevelsCount;
+					levelSum += location.LevelsCountActual;
 					curLocation++;
 				}
 			}
 
-			levelSum += city.LevelsCount;
+			levelSum += city.LevelsCountActual;
 			curCity++;
 		}
 
@@ -37,6 +37,12 @@ public class MapData {
 
 		if(curCity > CityData.Length) {
 			curCity = CityData.Length;
+			foreach(LocationData location in CityData[curCity - 1].LocationData) {
+				if(location.LevelsCountActual == 0) {
+					break;
+				}
+				curLocation++;
+			}
 		}
 
 		return new Vector3(curCity, curLocation, level - levelSum);
@@ -54,11 +60,11 @@ public class MapData {
 						goto find;
 					}
 
-					levelSum += CityData[i].LocationData[k].LevelsCount;
+					levelSum += CityData[i].LocationData[k].LevelsCountActual;
 				}
 			}
 
-			levelSum += CityData[i].LevelsCount;
+			levelSum += CityData[i].LevelsCountActual;
 		}
 
 		find:
@@ -69,11 +75,19 @@ public class MapData {
 		int sum = 0;
 
 		foreach(CityData city in CityData) {
-			sum += city.LevelsCount;
+			sum += city.LevelsCountActual;
 		}
 
 		return sum;
 	}
 
+	public bool IsFirstLevelOnLocation(int level) {
+		Vector3 loc = GetLocation(level);
+		return loc.z == 1;
+	}
 
+	public LocationLevelData GetLocationLevelData(int level) {
+		Vector3 loc = GetLocation(level);
+		return CityData[(int)loc.x - 1].LocationData[(int)loc.y - 1].LevelData[(int)loc.z - 1];
+	}
 }

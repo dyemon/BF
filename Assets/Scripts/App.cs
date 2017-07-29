@@ -66,7 +66,13 @@ public class App {
 	}	
 
 	public static void InitLocationParams(UserData uData) {
-		LocalSettingsData localData = GameResources.Instance.GetLocalSettings();
+		LocalData localData = GameResources.Instance.GetLocalData();
+
+		if(localData.LastLevel > uData.Level) {
+			localData.LastLevel = uData.Level;
+		}
+
+	//	localData.LastLevel = 51;
 		int level = localData.LastLevel;
 
 		CurrentLevel = level;

@@ -26,4 +26,8 @@ public class SceneControllerHelper : Singleton<SceneController>  {
 	public void Quit() {
 		Application.Quit();
 	}
+
+	public void LoadMainScene() {
+		instance.LoadMainScene();
+	}
 }

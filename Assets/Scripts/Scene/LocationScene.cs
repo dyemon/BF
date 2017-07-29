@@ -31,12 +31,12 @@ public class LocationScene : BaseScene {
 
 		int i = 1;
 		int startLevel = GameResources.Instance.GetMapData().GetLevel(App.CurrentCity, App.CurrentLocation, 1);
-		LocalSettingsData localData = GameResources.Instance.GetLocalSettings();
+		LocalData localData = GameResources.Instance.GetLocalData();
 		UserData uData = GameResources.Instance.GetUserData();
 
 		grayscale = Shader.Find("Custom/Greyscale");
 
-		bool locationContainLastLevel = startLevel <= localData.LastLevel && localData.LastLevel < startLevel + locationData.LevelsCount;
+		bool locationContainLastLevel = startLevel <= localData.LastLevel && localData.LastLevel < startLevel + locationData.LevelsCountActual;
 		foreach(LocationLevelData levelData in locationData.LevelData) {
 			GameObject levelGO = currentLocationMap.transform.Find("Level" + i).gameObject;
 			levelGO.SetActive(true);
@@ -64,11 +64,15 @@ public class LocationScene : BaseScene {
 
 			if((locationContainLastLevel && curLevel == localData.LastLevel) ||
 				(!locationContainLastLevel && curLevel == uData.Level)) {
-		//		mCamera.SetPosition(levelGO.transform.position);
+				Vector3 pos = levelGO.transform.position;
+				pos.z = mCamera.transform.position.z;
+				mCamera.SetPosition(pos);
 			}
 
 			i++;
 		}
+
+		Invoke("ShowAdditionScenes", 2);
 	}
 	
 	void Update() {
@@ -106,8 +110,14 @@ public class LocationScene : BaseScene {
 	}
 
 	void OnSelectLevel(GameObject go, int locationLevel) {
+		int level = GameResources.Instance.GetMapData().GetLevel(App.CurrentCity, App.CurrentLocation, locationLevel);
+		UserData uData = GameResources.Instance.GetUserData();
+
+		if(level > uData.Level) {
+			return;
+		}
+
 		App.CurrentLocationLevel = locationLevel;
-		int level = GameResources.Instance.GetMapData().GetLevel(App.CurrentCity, App.CurrentLocation, App.CurrentLocationLevel);
 
 		if(level < 0) {
 			DisplayMessageController.ShowUnavaliableLevelMessage();
@@ -120,6 +130,16 @@ public class LocationScene : BaseScene {
 		if(levelData == null) {
 			DisplayMessageController.ShowUnavaliableLevelMessage();
 			return;
+		}
+
+		SceneController.Instance.LoadSceneAdditive(LevelTargetScene.SceneName);
+	}
+
+	public void OnClickFB() {
+		if(!Account.Instance.IsLogged) {
+			SceneController.Instance.LoadSceneAdditive("FBNotLogged");
+		} else {
+			SceneController.Instance.LoadSceneAdditive("FBLogged");
 		}
 	}
 }

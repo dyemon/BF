@@ -215,4 +215,20 @@ public class SceneController : MonoBehaviour {
 		LoadSceneAsync(GameController.SceneName);
 	
 	}
+
+	public void LoadMainScene() {
+		string nextScene;
+
+		LocalData localData = GameResources.Instance.GetLocalData();
+		UserData uData = GameResources.Instance.GetUserData();
+		MapData mData = GameResources.Instance.GetMapData();
+		int maxLevel = mData.GetMaxLevel();
+
+		nextScene = LocationScene.SceneName;
+		if((uData.Level == localData.LastLevel && mData.IsFirstLevelOnLocation(uData.Level)) || localData.LastLevel > maxLevel) {
+			nextScene = CityScene.SceneName;
+		}
+
+		LoadSceneAsync(nextScene);
+	}
 }

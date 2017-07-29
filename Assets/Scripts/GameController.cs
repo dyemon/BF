@@ -214,9 +214,9 @@ public class GameController : MonoBehaviour {
 
 		CollectLevelAward.Reset();
 
-		LocalSettingsData localData = GameResources.Instance.GetLocalSettings();
+		LocalData localData = GameResources.Instance.GetLocalData();
 		localData.LastLevel = App.CurrentLevel;
-		GameResources.Instance.SaveLocalSettings();
+		GameResources.Instance.SaveLocalData();
 	}
 
 	// Update is called once per frame
@@ -254,10 +254,13 @@ public class GameController : MonoBehaviour {
 		}
 
 		EnemyData eData = levelData.EnemyData;
-		tileItemsColor = tileItemsColorAll.GetRow((int)eData.Type);
+		LocationLevelData lData = GameResources.Instance.GetMapData().GetLocationLevelData(App.CurrentLevel);
+		Preconditions.NotNull(lData.EnemyType, "Enemy type for level {0} is null", App.CurrentLevel);
+
+		tileItemsColor = tileItemsColorAll.GetRow((int)lData.EnemyType);
 
 		fightActive = true;
-		GameObject enemy = Instantiate(Enemies[(int)eData.Type]);
+		GameObject enemy = Instantiate(Enemies[(int)lData.EnemyType]);
 		enemy.transform.position = EnemyPos.transform.position;
 		enemyController = enemy.GetComponent<EnemyController>();
 

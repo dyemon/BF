@@ -56,15 +56,19 @@ public class CityScene : BaseScene {
 		Debug.Log(location.name);
 		LocationData lData = mapData.CityData[App.CurrentCity - 1].GetLocationById(location.name);
 		Preconditions.NotNull(lData, "Can not get location data for id " + location.name);
-		int userLevel = 89;//GameResources.Instance.GetUserData().Level;
+
+
+		int userLevel = GameResources.Instance.GetUserData().Level;
 		Vector3 locationParams = mapData.GetLocation(userLevel);
 
-		bool avaliable = userLevel > maxLevel;
-		if(!avaliable) {
-			avaliable = 0 <= DetectLocationAvailability((int)locationParams.x, (int)locationParams.y, App.CurrentCity, lData.AccessOrder);
-		}
+		bool avaliable = 0 <= DetectLocationAvailability((int)locationParams.x, (int)locationParams.y, App.CurrentCity, lData.AccessOrder);
 
 		if(!avaliable) {
+			return;
+		}
+
+		if(lData.LevelsCountActual == 0) {
+			DisplayMessageController.ShowUnavaliableLocationMessage();
 			return;
 		}
 
@@ -75,16 +79,18 @@ public class CityScene : BaseScene {
 			.AddResize(null, new Vector3(1.5f, 1.5f, 1), 0.5f)
 			.Build().Run();
 				*/
+
+		SceneController.Instance.LoadSceneAsync(LocationScene.SceneName);
 	}
 
 	void UpdateLocationAvailability() {
 		UserData uData = GameResources.Instance.GetUserData();
 	//	App.CurrentCity = 2;
 		int usaerLevel = uData.Level;
-		if(usaerLevel > maxLevel) {
-			return;
-		}
-
+	//	if(usaerLevel > maxLevel) {
+	//		return;
+	//	}
+		bool isMaxLevel = usaerLevel > maxLevel;
 		Vector3 locationParams = mapData.GetLocation(usaerLevel);
 
 		foreach(LocationData lData in mapData.CityData[App.CurrentCity - 1].LocationData) {

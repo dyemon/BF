@@ -8,11 +8,11 @@ public class CityData {
 	public string Description;
 	public LocationData[] LocationData;
 
-	public int LevelsCount {
+	public int LevelsCountActual {
 		get {
 			int sum = 0;
 			foreach(LocationData item in LocationData) {
-				sum += item.LevelsCount;
+				sum += item.LevelsCountActual;
 			}
 
 			return sum;

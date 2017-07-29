@@ -10,7 +10,7 @@ public class LocationData {
 	public int AccessOrder;
 	public LocationLevelData[] LevelData;
 
-	public int LevelsCount {
+	public int LevelsCountActual {
 		get { return LevelData.Length; }
 	}
 
