@@ -3123,7 +3123,7 @@ public class GameController : MonoBehaviour {
 
 		Destroy(animAward, time + 0.1f);
 
-		GameResources.Instance.ChangeUserAsset(award.Type, award.Value);
+	//	GameResources.Instance.ChangeUserAsset(award.Type, award.Value);
 		GameResources.Instance.IncreaseTileItemCollect(tileItem.Type, App.CurrentLevel);
 
 	//	saveUserData = true;
@@ -3158,7 +3158,7 @@ public class GameController : MonoBehaviour {
 		
 		Destroy(animAward, time1 + time2 + 0.3f);
 
-		GameResources.Instance.IncreaseExperience(exp);
+		//GameResources.Instance.IncreaseExperience(exp);
 		CollectLevelAward.Experience += exp;
 	}
 }

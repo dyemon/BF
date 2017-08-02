@@ -231,4 +231,8 @@ public class SceneController : MonoBehaviour {
 
 		LoadSceneAsync(nextScene);
 	}
+
+	public bool HasLoadedAdditiveScene() {
+		return loaddedScenes.Count > 0;
+	}
 }

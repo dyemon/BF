@@ -2,7 +2,7 @@
 	"Id": "1",
     "Name": "Level 4", 
     "Description": "",
-	"LevelPrice": 30,
+	"LevelPrice": 2,
 	"FightLocationTypeAsString": "Rayon5",
 	 "TileItemDropPercent": [20, 20, 20, 20, 20],
 

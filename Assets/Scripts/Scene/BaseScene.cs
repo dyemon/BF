@@ -5,6 +5,11 @@ using UnityEngine;
 public class BaseScene : MonoBehaviour {
 
 	void ShowAdditionScenes() {
+		if(SceneController.Instance.HasLoadedAdditiveScene()) {
+			Invoke("ShowAdditionScenes", 3);
+			return;
+		}
+
 		UserData uData = GameResources.Instance.GetUserData();
 
 		bool canShow = ParametersController.Instance.GetBool(ParametersController.CAN_SHOW_DAILYBONUS);
@@ -12,6 +17,7 @@ public class BaseScene : MonoBehaviour {
 
 		if(!uData.DailyBonusTaken && canShow && !isShown) {
 			SceneController.Instance.LoadSceneAdditive(DailyBonusScene.SceneName);
+			Invoke("ShowAdditionScenes", 3);
 			return;
 		}
 

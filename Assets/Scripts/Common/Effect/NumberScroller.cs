@@ -37,6 +37,10 @@ public class NumberScroller : MonoBehaviour {
 		speed = val;
 		return this;
 	}
+	public NumberScroller ResetStartValue() {
+		startValue = null;
+		return this;
+	}
 	public void Run() {
 		run = true;
 		curTime = 0;

@@ -28,12 +28,12 @@ public class Animations {
 		AnimatedObject ao = target.GetComponent<AnimatedObject>();
 		float time1 = 0.3f;
 		float time2 = 1f;
-		float idle = 0.1f;
+		float idle = 0f;
 
 		ao.AddMoveByTime(start, end1, time1)
-			.AddResize(null, new Vector3(1.5f, 1.5f, 1f), time1)
+			.AddResize(null, new Vector3(1.4f, 1.4f, 1f), time1)
 			.Build()
-			.AddIdle(idle).Build()
+		//	.AddIdle(idle).Build()
 			.AddMoveByTime(null, end, time2, ABase.BezierPoints.EaseInOut)
 			.AddResize(null, endSize.Value, time2)
 			.Build();

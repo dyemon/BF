@@ -69,7 +69,8 @@ public class DailyBonusScene : WindowScene {
 
 		GameObject assetImg = UnityUtill.FindByName(button.transform, "AwardType").gameObject;
 
-		GameObject animImg = Instantiate(AwardItem, assetImg.transform);
+		GameObject animImg = Instantiate(AwardItem, transform);
+		animImg.transform.position = assetImg.transform.position;
 		animImg.AddComponent<AnimatedObject>();
 		Vector3 end = AssetsPanel.GetUserAssetsIcon(award.Type).transform.position;
 		Vector3 start = assetImg.transform.position;

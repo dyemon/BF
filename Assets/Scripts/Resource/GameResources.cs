@@ -333,6 +333,9 @@ public class GameResources {
 		uData.OnSuccessLevel(level);
 		if(level == uData.Level) {
 			uData.Level++;
+			LocalData locData = GetLocalData();
+			locData.LastLevel = uData.Level;
+			SaveLocalData();
 		}
 		saveUserDataLocal(uData);
 	}

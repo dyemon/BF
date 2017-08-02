@@ -9,6 +9,7 @@ public class BuyButton : MonoBehaviour {
 
 	private UserAssetType? currentType;
 	private  Color? currentTextColor;
+	private int? currentAmount;
 
 	void OnEnable() {
 		GameResources.Instance.onUpdateInfinityEnergy += OnUpdateInfinityEnergy;
@@ -21,6 +22,7 @@ public class BuyButton : MonoBehaviour {
 	public void Init(UserAssetType? type, int? amount, string name, Color? textColor = null) {
 		currentType = type;
 		currentTextColor = textColor;
+		currentAmount = amount;
 
 		if(type != null) {
 			Image img = UnityUtill.FindByName(transform, "PriceType").GetComponent<Image>();
@@ -63,6 +65,11 @@ public class BuyButton : MonoBehaviour {
 		}
 	}
 
+	public void UpdateAmountFromText() {
+		Text text = UnityUtill.FindByName(transform, "PriceAmount").GetComponent<Text>();
+		currentAmount = System.Int32.Parse(text.text);
+	}
+
 	public void OnUpdateInfinityEnergy(int value) {
 		if(!ConsiderInfinityEnergy || currentType == null || currentType.Value != UserAssetType.Energy) {
 			return;
@@ -72,4 +79,11 @@ public class BuyButton : MonoBehaviour {
 		UpdateLayout();
 	}
 		
+	public PriceItem GetPriceItem() {
+		if(currentType == null || currentAmount == null) {
+			return null;
+		}
+
+		return new PriceItem() { Type = currentType.Value, Value = currentAmount.Value };
+	}
 }

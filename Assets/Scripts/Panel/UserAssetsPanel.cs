@@ -79,6 +79,9 @@ public class UserAssetsPanel : MonoBehaviour {
 	public GameObject GetUserAssetsIcon(UserAssetType type) {
 		return GetUserAssetItem(type).Find("Image").gameObject;
 	}
+	public GameObject GetExperienceIcon() {
+		return GetExperienceItem().Find("Image").gameObject;
+	}
 	public GameObject GetInfinityEnergyObject() {
 		return InfinityEnergy;
 	}
@@ -86,6 +89,9 @@ public class UserAssetsPanel : MonoBehaviour {
 	Transform GetUserAssetItem(UserAssetType type) {
 		string name = type.ToString() + "PanelItem";
 		return UnityUtill.FindByName(gameObject.transform, name);
+	}
+	Transform GetExperienceItem() {
+		return Experience.transform;
 	}
 
 	void AlignButtons() {

@@ -2,7 +2,7 @@
 	"Id": "1",
     "Name": "Level 4", 
     "Description": "",
-	"LevelPrice": 30,
+	"LevelPrice": 3,
 	"FightLocationTypeAsString": "Rayon5",
 	 "TileItemDropPercent": [20, 20, 20, 20, 20],
 
@@ -156,10 +156,7 @@
 		"Count": 10, 
 		"TypeAsString": "Blue"
 	}],
-
-	"RestrictionData": {
-        "Turns": 15
-    },
+		
 
 	"EnemyData": {
 		"Health": 80,

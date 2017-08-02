@@ -26,6 +26,8 @@ public class LevelFailureScene : MonoBehaviour {
 
 	private int successCount = 0;
 
+	private IList<GameObject> awardItems = new List<GameObject>();
+
 	void OnDisable() {
 		GameResources.Instance.SaveUserData(null, false);
 	}
@@ -38,6 +40,9 @@ public class LevelFailureScene : MonoBehaviour {
 
 		Description.text = App.CurrentLevel + ": " + levelData.Name;
 
+		AssetPanel.DisableUpdate(true);
+		bool hasAward = false;
+
 		foreach(UserAssetType type in EnumUtill.GetValues<UserAssetType>()) {
 			int collectVal = GameController.CollectLevelAward.GetAsset(type);
 
@@ -46,6 +51,10 @@ public class LevelFailureScene : MonoBehaviour {
 				GameObject go = Instantiate(AwardItem, layout.transform);
 				go.name = type.ToString() + "AwardItem";
 				go.GetComponent<BuyButton>().Init(type, collectVal, null);
+
+				GameResources.Instance.ChangeUserAsset(type, collectVal);
+				awardItems.Add(go);
+				hasAward = true;
 			}
 		}
 
@@ -53,6 +62,11 @@ public class LevelFailureScene : MonoBehaviour {
 		LayoutRebuilder.ForceRebuildLayoutImmediate(Awards2.GetComponent<RectTransform>());
 
 		Experience.GetComponent<BuyButton>().Init(null, GameController.CollectLevelAward.Experience, null, UserAssetTypeExtension.ExperienceColor);
+		if(GameController.CollectLevelAward.Experience > 0) {
+			awardItems.Add(Experience);
+			hasAward = true;
+			GameResources.Instance.IncreaseExperience(GameController.CollectLevelAward.Experience);
+		}
 
 		bool capNotEnded = ParametersController.Instance.GetBool(ParametersController.CAPITULATE_NOT_ENDED);
 		ParametersController.Instance.SetParameter(ParametersController.CAPITULATE_NOT_ENDED, false);
@@ -75,8 +89,13 @@ public class LevelFailureScene : MonoBehaviour {
 		Description1.SetActive(showAward);
 
 		RepeatButton.GetComponent<BuyButton>().Init(UserAssetType.Energy, levelData.LevelPrice, null);
-		CloseButton.SetActive(!showAward);
-		RepeatButton.SetActive(!showAward);
+		CloseButton.SetActive(!showAward && !hasAward);
+		RepeatButton.SetActive(!showAward && !hasAward);
+		AssetPanel.DisableUpdate(false);
+
+		if(!showAward) {
+			Invoke("StartAwardAnimate", 1);
+		}
 	}
 
 	void OnSelectAward(GameObject target) {
@@ -86,30 +105,72 @@ public class LevelFailureScene : MonoBehaviour {
 		}
 		Description1.SetActive(false);
 		if(award == null) {
-			OnCompleteAward(null);
+			StartAwardAnimate();
 			return;
 		}
-			
+
+		AnimationGroup ag = GetComponent<AnimationGroup>();
+
 		Vector3 start = target.transform.position;
 		Vector3 end = AssetPanel.GetUserAssetsIcon(award.Type).transform.position;
 		GameObject animAward = Instantiate(AwardTileItem, transform);
 		float time = Animations.CreateAwardAnimation(animAward, start, end, 
 			GOResources.GetUserAssetIcone(award.Type), award.Value);
-		animAward.GetComponent<AnimatedObject>().OnStop(() => {OnCompleteAward(animAward);} ).Run();
+		ag.Add(animAward.GetComponent<AnimatedObject>());
+			
+		animAward.GetComponent<AnimatedObject>().OnStop(() => {OnCompleteAward(animAward);} );
 
 		AssetPanel.DisableUpdate(true);
 		GameResources.Instance.ChangeUserAsset(award.Type, award.Value);
 		AssetPanel.DisableUpdate(false);
+
+		StartAwardAnimate();
+	}
+
+	void StartAwardAnimate() {
+		AnimationGroup ag = GetComponent<AnimationGroup>();
+
+		foreach(GameObject item in awardItems) {
+			PriceItem pi = item.GetComponent<BuyButton>().GetPriceItem();
+			Sprite icon = pi == null ? GOResources.GetUserExperienceIcone() : GOResources.GetUserAssetIcone(pi.Type);
+			int amount = pi == null ? GameController.CollectLevelAward.Experience : pi.Value;
+			Vector3 start = item.transform.position;
+			GameObject targetGO = pi == null ? AssetPanel.GetExperienceIcon() : AssetPanel.GetUserAssetsIcon(pi.Type);
+			Vector3 end = targetGO.transform.position;
+			Vector3? endSize = pi == null? new Vector3(0.7f, 0.7f, 1) : (Vector3?)null; 
+
+			GameObject animAward = Instantiate(AwardTileItem, transform);
+			Animations.CreateAwardAnimation(animAward, start, end, icon, amount, endSize);
+			animAward.GetComponent<AnimatedObject>().OnStop(() => {OnCompleteAward(animAward);} );
+
+			ag.Add(animAward.GetComponent<AnimatedObject>());
+		}
+
+		if(ag.AnimationExist()) {
+			ag.Run<GameObject>(OnCompleteAwardAnimate, (GameObject)null);
+		} else {
+			OnCompleteAwardAnimate(null);
+		}
 	}
 
 	void OnCompleteAward(GameObject goAward) {
-		AssetPanel.UpdateUserAssets();
+	//	AssetPanel.UpdateUserAssets();
 
 		if(goAward != null) {
 			Destroy(goAward);
 		}
 
+	//	CloseButton.SetActive(true);
+	//	RepeatButton.SetActive(true);
+	}
+
+	void OnCompleteAwardAnimate(GameObject goAward) {
+		AssetPanel.UpdateUserAssets();
+		AssetPanel.UpdateExperience();
+
 		CloseButton.SetActive(true);
 		RepeatButton.SetActive(true);
 	}
+
+
 }
