@@ -46,7 +46,6 @@ public class FBLoggedScene : WindowScene, IFBCallback {
 		UserData uData = GameResources.Instance.GetUserData();
 		UpdateQuestInfo(uData.GetActiveQuestOne(QuestType.SocialFB, false));
 
-		FBController.RequestFriendsList();
 	}
 
 	void UpdateQuestInfo(QuestProgressData quest) {

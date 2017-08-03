@@ -7,6 +7,8 @@ public class FBController : MonoBehaviour {
 	public GameObject FBCallback;
 	private IFBCallback fBCallback;
 
+	public delegate void OnRequestResult(IGraphResult result);
+
 	void Awake() {
 		if(FBCallback != null) {
 			fBCallback = FBCallback.GetComponent<IFBCallback>();
@@ -98,16 +100,9 @@ public class FBController : MonoBehaviour {
 		return Facebook.Unity.AccessToken.CurrentAccessToken;
 	}
 
-	public void RequestFriendsList() {
-		FB.API ("/me/friends", HttpMethod.GET, FriendsListCallback);
+	public void RequestFriendsList(FacebookDelegate<IGraphResult> callback) {
+		FB.API ("/me/friends", HttpMethod.GET, callback);
 	}
 
-	void FriendsListCallback(IGraphResult result) {
-		if(result.Error != null) {
-			ModalPanels.Show(ModalPanelName.ErrorPanel, string.Format("Ошибка при запросе к facebook \n {0}", result.Error));
-			return;
-		}
 
-
-	}
 }
