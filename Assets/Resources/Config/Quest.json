@@ -20,5 +20,16 @@
 		"Award":  {"TypeAsString": "Ring", "Value":	10},
 		"ExperienceAward": 5,
 		"ShowProgressInfo": true
+	}, {
+		"Id": "sendPresentFB",
+		"Name": "Отослать подарок",
+		"Description": "Отошли подарок другу и получи в награду 10 печаток и 10 очков крутости",
+		"TypeAsString": "SocialFB",
+		"ConditionTypeAsString":	"SendPresent",
+		"ActionCount": 2,
+		"RequiredQuestId": "inviteFriends2FB",
+		"Award":  {"TypeAsString": "Ring", "Value":	10},
+		"ExperienceAward": 10,
+		"ShowProgressInfo": false
 	}]
 }

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Common.Net.Http;
+using System.Collections.Generic;
 
 public class FBNotLoggedScene : WindowScene, IFBCallback {
 	public const string SceneName = "FBNotLogged";
@@ -25,9 +26,9 @@ public class FBNotLoggedScene : WindowScene, IFBCallback {
 	}
 
 	public void OnFBLogout() {
-
 	}
-
+	public void OnFriendsRequest(IList<FBUser> friends) {
+	}
 
 	public void OnFBLoginFail(string error) {
 		if(error != null) {

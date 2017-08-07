@@ -2,7 +2,19 @@
  	Properties {
 		_MainTex ("Base (RGB) Trans (A)", 2D) = "white" {}
 	}
-	
+
+	SubShader {
+		Tags {"Queue"="Transparent" "RenderType"="Transparent" }
+		LOD 200
+		Pass{
+			Blend SrcAlpha OneMinusSrcAlpha
+			CGPROGRAM
+			#pragma vertex vert
+			#pragma fragment frag
+			ENDCG
+		}
+	} 
+
 	CGINCLUDE
 	#include "UnityCG.cginc"
 
@@ -30,16 +42,6 @@
 
 	ENDCG
 	
-	SubShader {
-		Tags {"Queue"="Transparent" "RenderType"="Transparent" }
-		LOD 200
-		Pass{
-			Blend SrcAlpha OneMinusSrcAlpha
-			CGPROGRAM
-			#pragma vertex vert
-			#pragma fragment frag
-			ENDCG
-		}
-	} 
+
 FallBack "Diffuse"
 }

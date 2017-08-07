@@ -294,6 +294,9 @@ public class UserData {
 			if(type != null && type != item.Type) {
 				continue;	
 			}
+			if(item.IsTakenAward) {
+				continue;
+			}
 			if(!item.IsComplete || (!notCompleteOnly && !item.IsTakenAward)) {
 				res.Add(item);
 			}

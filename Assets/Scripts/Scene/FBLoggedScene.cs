@@ -32,6 +32,21 @@ public class FBLoggedScene : WindowScene, IFBCallback {
 
 	}
 
+	public void OnFriendsRequest(IList<FBUser> friends) {
+		UserData uData = GameResources.Instance.GetUserData();
+		QuestProgressData pd = uData.GetActiveQuestOne(QuestType.SocialFB, false);
+		if(pd != null) {
+			QuestItem questItem = GameResources.Instance.GetQuestData().GetById(pd.QuestId);
+			if(questItem.ConditionType == QuestConditionType.InviteFriends) {
+				pd = GameResources.Instance.IncreasQuestAction(questItem.Id, friends.Count, false, true);
+				save = true;
+			}
+		}
+
+		UpdateQuestInfo(pd);
+		ShowQuestInfo(true);
+	}
+
 	public void OnFBLogout() {
 		SceneController.Instance.UnloadScene("FBLogged");
 
@@ -39,19 +54,29 @@ public class FBLoggedScene : WindowScene, IFBCallback {
 
 
 	public void OnFBLoginFail(string error) {
-
 	}
+		
 
 	void Start() {
+		TakenAwardBtn.gameObject.SetActive(false);
+		QuestDescription.SetActive(false);
+
 		UserData uData = GameResources.Instance.GetUserData();
-		UpdateQuestInfo(uData.GetActiveQuestOne(QuestType.SocialFB, false));
+		QuestProgressData pd = uData.GetActiveQuestOne(QuestType.SocialFB, false);
+		if(pd != null) {
+			QuestItem questItem = GameResources.Instance.GetQuestData().GetById(pd.QuestId);
+			if(questItem.ConditionType == QuestConditionType.InviteFriends) {
+				FBController.RequestFriendsList();
+				return;
+			}
+		}
+
+		UpdateQuestInfo(pd);
 
 	}
 
 	void UpdateQuestInfo(QuestProgressData quest) {
 		if(quest == null) {
-			TakenAwardBtn.gameObject.SetActive(false);
-			QuestDescription.SetActive(false);
 			return;
 		}
 
@@ -62,7 +87,8 @@ public class FBLoggedScene : WindowScene, IFBCallback {
 		Text text = awardItem.Find("Text").GetComponent<Text>();
 		text.text = questItem.Award.Value.ToString();
 
-		string descr = questItem.Description + (questItem.ShowProgressInfo? string.Format(" ({0}/{1})", quest.Progress, questItem.ActionCount) : "");
+		int progress = quest.Progress > questItem.ActionCount? questItem.ActionCount : quest.Progress;
+		string descr = questItem.Description + (questItem.ShowProgressInfo? string.Format(" ({0}/{1})", progress, questItem.ActionCount) : "");
 		QuestDescription.transform.Find("Text").GetComponent<Text>().text = descr;
 
 		TakenAwardBtn.gameObject.SetActive(true);
@@ -78,8 +104,6 @@ public class FBLoggedScene : WindowScene, IFBCallback {
 	}
 
 	public void OnClickTakeAward() {
-		
-
 		UserData uData = GameResources.Instance.GetUserData();
 		QuestProgressData qData = uData.GetActiveQuestOne(QuestType.SocialFB, false);
 		QuestItem questItem = GameResources.Instance.GetQuestData().GetById(qData.QuestId);
@@ -146,8 +170,22 @@ public class FBLoggedScene : WindowScene, IFBCallback {
 			return;
 		}
 
+		QuestItem questItem = GameResources.Instance.GetQuestData().GetById(qData.QuestId);
+		if(questItem.ConditionType == QuestConditionType.InviteFriends) {
+			FBController.RequestFriendsList();
+			return;
+		}
+
 		UpdateQuestInfo(qData);
-		AnimatedObject ao = QuestInfo.GetComponent<AnimatedObject>();
-		ao.AddFadeUI(null, 1, 1).Build().Run();
+		ShowQuestInfo(true);
+	}
+
+	void ShowQuestInfo(bool animate) {
+		if(animate) {
+			AnimatedObject ao = QuestInfo.GetComponent<AnimatedObject>();
+			ao.AddFadeUI(null, 1, 1).Build().Run();
+		} else {
+			QuestInfo.GetComponent<CanvasGroup>().alpha = 1;
+		}
 	}
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class App {
 	public static readonly float moveTileItemDelay = 0.0f;
-	public static readonly bool IsShowHttpError = true;
+	public static readonly bool IsShowHttpError = false;
 	public static readonly float SlimeAnimationTime = 0.2f;
 
 	private static IDictionary<TileItemMoveType, float> tileItemMoveType = new Dictionary<TileItemMoveType, float>();

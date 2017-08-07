@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Common.Net.Http;
+using System.Collections.Generic;
 
 public class LoadScene : MonoBehaviour, IFBCallback {
 
@@ -31,6 +32,8 @@ public class LoadScene : MonoBehaviour, IFBCallback {
 
 	public void OnFBLoginFail(string error) {
 		
+	}
+	public void OnFriendsRequest(IList<FBUser> friends) {
 	}
 
 	public void OnSuccessLoadUserData (HttpResponse response) {

@@ -3,5 +3,5 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum QuestConditionType {
-	Authorize, InviteFriends
+	Authorize, InviteFriends, SendPresent
 }

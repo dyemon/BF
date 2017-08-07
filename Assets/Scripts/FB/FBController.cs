@@ -7,7 +7,7 @@ public class FBController : MonoBehaviour {
 	public GameObject FBCallback;
 	private IFBCallback fBCallback;
 
-	public delegate void OnRequestResult(IGraphResult result);
+	private static IList<FBUser> friends;
 
 	void Awake() {
 		if(FBCallback != null) {
@@ -100,9 +100,76 @@ public class FBController : MonoBehaviour {
 		return Facebook.Unity.AccessToken.CurrentAccessToken;
 	}
 
-	public void RequestFriendsList(FacebookDelegate<IGraphResult> callback) {
-		FB.API ("/me/friends", HttpMethod.GET, callback);
+
+
+	public void InviteFriends () {
+		// Prompt user to send a Game Request using FB.AppRequest
+		// https://developers.facebook.com/docs/unity/reference/current/FB.AppRequest
+		FB.AppRequest(
+			"Присоединяйся к нам",
+			null,
+			null,
+			null,
+			null,
+			null,
+			"Пригласи друзей",
+			InviteFriendsCallback
+		);
 	}
 
+	// Callback for FB.AppRequest
+	private void InviteFriendsCallback (IAppRequestResult result) {
+		// Error checking
+		Debug.Log("AppRequestCallback");
+		if (result.Error != null) {
+			Debug.LogError(result.Error);
+			ModalPanels.Show(ModalPanelName.ErrorPanel, string.Format("Ошибка при запросе к facebook \n {0}", result.Error));
+			return;
+		}
+		Debug.Log(result.RawResult);
 
+		// Check response for success - show user a success popup if so
+		object obj;
+		if (result.ResultDictionary.TryGetValue ("cancelled", out obj)) {
+			DisplayMessageController.DisplayMessage("Запрос отменён", Color.red);
+		}
+		else if (result.ResultDictionary.TryGetValue ("request", out obj)){
+			DisplayMessageController.DisplayMessage("Приглашение отправлено", Color.green);
+		}
+	}
+
+	public bool RequestFriendsList() {
+		if(friends != null) {
+			fBCallback.OnFriendsRequest(friends);
+			return true;
+		}
+
+		FB.API("/me/invitable_friends?fields=id,name,picture.width(128).height(128)&limit=100", HttpMethod.GET, FriendsListCallback);
+	//	FB.API("/me/friends?fields=id,name,picture.width(128).height(128)&limit=100", HttpMethod.GET, FriendsListCallback);
+
+		return false;
+	}
+
+	void FriendsListCallback(IGraphResult result) {
+		if(result.Error != null) {
+			ModalPanels.Show(ModalPanelName.ErrorPanel, string.Format("Ошибка при запросе к facebook \n {0}", result.Error));
+			return;
+		}
+
+		Debug.Log("hi= " + result.RawResult);
+		object dataList;
+		friends = new List<FBUser>();
+
+		if(result.ResultDictionary.TryGetValue("data", out dataList)) {
+			var friendsList = (List<System.Object>)dataList;
+			//	CacheFriends(friendsList);
+			Debug.Log("friendsList= " + friendsList );
+
+			for(int i = 0; i < friendsList.Count; i++) {
+				friends.Add(new FBUser(friendsList[i]));
+			}
+		}
+
+		fBCallback.OnFriendsRequest(friends);
+	}
 }

@@ -365,20 +365,27 @@ public class GameResources {
 		saveUserDataLocal(uData);
 	}
 
-	public void IncreasQuestAction(string id, int count, bool save) {
+	public QuestProgressData IncreasQuestAction(string id, int count, bool save, bool setProgress = false) {
 		UserData uData = GetUserData();
 		QuestProgressData qData = Preconditions.NotNull(uData.GetQuestById(id), "Quest with id {0} not activate", id);
-		qData.Progress += count;
+		if(setProgress) {
+			qData.Progress = count;
+		} else {
+			qData.Progress += count;
+		}
 		QuestItem qItem = GetQuestData().GetById(id);
 		if(qData.Progress >= qItem.ActionCount) {
 			qData.IsComplete = true;
+		} else {
+			qData.IsComplete = false;
 		}
-
 		if(save) {
 			SaveUserData(uData, false);
 		} else {
 			saveUserDataLocal(uData);
 		}
+
+		return qData;
 	}
 
 	public void TakeQuestAward(string id) {
