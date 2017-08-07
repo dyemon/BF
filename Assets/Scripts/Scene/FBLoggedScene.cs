@@ -39,7 +39,6 @@ public class FBLoggedScene : WindowScene, IFBCallback {
 			QuestItem questItem = GameResources.Instance.GetQuestData().GetById(pd.QuestId);
 			if(questItem.ConditionType == QuestConditionType.InviteFriends) {
 				pd = GameResources.Instance.IncreasQuestAction(questItem.Id, friends.Count, false, true);
-				save = true;
 			}
 		}
 
