@@ -9,11 +9,16 @@ public class Account {
 		get {return instance;}
 	}
 
-	private AccessToken fbToken;
+	private AccessToken fbToken = null;
+	private FBUser fbUser;
 
 	public AccessToken AccessToken {
 		get {return fbToken;}
 		set { fbToken = value; }
+	}
+	public FBUser FBUser {
+		get {return fbUser;}
+		set { fbUser = value; }
 	}
 
 	public bool IsLogged {

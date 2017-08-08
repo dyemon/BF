@@ -12,6 +12,7 @@ public class FBLoggedScene : WindowScene, IFBCallback {
 	public GameObject QuestDescription;
 	public GameObject QuestInfo;
 	public FBController FBController;
+	public Text UserName;
 
 	private bool save;
 
@@ -59,6 +60,7 @@ public class FBLoggedScene : WindowScene, IFBCallback {
 	void Start() {
 		TakenAwardBtn.gameObject.SetActive(false);
 		QuestDescription.SetActive(false);
+		UserName.text = Account.Instance.FBUser.Name;
 
 		UserData uData = GameResources.Instance.GetUserData();
 		QuestProgressData pd = uData.GetActiveQuestOne(QuestType.SocialFB, false);

@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Facebook.Unity;
 
-public class PresentScene : WindowScene, IFBCallback {
-	public const string SceneName = "Present";
+public class GiftScene : WindowScene, IFBCallback {
+	public const string SceneName = "Gift";
 
 	public Button friendCheck;
 	public GameObject FriendItem;
@@ -15,8 +15,8 @@ public class PresentScene : WindowScene, IFBCallback {
 	public static List<object> Friends;
 
 	void Start () {
-		fbController.RequestFriendsList();
-
+	//	fbController.RequestFriendsList();
+		OnFriendsRequest(null);
 	}
 	
 	public void OnFBInit() {
@@ -32,11 +32,24 @@ public class PresentScene : WindowScene, IFBCallback {
 	}
 
 	public void OnFriendsRequest(IList<FBUser> friends) {
+		for(int i = 0; i < 20; i++) {
+			GameObject friendGO = Instantiate(FriendItem, FriendsList.transform);
+
+		}
+		return;
 		foreach(FBUser user in friends) {
 			GameObject friendGO = Instantiate(FriendItem, FriendsList.transform);
 			friendGO.name = user.Id;
+
 			Text name = friendGO.transform.Find("Name").GetComponent<Text>();
 			name.text = user.Name;
+
+			RawImage icon = UnityUtill.FindByName(friendGO.transform, "Icon").GetComponent<RawImage>();
+			if(user.PictureUrl != null) {
+				GraphUtil.LoadImgFromURL(user.PictureUrl, (t) => {
+					icon.texture = t;
+				});
+			}
 		}
 	}
 

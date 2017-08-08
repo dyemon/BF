@@ -30,16 +30,14 @@ public class FBController : MonoBehaviour {
 			// Continue with Facebook SDK
 			// ...
 			Account.Instance.AccessToken = GetAccessToken();
-
+			GetProfile(true);
 		} else {
 			Debug.Log("Failed to Initialize the Facebook SDK");
 		}
 
 		Debug.Log("FB IsLogged " + FB.IsLoggedIn);
 
-		if(fBCallback != null) {
-			fBCallback.OnFBInit();
-		}
+
 	}
 
 	private void OnHideUnity(bool isGameShown) {
@@ -62,6 +60,7 @@ public class FBController : MonoBehaviour {
 	public void OnClickLogoutFB() {
 		FB.LogOut();
 		Account.Instance.AccessToken = null;
+		Account.Instance.FBUser = null;
 
 		if(fBCallback != null) {
 			fBCallback.OnFBLogout();
@@ -72,6 +71,7 @@ public class FBController : MonoBehaviour {
 		string error = null;
 
 		if(FB.IsLoggedIn) {
+			Dictionary<string, object> res = (Dictionary<string, object>)result.ResultDictionary;
 			// AccessToken class will have session details
 			Account.Instance.AccessToken = GetAccessToken();
 			// Print current access token's User ID
@@ -81,9 +81,7 @@ public class FBController : MonoBehaviour {
 				Debug.Log(perm);
 			}
 
-			if(fBCallback != null) {
-				fBCallback.OnFBLoginSuccess();
-			}
+			GetProfile(false);
 		} else {
 			Debug.Log("User cancelled login");
 			if(result != null && !string.IsNullOrEmpty(result.Error)) {
@@ -144,8 +142,9 @@ public class FBController : MonoBehaviour {
 			return true;
 		}
 
-		FB.API("/me/invitable_friends?fields=id,name,picture.width(128).height(128)&limit=100", HttpMethod.GET, FriendsListCallback);
-	//	FB.API("/me/friends?fields=id,name,picture.width(128).height(128)&limit=100", HttpMethod.GET, FriendsListCallback);
+		FB.API("/me/invitable_friends?fields=id,name,picture.width(130).height(130)&limit=100", HttpMethod.GET, FriendsListCallback);
+	//	FB.API("/me/friends?fields=id,name,picture.width(130).height(130)&limit=100", HttpMethod.GET, FriendsListCallback);
+	//	FB.API("/me/apprequests", HttpMethod.GET, FriendsListCallback);
 
 		return false;
 	}
@@ -171,5 +170,45 @@ public class FBController : MonoBehaviour {
 		}
 
 		fBCallback.OnFriendsRequest(friends);
+	}
+
+
+	void GetProfile(bool isInit) {
+	//	string queryString = "/me?fields=id,name,picture.width(120).height(120)";
+	//	FB.API(queryString, HttpMethod.GET, GetProfileCallbackAuth);
+		string queryString = "/me";
+
+		FB.API(queryString, HttpMethod.GET, (r) => { if(isInit) GetProfileCallbackInit(r); else  GetProfileCallbackAuth(r);});
+	}
+
+	void GetProfileCallbackInit(IGraphResult result) {
+		if(GetProfileCallback(result) && fBCallback != null) {
+			fBCallback.OnFBInit();
+		}
+	}
+
+	void GetProfileCallbackAuth(IGraphResult result) {
+		if(GetProfileCallback(result) && fBCallback != null) {
+			fBCallback.OnFBLoginSuccess();
+		}
+	}
+
+
+	bool GetProfileCallback(IGraphResult result) {
+		Debug.Log("GetProfileCallback");
+		if (result.Error != null){
+			if(fBCallback != null) {
+					fBCallback.OnFBLoginFail(result.Error);
+			}
+			return false;
+		}
+
+		Debug.Log(result.RawResult);
+
+		FBUser user = new FBUser(result.ResultDictionary);
+		Account.Instance.FBUser = user;
+
+		return true;
+	
 	}
 }

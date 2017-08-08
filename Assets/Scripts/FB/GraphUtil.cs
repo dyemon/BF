@@ -42,9 +42,9 @@ public class GraphUtil : ScriptableObject
     public static void LoadImgFromURL (string imgURL, Action<Texture> callback)
     {
         // Need to use a Coroutine for the WWW call, using Coroutiner convenience class
-     //   Coroutiner.StartCoroutine(
-    //        LoadImgEnumerator(imgURL, callback)
-    //    );
+        Coroutiner.StartCoroutine(
+            LoadImgEnumerator(imgURL, callback)
+        );
     }
     
     public static IEnumerator LoadImgEnumerator (string imgURL, Action<Texture> callback)

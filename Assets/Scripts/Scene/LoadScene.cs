@@ -31,7 +31,11 @@ public class LoadScene : MonoBehaviour, IFBCallback {
 	}
 
 	public void OnFBLoginFail(string error) {
-		
+	//	if(error != null) {
+	//		Debug.Log(error);
+	//		ModalPanels.Show(ModalPanelName.ErrorPanel, "Ошибка при установки соединения \n" +error);
+	//	}
+		SceneController.Instance.LoadMainScene();
 	}
 	public void OnFriendsRequest(IList<FBUser> friends) {
 	}
