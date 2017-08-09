@@ -13,6 +13,8 @@ public class DailyBonusScene : WindowScene {
 	public UserAssetsPanel AssetsPanel;
 	public GameObject AwardItem;
 
+	private bool isGetBonus = false;
+
 	void OnDisable() {
 		GameResources.Instance.SaveUserData(null, false);
 	}
@@ -29,7 +31,6 @@ public class DailyBonusScene : WindowScene {
 		}
 
 		GameObject gButton = InitDailyBonusButton(dData.GreatestBonus, (uData.DailyBonus > i)? uData.DailyBonus : -1, uData.DailyBonus);
-		ParametersController.Instance.SetParameter(ParametersController.DAILYBONUS_IS_SHOWN, true);
 	}
 
 	GameObject InitDailyBonusButton(AwardItem item, int number, int dailyBonus) {
@@ -82,10 +83,20 @@ public class DailyBonusScene : WindowScene {
 
 		button.transform.Find("Allow").gameObject.SetActive(false);
 		button.transform.Find("Taken").gameObject.SetActive(true);
+
+		isGetBonus = true;
 	}
 
 	void CompleteTakeBonus(GameObject animGO) {
 		Destroy(animGO);
 		AssetsPanel.UpdateUserAssets();
+	}
+
+	public void OnClose() {
+		if(!isGetBonus) {
+			ParametersController.Instance.SetParameter(ParametersController.CANSEL_DAILYBONUS, true);
+		}
+
+		Close();
 	}
 }

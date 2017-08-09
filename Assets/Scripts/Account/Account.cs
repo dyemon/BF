@@ -17,7 +17,15 @@ public class Account {
 		set { fbToken = value; }
 	}
 	public FBUser FBUser {
-		get {return fbUser;}
+		get {
+			if(fbUser == null) {
+				fbUser = GameResources.Instance.GetLocalData().FBUser;
+				if(fbUser == null) {
+					fbUser = new FBUser();
+				}
+			}
+			return fbUser;
+		}
 		set { fbUser = value; }
 	}
 

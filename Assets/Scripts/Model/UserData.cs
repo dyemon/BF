@@ -115,6 +115,10 @@ public class UserData {
 			DailyBonus = 1;
 		}
 
+		if(!DailyBonusTaken) {
+			ParametersController.Instance.SetParameter(ParametersController.CANSEL_DAILYBONUS, false);
+		}
+
 		StartTimestamp = currentTimestamp;
 
 		if(InfinityEnergyDuration > 0) {

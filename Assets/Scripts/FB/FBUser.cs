@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class FBUser {
 	public string Name;
 	public string Id;
 	public string PictureUrl;
+
+	public FBUser() {
+	}
 
 	public FBUser(System.Object obj) {
 		Dictionary<string,System.Object> data = (Dictionary<string,System.Object>)obj; 

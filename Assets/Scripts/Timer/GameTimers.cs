@@ -9,6 +9,7 @@ public class GameTimers {
 	public const string ENERGY_TIMER_CODE = "ENERGY_TIMER_CODE";
 	public const string INFINITY_ENERGY_TIMER_CODE = "INFINITY_ENERGY_TIMER_CODE";
 	public const string FORTUNA_TIMER_CODE = "FORTUNA_TIMER_CODE";
+	public const string CLEARFRENDSCACHE_TIMER_CODE = "CLEARFRENDSCACHE_TIMER_CODE";
 
 	public delegate void OnTimerFortuna(int timerCount);
 	public event OnTimerFortuna onTimerFortuna;
@@ -20,7 +21,7 @@ public class GameTimers {
 			return;
 		}
 
-		Preconditions.Check(!init, "EnergyTimers Initialized again");
+		Preconditions.Check(!init, "Timers Initialized again");
 
 		GameData gData = GameResources.Instance.GetGameData();
 
@@ -52,6 +53,16 @@ public class GameTimers {
 			t = TimerController.Instance.AddTimer(INFINITY_ENERGY_TIMER_CODE).SetPeriod(60);
 		}
 		t.Start();
+	
+	}
+
+	public void StartClearFrendsCache() {
+		Timer t = TimerController.Instance.GetTimer(CLEARFRENDSCACHE_TIMER_CODE);
+		if(t == null) {
+			t = TimerController.Instance.AddTimer(CLEARFRENDSCACHE_TIMER_CODE).SetPeriod(60 * 1)
+				.SetCount(1);
+		}
+		t.Start();
 	}
 
 	public void StartFortunaTimer(uint timerCount) {
@@ -79,7 +90,10 @@ public class GameTimers {
 			}
 			break;
 		case INFINITY_ENERGY_TIMER_CODE:
+			
 			bool live = GameResources.Instance.DecreaseInfinityEnergy(1);
+			UserData uData = GameResources.Instance.GetUserData();
+			Debug.Log("----------- " + INFINITY_ENERGY_TIMER_CODE + uData.InfinityEnergyDuration);
 			if(!live) {
 				StopInfinityEnergyTimer();
 			}
@@ -94,6 +108,17 @@ public class GameTimers {
 				onTimerFortuna(timerCount);
 			}
 			break;
+		case CLEARFRENDSCACHE_TIMER_CODE:
+		//	Debug.Log("----------- Clear friends cache");
+			FBController.ClearFriendsCache();
+			break;
 		}
+	}
+
+	public void Stop() {
+		TimerController.Instance.StopAll();
+		FBController.ClearFriendsCache();
+		TimerController.Instance.onTimer -= OnTimer;
+		init = false;
 	}
 }

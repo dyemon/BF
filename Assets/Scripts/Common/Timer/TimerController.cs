@@ -49,6 +49,12 @@ namespace Common.Timer {
 
 			}
 		}
+
+		public void StopAll() {
+			timers.Clear();
+		}			
 	}
+
+
 
 }

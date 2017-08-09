@@ -148,6 +148,7 @@ public class GameResources {
 			data = GetUserData();
 			data.UpdateLastSaved();
 		} else {
+			data.UpdateLastSaved();
 			saveUserDataLocal(data);
 		}
 
@@ -236,9 +237,11 @@ public class GameResources {
 	public LocalData GetLocalData() {
 		if(localData == null) {
 			string data = PlayerPrefs.GetString("localSettings");
-			localData = JsonUtility.FromJson<LocalData>(data);
-			if(localData == null) {
+			if(string.IsNullOrEmpty(data)) {
 				localData = new LocalData();
+			} else {
+				string json = StringCipher.Decrypt(data, getKey());
+				localData = JsonUtility.FromJson<LocalData>(json);
 			}
 		}
 
@@ -247,7 +250,8 @@ public class GameResources {
 
 	public void SaveLocalData() {
 		string data = JsonUtility.ToJson(localData);
-		PlayerPrefs.SetString("localSettings", data);
+		string encData = StringCipher.Encrypt(data, getKey());
+		PlayerPrefs.SetString("localSettings", encData);
 		PlayerPrefs.Save();
 	}
 
@@ -310,9 +314,8 @@ public class GameResources {
 		uData.DecreaseInfinityEnergy(val);
 		saveUserDataLocal(uData);
 
-		if(onUpdateInfinityEnergy != null) {
-			onUpdateInfinityEnergy(uData.InfinityEnergyDuration);
-		}
+		FireUpdateInfinityEnergy(uData);
+
 
 		return uData.InfinityEnergyDuration > 0;
 	}
@@ -396,5 +399,15 @@ public class GameResources {
 		uData.UpDateQuests(qData.Type);
 
 		saveUserDataLocal(uData);
+	}
+
+	public void FireUpdateInfinityEnergy(UserData uData) {
+		if(uData == null) {
+			uData = GetUserData();
+		}
+
+		if(onUpdateInfinityEnergy != null) {
+			onUpdateInfinityEnergy(uData.InfinityEnergyDuration);
+		}
 	}
 }

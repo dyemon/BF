@@ -8,7 +8,7 @@ public class ParametersController {
 
 	public const string CAPITULATE_NOT_ENDED = "CAPITULATE_NOT_ENDED";
 	public const string CAN_SHOW_DAILYBONUS = "CAN_SHOW_DAILYBONUS";
-	public const string DAILYBONUS_IS_SHOWN = "DAILYBONUS_IS_SHOWN";
+	public const string CANSEL_DAILYBONUS = "CANSEL_DAILYBONUS";
 	public const string CAN_SHOW_FORTUNA = "CAN_SHOW_FORTUNA";
 	public const string FORTUNA_IS_SHOWN = "FORTUNA_IS_SHOWN";
 

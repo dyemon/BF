@@ -4,6 +4,11 @@ using Facebook.Unity;
 using System.Collections.Generic;
 
 public class FBController : MonoBehaviour {
+	public delegate void OnLogin();
+	public static event OnLogin onLogin;
+	public delegate void OnLogout();
+	public static event OnLogout onLogout;
+
 	public GameObject FBCallback;
 	private IFBCallback fBCallback;
 
@@ -19,7 +24,7 @@ public class FBController : MonoBehaviour {
 			FB.Init(InitCallback, OnHideUnity);
 		} else {
 			// Already initialized, signal an app activation App Event
-			FB.ActivateApp();
+		//	FB.ActivateApp();
 		}
 	}
 
@@ -27,17 +32,26 @@ public class FBController : MonoBehaviour {
 		if(FB.IsInitialized) {
 			// Signal an app activation App Event
 			FB.ActivateApp();
-			// Continue with Facebook SDK
-			// ...
-			Account.Instance.AccessToken = GetAccessToken();
-			GetProfile(true);
+	
+		//	FB.getLoginStatus();
+			if(FB.IsLoggedIn) {
+				Account.Instance.AccessToken = GetAccessToken();
+				if(onLogin != null) {
+					onLogin();
+				}
+				GetProfile(true);
+				return;
+			} 
 		} else {
 			Debug.Log("Failed to Initialize the Facebook SDK");
+
 		}
 
 		Debug.Log("FB IsLogged " + FB.IsLoggedIn);
 
-
+		if(fBCallback != null) {
+			fBCallback.OnFBInit();
+		}
 	}
 
 	private void OnHideUnity(bool isGameShown) {
@@ -61,6 +75,11 @@ public class FBController : MonoBehaviour {
 		FB.LogOut();
 		Account.Instance.AccessToken = null;
 		Account.Instance.FBUser = null;
+		ClearFriendsCache();
+
+		if(onLogout != null) {
+			onLogout();
+		}
 
 		if(fBCallback != null) {
 			fBCallback.OnFBLogout();
@@ -71,7 +90,7 @@ public class FBController : MonoBehaviour {
 		string error = null;
 
 		if(FB.IsLoggedIn) {
-			Dictionary<string, object> res = (Dictionary<string, object>)result.ResultDictionary;
+		//	Dictionary<string, object> res = (Dictionary<string, object>)result.ResultDictionary;
 			// AccessToken class will have session details
 			Account.Instance.AccessToken = GetAccessToken();
 			// Print current access token's User ID
@@ -81,9 +100,14 @@ public class FBController : MonoBehaviour {
 				Debug.Log(perm);
 			}
 
+			if(onLogin != null) {
+				onLogin();
+			}
+
 			GetProfile(false);
 		} else {
 			Debug.Log("User cancelled login");
+			Account.Instance.AccessToken = null;
 			if(result != null && !string.IsNullOrEmpty(result.Error)) {
 				error = result.Error;
 			}
@@ -155,6 +179,8 @@ public class FBController : MonoBehaviour {
 			return;
 		}
 
+		ModalPanels.Show(ModalPanelName.ErrorPanel, "Update friends cache");
+
 		Debug.Log("hi= " + result.RawResult);
 		object dataList;
 		friends = new List<FBUser>();
@@ -169,6 +195,7 @@ public class FBController : MonoBehaviour {
 			}
 		}
 
+		GameTimers.Instance.StartClearFrendsCache();
 		fBCallback.OnFriendsRequest(friends);
 	}
 
@@ -207,8 +234,14 @@ public class FBController : MonoBehaviour {
 
 		FBUser user = new FBUser(result.ResultDictionary);
 		Account.Instance.FBUser = user;
+		GameResources.Instance.GetLocalData().FBUser = user;
+		GameResources.Instance.SaveLocalData();
 
 		return true;
 	
+	}
+
+	public static void ClearFriendsCache() {
+		friends = null;
 	}
 }

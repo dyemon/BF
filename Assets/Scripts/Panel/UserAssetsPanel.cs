@@ -54,6 +54,12 @@ public class UserAssetsPanel : MonoBehaviour {
 	//	StartCoroutine(AlignButtons());
 	}
 
+	void OnApplicationPause (bool pauseStatus) {
+		if(!pauseStatus) {
+			Invoke("UpdateInfinityEnergy", 0.1f);
+		}
+	}
+
 	public void UpdateExperience(int exp) {
 		Text ExperienceText = Experience.transform.Find("Text").GetComponent<Text>();
 		ExperienceText.text = exp.ToString();

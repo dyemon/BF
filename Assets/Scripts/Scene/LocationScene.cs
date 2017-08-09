@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
+using Facebook.Unity;
 
 public class LocationScene : BaseScene {
 	public const string SceneName = "Location";
@@ -18,6 +19,19 @@ public class LocationScene : BaseScene {
 	private LocationData locationData;
 
 	private Shader grayscale;
+
+	public GameObject GiftButton;
+
+	void OnEnable() {
+		FBController.onLogin += OnSocialLogin;
+		FBController.onLogout += OnSocialLogout;
+	}
+
+	void OnDisable() {
+		FBController.onLogin -= OnSocialLogin;
+		FBController.onLogout -= OnSocialLogout;
+
+	}
 
 	void Start () {
 
@@ -71,6 +85,8 @@ public class LocationScene : BaseScene {
 
 			i++;
 		}
+
+		UpdateGiftButton();
 
 		Invoke("ShowAdditionScenes", 2);
 	}
@@ -141,5 +157,20 @@ public class LocationScene : BaseScene {
 		} else {
 			SceneController.Instance.LoadSceneAdditive("FBLogged");
 		}
+	}
+
+	void UpdateGiftButton() {
+		if(Account.Instance.IsLogged) {
+			GiftButton.SetActive(true);
+		} else {
+			GiftButton.SetActive(false);
+		}
+	}
+
+	void OnSocialLogin() {
+		UpdateGiftButton();
+	}
+	void OnSocialLogout() {
+		UpdateGiftButton();
 	}
 }

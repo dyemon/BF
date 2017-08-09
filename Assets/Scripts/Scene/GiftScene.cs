@@ -15,8 +15,8 @@ public class GiftScene : WindowScene, IFBCallback {
 	public static List<object> Friends;
 
 	void Start () {
-	//	fbController.RequestFriendsList();
-		OnFriendsRequest(null);
+		fbController.RequestFriendsList();
+	//	OnFriendsRequest(null);
 	}
 	
 	public void OnFBInit() {
@@ -32,11 +32,11 @@ public class GiftScene : WindowScene, IFBCallback {
 	}
 
 	public void OnFriendsRequest(IList<FBUser> friends) {
-		for(int i = 0; i < 20; i++) {
-			GameObject friendGO = Instantiate(FriendItem, FriendsList.transform);
+	//	for(int i = 0; i < 20; i++) {
+	//		GameObject friendGO = Instantiate(FriendItem, FriendsList.transform);
 
-		}
-		return;
+	//	}
+	//	return;
 		foreach(FBUser user in friends) {
 			GameObject friendGO = Instantiate(FriendItem, FriendsList.transform);
 			friendGO.name = user.Id;

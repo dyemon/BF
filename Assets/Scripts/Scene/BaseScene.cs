@@ -13,16 +13,16 @@ public class BaseScene : MonoBehaviour {
 		UserData uData = GameResources.Instance.GetUserData();
 
 		bool canShow = ParametersController.Instance.GetBool(ParametersController.CAN_SHOW_DAILYBONUS);
-		bool isShown = ParametersController.Instance.GetBool(ParametersController.DAILYBONUS_IS_SHOWN);
+		bool isCansel = ParametersController.Instance.GetBool(ParametersController.CANSEL_DAILYBONUS);
 
-		if(!uData.DailyBonusTaken && canShow && !isShown) {
+		if(!uData.DailyBonusTaken && canShow && !isCansel) {
 			SceneController.Instance.LoadSceneAdditive(DailyBonusScene.SceneName);
 			Invoke("ShowAdditionScenes", 3);
 			return;
 		}
 
 		canShow = ParametersController.Instance.GetBool(ParametersController.CAN_SHOW_FORTUNA);
-		isShown = ParametersController.Instance.GetBool(ParametersController.FORTUNA_IS_SHOWN);
+		 bool isShown = ParametersController.Instance.GetBool(ParametersController.FORTUNA_IS_SHOWN);
 
 		if(uData.FortunaTryCount > 0 && canShow && !isShown) {
 			SceneController.Instance.LoadSceneAdditive(FortunaScene.SceneName);

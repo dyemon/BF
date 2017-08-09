@@ -7,4 +7,5 @@ public class LocalData {
 	public bool SoundOn = true;
 	public bool MusicOn = true;
 	public int LastLevel = 1;
+	public FBUser FBUser;
 }
