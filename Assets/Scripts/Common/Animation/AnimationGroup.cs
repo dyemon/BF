@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
+namespace Common.Animation {
+
 public class AnimationGroup : MonoBehaviour {
 	public delegate void CompleteAnimation<T>(T param);
 
@@ -55,4 +57,5 @@ public class AnimationGroup : MonoBehaviour {
 	public bool AnimationExist() {
 		return objects.Count > 0;
 	}
+}
 }

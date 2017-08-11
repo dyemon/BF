@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Common.Timer;
+using Common.Animation;
 
 public class FortunaScene : WindowScene {
 	public const string SceneName = "Fortuna";

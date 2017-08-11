@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using Common.Animation;
 
 public class Tile : ICloneable {
 	public TileType Type { get; set;}

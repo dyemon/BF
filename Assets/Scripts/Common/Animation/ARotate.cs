@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+namespace Common.Animation {
 public class ARotate : ABase {
 
 	private Vector3? startAngle;
@@ -45,4 +46,5 @@ public class ARotate : ABase {
 	public override bool IsCompleteAnimation() {
 		return isComplete;
 	}
+}
 }

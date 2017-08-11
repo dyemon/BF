@@ -85,15 +85,16 @@ public class GameTimers {
 		switch(code) {
 		case ENERGY_TIMER_CODE:
 			int eCount = GameResources.Instance.GetUserData().GetAsset(UserAssetType.Energy).Value;
+			Debug.Log("Timer " + ENERGY_TIMER_CODE + " " );
+
 			if(eCount < gData.EnergyData.MaxIncreaseCount) {
 				GameResources.Instance.ChangeUserAsset(UserAssetType.Energy, 1);
 			}
 			break;
 		case INFINITY_ENERGY_TIMER_CODE:
-			
 			bool live = GameResources.Instance.DecreaseInfinityEnergy(1);
 			UserData uData = GameResources.Instance.GetUserData();
-			Debug.Log("----------- " + INFINITY_ENERGY_TIMER_CODE + uData.InfinityEnergyDuration);
+		//	Debug.Log("----------- " + INFINITY_ENERGY_TIMER_CODE + uData.InfinityEnergyDuration);
 			if(!live) {
 				StopInfinityEnergyTimer();
 			}

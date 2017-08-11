@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class HttpRequester : MonoBehaviour {
 	public static string URL_USER_LOAD = "/user/load";
 	public static string URL_USER_SAVE = "/user/save";
-
+	public static string URL_SEND_GIFT = "/send/gift";
 
 	public static HttpRequester Instance;
 	private string baseUrl = null;

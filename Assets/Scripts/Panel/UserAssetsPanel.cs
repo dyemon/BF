@@ -57,6 +57,7 @@ public class UserAssetsPanel : MonoBehaviour {
 	void OnApplicationPause (bool pauseStatus) {
 		if(!pauseStatus) {
 			Invoke("UpdateInfinityEnergy", 0.1f);
+			Invoke("UpdateUserAssets", 0.1f);
 		}
 	}
 

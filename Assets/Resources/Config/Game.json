@@ -231,8 +231,8 @@
 	},
 
 	"EnergyData" : {
-		"IncreaseTime":	10,
-		"IncreaseTimeOffline":	60,
+		"IncreaseTime":	1,
+		"IncreaseTimeOffline":	3,
 		"MaxIncreaseCount":			30,
 		"InfinityPrice": 10
 	},

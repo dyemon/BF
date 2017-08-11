@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+namespace Common.Animation {
 public abstract class ABase {
 	public abstract bool Animate(GameObject gameObject);
 	public abstract void Run();
@@ -69,4 +70,5 @@ public abstract class ABase {
 		return p;
 	}
 	*/
+}
 }

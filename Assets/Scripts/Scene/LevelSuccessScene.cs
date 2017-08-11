@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using Common.Animation;
 
 public class LevelSuccessScene : MonoBehaviour {
 	public GameObjectResources GOResources;

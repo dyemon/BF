@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Common.Animation;
 
 public class BlathataScene : WindowScene {
 	public GameObjectResources GOResources;

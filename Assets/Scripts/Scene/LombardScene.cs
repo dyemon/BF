@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using Common.Animation;
 
 public class LombardScene : WindowScene {
 	public static string SceneName = "Lombard";

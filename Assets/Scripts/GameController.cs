@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Linq;
+using Common.Animation;
 
 [RequireComponent(typeof(AnimationGroup))]
 public class GameController : MonoBehaviour {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Common.Animation;
 
 public class DailyBonusScene : WindowScene {
 	public const string SceneName = "DailyBonus";

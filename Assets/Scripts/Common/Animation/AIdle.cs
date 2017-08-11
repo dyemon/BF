@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+namespace Common.Animation {
+
 public class AIdle : ABase{
 
 	private float time;
@@ -26,4 +28,5 @@ public class AIdle : ABase{
 	public override bool IsCompleteAnimation() {
 		return isComplete;
 	}
+}
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-
+namespace Common.Animation {
 public class AFade : ABase {
 	protected float? startAlpha;
 	private float endAlpha;
@@ -55,5 +55,5 @@ public class AFade : ABase {
 		return isComplete;
 	}
 }
-
+}
 

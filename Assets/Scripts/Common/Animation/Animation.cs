@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
+namespace Common.Animation {
+
 public class Animation {
 	private IDictionary<AnimationType, List<ABase>> animations = new Dictionary<AnimationType, List<ABase>>();
 	public int? LayerSortingOrder { get; set;}
@@ -40,4 +42,4 @@ public class Animation {
 		}
 	}
 }
-
+}

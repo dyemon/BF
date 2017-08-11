@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+namespace Common.Animation {
+	
 public class AFadeUI : AFade {
 	CanvasGroup group;
 
@@ -19,4 +21,5 @@ public class AFadeUI : AFade {
 		group = Preconditions.NotNull(gameObject.GetComponent<CanvasGroup>(), "There is no 'CanvasGroup' attached to the {0}", gameObject.name);
 		startAlpha = group.alpha;
 	}
+}
 }

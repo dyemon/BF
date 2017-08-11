@@ -133,7 +133,7 @@ public class UserData {
 
 		UserAssetData energy = GetAsset(UserAssetType.Energy);
 		if(energy.Value < eData.MaxIncreaseCount) {
-			energy.Value +=  (int)Math.Round((StartTimestamp - LastSavedTimestamp)/(60f * eData.IncreaseTimeOffline));
+			energy.Value +=  (int)Math.Floor((StartTimestamp - LastSavedTimestamp)/(60f * eData.IncreaseTimeOffline));
 			if(energy.Value > eData.MaxIncreaseCount) {
 				energy.Value = eData.MaxIncreaseCount;
 			}

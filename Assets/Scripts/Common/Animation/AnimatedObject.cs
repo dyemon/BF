@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System;
 
+namespace Common.Animation {
 public class AnimatedObject : MonoBehaviour {
 	public delegate void OnStopAnimation(System.Object[] param);
 	public delegate void OnStopAnimationSimple();
@@ -236,4 +237,5 @@ public class AnimatedObject : MonoBehaviour {
 		a.Animate(gameObject);
 		return true;
 	}
+}
 }

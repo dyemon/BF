@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+namespace Common.Animation {
+
 public class AMove : ABase {
 
 	private Vector3? startPos;
@@ -77,4 +79,5 @@ public class AMove : ABase {
 	public override bool IsCompleteAnimation() {
 		return isComplete;
 	}
+}
 }

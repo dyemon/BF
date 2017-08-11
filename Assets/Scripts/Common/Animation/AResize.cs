@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+namespace Common.Animation {
 public class AResize : ABase {
 	
 	private Vector3? startSize;
@@ -40,4 +41,5 @@ public class AResize : ABase {
 	public override bool IsCompleteAnimation() {
 		return isComplete;
 	}
+}
 }
