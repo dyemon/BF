@@ -83,7 +83,6 @@ public class UserData {
 		ResetFortunaTryCount();
 
 		GameTimers.Instance.Init(this);
-		UpDateQuests(null);
 		App.InitLocationParams(this);
 	//	Level = 50;
 	}
@@ -91,7 +90,6 @@ public class UserData {
 	public void InitOnStart() {
 		InitTimestampOnStart();
 		GameTimers.Instance.Init(this);
-		UpDateQuests(null);
 		//	Level = 50;
 		App.InitLocationParams(this);
 	}
@@ -101,7 +99,6 @@ public class UserData {
 		if(InfinityEnergyDuration > 0) {
 			GameTimers.Instance.StartInfinityEnergyTimer();
 		}
-		UpDateQuests(null);
 		App.InitLocationParams(this);
 	}
 
@@ -259,8 +256,9 @@ public class UserData {
 		return qpData.IsTakenAward;
 	}
 
-	public void UpDateQuests(QuestType? type) {
+	public bool UpDateQuests(QuestType? type) {
 		QuestData qData = GameResources.Instance.GetQuestData();
+		bool res = false;
 
 		foreach(QuestItem item in qData.QuestItemsData) {
 			if(type != null && type != item.Type) {
@@ -268,7 +266,7 @@ public class UserData {
 			}
 
 			if(item.MinExperience > Experience) {
-				return;
+				continue;
 			}
 
 			if(item.RequiredQuestId != null) {
@@ -281,8 +279,15 @@ public class UserData {
 			QuestProgressData qp = GetQuestById(item.Id);
 			if(qp == null) {
 				quests.Add(new QuestProgressData(item.Id, item.Type));
+				res = true;
 			}
 		}
+
+		if(res) {
+			GameResources.Instance.SaveUserData(this, false);
+		}
+
+		return res;
 	}
 
 	public QuestProgressData GetActiveQuestOne(QuestType? type, bool notCompleteOnly) {
@@ -301,6 +306,7 @@ public class UserData {
 			if(item.IsTakenAward) {
 				continue;
 			}
+
 			if(!item.IsComplete || (!notCompleteOnly && !item.IsTakenAward)) {
 				res.Add(item);
 			}

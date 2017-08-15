@@ -14,7 +14,7 @@ public class AppStatusController : MonoBehaviour {
 	void OnApplicationPause (bool pauseStatus) {
 		UserData uData = GameResources.Instance.GetUserData();
 
-		Debug.Log("****** OnApplicationPause" + pauseStatus);
+		Debug.Log("OnApplicationPause " + pauseStatus);
 
 		if(start) {
 			start = false;

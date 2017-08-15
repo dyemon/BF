@@ -62,8 +62,9 @@ public class FBLoggedScene : WindowScene, IFBCallback {
 		TakenAwardBtn.gameObject.SetActive(false);
 		QuestDescription.SetActive(false);
 		UserName.text = Account.Instance.FBUser.Name;
-
+	
 		UserData uData = GameResources.Instance.GetUserData();
+		uData.UpDateQuests(QuestType.SocialFB);
 		QuestProgressData pd = uData.GetActiveQuestOne(QuestType.SocialFB, false);
 		if(pd != null) {
 			QuestItem questItem = GameResources.Instance.GetQuestData().GetById(pd.QuestId);

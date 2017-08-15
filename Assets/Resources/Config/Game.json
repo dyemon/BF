@@ -257,14 +257,14 @@
 		"TryCount": 2,
 		"Delay":	10,
 		"Prizes": [
-			{"UserAssetTypeAsString": "Ring", "min": 10, "max": 30},
-			{"UserAssetTypeAsString": "Mobile", "min": 10, "max": 30},
-			{"UserAssetTypeAsString": "Energy", "min": 10, "max": 30}
+			{"UserAssetTypeAsString": "Ring", "min": 2, "max": 10},
+			{"UserAssetTypeAsString": "Mobile", "min": 2, "max": 10},
+			{"UserAssetTypeAsString": "Energy", "min": 2, "max": 10}
 		],
 		"Jackpot": [
-			{"UserAssetTypeAsString": "Ring", "min": 50, "max": 100},
-			{"UserAssetTypeAsString": "Mobile", "min": 50, "max": 100},
-			{"UserAssetTypeAsString": "Energy", "min": 50, "max": 100}
+			{"UserAssetTypeAsString": "Ring", "min": 10, "max": 25},
+			{"UserAssetTypeAsString": "Mobile", "min": 10, "max": 25},
+			{"UserAssetTypeAsString": "Energy", "min": 10, "max": 25}
 		]								
 	}
 }

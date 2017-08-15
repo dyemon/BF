@@ -14,6 +14,10 @@ public class LocationScene : BaseScene {
 	public Sprite QuestionMark;
 	public PanCamera mCamera;
 
+	public GameObject GiftAttention;
+	public GameObject QuestAttention;
+	public GameObject FortunaAttention;
+
 	private GameObject currentTouchObject;
 	private GameObject currentLocationMap;
 	private LocationData locationData;
@@ -25,12 +29,22 @@ public class LocationScene : BaseScene {
 	void OnEnable() {
 		FBController.onLogin += OnSocialLogin;
 		FBController.onLogout += OnSocialLogout;
+		GameResources.Instance.onCompleteQuest += OnCompleteQuest;
+		GameTimers.Instance.onTimerFortuna += OnTimerFortuna; 
+		if(SceneControllerHelper.instance != null) {
+			SceneControllerHelper.instance.onUnloadScene += OnUnloadScene;
+		}
+
 	}
 
 	void OnDisable() {
 		FBController.onLogin -= OnSocialLogin;
 		FBController.onLogout -= OnSocialLogout;
-
+		GameResources.Instance.onCompleteQuest -= OnCompleteQuest;
+		GameTimers.Instance.onTimerFortuna -= OnTimerFortuna;
+		if(SceneControllerHelper.instance != null) {
+			SceneControllerHelper.instance.onUnloadScene -= OnUnloadScene;
+		}
 	}
 
 	void Start () {
@@ -87,6 +101,8 @@ public class LocationScene : BaseScene {
 		}
 
 		UpdateGiftButton();
+		UpdateFortunaAttention();
+		UpdateQuestAttention();
 
 		Invoke("ShowAdditionScenes", 2);
 	}
@@ -172,5 +188,53 @@ public class LocationScene : BaseScene {
 	}
 	void OnSocialLogout() {
 		UpdateGiftButton();
+	}
+
+	void UpdateFortunaAttention() {
+		UserData uData = GameResources.Instance.GetUserData();
+		FortunaAttention.SetActive(uData.FortunaTryCount > 0);
+	}
+
+	void UpdateQuestAttention() {
+		UserData uData = GameResources.Instance.GetUserData();
+
+		bool isAttention = uData.UpDateQuests(QuestType.Game);
+		if(!isAttention) {
+			IList<QuestProgressData> list = uData.GetActiveQuests(QuestType.Game, false);
+			foreach(QuestProgressData item in list) {
+				if(item.IsComplete) {
+					isAttention = true;
+					break;
+				}
+			}
+		}
+
+		QuestAttention.SetActive(isAttention);
+	}
+
+	void OnCompleteQuest(QuestItem quest) {
+		QuestAttention.SetActive(true);
+	}
+
+	public void OnClickQuestScene() {
+		SceneController.Instance.LoadSceneAdditive(QuestScene.SceneName);
+	}
+
+	public void OnClickFortunaScene() {
+		SceneController.Instance.LoadSceneAdditive(FortunaScene.SceneName);
+	}
+
+	void OnTimerFortuna(int timerCount) {
+		if(timerCount == 0) {
+			FortunaAttention.SetActive(true);
+		}
+	}
+
+	void OnUnloadScene (string name, object retVal) {
+		if(name == QuestScene.SceneName) {
+			UpdateQuestAttention();
+		} else if(name == FortunaScene.SceneName) {
+			UpdateFortunaAttention();
+		}
 	}
 }

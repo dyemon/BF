@@ -3,5 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum QuestConditionType {
-	Authorize, InviteFriends, SendPresent
+	Authorize, InviteFriends, SendGift, GetGift,
+	Collect, CollectСhain, 
+	WinEnemy, WinEnemyInSequence,
+	UseMagic, UseFortuna, UseKachalka, UseGoods, UseBlathata
 }

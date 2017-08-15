@@ -13,6 +13,7 @@ public class GameObjectResources : ScriptableObject {
 	public Sprite[] IconBackground;
 	public Sprite[] CheckpoinButton;
 	public Sprite[] EnemyIcon;
+	public Sprite[] QuestIcon;
 
 	[System.Serializable]
 	public class TargetIcon {
@@ -93,5 +94,18 @@ public class GameObjectResources : ScriptableObject {
 
 	public Sprite GetEnemyIcon(EnemyType type) {
 		return EnemyIcon[(int)type];
+	}
+
+	public Sprite GetQuestIcon(QuestItem quest) {
+		if(quest.ConditionType == QuestConditionType.Collect) {
+			return GetTargetIcon(quest.TargetType.Value);
+		}
+
+		if((int)quest.ConditionType > (int)QuestConditionType.Collect &&
+		   (int)quest.ConditionType <= (int)QuestConditionType.UseBlathata) {
+			return QuestIcon[(int)quest.ConditionType - 5];
+		}
+
+		throw new System.Exception("Invalid quest icon for condition type: " + quest.ConditionType);
 	}
 }

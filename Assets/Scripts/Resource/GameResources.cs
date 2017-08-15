@@ -17,6 +17,9 @@ public class GameResources {
 	public delegate void OnUpdateExperience(int value);
 	public event OnUpdateExperience onUpdateExperience;
 
+	public delegate void OnCompleteQuest(QuestItem quest);
+	public event OnCompleteQuest onCompleteQuest;
+
 	private int currentLevelId = 0;
 	private LevelData currentLevelData = null;
 	private GameData gameData = null;
@@ -368,7 +371,7 @@ public class GameResources {
 		saveUserDataLocal(uData);
 	}
 
-	public QuestProgressData IncreasQuestAction(string id, int count, bool save, bool setProgress = false) {
+	public QuestProgressData IncreasQuestAction(string id, int count, bool save, bool setProgress = false, bool resetProgress = false) {
 		UserData uData = GetUserData();
 		QuestProgressData qData = Preconditions.NotNull(uData.GetQuestById(id), "Quest with id {0} not activate", id);
 		if(setProgress) {
@@ -376,16 +379,21 @@ public class GameResources {
 		} else {
 			qData.Progress += count;
 		}
+		bool prevIscomplete = qData.IsComplete;
 		QuestItem qItem = GetQuestData().GetById(id);
 		if(qData.Progress >= qItem.ActionCount) {
 			qData.IsComplete = true;
-		} else {
+		} else if(resetProgress) {
 			qData.IsComplete = false;
 		}
 		if(save) {
 			SaveUserData(uData, false);
 		} else {
 			saveUserDataLocal(uData);
+		}
+
+		if(!prevIscomplete && qData.IsComplete && onCompleteQuest != null) {
+			onCompleteQuest(qItem);
 		}
 
 		return qData;

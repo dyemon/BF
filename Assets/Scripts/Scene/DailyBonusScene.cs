@@ -42,7 +42,7 @@ public class DailyBonusScene : WindowScene {
 		img.transform.Find("AwardType").GetComponent<Image>().sprite = GOResources.GetUserAssetIcone(item.Type);
 		Text text = img.transform.Find("AwardAmount").GetComponent<Text>();
 		text.text = item.Value.ToString();
-		//text.color = item.Type.ToColor();
+		text.color = item.Type.ToColor();
 
 		text = button.transform.Find("DailyText").GetComponent<Text>();
 		text.text = (number < 0)? "Далее..." : string.Format("День: {0}", number);

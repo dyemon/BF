@@ -19,16 +19,24 @@ public class QuestItem {
 	public string RequiredQuestId;
 
 	public AwardItem Award;
-	public int ExperienceAward;
+	public int ExperienceAward = 0;
 
 	public bool ShowProgressInfo;
+
+	public TargetType? TargetType = null;
+	public string TargetTypeAsString = null;
+	public int ChainLength;
 
 	public void Init() {
 		Type = EnumUtill.Parse<QuestType>(TypeAsString);
 		ConditionType = EnumUtill.Parse<QuestConditionType>(ConditionTypeAsString);
 
-		if(Award != null) {
+		if(Award != null && !string.IsNullOrEmpty(Award.TypeAsString)) {
 			Award.Type = EnumUtill.Parse<UserAssetType>(Award.TypeAsString);
+		}
+
+		if(!string.IsNullOrEmpty(TargetTypeAsString)) {
+			TargetType = EnumUtill.Parse<TargetType>(TargetTypeAsString);
 		}
 	}
 }

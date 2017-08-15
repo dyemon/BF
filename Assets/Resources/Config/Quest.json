@@ -21,15 +21,376 @@
 		"ExperienceAward": 5,
 		"ShowProgressInfo": true
 	}, {
-		"Id": "sendPresentFB",
+		"Id": "sendGiftFB",
 		"Name": "Отослать подарок",
 		"Description": "Отошли подарок другу и получи в награду 10 печаток и 10 очков крутости",
 		"TypeAsString": "SocialFB",
-		"ConditionTypeAsString":	"SendPresent",
-		"ActionCount": 2,
+		"ConditionTypeAsString":	"SendGift",
+		"ActionCount": 1,
 		"RequiredQuestId": "inviteFriends2FB",
 		"Award":  {"TypeAsString": "Ring", "Value":	10},
 		"ExperienceAward": 10,
-		"ShowProgressInfo": false
-	}]
+		"ShowProgressInfo": true
+	}, {
+		"Id": "getGiftFB",
+		"Name": "Получить подарок",
+		"Description": "Забери подарок от друга и получи в награду 10 печаток и 10 очков крутости",
+		"TypeAsString": "SocialFB",
+		"ConditionTypeAsString":	"GetGift",
+		"ActionCount": 1,
+		"RequiredQuestId": "sendGiftFB",
+		"Award":  {"TypeAsString": "Ring", "Value":	10},
+		"ExperienceAward": 10,
+		"ShowProgressInfo": true
+	}, {
+		"Id": "sendGiftFB5",
+		"Name": "Отослать подарок",
+		"Description": "Отошли 5 подарокв друзьям и получи в награду 20 печаток и 20 очков крутости",
+		"TypeAsString": "SocialFB",
+		"ConditionTypeAsString":	"SendGift",
+		"ActionCount": 5,
+		"RequiredQuestId": "getGiftFB",
+		"Award":  {"TypeAsString": "Ring", "Value":	20},
+		"ExperienceAward": 20,
+		"ShowProgressInfo": true
+	}, {
+		"Id": "getGiftFB5",
+		"Name": "Получить подарок",
+		"Description": "Забери 5 подарков от друзей и получи в награду 20 печаток и 20 очков крутости",
+		"TypeAsString": "SocialFB",
+		"ConditionTypeAsString":	"GetGift",
+		"ActionCount": 1,
+		"RequiredQuestId": "sendGiftFB5",
+		"Award":  {"TypeAsString": "Ring", "Value":	20},
+		"ExperienceAward": 20,
+		"ShowProgressInfo": true
+	},
+
+
+	{
+		"Id": "collectBlue20",
+		"Name": "Сбор фишек",
+		"Description": "Собраь 20 синих фишек",
+		"TargetTypeAsString": "Blue", 
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"Collect",
+		"ActionCount": 20,
+		"Award":  {"TypeAsString": "Mobile", "Value":	5},
+		"MinExperience": 20,
+		"ShowProgressInfo": true
+	},{
+		"Id": "collectYellow50",
+		"Name": "Сбор фишек",
+		"Description": "Собраь 50 жёлтых фишек",
+		"TargetTypeAsString": "Yellow", 
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"Collect",
+		"ActionCount": 50,
+		"Award":  {"TypeAsString": "Mobile", "Value":	15},
+		"MinExperience": 40,
+		"RequiredQuestId": "collectBlue20",
+		"ShowProgressInfo": true
+	},{
+		"Id": "collectChain7",
+		"Name": "Сбор цепочек",
+		"Description": "Собраь цепочку из 7-и фишек",
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"CollectСhain",
+		"ActionCount": 1,
+		"ExperienceAward": 10,
+		"MinExperience": 60,
+		"ChainLength": 7,
+		"RequiredQuestId": "collectYellow50",
+		"ShowProgressInfo": true
+	},{
+		"Id": "collectRed100",
+		"Name": "Сбор фишек",
+		"Description": "Собраь 100 красных фишек",
+		"TargetTypeAsString": "Red", 
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"Collect",
+		"ActionCount": 100,
+		"Award":  {"TypeAsString": "Ring", "Value":	10},
+		"MinExperience": 100,
+		"RequiredQuestId": "collectChain7",
+		"ShowProgressInfo": true
+	},{
+		"Id": "collectGreen200",
+		"Name": "Сбор фишек",
+		"Description": "Собраь 200 зелёных фишек",
+		"TargetTypeAsString": "Green", 
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"Collect",
+		"ActionCount": 200,
+		"Award":  {"TypeAsString": "Ring", "Value":	20},
+		"MinExperience": 200,
+		"RequiredQuestId": "collectRed100",
+		"ShowProgressInfo": true
+	},{
+		"Id": "collectChain11",
+		"Name": "Сбор цепочек",
+		"Description": "Собраь цепочку из 11-и фишек",
+		"ChainLength": 11,
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"CollectСhain",
+		"ActionCount": 1,
+		"ExperienceAward": 30,
+		"MinExperience": 300,
+		"RequiredQuestId": "collectGreen200",
+		"ShowProgressInfo": true
+	},{
+		"Id": "collectPurple350",
+		"Name": "Сбор фишек",
+		"Description": "Собраь 350 фиолетовых фишек",
+		"TargetTypeAsString": "Purple", 
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"Collect",
+		"ActionCount": 350,
+		"Award":  {"TypeAsString": "Money", "Value":	20},
+		"MinExperience": 350,
+		"RequiredQuestId": "collectChain11",
+		"ShowProgressInfo": true
+	},{
+		"Id": "collectRed500",
+		"Name": "Сбор фишек",
+		"Description": "Собраь 500 красных фишек",
+		"TargetTypeAsString": "Red", 
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"Collect",
+		"ActionCount": 500,
+		"Award":  {"TypeAsString": "Money", "Value":	30},
+		"MinExperience": 500,
+		"RequiredQuestId": "collectPurple350",
+		"ShowProgressInfo": true
+	},{
+		"Id": "collectChain15",
+		"Name": "Сбор цепочек",
+		"Description": "Собраь цепочку из 15-и фишек",
+		"ChainLength": 15,
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"CollectСhain",
+		"ActionCount": 1,
+		"ExperienceAward": 50,
+		"MinExperience": 600,
+		"RequiredQuestId": "collectRed500",
+		"ShowProgressInfo": true
+	},{
+		"Id": "collectBlue650",
+		"Name": "Сбор фишек",
+		"Description": "Собраь 650 синих фишек",
+		"TargetTypeAsString": "Red", 
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"Collect",
+		"ActionCount": 650,
+		"Award":  {"TypeAsString": "Money", "Value":	40},
+		"MinExperience": 650,
+		"RequiredQuestId": "collectChain15",
+		"ShowProgressInfo": true
+	},{
+		"Id": "collectYellow800",
+		"Name": "Сбор фишек",
+		"Description": "Собраь 800 жёлтых фишек",
+		"TargetTypeAsString": "Yellow", 
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"Collect",
+		"ActionCount": 800,
+		"Award":  {"TypeAsString": "Money", "Value":	50},
+		"MinExperience": 800,
+		"RequiredQuestId": "collectBlue650",
+		"ShowProgressInfo": true
+	},{
+		"Id": "collectChain20",
+		"Name": "Сбор цепочек",
+		"Description": "Собраь цепочку из 20-и фишек",
+		"ChainLength": 20,
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"CollectСhain",
+		"ActionCount": 1,
+		"ExperienceAward": 70,
+		"MinExperience": 900,
+		"RequiredQuestId": "collectYellow800",
+		"ShowProgressInfo": true
+	},{
+		"Id": "collectPurple1000",
+		"Name": "Сбор фишек",
+		"Description": "Собраь 1000 фиолетовых фишек",
+		"TargetTypeAsString": "Purple", 
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"Collect",
+		"ActionCount": 1000,
+		"Award":  {"TypeAsString": "Money", "Value":	85},
+		"MinExperience": 1000,
+		"RequiredQuestId": "collectChain20",
+		"ShowProgressInfo": true
+	},{
+		"Id": "collectGreen1500",
+		"Name": "Сбор фишек",
+		"Description": "Собраь 1500 зелёных фишек",
+		"TargetTypeAsString": "Green", 
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"Collect",
+		"ActionCount": 1500,
+		"Award":  {"TypeAsString": "Money", "Value":	100},
+		"MinExperience": 1500,
+		"RequiredQuestId": "collectPurple1000",
+		"ShowProgressInfo": true
+	},
+
+	{
+		"Id": "WinEnemy3",
+		"Name": "Победить врагов",
+		"Description": "Победить 3-х врагов своего уровня",
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"WinEnemy",
+		"ActionCount": 3,
+		"Award":  {"TypeAsString": "Mobile", "Value":	10},
+		"MinExperience": 20,
+		"ShowProgressInfo": true
+	},{
+		"Id": "WinEnemy10",
+		"Name": "Победить врагов",
+		"Description": "Победить 10 врагов своего уровня",
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"WinEnemy",
+		"ActionCount": 10,
+		"Award":  {"TypeAsString": "Mobile", "Value":	30},
+		"MinExperience": 100,
+		"RequiredQuestId": "WinEnemy3",
+		"ShowProgressInfo": true
+	},{
+		"Id": "WinEnemy25",
+		"Name": "Победить врагов",
+		"Description": "Победить 25 врагов своего уровня",
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"WinEnemy",
+		"ActionCount": 25,
+		"Award":  {"TypeAsString": "Ring", "Value":	20},
+		"MinExperience": 500,
+		"RequiredQuestId": "WinEnemy10",
+		"ShowProgressInfo": true
+	},{
+		"Id": "WinEnemy50",
+		"Name": "Победить врагов",
+		"Description": "Победить 50 врагов своего уровня",
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"WinEnemy",
+		"ActionCount": 50,
+		"Award":  {"TypeAsString": "Money", "Value":	20},
+		"MinExperience": 1000,
+		"RequiredQuestId": "WinEnemy25",
+		"ShowProgressInfo": true
+	},
+
+
+	{
+		"Id": "UseMagic5",
+		"Name": "Использовать магию",
+		"Description": "Применить магию 5 раз",
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"UseMagic",
+		"ActionCount": 5,
+		"Award":  {"TypeAsString": "Mobile", "Value":	5},
+		"MinExperience": 10,
+		"ShowProgressInfo": true
+	},{
+		"Id": "UseFortuna10",
+		"Name": "Колесо фортуны",
+		"Description": "Сыграть в колесо фортуны 10 раз",
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"UseFortuna",
+		"ActionCount": 10,
+		"Award":  {"TypeAsString": "Mobile", "Value":	20},
+		"MinExperience": 50,
+		"RequiredQuestId": "UseMagic5",
+		"ShowProgressInfo": true
+	},{
+		"Id": "UseKachalka",
+		"Name": "Качалка",
+		"Description": "Прокачаться в качалке",
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"UseKachalka",
+		"ActionCount": 1,
+		"ExperienceAward": 20,
+		"MinExperience": 100,
+		"RequiredQuestId": "UseFortuna10",
+		"ShowProgressInfo": true
+	},{
+		"Id": "UseGoods",
+		"Name": "Магази",
+		"Description": "Купть экипировку в магазине",
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"UseGoods",
+		"ActionCount": 1,
+		"ExperienceAward": 20,
+		"MinExperience": 150,
+		"RequiredQuestId": "UseKachalka",
+		"ShowProgressInfo": true
+	},{
+		"Id": "UseBlathata",
+		"Name": "Посетите блатхату",
+		"Description": "Посетите блатхату",
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"UseBlathata",
+		"ActionCount": 1,
+		"ExperienceAward": 20,
+		"MinExperience": 200,
+		"RequiredQuestId": "UseGoods",
+		"ShowProgressInfo": true
+	},{
+		"Id": "UseMagic20",
+		"Name": "Использовать магию",
+		"Description": "Применить магию 20 раз",
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"UseMagic",
+		"ActionCount": 20,
+		"Award":  {"TypeAsString": "Ring", "Value":	5},
+		"MinExperience": 100,
+		"RequiredQuestId": "UseBlathata",
+		"ShowProgressInfo": true
+	},{
+		"Id": "UseFortuna30",
+		"Name": "Колесо фортуны",
+		"Description": "Сыграть в колесо фортуны 30 раз",
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"UseFortuna",
+		"ActionCount": 30,
+		"Award":  {"TypeAsString": "Ring", "Value":	20},
+		"MinExperience": 200,
+		"RequiredQuestId": "UseMagic20",
+		"ShowProgressInfo": true
+	},{
+		"Id": "UseMagic50",
+		"Name": "Использовать магию",
+		"Description": "Применить магию 50 раз",
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"UseMagic",
+		"ActionCount": 50,
+		"Award":  {"TypeAsString": "Money", "Value":	15},
+		"MinExperience": 500,
+		"RequiredQuestId": "UseFortuna30",
+		"ShowProgressInfo": true
+	},{
+		"Id": "UseFortuna70",
+		"Name": "Колесо фортуны",
+		"Description": "Сыграть в колесо фортуны 70 раз",
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"UseFortuna",
+		"ActionCount": 70,
+		"Award":  {"TypeAsString": "Money", "Value":	30},
+		"MinExperience": 700,
+		"RequiredQuestId": "UseMagic50",
+		"ShowProgressInfo": true
+	},{
+		"Id": "UseMagic100",
+		"Name": "Использовать магию",
+		"Description": "Применить магию 100 раз",
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"UseMagic",
+		"ActionCount": 100,
+		"Award":  {"TypeAsString": "Money", "Value":	50},
+		"MinExperience": 1000,
+		"RequiredQuestId": "UseFortuna70",
+		"ShowProgressInfo": true
+	}
+		]
 }

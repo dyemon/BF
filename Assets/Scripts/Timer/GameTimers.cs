@@ -101,7 +101,7 @@ public class GameTimers {
 			break;
 		case FORTUNA_TIMER_CODE:
 			int timerCount = timer.GetCurCount();
-			Debug.Log(FORTUNA_TIMER_CODE + " " + timerCount);
+		//	Debug.Log(FORTUNA_TIMER_CODE + " " + timerCount);
 			if(timerCount == 0) {
 				GameResources.Instance.ResetFortunaTryCount();
 			}
