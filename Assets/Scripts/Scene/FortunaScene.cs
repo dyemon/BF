@@ -107,6 +107,8 @@ public class FortunaScene : WindowScene {
 		if(tryCount == 0) {
 			ParametersController.Instance.SetParameter(ParametersController.FORTUNA_IS_SHOWN, false);
 		}
+
+		QuestController.Instance.UseFortuna();
 	}
 
 	void OnTimerFortuna(int timerCount) {

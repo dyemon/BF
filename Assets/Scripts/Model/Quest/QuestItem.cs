@@ -35,8 +35,12 @@ public class QuestItem {
 			Award.Type = EnumUtill.Parse<UserAssetType>(Award.TypeAsString);
 		}
 
-		if(!string.IsNullOrEmpty(TargetTypeAsString)) {
+		if(ConditionType == QuestConditionType.Collect) {
+			Preconditions.Check(!string.IsNullOrEmpty(TargetTypeAsString), "TargetTypeAsString can not be null or empty for quest condition collect");
 			TargetType = EnumUtill.Parse<TargetType>(TargetTypeAsString);
+		}
+		if(ConditionType == QuestConditionType.CollectСhain) {
+			Preconditions.Check(ChainLength > 0, "ChainLength must be greater then zero for quest condition collect chain");
 		}
 	}
 }

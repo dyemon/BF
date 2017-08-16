@@ -723,6 +723,8 @@ public class GameController : MonoBehaviour {
 			CollectTileItem(tile);
 		}
 
+		QuestController.Instance.OnTurnComplete(selectedTiles);
+
 		rotaitedBombs.Clear();
 		specialSelectedTiles.Clear();
 		selectedTiles.Clear();
@@ -857,6 +859,7 @@ public class GameController : MonoBehaviour {
 		}
 
 		OnAwardTileItem(tileItem);
+		QuestController.Instance.OnCollectTileItem(tileItem);
 	}
 
 	private void SelectTileItem(Tile tile, bool isSelect, TileItemRenderState unSelectedState = TileItemRenderState.Normal, TileItem transitionTileItem = null) {
@@ -2820,6 +2823,7 @@ public class GameController : MonoBehaviour {
 			UseHeroSkill(skill);
 			resetHeroSkillData = true;
 			IncreaseHeroSkillCount(-1);
+			QuestController.Instance.UseMagic();
 		} else if(name == LevelFailureHelpScene.SceneName) {
 			FPPanel.UpdateFightParams();
 		}

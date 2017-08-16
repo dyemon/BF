@@ -164,6 +164,7 @@ public class EnemyController : MonoBehaviour {
 
 	public void Death() {
 		gameObject.SetActive(false);
+		QuestController.Instance.WinEnemy();
 	}
 
 	public EnemySkillData GetSkill() {

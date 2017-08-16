@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Common.Animation;
 
 public class QuestScene : WindowScene {
 	public const string SceneName = "Quest";
@@ -9,6 +10,8 @@ public class QuestScene : WindowScene {
 	public GameObjectResources GOResources;
 	public VerticalLayoutGroup QuestList;
 	public GameObject QuestButton;
+	public UserAssetsPanel AssetsPanel;
+	public GameObject AwardItem;
 
 	private string questItemTag = "QuestItem";
 
@@ -41,6 +44,8 @@ public class QuestScene : WindowScene {
 			GameObject questGO = Instantiate(QuestButton, QuestList.transform);
 			questGO.transform.tag = questItemTag;
 
+		//	questProg.IsComplete = true;
+		//	GameResources.Instance.SaveUserData(uData, false);
 			GameObject allow = questGO.transform.Find("Allow").gameObject;
 			GameObject notAllow = questGO.transform.Find("NotAllow").gameObject;
 			allow.SetActive(questProg.IsComplete);
@@ -54,6 +59,10 @@ public class QuestScene : WindowScene {
 			priceAmount.text = questItem.ExperienceAward == 0 ? questItem.Award.Value.ToString() : questItem.ExperienceAward.ToString();
 			priceAmount.color = questItem.ExperienceAward == 0 ? questItem.Award.Type.ToColor() : UserAssetTypeExtension.ExperienceColor;
 				
+			if(questProg.IsComplete) {
+				allow.transform.Find("Button").GetComponent<Button>().onClick.AddListener(() => OnTakeQuest(questGO, questItem));
+			}
+
 			Text desc = questGO.transform.Find("Description").GetComponent<Text>();
 			desc.text = questItem.Description;
 
@@ -66,5 +75,49 @@ public class QuestScene : WindowScene {
 			icon.sprite = GOResources.GetQuestIcon(questItem);
 		}
 			
+	}
+
+	public void OnTakeQuest(GameObject button, QuestItem quest) {
+		AssetsPanel.DisableUpdate(true);
+		if(quest.ExperienceAward == 0) {
+			GameResources.Instance.ChangeUserAsset(quest.Award.Type, quest.Award.Value);
+		} else {
+			GameResources.Instance.IncreaseExperience(quest.ExperienceAward);
+		}
+		GameResources.Instance.TakeQuestAward(quest.Id);
+		AssetsPanel.DisableUpdate(false);
+
+		GameObject assetImg = UnityUtill.FindByName(button.transform, "PriceType").gameObject;
+
+		GameObject animImg = Instantiate(AwardItem, transform);
+		animImg.transform.position = assetImg.transform.position;
+		animImg.AddComponent<AnimatedObject>();
+		Vector3 end = (quest.ExperienceAward == 0) ? AssetsPanel.GetUserAssetsIcon(quest.Award.Type).transform.position :
+			AssetsPanel.GetExperienceIcon().transform.position;;
+		Vector3 start = assetImg.transform.position;
+		Sprite icon = (quest.ExperienceAward == 0) ? GOResources.GetUserAssetIcone(quest.Award.Type) :
+			GOResources.GetUserExperienceIcone();
+		int amount = (quest.ExperienceAward == 0) ? quest.Award.Value : quest.ExperienceAward; 
+		Vector3? endSize = (quest.ExperienceAward != 0)? new Vector3(0.7f, 0.7f, 1) : (Vector3?)null; 
+
+		Animations.CreateAwardAnimation(animImg, start, end, icon, amount, endSize); 
+		animImg.GetComponent<AnimatedObject>()
+			.OnStop(() => {CompleteTakeQuest(animImg, button);} ).Run();
+
+
+
+		save = true;
+	}
+
+	void CompleteTakeQuest(GameObject animGO, GameObject button) {
+		Destroy(animGO);
+		AssetsPanel.UpdateUserAssets();
+		AssetsPanel.UpdateExperience();
+
+		button.AddComponent<AnimatedObject>().AddFadeUI(null, 0, 1f)
+			.OnStop(() => {
+				Destroy(button);
+				UpdateQuestsInfo();
+			}).Build().Run();
 	}
 }

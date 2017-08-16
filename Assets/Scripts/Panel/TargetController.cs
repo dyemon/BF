@@ -32,7 +32,15 @@ public class TargetController : MonoBehaviour {
 
 		levelLoaded = true;
 	}
-	
+
+	public static bool EqualsByType(TileItem tileItem, TargetType tType) {
+		bool checkByTypeGroup = tileItem.IsColor || tileItem.IsBox;
+		if(((int)tType == (int)tileItem.Type) && !checkByTypeGroup || ((int)tType == (int)tileItem.TypeGroup) && checkByTypeGroup) {
+			return true;
+		}
+		return false;
+	}
+		
 	public void OnCollectTileItem(TileItem tileItem) {
 		Preconditions.NotNull(tileItem, "Collected tile item can not be null");
 		int index = 0;
@@ -41,9 +49,9 @@ public class TargetController : MonoBehaviour {
 			return;
 		}
 
-		bool checkByTypeGroup = tileItem.IsColor || tileItem.IsBox;
+
 		foreach(TargetData data in levelData.TargetData) {
-			if(((int)data.Type == (int)tileItem.Type) && !checkByTypeGroup || ((int)data.Type == (int)tileItem.TypeGroup) && checkByTypeGroup) {
+			if(EqualsByType(tileItem, data.Type)) {
 				GameObject targetGO = Preconditions.NotNull(transform.GetChild(index).gameObject, "Can not get target game object for index {0}", index);
 				Text text = targetGO.transform.Find("Text").gameObject.GetComponent<Text>();
 				if(text == null || success[index]) {
