@@ -9,14 +9,19 @@ public class AIdle : ABase{
 	private float startTime;
 	private float startDurationTime;
 	private bool isComplete = false;
+	private float initTime;
 
 	public AIdle(float time) {
 		this.time = time;
+		this.initTime = time;
 	}
 
 	public override void Run() {
 		startTime = Time.time;
 		startDurationTime = time;
+	}
+	public override void Reset() {
+		time = initTime;
 	}
 
 	public override bool Animate(GameObject go) {

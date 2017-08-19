@@ -30,12 +30,20 @@ public class LevelData {
 	public LevelAwardData SuccessAwardData;
 	public LevelAwardData FailureAwardData;
 
+	public EducationData EducationData;
+
 	public void Init() {
 		FightLocationType = EnumUtill.Parse<FightLocationType>(FightLocationTypeAsString);
 
 		if(TileData != null) {
 			foreach(TileItemData item in TileData) {
-				item.Type = (TileItemType)Enum.Parse(typeof(TileItemType), item.TypeAsString);
+				if(item.TypeAsString == "Random") {
+					int rand = UnityEngine.Random.Range(0, (int)TileItemTypeGroup.Bomb);
+					item.Type = (TileItemType)(rand - rand % TileItem.TILE_ITEM_GROUP_WEIGHT);
+					item.TypeAsString = item.Type.ToString();
+				} else {
+					item.Type = (TileItemType)Enum.Parse(typeof(TileItemType), item.TypeAsString);
+				}
 				if(item.HasChild()) {
 					item.ChildTileItemData.Type = (TileItemType)Enum.Parse(typeof(TileItemType), item.ChildTileItemData.TypeAsString);
 				}
@@ -99,9 +107,17 @@ public class LevelData {
 
 		SuccessAwardData.Init();
 		FailureAwardData.Init();
+
+		if(EducationData != null) {
+			EducationData.Init();
+		}
 	}
 
 	public bool HasEnemy() {
 		return EnemyData != null && EnemyData.Health > 0;
+	}
+
+	public bool HasEducation() {
+		return EducationData != null && EducationData.HasEducation();
 	}
 }

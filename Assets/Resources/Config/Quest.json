@@ -234,6 +234,18 @@
 		"MinExperience": 1500,
 		"RequiredQuestId": "collectPurple1000",
 		"ShowProgressInfo": true
+	},{
+		"Id": "collectRed3000",
+		"Name": "Сбор фишек",
+		"Description": "Собраь 3000 красных фишек",
+		"TargetTypeAsString": "Red", 
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"Collect",
+		"ActionCount": 3000,
+		"Award":  {"TypeAsString": "Money", "Value":	200},
+		"MinExperience": 3000,
+		"RequiredQuestId": "collectGreen1500",
+		"ShowProgressInfo": true
 	},
 
 	{
@@ -258,6 +270,17 @@
 		"RequiredQuestId": "WinEnemy3",
 		"ShowProgressInfo": true
 	},{
+		"Id": "WinEnemyInSequence3",
+		"Name": "Победить врагов",
+		"Description": "Победить подряд 3-х врагов своего уровня",
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"WinEnemyInSequence",
+		"ActionCount": 2,
+		"Award":  {"TypeAsString": "Ring", "Value":	20},
+		"MinExperience": 250,
+		"RequiredQuestId": "WinEnemy10",
+		"ShowProgressInfo": true
+	},{
 		"Id": "WinEnemy25",
 		"Name": "Победить врагов",
 		"Description": "Победить 25 врагов своего уровня",
@@ -275,8 +298,30 @@
 		"TypeAsString": "Game",
 		"ConditionTypeAsString":	"WinEnemy",
 		"ActionCount": 50,
-		"Award":  {"TypeAsString": "Money", "Value":	20},
+		"Award":  {"TypeAsString": "Money", "Value":	50},
 		"MinExperience": 1000,
+		"RequiredQuestId": "WinEnemy25",
+		"ShowProgressInfo": true
+	},{
+		"Id": "WinEnemyInSequence5",
+		"Name": "Победить врагов",
+		"Description": "Победить подряд 5-х врагов своего уровня",
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"WinEnemyInSequence",
+		"ActionCount": 5,
+		"Award":  {"TypeAsString": "Money", "Value":	50},
+		"MinExperience": 2000,
+		"RequiredQuestId": "WinEnemy50",
+		"ShowProgressInfo": true
+	},{
+		"Id": "WinEnemy100",
+		"Name": "Победить врагов",
+		"Description": "Победить 100 врагов своего уровня",
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"WinEnemy",
+		"ActionCount": 100,
+		"Award":  {"TypeAsString": "Money", "Value":	100},
+		"MinExperience": 4000,
 		"RequiredQuestId": "WinEnemy25",
 		"ShowProgressInfo": true
 	},
@@ -328,7 +373,7 @@
 	},{
 		"Id": "UseBlathata",
 		"Name": "Посетите блатхату",
-		"Description": "Посетите блатхату",
+		"Description": "Получить посылку в блатхате",
 		"TypeAsString": "Game",
 		"ConditionTypeAsString":	"UseBlathata",
 		"ActionCount": 1,
@@ -370,6 +415,17 @@
 		"RequiredQuestId": "UseFortuna30",
 		"ShowProgressInfo": true
 	},{
+		"Id": "UseBlathata20",
+		"Name": "Посетите блатхату",
+		"Description": "Получить 20 посылок в блатхате",
+		"TypeAsString": "Game",
+		"ConditionTypeAsString":	"UseBlathata",
+		"ActionCount": 20,
+		"ExperienceAward": 50,
+		"MinExperience": 700,
+		"RequiredQuestId": "UseMagic50",
+		"ShowProgressInfo": true
+	},{
 		"Id": "UseFortuna70",
 		"Name": "Колесо фортуны",
 		"Description": "Сыграть в колесо фортуны 70 раз",
@@ -377,8 +433,8 @@
 		"ConditionTypeAsString":	"UseFortuna",
 		"ActionCount": 70,
 		"Award":  {"TypeAsString": "Money", "Value":	30},
-		"MinExperience": 700,
-		"RequiredQuestId": "UseMagic50",
+		"MinExperience": 1000,
+		"RequiredQuestId": "UseBlathata20",
 		"ShowProgressInfo": true
 	},{
 		"Id": "UseMagic100",
@@ -388,7 +444,7 @@
 		"ConditionTypeAsString":	"UseMagic",
 		"ActionCount": 100,
 		"Award":  {"TypeAsString": "Money", "Value":	50},
-		"MinExperience": 1000,
+		"MinExperience": 2000,
 		"RequiredQuestId": "UseFortuna70",
 		"ShowProgressInfo": true
 	}

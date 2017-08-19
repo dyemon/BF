@@ -54,6 +54,20 @@ public class QuestController {
 			return;
 		}
 		IncreaseActiveQuest(QuestType.Game, QuestConditionType.WinEnemy, 1);
+		IncreaseActiveQuest(QuestType.Game, QuestConditionType.WinEnemyInSequence, 1);
+
+	}
+
+	public void OnDeath() {
+		UserData uData = GameResources.Instance.GetUserData();
+		QuestData qData = GameResources.Instance.GetQuestData();
+
+		foreach(QuestProgressData pd in uData.GetActiveQuests(QuestType.Game, true)) {
+			QuestItem qi = qData.GetById(pd.QuestId);
+			if(qi.ConditionType == QuestConditionType.WinEnemyInSequence) {
+				GameResources.Instance.IncreasQuestAction(pd.QuestId, 0, false, true, false);
+			}
+		}
 	}
 
 	public void UseMagic() {

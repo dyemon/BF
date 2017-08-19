@@ -19,6 +19,7 @@ public class AnimatedObject : MonoBehaviour {
 
 	private bool destroyOnStop = false;
 	private bool clearOnStop = true;
+	private bool loop = false;
 
 	private OnStopAnimation onStop;
 	private OnStopAnimationSimple onStopSimple;
@@ -69,6 +70,9 @@ public class AnimatedObject : MonoBehaviour {
 				return null;
 			}
 			currentPlayAnimation = animations[0];
+			if(loop) {
+				animations.Add((Animation)currentPlayAnimation.Clone());
+			}
 			currentPlayAnimation.Run();
 			if(currentPlayAnimation.LayerSortingOrder != null) {
 				SpriteRenderer render = GetComponent<SpriteRenderer>();
@@ -204,6 +208,11 @@ public class AnimatedObject : MonoBehaviour {
 
 	public AnimatedObject DestroyOnStop(bool destroyOnStop) {
 		this.destroyOnStop = destroyOnStop;
+		return this;
+	}
+
+	public AnimatedObject Loop(bool val) {
+		this.loop = val;
 		return this;
 	}
 

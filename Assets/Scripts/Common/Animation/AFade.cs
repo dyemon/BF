@@ -6,6 +6,7 @@ public class AFade : ABase {
 	protected float? startAlpha;
 	private float endAlpha;
 	private float time;
+	private float initTime;
 
 	private float startTime;
 	private float startDurationTime;
@@ -15,11 +16,15 @@ public class AFade : ABase {
 		this.startAlpha = startAlpha;
 		this.endAlpha = endAlpha;
 		this.time = time;
+		this.initTime = time;
 	}
 
 	public override void Run() {
 		startTime = UnityEngine.Time.time;
 		startDurationTime = time;
+	}
+	public override void Reset() {
+		time = initTime;
 	}
 
 	public override bool Animate(GameObject gameObject) {

@@ -8,6 +8,7 @@ public class AMove : ABase {
 	private Vector3? startPos;
 	private Vector3 movePos;
 	private float time;
+	private float initTime;
 	private float speed;
 
 	private float startTime;
@@ -19,7 +20,7 @@ public class AMove : ABase {
 		this.movePos = movePos;
 		this.speed = speed;
 		if(startPos != null) {
-			time = CalcTime(startPos.Value, movePos, speed);
+			SetTime(CalcTime(startPos.Value, movePos, speed));
 		}
 	}
 
@@ -34,7 +35,9 @@ public class AMove : ABase {
 
 	public void SetTime(float time) {
 		this.time = time;
+		this.initTime = time;
 	}
+
 	public float GetTime() {
 		return time;
 	}
@@ -42,7 +45,7 @@ public class AMove : ABase {
 	public void SetSpeed(float speed) {
 		this.speed = speed;
 		if(startPos != null) {
-			time = CalcTime(startPos.Value, movePos, speed);
+			SetTime(CalcTime(startPos.Value, movePos, speed));
 		}	
 	}
 	public float GetSpeed() {
@@ -53,12 +56,15 @@ public class AMove : ABase {
 		startTime = UnityEngine.Time.time;
 		startDurationTime = time;
 	}
+	public override void Reset() {
+		time = initTime;
+	}
 
 	public override bool Animate(GameObject gameObject) {
 		if(startPos == null) {
 			startPos = gameObject.transform.position;
 			if(time == 0 && speed > 0) {
-				time = CalcTime(startPos.Value, movePos, speed);
+				SetTime(CalcTime(startPos.Value, movePos, speed));
 			}
 			startDurationTime = time;
 		}
@@ -71,7 +77,6 @@ public class AMove : ABase {
 		gameObject.transform.position = Vector3.Lerp(startPos.Value, movePos, t );
 
 		isComplete = !(time > 0);
-		Debug.Log(gameObject.transform.position);
 
 		return (time > 0);
 	}

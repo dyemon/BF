@@ -8,85 +8,71 @@
 
 	  "TileData": [{
 			"X": 1, 
-			"Y": 6, 
-			"TypeAsString": "Static_1"
-		}, {
+			"Y": 2, 
+			"TypeAsString": "Yellow"
+		},{
+			"X": 1, 
+			"Y": 1, 
+			"TypeAsString": "Yellow"
+		},{
+			"X": 2, 
+			"Y": 0, 
+			"TypeAsString": "Yellow"
+		},{
+			"X": 1, 
+			"Y": 0, 
+			"TypeAsString": "Red"
+		},{
+			"X": 0, 
+			"Y": 1, 
+			"TypeAsString": "Red"
+		},{
 			"X": 2, 
 			"Y": 1, 
-			"TypeAsString": "Static_1"
-		}, {
+			"TypeAsString": "Blue"
+		},
+
+		{
+			"X": 4, 
+			"Y": 2, 
+			"TypeAsString": "Green"
+		},{
+			"X": 4, 
+			"Y": 1, 
+			"TypeAsString": "Green"
+		},{
+			"X": 5, 
+			"Y": 0, 
+			"TypeAsString": "Green"
+		},{
+			"X": 4, 
+			"Y": 0, 
+			"TypeAsString": "Blue"
+		},{
+			"X": 3, 
+			"Y": 1, 
+			"TypeAsString": "Red"
+		},{
+			"X": 5, 
+			"Y": 1, 
+			"TypeAsString": "Blue"
+		},{
 			"X": 5, 
 			"Y": 2, 
-			"TypeAsString": "Static_1"
-		}, {
-			"X": 5, 
-			"Y": 3, 
-			"TypeAsString": "Static_1"
-		}, {
-			"X": 2, 
-			"Y": 6, 
-			"TypeAsString": "Static_1"
-		}, {
-			"X": 3, 
-			"Y": 1, 
-			"TypeAsString": "BombH"
-		}, {
-			"X": 3, 
-			"Y": 0, 
-			"TypeAsString": "BombH"
-		}, {
-			"X": 6, 
-			"Y": 3, 
-			"TypeAsString": "BombP"
-		}, {
-			"X": 6, 
-			"Y": 4, 
-			"TypeAsString": "BombC"
-		}, {
-			"X": 3, 
-			"Y": 5, 
-			"TypeAsString": "GreenEnvelop"
-		}, {
-			"X": 4, 
-			"Y": 4, 
-			"Health": 2,
-			"TypeAsString": "Static_2"
-		}, {
-			"X": 5, 
-			"Y": 4, 
-			"Health": 1,
-			"TypeAsString": "Static_2"
-		}, {
-			"X": 2, 
-			"Y": 5, 
-			"TypeAsString": "Static_2"
+			"TypeAsString": "Blue"
 		},{
-      "X": 3, 
-      "Y": 3, 
-	  "Health": 2,
-      "TypeAsString": "StaticSlime_1",
-			"ChildTileItemData": {
-					"TypeAsString": "RedEnvelop",
-					"Level": 1
-					}
-      },{
-      "X": 2, 
-      "Y": 3, 
-	  "Health": 1,
-      "TypeAsString": "StaticSlime_1",
-			"ChildTileItemData": {
-					"TypeAsString": "BombP",
-					"Level": 1
-					}
-      },{
-      "X": 4, 
-      "Y": 3, 
-      "TypeAsString": "StaticSlime_1",
-			"ChildTileItemData": {
-					"TypeAsString": "Red",
-					"Level": 1
-					}
-      }],
+			"X": 6, 
+			"Y": 0, 
+			"TypeAsString": "Green"
+		},{
+			"X": 6, 
+			"Y": 1, 
+			"TypeAsString": "Green"
+		},{
+			"X": 6, 
+			"Y": 2, 
+			"TypeAsString": "Red"
+		}],
 	
 	  "BarrierData": [{
             "X1": 0, 
@@ -190,6 +176,21 @@
 		 {"TypeAsString": "Mobile", "Value":	2},
 		 {"TypeAsString": "Ring", "Value":	1}
 		]
+	},
+
+	"EducationData": {
+		"Steps": [{
+			"Description": "Собирай цепочки из фишек одного цвета. Минимальная цепочка - три фишки",
+			"DescriptionOffset": {"x": 1.4, "y": 1.5},
+			"TypeAsString": "Collect",
+			"Positions1": [{"x": 1, "y": 2}, {"x": 1, "y": 1}, {"x": 2, "y": 0}]
+		},{
+			"Description": "Цепочка может быть любой длины не менее трёх фишек",
+			"DescriptionOffset": {"x": -0.8, "y": 1.5},
+			"TypeAsString": "Collect",
+			"Strict": true,
+			"Positions1": [{"x": 4, "y": 2}, {"x": 4, "y": 1}, {"x": 5, "y": 0} , {"x": 6, "y": 0}, {"x": 6, "y": 1}]
+		}]
 	}
 
 }

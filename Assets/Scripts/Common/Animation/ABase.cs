@@ -2,9 +2,10 @@
 using System.Collections;
 
 namespace Common.Animation {
-public abstract class ABase {
+public abstract class ABase : System.ICloneable {
 	public abstract bool Animate(GameObject gameObject);
 	public abstract void Run();
+	public abstract void Reset();
 	public abstract bool IsCompleteAnimation();
 
 	public class BezierPoints {
@@ -17,6 +18,10 @@ public abstract class ABase {
 			this.p1 = new Vector2(x1, y1);
 			this.p2 = new Vector2(x2, y2);
 		}
+	}
+
+	public object Clone() {
+		return this.MemberwiseClone();
 	}
 
 	private BezierPoints bezierPoints;

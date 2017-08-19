@@ -7,6 +7,7 @@ public class ARotate : ABase {
 	private Vector3? startAngle;
 	private Vector3 rotateAngle;
 	private float time;
+	private float initTime;
 
 	private float startTime;
 	private float startDurationTime;
@@ -17,11 +18,15 @@ public class ARotate : ABase {
 		this.startAngle = startAngle;
 		this.rotateAngle = rotateAngle;
 		this.time = time;
+		this.initTime = time;
 	}
 
 	public override void Run() {
 		startTime = UnityEngine.Time.time;
 		startDurationTime = time;
+	}
+	public override void Reset() {
+		time = initTime;
 	}
 
 	public override bool Animate(GameObject gameObject) {

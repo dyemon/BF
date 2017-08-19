@@ -106,7 +106,7 @@
 			"Name": "Задавить базаром",
 			"Description": "Урон врагу {0}%",
 			"TypeAsString": "Damage1",
-			"Damage":	10,
+			"Damage":	50,
 			"MinExperience": 70,
 			"PriceTypeAsString": "Energy",
 			"PriceValue": 70,

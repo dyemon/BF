@@ -7,6 +7,7 @@ public class AResize : ABase {
 	private Vector3? startSize;
 	private Vector3 endSize;
 	private float time;
+	private float initTime;
 
 	private float startTime;
 	private float startDurationTime;
@@ -16,11 +17,15 @@ public class AResize : ABase {
 		this.startSize = startSize;
 		this.endSize = endSize;
 		this.time = time;
+		this.initTime = time;
 	}
 
 	public override void Run() {
 		startTime = UnityEngine.Time.time;
 		startDurationTime = time;
+	}
+	public override void Reset() {
+		time = initTime;
 	}
 
 	public override bool Animate(GameObject gameObject) {

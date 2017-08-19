@@ -90,7 +90,7 @@ public class UserData {
 	public void InitOnStart() {
 		InitTimestampOnStart();
 		GameTimers.Instance.Init(this);
-		//	Level = 50;
+	//		Level = 4;
 		App.InitLocationParams(this);
 	}
 

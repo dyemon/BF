@@ -153,9 +153,10 @@ public class GameController : MonoBehaviour {
 	public GameObject AwardTileItem;
 	public Canvas canvas;
 
-	private bool saveUserData = false;
 
 	public static readonly LevelAwardData CollectLevelAward = new LevelAwardData();
+
+	public EducationController educationController;
 
 	void OnEnable() {
 		if(SceneControllerHelper.instance != null) {
@@ -218,6 +219,7 @@ public class GameController : MonoBehaviour {
 		LocalData localData = GameResources.Instance.GetLocalData();
 		localData.LastLevel = App.CurrentLevel;
 		GameResources.Instance.SaveLocalData();
+
 	}
 
 	// Update is called once per frame
@@ -412,7 +414,8 @@ public class GameController : MonoBehaviour {
 		InputController.Touch[] touches = InputController.getTouches();
 
 		if(touches.Length > 0) {
-			if(EventSystem.current.IsPointerOverGameObject(InputController.GetFingerId())) {
+			if(!educationController.HasCurrentEducationStep() && 
+				EventSystem.current.IsPointerOverGameObject(InputController.GetFingerId())) {
 				return;
 			}
 
@@ -461,6 +464,13 @@ public class GameController : MonoBehaviour {
 		Preconditions.Check(replacedItems.Count == 0, "replacedItems count must be 0 {0}", replacedItems.Count);
 		Preconditions.Check(selectedTiles.Count == 0, "selectedTiles count must be 0 {0}", selectedTiles.Count);
 
+		if(educationController.HasCurrentEducationStep()) {
+			Vector2[] positions = educationController.GetPositions();
+			if(positions == null || positions.Length == 0 || positions[0] != new Vector2(tile.X, tile.Y)) {
+				return;
+			}
+		}
+
 		if(!tileItem.IsColorIndepended) {
 			SetTileItemsRenderState(TileItemRenderState.Dark, tileItem.TypeGroup);
 			selectedTileItemTypeGroup = tileItem.TypeGroup;
@@ -480,6 +490,18 @@ public class GameController : MonoBehaviour {
 	private void MoveTouch(Tile tile) {
 		if(tile == null || tile.GetTileItem() == null || selectedTiles.Count == 0) {
 			return;
+		}
+
+		if(educationController.IsCurrentEducationType(EducationType.Collect)) {
+			Vector2[] positions = educationController.GetPositions1();
+			if(positions != null && positions.Length > 0) {
+				Vector2 pos = new Vector2(tile.X, tile.Y);
+				if(pos == positions[positions.Length - 1]) {
+					educationController.NextPositionIndex();
+				} else if(positions.Contains(pos)) {
+					educationController.ResetPositionIndex();
+				}
+			}
 		}
 
 		Tile lastTile = selectedTiles.Last.Value;
@@ -589,6 +611,14 @@ public class GameController : MonoBehaviour {
 
 	private void EndTouch(Tile tile) {
 		endTouchTile = tile;
+		if(educationController.IsStrict()) {
+			Vector2[] positions = educationController.GetPositions();
+			if(positions != null && positions.Length > selectedTiles.Count ) {
+				ResetSelected();
+				return;
+			}
+		}
+
 		if(selectedTiles.Count >= levelData.SuccessCount) {
 			CollectTileItems();
 		} else {
@@ -622,7 +652,12 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void ResetSelected() {
-		SetTileItemsRenderState(TileItemRenderState.Normal, null);
+		if(!educationController.IsCurrentEducationType(EducationType.Collect)) {
+			SetTileItemsRenderState(TileItemRenderState.Normal, null);
+		} else {
+			educationController.ResetPositionIndex();
+		}
+
 		foreach(Tile tile in specialSelectedTiles) {
 			tile.GetTileItem().UnSelect(TileItemRenderState.Normal);
 		}
@@ -756,7 +791,6 @@ public class GameController : MonoBehaviour {
 			}
 
 			FPPanel.UpdateProgress();
-			bool enemyDeath = false;
 			//		isEnemyStrik = enemyController.IsStrik;
 
 			if(enemyController.IsStrike) {
@@ -790,6 +824,10 @@ public class GameController : MonoBehaviour {
 			return;
 		} else if (!restrictionsController.CheckRestrictions()){
 			Invoke("LevelFailure", 0.5f);
+		}
+
+		if(educationController.IsCurrentEducationType(EducationType.Collect)) {
+			educationController.Next();
 		}
 
 		StartCoroutine(UpdateTilesWithDelay(true, bombExplosionDelay));
@@ -1014,6 +1052,11 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void SetTileItemsRenderState(TileItemRenderState state, TileItemTypeGroup? excludeTypeGroup ) {
+		Vector2[] positions = null;
+		if(educationController.IsCurrentEducationType(EducationType.Collect)) {
+			positions = educationController.GetPositions();
+		}
+
 		for(int x = 0; x < numColumns; x++) {
 			for(int y = 0; y < numRows; y++) {
 				Tile tile = tiles[x, y];
@@ -1022,6 +1065,13 @@ public class GameController : MonoBehaviour {
 				}
 				TileItem tileItem = tile.GetTileItem().GetChildTileItem() != null? tile.GetTileItem().GetChildTileItem() : tile.GetTileItem();
 				if((!tileItem.IsNotStatic && !tileItem.IsSpecialCollect) && tileItem.GetParentTileItem() == null || tileItem.NotHighLight) {
+					continue;
+				}
+
+				if(positions != null) {
+					if(!positions.Contains(new Vector2(x, y))) {
+						tileItem.SetRenderState(state);
+					}
 					continue;
 				}
 
@@ -1218,6 +1268,10 @@ public class GameController : MonoBehaviour {
 
 	void TurnComplete() {
 		heroSkillController.OnTurnComplete();
+		educationController.StartStep();
+		if(educationController.IsCurrentEducationType(EducationType.Collect)) {
+			SetTileItemsRenderState(TileItemRenderState.Dark, null);
+		}
 	}
 
 	private void UpdateTiles(bool first) {
@@ -2520,6 +2574,10 @@ public class GameController : MonoBehaviour {
 
 		StartEnemySkill(false);
 
+		if(heroController.IsDeath(0)) {
+			QuestController.Instance.OnDeath();
+		}
+			
 		if(heroController.IsDeath(0) || !restrictionsController.CheckRestrictions()) {
 			LevelFailure();
 		}
@@ -3085,7 +3143,6 @@ public class GameController : MonoBehaviour {
 		IsTileInputAvaliable = val;
 		//EnableHeroSkillButton(val);
 	}
-		
 
 	void IncreaseHeroSkillCount(int count) {
 		count = System.Int32.Parse(heroSkillCountText.text) + count;
@@ -3166,6 +3223,8 @@ public class GameController : MonoBehaviour {
 		//GameResources.Instance.IncreaseExperience(exp);
 		CollectLevelAward.Experience += exp;
 	}
+
+
 }
 
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Common.Animation {
 
-public class Animation {
+public class Animation : System.ICloneable {
 	private IDictionary<AnimationType, List<ABase>> animations = new Dictionary<AnimationType, List<ABase>>();
 	public int? LayerSortingOrder { get; set;}
 
@@ -25,6 +25,7 @@ public class Animation {
 		if(!a.IsCompleteAnimation()) {
 			return a;
 		}
+
 		val.Remove(a);
 		if( (val.Count == 0)) {
 			return null;
@@ -40,6 +41,27 @@ public class Animation {
 				list[0].Run();
 			}
 		}
+	}
+
+	public void Reset() {
+		foreach(List<ABase> list in animations.Values) {
+			foreach(ABase a in list) {
+				a.Reset();
+			}
+		}
+	}
+
+	public object Clone() {
+		IDictionary<AnimationType, List<ABase>> newA = new Dictionary<AnimationType, List<ABase>>();
+		foreach(KeyValuePair<AnimationType, List<ABase>> pair in animations) {
+			List<ABase> newList = new List<ABase>();
+			foreach(ABase a in pair.Value) {
+				newList.Add((ABase)a.Clone());
+			}
+			newA[pair.Key] = newList;
+		}
+
+		return new Animation() { animations = newA, LayerSortingOrder = this.LayerSortingOrder };
 	}
 }
 }
