@@ -16,6 +16,8 @@ public class HeroSkillScene : WindowScene {
 	public Text MoneyAssetText;
 	public Text RingAssetText;
 
+	private EducationController educationController;
+
 	// Use this for initialization
 	void Start () {
 		if(SceneControllerHelper.instance) {
@@ -27,10 +29,11 @@ public class HeroSkillScene : WindowScene {
 			skills.Add(aSkills[12]);
 			skills.Add(aSkills[10]);
 		}
-
+		int i = 1;
 		foreach(HeroSkillData skill in skills) {
 			GameObject button = Instantiate(HeroSkillButton);
 			button.transform.SetParent(SkillsPanel.transform);
+			button.name = "HeroSkillButton" + i++;
 			button.transform.localScale = new Vector3(1, 1, 1);
 			button.GetComponent<HeroSkillButton>().Init(skill, OnSelectSkill);
 		}
@@ -39,6 +42,21 @@ public class HeroSkillScene : WindowScene {
 		RingAssetText.color = UserAssetType.Ring.ToColor();
 
 		OnUpdateUserAssets(UserAssetType.Money, 0);
+
+		LevelData levelData = GameResources.Instance.GetLevel(App.CurrentLevel);
+		if(levelData.HasEducation()) {
+			GameObject Education = GameObject.Find("Education"); 
+			if(Education != null) {
+				educationController = Education.GetComponent<EducationController>();
+				if(educationController.IsCurrentEducationType(EducationType.UseHeroSkill)) {
+					Education.transform.SetParent(transform);
+					educationController.Next();
+					Invoke("StartEducation", 0.2f);
+
+				}
+			}
+		}
+
 	}
 
 	void OnEnable() {
@@ -50,6 +68,11 @@ public class HeroSkillScene : WindowScene {
 	}
 
 	public void OnSelectSkill(HeroSkillData skill) {
+		if(educationController != null && educationController.IsCurrentEducationType(EducationType.UseHeroSkill)) {
+			educationController.Next();
+			educationController.StartStep();
+		}
+			
 		if(!GameResources.Instance.Buy(skill)) {
 			return;
 		}
@@ -65,5 +88,9 @@ public class HeroSkillScene : WindowScene {
 
 	public void ShowUserAssetScene() {
 		SceneController.Instance.ShowUserAssetsScene(UserAssetType.Money, false);
+	}
+
+	void StartEducation() {
+		educationController.StartStep();
 	}
 }

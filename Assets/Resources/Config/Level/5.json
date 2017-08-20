@@ -1,8 +1,9 @@
 {
 	"Id": "1",
-    "Name": "Level 4", 
+    "Name": "Level 5", 
     "Description": "",
 	"LevelPrice": 3,
+	"StartHeroSkillCount": 1,
 	"FightLocationTypeAsString": "Rayon5",
 	 "TileItemDropPercent": [20, 20, 20, 20, 20],
 
@@ -201,6 +202,38 @@
 		 {"TypeAsString": "Mobile", "Value":	2},
 		 {"TypeAsString": "Ring", "Value":	1}
 		]
-	}
+	},
 
+	"EducationData": {
+		"Steps": [{
+			"Description": "Обрати внимание на цель уровня. Для победы необходимо убить врага",
+			"DescriptionOffset": {"x": -0.5, "y": -4.5},
+			"TypeAsString": "Info",
+			"ArrowGameObjectName": "Targets",
+			"ArrowOffset": {"x": -0.5, "y": -1.3},
+			"ShowCloseButton": true,
+			"ArrowAngle": 160,
+			"StartNextStepOnNext": true
+		},{
+			"Description": "Нажми на кнопку специальных умений. Они помогут тебе победить",
+			"DescriptionOffset": {"x": 3, "y": -4},
+			"TypeAsString": "UseHeroSkill",
+			"ArrowGameObjectName": "HeroSkillButton",
+			"ArrowOffset": {"x": 0.5, "y": -1},
+			"ShowCloseButton": false,
+			"ArrowAngle": 200,
+			"StartNextStepOnNext": false,
+			"NextOnClickTargetButton": false
+		},{
+			"Description": "Выбери умение",
+			"DescriptionOffset": {"x": 1, "y": 2},
+			"TypeAsString": "UseHeroSkill",
+			"ArrowGameObjectName": "HeroSkillButton1/Bg",
+			"ArrowOffset": {"x": 0, "y": -0.3},
+			"ShowCloseButton": false,
+			"ArrowAngle": 170,
+			"StartNextStepOnNext": false,
+			"NextOnClickTargetButton": false
+		}]
+	}
 }

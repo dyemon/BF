@@ -1,5 +1,5 @@
 ﻿
 
 public enum EducationType {
-	Collect
+	Collect, Info, UseHeroSkill
 }

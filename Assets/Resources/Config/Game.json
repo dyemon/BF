@@ -107,9 +107,9 @@
 			"Description": "Урон врагу {0}%",
 			"TypeAsString": "Damage1",
 			"Damage":	50,
-			"MinExperience": 70,
-			"PriceTypeAsString": "Energy",
-			"PriceValue": 70,
+			"MinExperience": 0,
+			"PriceTypeAsString": "Mobile",
+			"PriceValue": 20,
 			"Experience": 1
 		},{
 			"Name": "Удар с ноги ",

@@ -162,13 +162,14 @@ public class GameController : MonoBehaviour {
 		if(SceneControllerHelper.instance != null) {
 			SceneControllerHelper.instance.onUnloadScene += OnUnloadScene;
 		}
+		educationController.onEducationComplete += OnEducationComplete;
 	}
 
 	void OnDisable() {
 		if(SceneControllerHelper.instance != null) {
 			SceneControllerHelper.instance.onUnloadScene -= OnUnloadScene;
 		}
-
+		educationController.onEducationComplete -= OnEducationComplete;
 		GameResources.Instance.SaveUserData(null, false);
 	}
 
@@ -220,6 +221,8 @@ public class GameController : MonoBehaviour {
 		localData.LastLevel = App.CurrentLevel;
 		GameResources.Instance.SaveLocalData();
 
+		heroSkillButton.gameObject.SetActive(levelData.UseHeroSkill);
+		IncreaseHeroSkillCount(levelData.StartHeroSkillCount);
 	}
 
 	// Update is called once per frame
@@ -652,7 +655,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void ResetSelected() {
-		if(!educationController.IsCurrentEducationType(EducationType.Collect)) {
+		if(!educationController.HasCurrentEducationStep()) {
 			SetTileItemsRenderState(TileItemRenderState.Normal, null);
 		} else {
 			educationController.ResetPositionIndex();
@@ -1269,7 +1272,7 @@ public class GameController : MonoBehaviour {
 	void TurnComplete() {
 		heroSkillController.OnTurnComplete();
 		educationController.StartStep();
-		if(educationController.IsCurrentEducationType(EducationType.Collect)) {
+		if(educationController.HasCurrentEducationStep()) {
 			SetTileItemsRenderState(TileItemRenderState.Dark, null);
 		}
 	}
@@ -2739,7 +2742,12 @@ public class GameController : MonoBehaviour {
 		if(!IsTileInputAvaliable) {
 			return;
 		}
-		IList<HeroSkillData> skills = GetAvaliableHeroSkills();
+		IList<HeroSkillData> skills;
+		if(educationController.IsCurrentEducationType(EducationType.UseHeroSkill)) {
+			skills = educationController.GetHeroSkills();
+		} else {
+			skills = GetAvaliableHeroSkills();
+		}
 		SceneControllerHelper.instance.LoadSceneAdditive(HeroSkillScene.SceneName, skills);
 	}
 
@@ -3154,7 +3162,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	void EnableHeroSkillButton(bool enable) {
-		enable = true;
+	//	enable = true;
 		heroSkillButton.interactable = enable;
 	}
 
@@ -3224,7 +3232,9 @@ public class GameController : MonoBehaviour {
 		CollectLevelAward.Experience += exp;
 	}
 
-
+	void OnEducationComplete() {
+		SetTileItemsRenderState(TileItemRenderState.Normal, null);
+	}
 }
 
 

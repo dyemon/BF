@@ -3,6 +3,7 @@
     "Name": "Level 4", 
     "Description": "",
 	"LevelPrice": 3,
+	"UseHeroSkill": false,
 	"FightLocationTypeAsString": "Rayon5",
 	 "TileItemDropPercent": [20, 20, 20, 20, 20],
 

@@ -11,6 +11,12 @@ public class EducationStep {
 	public string Description;
 	public bool ShowCloseButton = false;
 	public Vector2 DescriptionOffset;
+	public Vector2 ArrowOffset;
+	public string ArrowGameObjectName;
+	public float ArrowAngle;
+	public bool ArrowGameObjectIsUI = true;
+	public bool StartNextStepOnNext = false;
+	public bool NextOnClickTargetButton = false;
 
 	public Vector2[] Positions1;
 	public Vector2[] Positions2;
@@ -47,6 +53,9 @@ public class EducationStep {
 
 	public bool IsShowHand() {
 		return Positions1 != null && Positions1.Length > 0;
+	}
+	public bool IsShowArrow() {
+		return !string.IsNullOrEmpty(ArrowGameObjectName);
 	}
 
 	public Vector2 GetStartHandPosition() {

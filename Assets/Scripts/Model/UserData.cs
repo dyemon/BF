@@ -70,7 +70,7 @@ public class UserData {
 		assets.Add(new UserAssetData(UserAssetType.Energy, 20));
 		assets.Add(new UserAssetData(UserAssetType.Ring, 10));
 		assets.Add(new UserAssetData(UserAssetType.Star, 0));
-		assets.Add(new UserAssetData(UserAssetType.Mobile, 0));
+		assets.Add(new UserAssetData(UserAssetType.Mobile, 20));
 
 		StartTimestamp = DateTimeUtill.ConvertToUnixTimestamp(DateTime.Now);
 		LastSavedTimestamp = StartTimestamp;

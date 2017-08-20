@@ -26,4 +26,8 @@ public class EducationData {
 	public void Next() {
 		index++;
 	}
+
+	public void Reset() {
+		index = 0;
+	}
 }

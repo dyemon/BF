@@ -11,6 +11,8 @@ public class LevelData {
 	public int LevelPrice;
 	public int SuccessCount = 3;
 	public int SlimeRatio;
+	public bool UseHeroSkill = true;
+	public int StartHeroSkillCount = 0;
 	public int[] TileItemDropPercent;
 
 	public FightLocationType FightLocationType;

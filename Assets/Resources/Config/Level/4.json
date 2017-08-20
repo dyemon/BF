@@ -4,6 +4,7 @@
     "Description": "",
 	"LevelPrice": 3,
 	"FightLocationTypeAsString": "Rayon5",
+	"UseHeroSkill": false,
 	 "TileItemDropPercent": [20, 20, 20, 20, 20],
 
 	  "TileData": [{
@@ -238,7 +239,30 @@
 			"Description": "Собирай цепочки, чтобы увеличивать мощность и наносить урон врагу",
 			"DescriptionOffset": {"x": 1.5, "y": 1.5},
 			"TypeAsString": "Collect",
-			"Positions1": [{"x": 1, "y": 3}, {"x": 2, "y": 2}, {"x": 2, "y": 1}, {"x": 2, "y": 0}]
+			"Positions1": [{"x": 1, "y": 3}, {"x": 2, "y": 2}, {"x": 2, "y": 1}, {"x": 2, "y": 0}],
+			"ArrowGameObjectName": "HeroProgressText",
+			"ArrowOffset": {"x": 0, "y": 0.3},
+			"ShowCloseButton": false,
+			"ArrowAngle": -30,
+			"StartNextStepOnNext": false
+		},{
+			"Description": "Урон наносимый врагу равен твоей силе",
+			"DescriptionOffset": {"x": 2, "y": 1.8},
+			"TypeAsString": "Info",
+			"ArrowGameObjectName": "HeroDamageText",
+			"ArrowOffset": {"x": 0, "y": -0.1},
+			"ShowCloseButton": true,
+			"ArrowAngle": 200,
+			"StartNextStepOnNext": true
+		},{
+			"Description": "Не забывай следить за своим здоровьем",
+			"DescriptionOffset": {"x": 2, "y": 1.8},
+			"TypeAsString": "Info",
+			"ArrowGameObjectName": "HeroHealthText",
+			"ArrowOffset": {"x": 0, "y": -0.1},
+			"ShowCloseButton": true,
+			"ArrowAngle": 200,
+			"StartNextStepOnNext": true
 		}]
 	}
 

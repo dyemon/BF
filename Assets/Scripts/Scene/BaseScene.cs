@@ -17,7 +17,7 @@ public class BaseScene : MonoBehaviour {
 
 		if(!uData.DailyBonusTaken && canShow && !isCansel) {
 			SceneController.Instance.LoadSceneAdditive(DailyBonusScene.SceneName);
-			Invoke("ShowAdditionScenes", 3);
+		//	Invoke("ShowAdditionScenes", 3);
 			return;
 		}
 

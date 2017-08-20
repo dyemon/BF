@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Common.Animation;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class EducationController : MonoBehaviour {
+	public delegate void OnEducationComplete();
+	public event OnEducationComplete onEducationComplete;
 
 	private EducationData educationData;
 	private EducationStep currentEducationStep;
@@ -13,6 +16,8 @@ public class EducationController : MonoBehaviour {
 	public GameObject Arrow;
 	public GameObject Description;
 	public GameObject CloseButton;
+
+	UnityAction OnTargetClick;
 
 	// Use this for initialization
 	void Start () {
@@ -28,6 +33,14 @@ public class EducationController : MonoBehaviour {
 		}
 
 		educationData = levelData.EducationData; 
+		educationData.Reset();
+
+		AnimatedObject ao = Arrow.GetComponent<AnimatedObject>();
+		ao.AddResize(null, new Vector3(1.1f, 1.1f, 1), 0.3f)
+			.AddResize(null, new Vector3(1f, 1f, 1), 0.3f)
+			.ClearOnStop(false)
+			.Loop(true)
+			.Build();
 	}
 	
 
@@ -41,6 +54,10 @@ public class EducationController : MonoBehaviour {
 		if(currentEducationStep == null) {
 			educationData = null;
 			gameObject.SetActive(false);
+			if(onEducationComplete != null) {
+				onEducationComplete();
+			}
+
 			return;
 		}
 
@@ -49,11 +66,17 @@ public class EducationController : MonoBehaviour {
 		if(currentEducationStep.IsShowHand()) {
 			Hand.SetActive(true);
 			StartHandAnimation();
-		
 		} else {
 			Hand.SetActive(false);
 		}
 			
+		if(currentEducationStep.IsShowArrow()) {
+			Arrow.SetActive(true);
+			ShowArrow();
+		} else {
+			Arrow.SetActive(false);
+		}
+
 		Description.transform.Find("Text").GetComponent<Text>().text = currentEducationStep.Description;
 		Description.transform.position = GetDescriptionPosition();
 
@@ -102,12 +125,17 @@ public class EducationController : MonoBehaviour {
 	}
 
 	public void Next() {
+		bool goNext = currentEducationStep.StartNextStepOnNext;
 		educationData.Next();
 		currentEducationStep = null;
 		AnimatedObject ao = Hand.GetComponent<AnimatedObject>();
 		ao.Stop();
 		ao.ClearAnimations();
+		Arrow.GetComponent<AnimatedObject>().Stop();
 		Show(false);
+		if(goNext) {
+			Invoke("StartStep", 1);
+		}
 	}
 
 	void StartHandAnimation() {
@@ -148,9 +176,56 @@ public class EducationController : MonoBehaviour {
 			Vector2 pos = currentEducationStep.GetStartHandPosition();
 			Vector3 start = GameController.IndexToPosition(pos.x, pos.y);
 			res = Camera.main.WorldToScreenPoint(start + new Vector3(offset.x, offset.y, 0));
+		} else if(currentEducationStep.IsShowArrow()) {
+			GameObject target = GameObject.Find(currentEducationStep.ArrowGameObjectName);
+			Preconditions.NotNull(target, "Can not find gameobject " + currentEducationStep.ArrowGameObjectName);
+			Vector3 pos = target.transform.position;
+			if(currentEducationStep.ArrowGameObjectIsUI) {
+				pos = Camera.main.ScreenToWorldPoint(pos);
+			}
+			res = Camera.main.WorldToScreenPoint(pos + new Vector3(offset.x, offset.y, 0));
 		}
 
 
 		return res ;
+	}
+
+	void ShowArrow() {
+		GameObject target = GameObject.Find(currentEducationStep.ArrowGameObjectName);
+		Preconditions.NotNull(target, "Can not find gameobject " + currentEducationStep.ArrowGameObjectName);
+
+		Vector3 pos = target.transform.position;
+		if(currentEducationStep.ArrowGameObjectIsUI) {
+			pos = Camera.main.ScreenToWorldPoint(pos);
+		}
+		pos += new Vector3(currentEducationStep.ArrowOffset.x, currentEducationStep.ArrowOffset.y, 0);
+		Arrow.transform.position = Camera.main.WorldToScreenPoint(pos);
+		Arrow.transform.rotation = Quaternion.Euler(0, 0, currentEducationStep.ArrowAngle);
+
+		Arrow.GetComponent<AnimatedObject>().Run();
+
+		Button b = target.GetComponent<Button>();
+		if(b != null) {
+			b.interactable = true;
+		}
+
+		if(b != null && currentEducationStep.NextOnClickTargetButton) {
+			b.interactable = true;
+			OnTargetClick = () => {
+				Next();
+				b.onClick.RemoveListener(OnTargetClick);
+			};
+			b.onClick.AddListener(OnTargetClick);
+		}
+	}
+
+	public IList<HeroSkillData> GetHeroSkills() {
+		HeroSkillData[] aSkills = GameResources.Instance.GetGameData().HeroSkillData; 
+		IList<HeroSkillData> res = new List<HeroSkillData>();
+		res.Add(aSkills[8]);
+		res.Add(aSkills[0]);
+		res.Add(aSkills[1]);
+
+		return res;
 	}
 }
