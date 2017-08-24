@@ -29,6 +29,12 @@ public class Account {
 		set { fbUser = value; }
 	}
 
+	public string SocialType {
+		get { 
+			return "fb";
+		}
+	}
+
 	public bool IsLogged {
 		get {return AccessToken != null;}
 	}

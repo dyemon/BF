@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class LoadScene : MonoBehaviour, IFBCallback {
 
+
 	void Awake() {
 		ModalPanels.Init();
 		GameResources.Instance.LoadSettings();
@@ -12,11 +13,17 @@ public class LoadScene : MonoBehaviour, IFBCallback {
 		HttpRequester.Instance.SetBaseUrl(GameResources.Instance.Settings.ReadValue("net", "baseUrl", ""));
 	}
 
+	void OnEnable() {
+		HttpRequester.Instance.AddEventListener(HttpRequester.URL_USER_LOAD, OnSuccessLoadUserData, OnErrorLoadUserData);
+	}
 
+	void OnDisable() {
+		HttpRequester.Instance.RemoveEventListener(HttpRequester.URL_USER_LOAD, OnSuccessLoadUserData, OnErrorLoadUserData);
+	}
 
 	public void OnFBInit() {
 		if(Account.Instance.IsLogged) {
-			GameResources.Instance.LoadUserDataFromServer(Account.Instance.GetUserId(), false, OnSuccessLoadUserData, OnErrorLoadUserData);
+			GameResources.Instance.LoadUserDataFromServer(false);
 		} else {
 			SceneController.Instance.LoadMainScene();
 		}
@@ -41,7 +48,13 @@ public class LoadScene : MonoBehaviour, IFBCallback {
 	}
 
 	public void OnSuccessLoadUserData (HttpResponse response) {
-		GameResources.Instance.MergeUserData(response.FromJson<UserData>());
+		try {
+			UserData uData = response.GetData<UserData>();
+			GameResources.Instance.MergeUserData(uData);
+		} catch (System.Exception e) {
+			Debug.LogError(e);
+		}
+
 		SceneController.Instance.LoadMainScene();
 	}
 

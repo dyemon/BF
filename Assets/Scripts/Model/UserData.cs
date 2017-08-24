@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 [System.Serializable]
 public class UserData {
@@ -44,9 +45,13 @@ public class UserData {
 	private List<UserAssetData> assets = new List<UserAssetData>();
 	[SerializeField]
 	private List<QuestProgressData> quests = new List<QuestProgressData>();
-//	[SerializeField]
-	//public List<UserHeroData> HeroesData = new List<UserHeroData>();
 
+	[SerializeField]
+	private string fbSendedGiftUserIds;
+	[SerializeField]
+	private long fbSendedGiftTimestamp;
+	[SerializeField]
+	private string fbReseivedGiftUserIds;
 
 	public void Init() {
 		
@@ -90,7 +95,7 @@ public class UserData {
 	public void InitOnStart() {
 		InitTimestampOnStart();
 		GameTimers.Instance.Init(this);
-	//		Level = 4;
+			Level = 5;
 		App.InitLocationParams(this);
 	}
 
@@ -196,7 +201,8 @@ public class UserData {
 
 	public long GetCurrentTimestamp() {
 		long now = DateTimeUtill.ConvertToUnixTimestamp(DateTime.Now);
-		return now;// > LastSavedTimestamp ? now : LastSavedTimestamp;
+		LocalData lData = GameResources.Instance.GetLocalData();
+		return now > lData.SrvTime ? now : lData.SrvTime;
 	}
 
 	public void AddInfinityEnergy(int duration) {
@@ -315,5 +321,48 @@ public class UserData {
 		return res;
 	}
 		
+	public string[] GetSendedGiftUserIds() {
+		if(!DateTimeUtill.IsToday(GetCurrentTimestamp(), fbSendedGiftTimestamp)) {
+			fbSendedGiftUserIds = "";
+		}
 
+		return string.IsNullOrEmpty(fbSendedGiftUserIds) ? new String[0] : fbSendedGiftUserIds.Split(',');
+	}
+
+	public void SendGift(List<string> ids) {
+		ids.AddRange(GetSendedGiftUserIds());
+		fbSendedGiftUserIds = string.Join(",", ids.ToArray());
+		fbSendedGiftTimestamp = GetCurrentTimestamp();
+	}
+
+	public void AddReseivedGiftUserIds(string ids) {
+		if(string.IsNullOrEmpty(ids)) {
+			return;
+		}
+
+		if(fbReseivedGiftUserIds != "") {
+			fbReseivedGiftUserIds += ",";
+		}
+
+		fbReseivedGiftUserIds += ids;
+	}
+	/*
+	public void TakeReseivedGift(List<string> ids) {
+		if(string.IsNullOrEmpty(fbReseivedGiftUserIds) || ids == null || ids.Count == 0) {
+			return;
+		}
+
+		string[] rids = fbReseivedGiftUserIds.Split(',');
+		rids = rids.Where((source, index) => !ids.Contains(source)).ToArray();
+		fbReseivedGiftUserIds = string.Join(",", rids);
+		//for(int i = rids.Length - 1; i >= 0; i++) {
+		//	if(ids.Contains(rids[i]) {
+			//	rids.
+		//	}
+	//	}
+	}
+	*/
+	public string[] GetReseivedGiftUserIds() {
+		return string.IsNullOrEmpty(fbReseivedGiftUserIds) ? new string[0] : fbReseivedGiftUserIds.Split(',');
+	}
 }

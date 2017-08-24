@@ -4,6 +4,7 @@ using System.IO;
 using Facebook.Unity;
 using Common.Net;
 using Common.Net.Http;
+using System.Collections.Generic;
 
 public class GameResources {
 	public static GameResources Instance = new GameResources();
@@ -127,11 +128,11 @@ public class GameResources {
 		PlayerPrefs.Save();
 	}
 
-	public void MergeUserData(UserData data) {
+	public bool MergeUserData(UserData data) {
 		Preconditions.NotNull(data, "User data for merge is null");
 		UserData userData = GetUserData();
 
-		if(data.Version > userData.Version) {
+		if(data.Version > userData.Version && data.Level > userData.Level) {
 			data.Init();
 			LocalData lData = GetLocalData();
 			lData.LastLevel = data.Level;
@@ -140,10 +141,12 @@ public class GameResources {
 			data.Merge(userData);
 
 			this.userData = B64X.Encode((JsonUtility.ToJson(data)));
-			SaveUserData(userData, false);
+			SaveUserData(null, false);
+			return true;
 		} else if(data.Version < userData.Version) {
 			SaveUserDataToServer(userData);
 		}
+		return false;
 	}	
 
 	public void SaveUserData(UserData data, bool saveToServer) {
@@ -174,18 +177,15 @@ public class GameResources {
 
 		Preconditions.NotNull(data, "Can not save user data. User data is null");
 
-		HttpRequest request = new HttpRequest().Url(HttpRequester.URL_USER_SAVE)
-			.PostData(JsonUtility.ToJson(data));
-
-		HttpRequester.Instance.Send(request);
-		
+		HttpRequest request = new HttpRequest(HttpRequester.URL_USER_SAVE)
+			.HttpMethod("POST").Param("data", JsonUtility.ToJson(data));
+	
+		HttpRequester.Instance.Send(request);	
 	}
 
-	public void LoadUserDataFromServer(string userId, bool showWaitPanel, HttpRequest.OnSuccess onSuccess, HttpRequest.OnError onError) {
-		HttpRequest request = new HttpRequest().Url(HttpRequester.URL_USER_LOAD)
-			.Success(onSuccess).Error(onError)
-			.ShowWaitPanel(showWaitPanel)
-			.Param("userId", userId);
+	public void LoadUserDataFromServer(bool showWaitPanel) {
+		HttpRequest request = new HttpRequest(HttpRequester.URL_USER_LOAD)
+			.ShowWaitPanel(showWaitPanel);
 
 		HttpRequester.Instance.Send(request);
 	}
@@ -417,5 +417,11 @@ public class GameResources {
 		if(onUpdateInfinityEnergy != null) {
 			onUpdateInfinityEnergy(uData.InfinityEnergyDuration);
 		}
+	}
+
+	public void SendGift(List<string> ids) {
+		UserData uData = GetUserData();
+		uData.SendGift(ids);
+		saveUserDataLocal(uData);
 	}
 }

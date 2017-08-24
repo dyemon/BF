@@ -1,2 +1,2 @@
 [net]
-baseUrl=http://localhost/bf
+baseUrl=http://gametotem.ru

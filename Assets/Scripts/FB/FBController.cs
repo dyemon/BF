@@ -166,8 +166,8 @@ public class FBController : MonoBehaviour {
 			return true;
 		}
 
-		FB.API("/me/invitable_friends?fields=id,name,picture.width(130).height(130)&limit=100", HttpMethod.GET, FriendsListCallback);
-	//	FB.API("/me/friends?fields=id,name,picture.width(130).height(130)&limit=100", HttpMethod.GET, FriendsListCallback);
+	//	FB.API("/me/invitable_friends?fields=id,name,picture.width(130).height(130)&limit=100", HttpMethod.GET, FriendsListCallback);
+		FB.API("/me/friends?fields=id,name,picture.width(130).height(130)&limit=100", HttpMethod.GET, FriendsListCallback);
 	//	FB.API("/me/apprequests", HttpMethod.GET, FriendsListCallback);
 
 		return false;
@@ -230,7 +230,7 @@ public class FBController : MonoBehaviour {
 			return false;
 		}
 
-		Debug.Log(result.RawResult);
+	//	Debug.Log(result.RawResult);
 
 		FBUser user = new FBUser(result.ResultDictionary);
 		Account.Instance.FBUser = user;

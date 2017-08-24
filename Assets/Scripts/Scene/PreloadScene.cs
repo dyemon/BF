@@ -8,8 +8,5 @@ public class PreloadScene : MonoBehaviour {
 	void Start() {
 		SceneController.Instance.LoadScene(NextScene);
 	}
-
-	void OnDisable() {
-		GameResources.Instance.SaveUserData(null, true);
-	}
+		
 }

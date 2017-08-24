@@ -20,6 +20,10 @@ public class ModalPanels {
 	}
 
 	public static ModalPanel Show(ModalPanelName name, string text = null, UnityAction yesEvent = null, UnityAction noEvent = null, UnityAction closeEvent = null) {
+		if(name == ModalPanelName.MessagePanel) {
+			name = ModalPanelName.ErrorPanel;
+		}
+
 		Preconditions.Check(panels.ContainsKey(name), "Can not find panel {0}", name.ToString());
 		ModalPanel panel = panels[name];
 		panel.Show(text, yesEvent, noEvent, closeEvent);

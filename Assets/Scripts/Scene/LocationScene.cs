@@ -237,4 +237,9 @@ public class LocationScene : BaseScene {
 			UpdateFortunaAttention();
 		}
 	}
+
+	public void OnClose() {
+		GameResources.Instance.SaveUserData(null, true);
+		SceneController.Instance.LoadSceneAsync(CityScene.SceneName);
+	}
 }
