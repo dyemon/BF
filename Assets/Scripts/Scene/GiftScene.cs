@@ -239,6 +239,7 @@ public class GiftScene : WindowScene, IFBCallback {
 	void OnSuccessSendGift(HttpResponse response) {
 		GameResources.Instance.UpdateSendedGift(sendedIds);
 		save = true;
+		sendedIds.Clear();
 		fbController.RequestFriendsList();
 	}
 
@@ -261,5 +262,8 @@ public class GiftScene : WindowScene, IFBCallback {
 	}
 
 	void OnTakeGift(GameObject friendGO) {
+		string id = friendGO.name;
+		GameResources.Instance.TakeGift(id);
+		Destroy(friendGO);
 	}
 }

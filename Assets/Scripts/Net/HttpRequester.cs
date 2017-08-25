@@ -94,7 +94,7 @@ public class HttpRequester : MonoBehaviour {
 		}
 		Debug.Log("Send http " + request.GetUrl() + " Data: " + request.GetQueryString());
 
-	//	StartCoroutine(SendInternal(request));
+		StartCoroutine(SendInternal(request));
 	}
 
 	void AddAuthParams(HttpRequest request) {

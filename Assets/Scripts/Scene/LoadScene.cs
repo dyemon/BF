@@ -9,6 +9,7 @@ public class LoadScene : MonoBehaviour, IFBCallback {
 	void Awake() {
 		ModalPanels.Init();
 		GameResources.Instance.LoadSettings();
+		GameResources.Instance.AddEventListeners();
 
 		HttpRequester.Instance.SetBaseUrl(GameResources.Instance.Settings.ReadValue("net", "baseUrl", ""));
 	}

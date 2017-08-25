@@ -34,6 +34,9 @@ public class GameResources {
 	private string userData;
 
 	public GameResources() {
+	}
+
+	public void AddEventListeners() {
 		HttpRequester.Instance.AddEventListener(HttpRequester.URL_CHECK_GIFT, OnCheckGiftHttp);
 	}
 
@@ -433,7 +436,6 @@ public class GameResources {
 	}
 
 	public bool CheckGift() {
-		return false;
 		bool updated = ParametersController.Instance.GetBool(ParametersController.RECEIVED_GIFT_CACHE_UPDATED);
 		if(updated) {
 			return false;
@@ -441,18 +443,18 @@ public class GameResources {
 		ModalPanels.Show(ModalPanelName.MessagePanel, "Update gift received");
 		ParametersController.Instance.SetParameter(ParametersController.RECEIVED_GIFT_CACHE_UPDATED, true);
 
-		HttpRequest request = new HttpRequest(HttpRequester.URL_SEND_GIFT); 
+		HttpRequest request = new HttpRequest(HttpRequester.URL_CHECK_GIFT); 
 		HttpRequester.Instance.Send(request);
 		return true;
 	}
 
 	void OnCheckGiftHttp(HttpResponse response) {
-		ParametersController.Instance.SetParameter(ParametersController.RECEIVED_GIFT_CACHE_UPDATED, true);
-
 		string data = response.GetParameter("data");
 		if(string.IsNullOrEmpty(data)) {
 			return;
 		}
+		data = data.Replace("[", string.Empty);
+		data = data.Replace("]", string.Empty);
 
 		UserData uData = GetUserData();
 		uData.AddReceivedGiftUserIds(data);
@@ -463,5 +465,17 @@ public class GameResources {
 		}
 
 		GameTimers.Instance.StarGiftCach();
+	}
+
+	public void TakeGift(string id) {
+		UserData uData = GetUserData();
+		uData.TakeGift(id);
+		saveUserDataLocal(uData);
+	}
+		
+	public void TakeAllGifts() {
+		UserData uData = GetUserData();
+		uData.TakeAllGifts();
+		saveUserDataLocal(uData);
 	}
 }

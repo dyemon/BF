@@ -95,7 +95,11 @@ public class UserData {
 	public void InitOnStart() {
 		InitTimestampOnStart();
 		GameTimers.Instance.Init(this);
-			Level = 5;
+		fbReceivedGiftUserIds = "";
+//		for(int i = 0; i < 1000; i++) {
+//			fbReceivedGiftUserIds += "152536263325262,";
+//		}
+		//	Level = 5;
 		App.InitLocationParams(this);
 	}
 
@@ -330,8 +334,11 @@ public class UserData {
 	}
 
 	public void UpdateSendedGift(List<string> ids) {
-		ids.AddRange(GetSendedGiftUserIds());
-		fbSendedGiftUserIds = string.Join(",", ids.ToArray());
+		string[] newIds = GetSendedGiftUserIds().Concat(ids).ToArray();
+		if(newIds.Length > 400) {
+			newIds = newIds.Take(0).Concat(newIds.Skip(newIds.Length - 400)).ToArray();
+		}
+		fbSendedGiftUserIds = string.Join(",", newIds);
 		fbSendedGiftTimestamp = GetCurrentTimestamp();
 	}
 
@@ -345,23 +352,30 @@ public class UserData {
 		}
 
 		fbReceivedGiftUserIds += ids;
+		if(fbReceivedGiftUserIds.Length > 2000) {
+			fbReceivedGiftUserIds = fbReceivedGiftUserIds.Substring(0, 2000);
+		}
 	}
-	/*
-	public void TakeReseivedGift(List<string> ids) {
-		if(string.IsNullOrEmpty(fbReseivedGiftUserIds) || ids == null || ids.Count == 0) {
+
+	public void TakeGift(string id) {
+		if(string.IsNullOrEmpty(fbReceivedGiftUserIds) || string.IsNullOrEmpty(id)) {
 			return;
 		}
 
-		string[] rids = fbReseivedGiftUserIds.Split(',');
-		rids = rids.Where((source, index) => !ids.Contains(source)).ToArray();
-		fbReseivedGiftUserIds = string.Join(",", rids);
-		//for(int i = rids.Length - 1; i >= 0; i++) {
-		//	if(ids.Contains(rids[i]) {
-			//	rids.
-		//	}
-	//	}
+		string[] rids = fbReceivedGiftUserIds.Split(',');
+		int numIndex = Array.IndexOf(rids, id);
+		if(numIndex < 0) {
+			return;
+		}
+
+		rids = rids.Where((val, idx) => idx != numIndex).ToArray();
+		fbReceivedGiftUserIds = string.Join(",", rids);
 	}
-	*/
+
+	public void TakeAllGifts() {
+		fbReceivedGiftUserIds = "";
+	}
+
 	public string[] GetReceivedGiftUserIds() {
 		return string.IsNullOrEmpty(fbReceivedGiftUserIds) ? new string[0] : fbReceivedGiftUserIds.Split(',');
 	}
