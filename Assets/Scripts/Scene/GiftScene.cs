@@ -7,6 +7,10 @@ using Common.Net.Http;
 using System.Linq;
 
 public class GiftScene : WindowScene, IFBCallback {
+	public enum Type {
+		Send, Receive
+	}
+
 	public const string SceneName = "Gift";
 
 	public Toggle SelectAll;
@@ -16,7 +20,15 @@ public class GiftScene : WindowScene, IFBCallback {
 	public InputField Filter;
 	public ScrollRect FriendsScrollRect;
 
+	public GameObject SendButton;
+	public GameObject ReceiveButton;
+	public GameObject SendToggle;
+	public GameObject ReceiveToggle;
+	public Text Title;
+
 	private string friendItemTag = "FriendItem";
+
+	private Type currentSceneType = Type.Send;
 
 	public static List<object> Friends;
 
@@ -26,17 +38,30 @@ public class GiftScene : WindowScene, IFBCallback {
 
 	void OnEnable() {
 		HttpRequester.Instance.AddEventListener(HttpRequester.URL_SEND_GIFT, OnSuccessSendGift);
+		GameResources.Instance.onCheckGift += OnCheckGift;
 		save = false;
 	}
 
+
+
 	void OnDisable() {
 		HttpRequester.Instance.RemoveEventListener(HttpRequester.URL_SEND_GIFT, OnSuccessSendGift);
+		GameResources.Instance.onCheckGift -= OnCheckGift;
 		if(save) {
 			GameResources.Instance.SaveUserData(null, false);
 		}
 	}
 
+	void OnCheckGift (string[] ids) {
+		fbController.RequestFriendsList();
+	}
+
 	void Start () {
+		if(SceneController.Instance != null) {
+			currentSceneType = (Type)SceneController.Instance.GetParameter(SceneName);
+		}
+
+		UpdateSceneItems();
 		fbController.RequestFriendsList();
 	//	OnFriendsRequest(null);
 	}
@@ -54,6 +79,10 @@ public class GiftScene : WindowScene, IFBCallback {
 	}
 
 	public void OnFriendsRequest(IList<FBUser> friends) {
+		if(currentSceneType == Type.Receive && GameResources.Instance.CheckGift()) {
+			return;
+		}
+
 		UnityUtill.DestroyByTag(FriendsList.transform, friendItemTag);
 		FriendsScrollRect.verticalNormalizedPosition = 1;
 
@@ -84,7 +113,7 @@ public class GiftScene : WindowScene, IFBCallback {
 		return;
 		*/
 		UserData uData = GameResources.Instance.GetUserData();
-		string[] ids = uData.GetSendedGiftUserIds();
+		string[] ids = currentSceneType == Type.Send?  uData.GetSendedGiftUserIds() : uData.GetReceivedGiftUserIds();
 		int i = 0;
 		foreach(FBUser user in friends) {
  
@@ -96,6 +125,8 @@ public class GiftScene : WindowScene, IFBCallback {
 				break;
 			}
 		}
+
+
 	}
 
 	bool AddUser(FBUser user, string[] ids) {
@@ -104,7 +135,7 @@ public class GiftScene : WindowScene, IFBCallback {
 		if(!string.IsNullOrEmpty(filter) && user.Name.IndexOf(filter, System.StringComparison.OrdinalIgnoreCase) < 0) {
 			return false;
 		}
-		if(ids.Contains(user.Id)) {
+		if(currentSceneType == Type.Send && ids.Contains(user.Id)) {
 			return false;
 		}
 	
@@ -133,12 +164,24 @@ public class GiftScene : WindowScene, IFBCallback {
 		}
 
 		GameObject mark = friendGO.transform.Find("Mark").gameObject;
-		friendGO.GetComponent<Button>().onClick.AddListener(() => {
-			mark.SetActive(!mark.activeSelf);
-		});
-		if(SelectAll.isOn) {
-			mark.SetActive(true);
+		mark.SetActive(currentSceneType == Type.Send);
+
+		GameObject gift = friendGO.transform.Find("Gift").gameObject;
+		gift.SetActive(currentSceneType == Type.Receive);
+	
+		if(currentSceneType == Type.Send) {
+			friendGO.GetComponent<Button>().onClick.AddListener(() => {
+				mark.SetActive(!mark.activeSelf);
+			});
+			if(SelectAll.isOn) {
+				mark.SetActive(true);
+			}
+		} else {
+			friendGO.GetComponent<Button>().onClick.AddListener(() => {
+				OnTakeGift(friendGO);
+			});
 		}
+
 
 		return true;
 	}
@@ -194,8 +237,29 @@ public class GiftScene : WindowScene, IFBCallback {
 	}
 
 	void OnSuccessSendGift(HttpResponse response) {
-		GameResources.Instance.SendGift(sendedIds);
+		GameResources.Instance.UpdateSendedGift(sendedIds);
 		save = true;
 		fbController.RequestFriendsList();
+	}
+
+	void UpdateSceneItems() {
+		bool isSend = currentSceneType == Type.Send;
+
+		SelectAll.gameObject.SetActive(isSend);
+		SendButton.SetActive(isSend);
+		ReceiveButton.SetActive(!isSend);
+		SendToggle.SetActive(!isSend);
+		ReceiveToggle.SetActive(isSend);
+
+		Title.text = isSend ? "Отправить подарок" : "Получить подарок";
+	}
+
+	public void ToggleSceneType(bool isSend) {
+		currentSceneType = isSend ? Type.Send : Type.Receive;
+		UpdateSceneItems();
+		fbController.RequestFriendsList();
+	}
+
+	void OnTakeGift(GameObject friendGO) {
 	}
 }

@@ -20,7 +20,7 @@ public class HeroSkillScene : WindowScene {
 
 	// Use this for initialization
 	void Start () {
-		if(SceneControllerHelper.instance) {
+		if(SceneControllerHelper.instance != null) {
 			skills = (IList<HeroSkillData>)SceneControllerHelper.instance.GetParameter(SceneName);
 		} else {
 			HeroSkillData[] aSkills = GameResources.Instance.GetGameData().HeroSkillData; 

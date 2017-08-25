@@ -10,6 +10,7 @@ public class GameTimers {
 	public const string INFINITY_ENERGY_TIMER_CODE = "INFINITY_ENERGY_TIMER_CODE";
 	public const string FORTUNA_TIMER_CODE = "FORTUNA_TIMER_CODE";
 	public const string CLEARFRENDSCACHE_TIMER_CODE = "CLEARFRENDSCACHE_TIMER_CODE";
+	public const string GIFTCACHE_TIMER_CODE = "GIFTCACHE_TIMER_CODE";
 
 	public delegate void OnTimerFortuna(int timerCount);
 	public event OnTimerFortuna onTimerFortuna;
@@ -65,6 +66,15 @@ public class GameTimers {
 		t.Start();
 	}
 
+	public void StarGiftCach() {
+		Timer t = TimerController.Instance.GetTimer(GIFTCACHE_TIMER_CODE);
+		if(t == null) {
+			t = TimerController.Instance.AddTimer(GIFTCACHE_TIMER_CODE).SetPeriod(60 * 1)
+				.SetCount(1);
+		}
+		t.Start();
+	}
+
 	public void StartFortunaTimer(uint timerCount) {
 		Timer t = TimerController.Instance.GetTimer(FORTUNA_TIMER_CODE);
 		if(t == null) {
@@ -113,12 +123,20 @@ public class GameTimers {
 		//	Debug.Log("----------- Clear friends cache");
 			FBController.ClearFriendsCache();
 			break;
+		case GIFTCACHE_TIMER_CODE:
+			Debug.Log("Timer ----------- GIFTCACHE_TIMER_CODE");
+			ParametersController.Instance.SetParameter(ParametersController.RECEIVED_GIFT_CACHE_UPDATED, false);
+			break;
+		
 		}
+
 	}
 
 	public void Stop() {
 		TimerController.Instance.StopAll();
 		FBController.ClearFriendsCache();
+		ParametersController.Instance.SetParameter(ParametersController.RECEIVED_GIFT_CACHE_UPDATED, false);
+
 		TimerController.Instance.onTimer -= OnTimer;
 		init = false;
 	}

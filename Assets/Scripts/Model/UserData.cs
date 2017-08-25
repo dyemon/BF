@@ -51,7 +51,7 @@ public class UserData {
 	[SerializeField]
 	private long fbSendedGiftTimestamp;
 	[SerializeField]
-	private string fbReseivedGiftUserIds;
+	private string fbReceivedGiftUserIds;
 
 	public void Init() {
 		
@@ -329,22 +329,22 @@ public class UserData {
 		return string.IsNullOrEmpty(fbSendedGiftUserIds) ? new String[0] : fbSendedGiftUserIds.Split(',');
 	}
 
-	public void SendGift(List<string> ids) {
+	public void UpdateSendedGift(List<string> ids) {
 		ids.AddRange(GetSendedGiftUserIds());
 		fbSendedGiftUserIds = string.Join(",", ids.ToArray());
 		fbSendedGiftTimestamp = GetCurrentTimestamp();
 	}
 
-	public void AddReseivedGiftUserIds(string ids) {
+	public void AddReceivedGiftUserIds(string ids) {
 		if(string.IsNullOrEmpty(ids)) {
 			return;
 		}
 
-		if(fbReseivedGiftUserIds != "") {
-			fbReseivedGiftUserIds += ",";
+		if(fbReceivedGiftUserIds != "") {
+			fbReceivedGiftUserIds += ",";
 		}
 
-		fbReseivedGiftUserIds += ids;
+		fbReceivedGiftUserIds += ids;
 	}
 	/*
 	public void TakeReseivedGift(List<string> ids) {
@@ -362,7 +362,7 @@ public class UserData {
 	//	}
 	}
 	*/
-	public string[] GetReseivedGiftUserIds() {
-		return string.IsNullOrEmpty(fbReseivedGiftUserIds) ? new string[0] : fbReseivedGiftUserIds.Split(',');
+	public string[] GetReceivedGiftUserIds() {
+		return string.IsNullOrEmpty(fbReceivedGiftUserIds) ? new string[0] : fbReceivedGiftUserIds.Split(',');
 	}
 }

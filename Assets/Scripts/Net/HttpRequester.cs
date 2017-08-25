@@ -10,6 +10,7 @@ public class HttpRequester : MonoBehaviour {
 	public static string URL_USER_LOAD = "/chotkiy/userGet";
 	public static string URL_USER_SAVE = "/chotkiy/userSave";
 	public static string URL_SEND_GIFT = "/chotkiy/sendGift";
+	public static string URL_CHECK_GIFT = "/chotkiy/checkGifts";
 
 	public static HttpRequester Instance;
 	private string baseUrl = null;
@@ -93,7 +94,7 @@ public class HttpRequester : MonoBehaviour {
 		}
 		Debug.Log("Send http " + request.GetUrl() + " Data: " + request.GetQueryString());
 
-		StartCoroutine(SendInternal(request));
+	//	StartCoroutine(SendInternal(request));
 	}
 
 	void AddAuthParams(HttpRequest request) {

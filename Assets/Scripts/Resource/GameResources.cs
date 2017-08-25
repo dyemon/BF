@@ -21,6 +21,9 @@ public class GameResources {
 	public delegate void OnCompleteQuest(QuestItem quest);
 	public event OnCompleteQuest onCompleteQuest;
 
+	public delegate void OnCheckGift(string[] ids);
+	public event OnCheckGift onCheckGift;
+
 	private int currentLevelId = 0;
 	private LevelData currentLevelData = null;
 	private GameData gameData = null;
@@ -29,6 +32,10 @@ public class GameResources {
 	private MapData mapData;
 
 	private string userData;
+
+	public GameResources() {
+		HttpRequester.Instance.AddEventListener(HttpRequester.URL_CHECK_GIFT, OnCheckGiftHttp);
+	}
 
 	private INIParser settings;
 	public INIParser Settings {
@@ -419,9 +426,42 @@ public class GameResources {
 		}
 	}
 
-	public void SendGift(List<string> ids) {
+	public void UpdateSendedGift(List<string> ids) {
 		UserData uData = GetUserData();
-		uData.SendGift(ids);
+		uData.UpdateSendedGift(ids);
 		saveUserDataLocal(uData);
+	}
+
+	public bool CheckGift() {
+		return false;
+		bool updated = ParametersController.Instance.GetBool(ParametersController.RECEIVED_GIFT_CACHE_UPDATED);
+		if(updated) {
+			return false;
+		}
+		ModalPanels.Show(ModalPanelName.MessagePanel, "Update gift received");
+		ParametersController.Instance.SetParameter(ParametersController.RECEIVED_GIFT_CACHE_UPDATED, true);
+
+		HttpRequest request = new HttpRequest(HttpRequester.URL_SEND_GIFT); 
+		HttpRequester.Instance.Send(request);
+		return true;
+	}
+
+	void OnCheckGiftHttp(HttpResponse response) {
+		ParametersController.Instance.SetParameter(ParametersController.RECEIVED_GIFT_CACHE_UPDATED, true);
+
+		string data = response.GetParameter("data");
+		if(string.IsNullOrEmpty(data)) {
+			return;
+		}
+
+		UserData uData = GetUserData();
+		uData.AddReceivedGiftUserIds(data);
+		SaveUserData(null, false);
+
+		if(onCheckGift != null) {
+			onCheckGift(uData.GetReceivedGiftUserIds());
+		}
+
+		GameTimers.Instance.StarGiftCach();
 	}
 }

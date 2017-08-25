@@ -191,4 +191,12 @@ public class FBLoggedScene : WindowScene, IFBCallback {
 			QuestInfo.GetComponent<CanvasGroup>().alpha = 1;
 		}
 	}
+
+	public void OnGiftSend() {
+		SceneController.Instance.LoadSceneAdditive(GiftScene.SceneName, GiftScene.Type.Send);
+	}
+	public void OnGiftReseive() {
+		SceneController.Instance.LoadSceneAdditive(GiftScene.SceneName, GiftScene.Type.Receive);
+	}
+
 }
