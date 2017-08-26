@@ -27,7 +27,7 @@ public class AppStatusController : MonoBehaviour {
 			GameResources.Instance.SaveUserData(uData, false);
 			ActivateFB();
 		} else {
-			GameResources.Instance.SaveUserData(uData, false);
+			GameResources.Instance.SaveUserData(uData, true);
 			GameTimers.Instance.Stop();
 		}
 	}

@@ -179,7 +179,7 @@ public class FBController : MonoBehaviour {
 			return;
 		}
 
-		ModalPanels.Show(ModalPanelName.ErrorPanel, "Update friends cache");
+	//	ModalPanels.Show(ModalPanelName.ErrorPanel, "Update friends cache");
 
 		Debug.Log("hi= " + result.RawResult);
 		object dataList;

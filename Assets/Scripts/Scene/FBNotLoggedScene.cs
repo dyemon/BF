@@ -49,6 +49,7 @@ public class FBNotLoggedScene : WindowScene, IFBCallback {
 	public void OnSuccessLoadUserData (HttpResponse response) {
 		try {
 			UserData uData = response.GetData<UserData>();
+			GameResources.Instance.CheckGift();
 			if(GameResources.Instance.MergeUserData(uData)) {
 				ModalPanels.Show(ModalPanelName.MessagePanel,
 					string.Format("Данные обновлены. Выш текущий уровень {0}", uData.Level));

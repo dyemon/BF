@@ -7,4 +7,5 @@ public class AwardItem {
 	public UserAssetType Type;
 	public string TypeAsString;
 	public int Value;
+	public int Experience;
 }

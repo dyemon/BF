@@ -80,7 +80,7 @@ public class HeroSkillScene : WindowScene {
 		Close(skill);
 	}
 
-	void OnUpdateUserAssets(UserAssetType type, int value) {
+	void OnUpdateUserAssets(UserAssetType? type, int value) {
 		UserData userData = GameResources.Instance.GetUserData();
 		MoneyAssetText.text = userData.GetAsset(UserAssetType.Money).Value.ToString();
 		RingAssetText.text = userData.GetAsset(UserAssetType.Ring).Value.ToString();

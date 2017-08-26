@@ -129,12 +129,16 @@ public class UserAssetsPanel : MonoBehaviour {
 		LayoutRebuilder.ForceRebuildLayoutImmediate(item.GetComponent<RectTransform>());
 	}
 
-	void OnUpdateUserAssets(UserAssetType type, int value) {
+	void OnUpdateUserAssets(UserAssetType? type, int value) {
 		if(disableUpdate) {
 			return;
 		}
 
-		UpdateUserAsset(type, value);
+		if(type == null) {
+			UpdateUserAssets();
+		} else {
+			UpdateUserAsset(type.Value, value);
+		}
 	}
 
 	public bool UpdateInfinityEnergy() {

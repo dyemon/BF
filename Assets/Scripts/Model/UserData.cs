@@ -95,7 +95,7 @@ public class UserData {
 	public void InitOnStart() {
 		InitTimestampOnStart();
 		GameTimers.Instance.Init(this);
-		fbReceivedGiftUserIds = "";
+	
 //		for(int i = 0; i < 1000; i++) {
 //			fbReceivedGiftUserIds += "152536263325262,";
 //		}
@@ -378,5 +378,12 @@ public class UserData {
 
 	public string[] GetReceivedGiftUserIds() {
 		return string.IsNullOrEmpty(fbReceivedGiftUserIds) ? new string[0] : fbReceivedGiftUserIds.Split(',');
+	}
+
+	public void RemoveReceivedGiftIds(IList<string> ids) {
+		string[] newIds = GetReceivedGiftUserIds().
+			Where((val, idx) => !ids.Contains(val)).ToArray();
+
+		fbReceivedGiftUserIds = string.Join(",", newIds);
 	}
 }

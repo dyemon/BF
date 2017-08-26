@@ -34,7 +34,7 @@ public class LocationScene : BaseScene {
 		if(SceneControllerHelper.instance != null) {
 			SceneControllerHelper.instance.onUnloadScene += OnUnloadScene;
 		}
-
+		GameResources.Instance.onCheckGift += OnCheckGift;
 	}
 
 	void OnDisable() {
@@ -45,6 +45,7 @@ public class LocationScene : BaseScene {
 		if(SceneControllerHelper.instance != null) {
 			SceneControllerHelper.instance.onUnloadScene -= OnUnloadScene;
 		}
+		GameResources.Instance.onCheckGift -= OnCheckGift;
 	}
 
 	void Start () {
@@ -178,6 +179,8 @@ public class LocationScene : BaseScene {
 	void UpdateGiftButton() {
 		if(Account.Instance.IsLogged) {
 			GiftButton.SetActive(true);
+			GameObject attention = GiftButton.transform.Find("Attention").gameObject;
+			attention.SetActive(GameResources.Instance.GetUserData().GetReceivedGiftUserIds().Length > 0);
 		} else {
 			GiftButton.SetActive(false);
 		}
@@ -235,11 +238,17 @@ public class LocationScene : BaseScene {
 			UpdateQuestAttention();
 		} else if(name == FortunaScene.SceneName) {
 			UpdateFortunaAttention();
+		} else if(name == GiftScene.SceneName) {
+			UpdateGiftButton();
 		}
 	}
 
 	public void OnClose() {
 		GameResources.Instance.SaveUserData(null, true);
 		SceneController.Instance.LoadSceneAsync(CityScene.SceneName);
+	}
+
+	void OnCheckGift (string[] ids) {
+		UpdateGiftButton();
 	}
 }

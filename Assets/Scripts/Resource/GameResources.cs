@@ -9,7 +9,7 @@ using System.Collections.Generic;
 public class GameResources {
 	public static GameResources Instance = new GameResources();
 
-	public delegate void OnUpdateUserAsset(UserAssetType type, int value);
+	public delegate void OnUpdateUserAsset(UserAssetType? type, int value);
 	public event OnUpdateUserAsset onUpdateUserAsset;
 
 	public delegate void OnUpdateInfinityEnergy(int value);
@@ -32,6 +32,7 @@ public class GameResources {
 	private MapData mapData;
 
 	private string userData;
+	private long prevVersion = -1;
 
 	public GameResources() {
 	}
@@ -142,7 +143,7 @@ public class GameResources {
 		Preconditions.NotNull(data, "User data for merge is null");
 		UserData userData = GetUserData();
 
-		if(data.Version > userData.Version && data.Level > userData.Level) {
+		if(data.Version > userData.Version && data.Level >= userData.Level) {
 			data.Init();
 			LocalData lData = GetLocalData();
 			lData.LastLevel = data.Level;
@@ -162,17 +163,16 @@ public class GameResources {
 	public void SaveUserData(UserData data, bool saveToServer) {
 		if(data == null) {
 			data = GetUserData();
-			data.UpdateLastSaved();
-		} else {
-			data.UpdateLastSaved();
-			saveUserDataLocal(data);
-		}
+		} 
+			
+		data.UpdateLastSaved();
+		data.Version++;
+		saveUserDataLocal(data);
 
 		if(saveToServer) {
 			SaveUserDataToServer(data);
 		}
 			
-		data.Version++;
 		string json = JsonUtility.ToJson(data);
 		string encData = StringCipher.Encrypt(json, getKey());
 		PlayerPrefs.SetString("data", encData);
@@ -186,6 +186,11 @@ public class GameResources {
 		}
 
 		Preconditions.NotNull(data, "Can not save user data. User data is null");
+
+		if(prevVersion == data.Version) {
+			return;
+		}
+		prevVersion = data.Version;
 
 		HttpRequest request = new HttpRequest(HttpRequester.URL_USER_SAVE)
 			.HttpMethod("POST").Param("data", JsonUtility.ToJson(data));
@@ -221,6 +226,41 @@ public class GameResources {
 		return true;
 	}
 
+	public bool ChangeUserAsset(IList<AwardItem> awards) {
+		UserData data = GetUserData();
+		bool updateExp = false;
+		bool updateAssets = false;
+
+		foreach(AwardItem item in awards) {
+			if(item.Experience > 0) {
+				data.Experience += item.Experience;
+				updateExp = true;
+			} else {
+				if(item.Type == UserAssetType.Energy && item.Value < 0 && data.InfinityEnergyDuration > 0) {
+					continue;
+				}
+				UserAssetData asset = data.GetAsset(item.Type);
+				int newVal = asset.Value + item.Value;
+				if(newVal < 0) {
+					return false;
+				}
+				asset.Value = newVal;
+				updateAssets = true;
+			}
+		}
+
+		saveUserDataLocal(data);
+
+		if(updateAssets && onUpdateUserAsset != null) {
+			onUpdateUserAsset(null, 0);
+		}
+
+		if(updateExp && onUpdateExperience != null) {
+			onUpdateExperience(data.Experience);
+		}
+
+		return true;
+	}
 
 	public bool ChangeUserAsset(UserData data, UserAssetType type, int value) {
 		if(type == UserAssetType.Energy && value < 0 && data.InfinityEnergyDuration > 0) {
@@ -440,7 +480,7 @@ public class GameResources {
 		if(updated) {
 			return false;
 		}
-		ModalPanels.Show(ModalPanelName.MessagePanel, "Update gift received");
+	//	ModalPanels.Show(ModalPanelName.MessagePanel, "Update gift received");
 		ParametersController.Instance.SetParameter(ParametersController.RECEIVED_GIFT_CACHE_UPDATED, true);
 
 		HttpRequest request = new HttpRequest(HttpRequester.URL_CHECK_GIFT); 
@@ -455,10 +495,10 @@ public class GameResources {
 		}
 		data = data.Replace("[", string.Empty);
 		data = data.Replace("]", string.Empty);
-
+		data = "108656269813647";
 		UserData uData = GetUserData();
 		uData.AddReceivedGiftUserIds(data);
-		SaveUserData(null, false);
+		SaveUserData(uData, false);
 
 		if(onCheckGift != null) {
 			onCheckGift(uData.GetReceivedGiftUserIds());
@@ -476,6 +516,12 @@ public class GameResources {
 	public void TakeAllGifts() {
 		UserData uData = GetUserData();
 		uData.TakeAllGifts();
+		saveUserDataLocal(uData);
+	}
+
+	public void RemoveReceivedGiftIds(IList<string> ids) {
+		UserData uData = GetUserData();
+		uData.RemoveReceivedGiftIds(ids);
 		saveUserDataLocal(uData);
 	}
 }

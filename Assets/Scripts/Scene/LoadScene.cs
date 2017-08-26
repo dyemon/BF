@@ -51,7 +51,12 @@ public class LoadScene : MonoBehaviour, IFBCallback {
 	public void OnSuccessLoadUserData (HttpResponse response) {
 		try {
 			UserData uData = response.GetData<UserData>();
-			GameResources.Instance.MergeUserData(uData);
+			GameResources.Instance.CheckGift();
+			if(GameResources.Instance.MergeUserData(uData)) {
+				ModalPanels.Show(ModalPanelName.MessagePanel,
+					string.Format("Данные обновлены. Выш текущий уровень {0}", uData.Level));	
+				SceneController.Instance.LoadSceneAsync(LocationScene.SceneName);
+			}
 		} catch (System.Exception e) {
 			Debug.LogError(e);
 		}

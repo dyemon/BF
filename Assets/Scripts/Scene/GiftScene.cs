@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Facebook.Unity;
 using Common.Net.Http;
 using System.Linq;
+using Common.Animation;
 
 public class GiftScene : WindowScene, IFBCallback {
 	public enum Type {
@@ -12,6 +13,8 @@ public class GiftScene : WindowScene, IFBCallback {
 	}
 
 	public const string SceneName = "Gift";
+
+	public GameObjectResources GOResources;
 
 	public Toggle SelectAll;
 	public GameObject FriendItem;
@@ -25,6 +28,8 @@ public class GiftScene : WindowScene, IFBCallback {
 	public GameObject SendToggle;
 	public GameObject ReceiveToggle;
 	public Text Title;
+	public GameObject AwardViewport;
+	public GameObject AwardItemGO;
 
 	private string friendItemTag = "FriendItem";
 
@@ -35,6 +40,8 @@ public class GiftScene : WindowScene, IFBCallback {
 	private IDictionary<string, Texture> userImageCache = new Dictionary<string, Texture>();
 	private List<string> sendedIds = new List<string>();
 	private bool save;
+
+	private bool hasMore;
 
 	void OnEnable() {
 		HttpRequester.Instance.AddEventListener(HttpRequester.URL_SEND_GIFT, OnSuccessSendGift);
@@ -84,7 +91,7 @@ public class GiftScene : WindowScene, IFBCallback {
 		}
 
 		UnityUtill.DestroyByTag(FriendsList.transform, friendItemTag);
-		FriendsScrollRect.verticalNormalizedPosition = 1;
+
 
 		/*
 		for(int i = 0; i < 20; i++) {
@@ -112,17 +119,43 @@ public class GiftScene : WindowScene, IFBCallback {
 		}
 		return;
 		*/
+		hasMore = false;
+	
 		UserData uData = GameResources.Instance.GetUserData();
 		string[] ids = currentSceneType == Type.Send?  uData.GetSendedGiftUserIds() : uData.GetReceivedGiftUserIds();
 		int i = 0;
-		foreach(FBUser user in friends) {
- 
-			if(!AddUser(user, ids)) {
-				continue;
+
+		if(currentSceneType == Type.Send) {
+			foreach(FBUser user in friends) {
+				if(!AddUser(user, ids)) {
+					continue;
+				}
+				i++;
+				if(i >= 30) {
+					hasMore = true;
+					break;
+				}
 			}
-			i++;
-			if(i >= 30) {
-				break;
+		} else {
+			IList<string> notFound = new List<string>();
+			foreach(string id in ids) {
+				FBUser user = friends.SingleOrDefault((t) => t.Id == id);
+				if(user != null) {
+					if(!AddUser(user, ids)) {
+						continue;
+					}
+					i++;
+					if(i >= 30) {
+						hasMore = true;
+						break;
+					}
+				} else {
+					notFound.Add(id);
+				}
+			}
+
+			if(notFound.Count > 0) {
+				GameResources.Instance.RemoveReceivedGiftIds(notFound);
 			}
 		}
 
@@ -240,6 +273,7 @@ public class GiftScene : WindowScene, IFBCallback {
 		GameResources.Instance.UpdateSendedGift(sendedIds);
 		save = true;
 		sendedIds.Clear();
+		FriendsScrollRect.verticalNormalizedPosition = 1;
 		fbController.RequestFriendsList();
 	}
 
@@ -263,7 +297,78 @@ public class GiftScene : WindowScene, IFBCallback {
 
 	void OnTakeGift(GameObject friendGO) {
 		string id = friendGO.name;
+
+		AwardItem award = GameResources.Instance.GetGameData().GiftData.GetAward();
+		AnimateAward(award, friendGO, null, !hasMore);
+
+		GameResources.Instance.ChangeUserAsset(award.Type, award.Value);
 		GameResources.Instance.TakeGift(id);
-		Destroy(friendGO);
+
+		if(hasMore) {
+			fbController.RequestFriendsList();
+		}
+		save = true;
+	}
+
+	void AnimateAward(AwardItem award, GameObject friendGO, AnimationGroup aGroup, bool destroy) {
+		GameObject animItem = Instantiate(AwardItemGO, AwardViewport.transform);
+		Vector3 start = friendGO.transform.Find("Gift").transform.position;
+
+		animItem.transform.Find("Text").GetComponent<Text>().text = award.Value.ToString();
+		animItem.transform.Find("Image").GetComponent<Image>().sprite = GOResources.GetUserAssetIcone(award.Type);
+
+		float dist = Screen.height / 4f;
+		Vector3 end1 = start + new Vector3(0, dist*0.5f, 0);
+		Vector3 end2 = start + new Vector3(0, dist, 0);
+
+		float time1 = App.GetMoveTime(UIMoveType.AWARD_EXPERIENCE);
+		float time2 = App.GetMoveTime(UIMoveType.AWARD_EXPERIENCE);
+
+		AnimatedObject ao = animItem.AddComponent<AnimatedObject>();
+		ao.AddMoveByTime(start, end1, time1).Build()
+			.AddMoveByTime(null, end2, time2).AddFadeUI(null, 0f, time2)
+			.OnStop(() => {
+		}).Build();
+
+		if(aGroup) {
+			aGroup.Add(ao);
+		} else {
+			ao.Run();
+		}
+
+
+		if(destroy) {
+			Destroy(friendGO, 0.5f);
+		}
+
+		Destroy(animItem, 2f);
+	}
+
+	public void OnTakeAll() {
+		IList<AwardItem> awards = new List<AwardItem>();
+		AnimationGroup aGroup = GetComponent<AnimationGroup>();
+
+		foreach(Transform item in FriendsList.transform) {
+			if(item.transform.tag != friendItemTag) {
+				continue;
+			}
+
+			AwardItem award = GameResources.Instance.GetGameData().GiftData.GetAward();
+			AnimateAward(award, item.gameObject, aGroup, false);
+			awards.Add(award);
+
+		}
+
+		GameResources.Instance.ChangeUserAsset(awards);
+		GameResources.Instance.TakeAllGifts();
+		save = true;
+		aGroup.Run();
+		Invoke("InvpkeRequestFriendsList", 0.5f);
+	//	aGroup.Run((t) => {fbController.RequestFriendsList();}, 1);
+	//	fbController.RequestFriendsList();
+	}
+
+	void InvpkeRequestFriendsList() {
+		fbController.RequestFriendsList();
 	}
 }
