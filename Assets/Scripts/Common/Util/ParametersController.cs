@@ -11,6 +11,8 @@ public class ParametersController {
 	public const string CANSEL_DAILYBONUS = "CANSEL_DAILYBONUS";
 	public const string CAN_SHOW_FORTUNA = "CAN_SHOW_FORTUNA";
 	public const string FORTUNA_IS_SHOWN = "FORTUNA_IS_SHOWN";
+	public const string CAN_SHOW_BLATHATA = "CAN_SHOW_BLATHATA";
+	public const string BLATHATA_IS_SHOWN = "BLATHATA_IS_SHOWN";
 	public const string RECEIVED_GIFT_CACHE_UPDATED = "RECEIVED_GIFT_CACHE_UPDATED";
 
 	public void SetParameter(string key, System.Object val) {

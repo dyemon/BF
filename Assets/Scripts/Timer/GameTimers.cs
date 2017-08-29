@@ -15,6 +15,9 @@ public class GameTimers {
 	public delegate void OnTimerFortuna(int timerCount);
 	public event OnTimerFortuna onTimerFortuna;
 
+	public delegate void OnClearGiftCache();
+	public event OnClearGiftCache onClearGiftCache;
+
 	bool init = false;
 
 	public void Init(UserData uData) {
@@ -69,7 +72,7 @@ public class GameTimers {
 	public void StarGiftCach() {
 		Timer t = TimerController.Instance.GetTimer(GIFTCACHE_TIMER_CODE);
 		if(t == null) {
-			t = TimerController.Instance.AddTimer(GIFTCACHE_TIMER_CODE).SetPeriod(60 * 10)
+			t = TimerController.Instance.AddTimer(GIFTCACHE_TIMER_CODE).SetPeriod(60 * 1)
 				.SetCount(1);
 		}
 		t.Start();
@@ -126,6 +129,9 @@ public class GameTimers {
 		case GIFTCACHE_TIMER_CODE:
 			Debug.Log("Timer ----------- GIFTCACHE_TIMER_CODE");
 			ParametersController.Instance.SetParameter(ParametersController.RECEIVED_GIFT_CACHE_UPDATED, false);
+			if(onClearGiftCache != null) {
+				onClearGiftCache();
+			}
 			break;
 		
 		}

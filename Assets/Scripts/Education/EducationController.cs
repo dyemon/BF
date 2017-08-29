@@ -89,6 +89,10 @@ public class EducationController : MonoBehaviour {
 		return currentEducationStep != null;
 	}
 
+	public bool IsEducationComplete() {
+		return educationData == null;
+	}
+
 	public bool IsCurrentEducationType(EducationType type) {
 		return HasCurrentEducationStep() && currentEducationStep.Type == type;
 	}

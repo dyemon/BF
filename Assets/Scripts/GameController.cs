@@ -655,7 +655,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void ResetSelected() {
-		if(!educationController.HasCurrentEducationStep()) {
+		if(educationController.IsEducationComplete()) {
 			SetTileItemsRenderState(TileItemRenderState.Normal, null);
 		} else {
 			educationController.ResetPositionIndex();
@@ -823,7 +823,7 @@ public class GameController : MonoBehaviour {
 	
 
 		if(targetController.CheckSuccess()) {
-			Invoke("LevelSuccess", bombExplosionDelay);
+			Invoke("LevelSuccess", bombExplosionDelay + 0.5f);
 			return;
 		} else if (!restrictionsController.CheckRestrictions()){
 			Invoke("LevelFailure", 0.5f);
@@ -1058,6 +1058,8 @@ public class GameController : MonoBehaviour {
 		Vector2[] positions = null;
 		if(educationController.IsCurrentEducationType(EducationType.Collect)) {
 			positions = educationController.GetPositions();
+		} else if(!educationController.IsEducationComplete()) {
+			positions = new Vector2[0];
 		}
 
 		for(int x = 0; x < numColumns; x++) {

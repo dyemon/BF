@@ -78,7 +78,8 @@ public class HttpRequester : MonoBehaviour {
 		if (response.IsError()) {
 			Debug.LogError("[Network] SendRequest ERROR:" + response.GetError());
 			if(request.IsShowErrorMessage() || App.IsShowHttpError) {
-				ModalPanels.Show(ModalPanelName.ErrorPanel, response.GetError());
+				string error = "Ошибка при установки соединения\n" + response.GetError();
+				ModalPanels.Show(ModalPanelName.ErrorPanel, error);
 			}
 			FireError(request.GetUrl(), response);
 		} else {

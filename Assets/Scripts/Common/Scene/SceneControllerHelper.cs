@@ -24,10 +24,15 @@ public class SceneControllerHelper : Singleton<SceneController>  {
 	}
 
 	public void Quit() {
-		Application.Quit();
+		GameResources.Instance.SaveUserData(null, true);
+		Invoke("AppQuit", 0.5f);
 	}
 
 	public void LoadMainScene() {
 		instance.LoadMainScene();
+	}
+
+	void AppQuit() {
+		Application.Quit();
 	}
 }

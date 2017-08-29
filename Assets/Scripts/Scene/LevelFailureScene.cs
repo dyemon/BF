@@ -74,6 +74,7 @@ public class LevelFailureScene : MonoBehaviour {
 		if(!capNotEnded) {
 			ParametersController.Instance.SetParameter(ParametersController.CAN_SHOW_DAILYBONUS, true);
 			ParametersController.Instance.SetParameter(ParametersController.CAN_SHOW_FORTUNA, true);
+			ParametersController.Instance.SetParameter(ParametersController.CAN_SHOW_BLATHATA, true);
 
 		}
 

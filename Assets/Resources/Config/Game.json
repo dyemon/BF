@@ -207,7 +207,7 @@
 			"Value":	10
 		},{
 			"TypeAsString": "Star",
-			"Value":	20
+			"Value":	3
 		}],
 
 	"UserAssetsShopData": {
@@ -275,6 +275,15 @@
 					{"TypeAsString": "Energy", "Ratio": 3, "Min": 2, "Max": 10},
 					{"TypeAsString": "Star", "Ratio": 1, "Min": 1, "Max": 5},
 					{"TypeAsString": "Money", "Ratio": 1, "Min": 1, "Max": 5}
+				]
+	},
+
+	"BlathataData": {
+		"UserAssets" : [
+					{"TypeAsString": "Ring", "Ratio": 3, "Min": 2, "Max": 10},
+					{"TypeAsString": "Mobile", "Ratio": 3, "Min": 2, "Max": 10},
+					{"TypeAsString": "Energy", "Ratio": 3, "Min": 2, "Max": 10},
+					{"TypeAsString": "Money", "Ratio": 1, "Min": 2, "Max": 5}
 				]
 	}
 }

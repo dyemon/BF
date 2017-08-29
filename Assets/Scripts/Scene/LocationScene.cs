@@ -17,6 +17,9 @@ public class LocationScene : BaseScene {
 	public GameObject GiftAttention;
 	public GameObject QuestAttention;
 	public GameObject FortunaAttention;
+	public GameObject BlathataAttention;
+	public GameObject KachalkaAttention;
+	public GameObject ShopAttention;
 
 	private GameObject currentTouchObject;
 	private GameObject currentLocationMap;
@@ -64,6 +67,9 @@ public class LocationScene : BaseScene {
 		UserData uData = GameResources.Instance.GetUserData();
 
 		grayscale = Shader.Find("Custom/Greyscale");
+		if(grayscale == null) {
+			ModalPanels.Show(ModalPanelName.MessagePanel, "null");
+		}
 
 		bool locationContainLastLevel = startLevel <= localData.LastLevel && localData.LastLevel < startLevel + locationData.LevelsCountActual;
 		foreach(LocationLevelData levelData in locationData.LevelData) {
@@ -104,6 +110,7 @@ public class LocationScene : BaseScene {
 		UpdateGiftButton();
 		UpdateFortunaAttention();
 		UpdateQuestAttention();
+		UpdateBlathataAttention();
 
 		Invoke("ShowAdditionScenes", 2);
 	}
@@ -215,6 +222,11 @@ public class LocationScene : BaseScene {
 		QuestAttention.SetActive(isAttention);
 	}
 
+	void UpdateBlathataAttention() {
+		UserData uData = GameResources.Instance.GetUserData();
+		BlathataAttention.SetActive(uData.GetAsset(UserAssetType.Star).Value > 0);
+	}
+
 	void OnCompleteQuest(QuestItem quest) {
 		QuestAttention.SetActive(true);
 	}
@@ -240,15 +252,22 @@ public class LocationScene : BaseScene {
 			UpdateFortunaAttention();
 		} else if(name == GiftScene.SceneName) {
 			UpdateGiftButton();
+		} else if(name == BlathataScene.SceneName) {
+			UpdateBlathataAttention();
 		}
 	}
 
 	public void OnClose() {
-		GameResources.Instance.SaveUserData(null, true);
+		//GameResources.Instance.SaveUserData(null, true);
 		SceneController.Instance.LoadSceneAsync(CityScene.SceneName);
 	}
 
 	void OnCheckGift (string[] ids) {
 		UpdateGiftButton();
+	}
+
+	public void OnClickGiftScene() {
+		bool hasGift = GameResources.Instance.GetUserData().GetReceivedGiftUserIds().Length > 0;
+		SceneController.Instance.LoadSceneAdditive(GiftScene.SceneName, (hasGift)? GiftScene.Type.Receive : GiftScene.Type.Send);
 	}
 }

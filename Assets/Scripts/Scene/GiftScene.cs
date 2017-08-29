@@ -46,6 +46,7 @@ public class GiftScene : WindowScene, IFBCallback {
 	void OnEnable() {
 		HttpRequester.Instance.AddEventListener(HttpRequester.URL_SEND_GIFT, OnSuccessSendGift);
 		GameResources.Instance.onCheckGift += OnCheckGift;
+		GameTimers.Instance.onClearGiftCache += OnClearGiftCache;
 		save = false;
 	}
 
@@ -54,6 +55,7 @@ public class GiftScene : WindowScene, IFBCallback {
 	void OnDisable() {
 		HttpRequester.Instance.RemoveEventListener(HttpRequester.URL_SEND_GIFT, OnSuccessSendGift);
 		GameResources.Instance.onCheckGift -= OnCheckGift;
+		GameTimers.Instance.onClearGiftCache -= OnClearGiftCache;
 		if(save) {
 			GameResources.Instance.SaveUserData(null, false);
 		}
@@ -87,6 +89,7 @@ public class GiftScene : WindowScene, IFBCallback {
 
 	public void OnFriendsRequest(IList<FBUser> friends) {
 		if(currentSceneType == Type.Receive && GameResources.Instance.CheckGift()) {
+			UnityUtill.DestroyByTag(FriendsList.transform, friendItemTag);
 			return;
 		}
 
@@ -168,9 +171,9 @@ public class GiftScene : WindowScene, IFBCallback {
 		if(!string.IsNullOrEmpty(filter) && user.Name.IndexOf(filter, System.StringComparison.OrdinalIgnoreCase) < 0) {
 			return false;
 		}
-		if(currentSceneType == Type.Send && ids.Contains(user.Id)) {
-			return false;
-		}
+	//	if(currentSceneType == Type.Send && ids.Contains(user.Id)) {
+	//		return false;
+	//	}
 	
 		GameObject friendGO = Instantiate(FriendItem, FriendsList.transform);
 		friendGO.name = user.Id;
@@ -370,5 +373,11 @@ public class GiftScene : WindowScene, IFBCallback {
 
 	void InvpkeRequestFriendsList() {
 		fbController.RequestFriendsList();
+	}
+
+	void OnClearGiftCache() {
+		if(currentSceneType == Type.Receive) {
+			GameResources.Instance.CheckGift();
+		}
 	}
 }

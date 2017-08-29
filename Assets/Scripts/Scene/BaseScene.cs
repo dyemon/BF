@@ -28,5 +28,13 @@ public class BaseScene : MonoBehaviour {
 			SceneController.Instance.LoadSceneAdditive(FortunaScene.SceneName);
 			return;
 		}
+
+		canShow = ParametersController.Instance.GetBool(ParametersController.CAN_SHOW_BLATHATA);
+		isShown = ParametersController.Instance.GetBool(ParametersController.BLATHATA_IS_SHOWN);
+
+		if(uData.GetAsset(UserAssetType.Star).Value > 0 && canShow && !isShown) {
+			SceneController.Instance.LoadSceneAdditive(BlathataScene.SceneName);
+			return;
+		}
 	}
 }

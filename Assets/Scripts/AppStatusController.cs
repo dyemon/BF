@@ -24,10 +24,10 @@ public class AppStatusController : MonoBehaviour {
 		if(!pauseStatus) {
 			uData.InitTimestampOnStart();
 			GameTimers.Instance.Init(uData);
-			GameResources.Instance.SaveUserData(uData, false);
+			GameResources.Instance.SaveUserData(uData, true);
 			ActivateFB();
 		} else {
-			GameResources.Instance.SaveUserData(uData, true);
+			GameResources.Instance.SaveUserData(uData, false);
 			GameTimers.Instance.Stop();
 		}
 	}

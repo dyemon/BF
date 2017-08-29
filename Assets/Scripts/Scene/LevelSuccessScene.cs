@@ -85,7 +85,7 @@ public class LevelSuccessScene : MonoBehaviour {
 
 		ParametersController.Instance.SetParameter(ParametersController.CAN_SHOW_DAILYBONUS, true);
 		ParametersController.Instance.SetParameter(ParametersController.CAN_SHOW_FORTUNA, true);
-
+		ParametersController.Instance.SetParameter(ParametersController.CAN_SHOW_BLATHATA, true);
 	}
 	
 	void UpdateAward() {

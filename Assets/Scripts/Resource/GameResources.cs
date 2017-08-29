@@ -5,6 +5,7 @@ using Facebook.Unity;
 using Common.Net;
 using Common.Net.Http;
 using System.Collections.Generic;
+using SimpleJSON;
 
 public class GameResources {
 	public static GameResources Instance = new GameResources();
@@ -482,6 +483,7 @@ public class GameResources {
 		}
 	//	ModalPanels.Show(ModalPanelName.MessagePanel, "Update gift received");
 		ParametersController.Instance.SetParameter(ParametersController.RECEIVED_GIFT_CACHE_UPDATED, true);
+		GameTimers.Instance.StarGiftCach();
 
 		HttpRequest request = new HttpRequest(HttpRequester.URL_CHECK_GIFT); 
 		HttpRequester.Instance.Send(request);
@@ -489,22 +491,37 @@ public class GameResources {
 	}
 
 	void OnCheckGiftHttp(HttpResponse response) {
+		
 		string data = response.GetParameter("data");
 		if(string.IsNullOrEmpty(data)) {
 			return;
 		}
-		data = data.Replace("[", string.Empty);
-		data = data.Replace("]", string.Empty);
-		data = "108656269813647";
+
+		JSONNode root = JSON.Parse(data);
+		if(root == null) {
+			return;
+		}
+		string ids = "";
+		foreach(JSONObject item in root.AsArray) {
+			if(ids != "") {
+				ids += ",";
+			}
+			ids += item["values"]["socialId"];
+		}
+
+		if(ids == "") {
+			return;
+		}
+
 		UserData uData = GetUserData();
-		uData.AddReceivedGiftUserIds(data);
+		uData.AddReceivedGiftUserIds(ids);
 		SaveUserData(uData, false);
 
 		if(onCheckGift != null) {
 			onCheckGift(uData.GetReceivedGiftUserIds());
 		}
 
-		GameTimers.Instance.StarGiftCach();
+
 	}
 
 	public void TakeGift(string id) {
