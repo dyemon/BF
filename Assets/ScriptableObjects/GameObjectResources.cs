@@ -9,11 +9,14 @@ public class GameObjectResources : ScriptableObject {
 	public Sprite[] UserAssetsIcone;
 	public Sprite[] HeroSkillIcon;
 	public Sprite[] HeroSkillButtonBg;
-	public Sprite ExperienceIcon;
 	public Sprite[] IconBackground;
 	public Sprite[] CheckpoinButton;
 	public Sprite[] EnemyIcon;
 	public Sprite[] QuestIcon;
+
+	public Sprite DamageIcon;
+	public Sprite HealthIcon;
+	public Sprite ExperienceIcon;
 
 	[System.Serializable]
 	public class TargetIcon {
@@ -61,6 +64,12 @@ public class GameObjectResources : ScriptableObject {
 
 	public Sprite GetUserExperienceIcone() {
 		return ExperienceIcon;
+	}
+	public Sprite GetDamageIcone() {
+		return DamageIcon;
+	}
+	public Sprite GetHealthIcone() {
+		return HealthIcon;
 	}
 
 	public Sprite GetIconBackground(UserAssetType type) {

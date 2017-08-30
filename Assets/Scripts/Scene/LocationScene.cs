@@ -111,6 +111,7 @@ public class LocationScene : BaseScene {
 		UpdateFortunaAttention();
 		UpdateQuestAttention();
 		UpdateBlathataAttention();
+		UpdateKachalkaAttention();
 
 		Invoke("ShowAdditionScenes", 2);
 	}
@@ -227,6 +228,11 @@ public class LocationScene : BaseScene {
 		BlathataAttention.SetActive(uData.GetAsset(UserAssetType.Star).Value > 0);
 	}
 
+	void UpdateKachalkaAttention() {
+		UserData uData = GameResources.Instance.GetUserData();
+		KachalkaAttention.SetActive(uData.IsKachalkaAvaliable());
+	}
+
 	void OnCompleteQuest(QuestItem quest) {
 		QuestAttention.SetActive(true);
 	}
@@ -254,6 +260,8 @@ public class LocationScene : BaseScene {
 			UpdateGiftButton();
 		} else if(name == BlathataScene.SceneName) {
 			UpdateBlathataAttention();
+		} else if(name == KachalkaScene.SceneName) {
+			UpdateKachalkaAttention();
 		}
 	}
 

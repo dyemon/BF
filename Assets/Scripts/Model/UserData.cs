@@ -45,6 +45,8 @@ public class UserData {
 	private List<UserAssetData> assets = new List<UserAssetData>();
 	[SerializeField]
 	private List<QuestProgressData> quests = new List<QuestProgressData>();
+	[SerializeField]
+	private List<UserKachalkaItem> kachalkaData = new List<UserKachalkaItem>();
 
 	[SerializeField]
 	private string fbSendedGiftUserIds;
@@ -67,7 +69,7 @@ public class UserData {
 	public void InitDefalt() {
 		Version = 2;
 		Level = 1;
-		Experience = 1000;
+		Experience = 1100;
 		OwnHealth = 100;
 		OwnDamage = 10;
 		
@@ -385,5 +387,67 @@ public class UserData {
 			Where((val, idx) => !ids.Contains(val)).ToArray();
 
 		fbReceivedGiftUserIds = string.Join(",", newIds);
+	}
+
+	public UserKachalkaItem GetKachalkaItem(KachalkaType type) {
+		foreach(UserKachalkaItem item in kachalkaData) {
+			if(item.Type == type) {
+				return item;
+			}
+		}
+
+		return null;
+	}
+
+	public bool IncreaseKachalkaIndex(KachalkaType type) {
+		bool res = false;
+
+		UserKachalkaItem item = GetKachalkaItem(type);
+		if(item == null) {
+			item = new UserKachalkaItem();
+			item.Type = type;
+			kachalkaData.Add(item);
+		}
+
+		KachalkaData kData = GameResources.Instance.GetGameData().GetKachalkaData(type);
+		Preconditions.NotNull(kData, "KachalkaData is null for type: {0}", type);
+
+		KachalkaItem kItem = kData.Items[item.ItemIndex];
+		if(kItem.Steps.Length - 2 > item.StepIndex) {
+			item.StepIndex++;
+		} else {
+			item.ItemIndex++;
+			item.StepIndex = -1;
+			OwnHealth += kItem.Health;
+			OwnDamage += kItem.Damage;
+			res = true;
+		}
+		return res;
+	}
+
+	public bool IsKachalkaAvaliable() {
+		foreach(KachalkaData kData in GameResources.Instance.GetGameData().KachalkaDataItems) {
+			int itemIndex = 0;
+			int stepIndex = -1;
+			UserKachalkaItem item = GetKachalkaItem(kData.Type);
+			if(item != null) {
+				itemIndex = item.ItemIndex;
+				stepIndex = item.StepIndex;
+			}
+
+			KachalkaItem kItem = kData.Items[itemIndex];
+			if(stepIndex >= kItem.Steps.Length - 1) {
+				itemIndex++;
+			}
+			if(itemIndex >= kData.Items.Length - 1) {
+				continue;
+			}
+
+			if(kData.Items[itemIndex].MinExperience <= Experience) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

@@ -285,5 +285,201 @@
 					{"TypeAsString": "Energy", "Ratio": 3, "Min": 2, "Max": 10},
 					{"TypeAsString": "Money", "Ratio": 1, "Min": 2, "Max": 5}
 				]
-	}
+	},
+
+	"KachalkaDataItems": [{
+		"TypeAsString": "UdarRukoy", "Name": "Удар рукой",
+		"Items": [{
+			"MinExperience": 100, "Damage": 5,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 10}, 
+				{"TypeAsString": "Mobile", "Value": 10}, 
+				{"TypeAsString": "Ring", "Value": 10}
+			]
+		},{
+			"MinExperience": 500, "Damage": 5,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 15}, 
+				{"TypeAsString": "Mobile", "Value": 15}, 
+				{"TypeAsString": "Ring", "Value": 15}
+			]
+		},{
+			"MinExperience": 1000, "Damage": 5,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 20}, 
+				{"TypeAsString": "Mobile", "Value": 20}, 
+				{"TypeAsString": "Ring", "Value": 20}
+			]
+		},{
+			"MinExperience": 1500, "Damage": 10,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 25}, 
+				{"TypeAsString": "Mobile", "Value": 25}, 
+				{"TypeAsString": "Ring", "Value": 25}
+			]
+		},{
+			"MinExperience": 2000, "Damage": 10,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 30}, 
+				{"TypeAsString": "Mobile", "Value": 30}, 
+				{"TypeAsString": "Ring", "Value": 30}
+			]
+		},{
+			"MinExperience": 2500, "Damage": 10,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 35}, 
+				{"TypeAsString": "Mobile", "Value": 35}, 
+				{"TypeAsString": "Ring", "Value": 35}
+			]
+		}]																						
+	},{
+		"TypeAsString": "UdarNogoy", "Name": "Удар ногой",
+		"Items": [{
+			"MinExperience": 300, "Damage": 10,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 10}, 
+				{"TypeAsString": "Mobile", "Value": 10}, 
+				{"TypeAsString": "Ring", "Value": 10},
+				{"TypeAsString": "Money", "Value": 10}																																																				
+			]
+		},{
+			"MinExperience": 800, "Damage": 10,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 15}, 
+				{"TypeAsString": "Mobile", "Value": 15}, 
+				{"TypeAsString": "Ring", "Value": 15},
+				{"TypeAsString": "Money", "Value": 15}																																																																															
+			]
+		},{
+			"MinExperience": 1200, "Damage": 10,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 20}, 
+				{"TypeAsString": "Mobile", "Value": 20}, 
+				{"TypeAsString": "Ring", "Value": 20},
+				{"TypeAsString": "Money", "Value": 20}
+			]
+		},{
+			"MinExperience": 1800, "Damage": 15,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 25}, 
+				{"TypeAsString": "Mobile", "Value": 25}, 
+				{"TypeAsString": "Ring", "Value": 25},
+				{"TypeAsString": "Money", "Value": 25}
+			]
+
+		},{
+			"MinExperience": 2200, "Damage": 15,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 30}, 
+				{"TypeAsString": "Mobile", "Value": 30}, 
+				{"TypeAsString": "Ring", "Value": 30},
+				{"TypeAsString": "Money", "Value": 30}	
+			]
+		},{
+			"MinExperience": 3000, "Damage": 15,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 35}, 
+				{"TypeAsString": "Mobile", "Value": 35}, 
+				{"TypeAsString": "Ring", "Value": 35},
+				{"TypeAsString": "Money", "Value": 35}
+			]
+		}]																						
+	},{
+		"TypeAsString": "Probejka", "Name": "Пробежка",
+		"Items": [{
+			"MinExperience": 200, "Health": 20,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 10}, 
+				{"TypeAsString": "Mobile", "Value": 10}, 
+				{"TypeAsString": "Ring", "Value": 10}
+			]
+		},{
+			"MinExperience": 600, "Health": 20,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 15}, 
+				{"TypeAsString": "Mobile", "Value": 15}, 
+				{"TypeAsString": "Ring", "Value": 15}
+			]
+		},{
+			"MinExperience": 1100, "Health": 20,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 20}, 
+				{"TypeAsString": "Mobile", "Value": 20}, 
+				{"TypeAsString": "Ring", "Value": 20}
+			]
+		},{
+			"MinExperience": 1600, "Health": 30,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 25}, 
+				{"TypeAsString": "Mobile", "Value": 25}, 
+				{"TypeAsString": "Ring", "Value": 25}
+			]
+		},{
+			"MinExperience": 2100, "Health": 30,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 30}, 
+				{"TypeAsString": "Mobile", "Value": 30}, 
+				{"TypeAsString": "Ring", "Value": 30}
+			]
+		},{
+			"MinExperience": 2600, "Health": 30,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 35}, 
+				{"TypeAsString": "Mobile", "Value": 35}, 
+				{"TypeAsString": "Ring", "Value": 35}
+			]
+		}]																						
+	},{
+		"TypeAsString": "Jim", "Name": "Жим на грудь",
+		"Items": [{
+			"MinExperience": 400, "Health": 25,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 10}, 
+				{"TypeAsString": "Mobile", "Value": 10}, 
+				{"TypeAsString": "Ring", "Value": 10},
+				{"TypeAsString": "Money", "Value": 10}																																																				
+			]
+		},{
+			"MinExperience": 900, "Health": 25,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 15}, 
+				{"TypeAsString": "Mobile", "Value": 15}, 
+				{"TypeAsString": "Ring", "Value": 15},
+				{"TypeAsString": "Money", "Value": 15}																																																																															
+			]
+		},{
+			"MinExperience": 1300, "Health": 25,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 20}, 
+				{"TypeAsString": "Mobile", "Value": 20}, 
+				{"TypeAsString": "Ring", "Value": 20},
+				{"TypeAsString": "Money", "Value": 20}
+			]
+		},{
+			"MinExperience": 1900, "Health": 35,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 25}, 
+				{"TypeAsString": "Mobile", "Value": 25}, 
+				{"TypeAsString": "Ring", "Value": 25},
+				{"TypeAsString": "Money", "Value": 25}
+			]
+
+		},{
+			"MinExperience": 2300, "Health": 35,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 30}, 
+				{"TypeAsString": "Mobile", "Value": 30}, 
+				{"TypeAsString": "Ring", "Value": 30},
+				{"TypeAsString": "Money", "Value": 30}	
+			]
+		},{
+			"MinExperience": 3100, "Health": 35,
+			"Steps": [
+				{"TypeAsString": "Energy", "Value": 35}, 
+				{"TypeAsString": "Mobile", "Value": 35}, 
+				{"TypeAsString": "Ring", "Value": 35},
+				{"TypeAsString": "Money", "Value": 35}
+			]
+		}]																						
+	}]
 }

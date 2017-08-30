@@ -28,6 +28,7 @@ public class GameData {
 	public FortunaData FortunaData;
 	public RandomAwardData GiftData;
 	public RandomAwardData BlathataData;
+	public KachalkaData[] KachalkaDataItems;
 
 	public void Init() {
 		/*
@@ -79,6 +80,10 @@ public class GameData {
 		FortunaData.Init();
 		GiftData.Init();
 		BlathataData.Init();
+
+		foreach(KachalkaData item in KachalkaDataItems) {
+			item.Init();
+		}
 	}
 
 	public int GetBombRatio(int level) {
@@ -119,5 +124,15 @@ public class GameData {
 			return null;
 		}
 		return new AwardItem() { Type = res.AwardType, Value = res.Count };
+	}
+
+	public KachalkaData GetKachalkaData(KachalkaType type) {
+		foreach(KachalkaData item in KachalkaDataItems) {
+			if(item.Type == type) {
+				return item;
+			}
+		}
+
+		return null;
 	}
 }

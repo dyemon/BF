@@ -541,4 +541,13 @@ public class GameResources {
 		uData.RemoveReceivedGiftIds(ids);
 		saveUserDataLocal(uData);
 	}
+
+	public bool IncreaseKachalkaIndex(KachalkaType type) {
+		UserData uData = GetUserData();
+		bool res = uData.IncreaseKachalkaIndex(type);
+		saveUserDataLocal(uData);
+		return res;
+	}
+
+
 }
