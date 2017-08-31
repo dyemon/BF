@@ -158,6 +158,7 @@ public class GameResources {
 		} else if(data.Version < userData.Version) {
 			SaveUserDataToServer(userData);
 		}
+	
 		return false;
 	}	
 
@@ -342,6 +343,24 @@ public class GameResources {
 			return false;
 		}
 		SaveUserData(null, false);
+		return true;
+	}
+
+	public bool Buy(GoodsData data) {
+		UserData uData = GetUserData();
+
+		if(!ChangeUserAsset(uData, data.PriceType, -data.PriceValue)) {
+			SceneController.Instance.ShowUserAssetsScene(data.PriceType, true);
+			return false;
+		}
+
+		if(data.Health > 0) {
+			uData.HealthEquipmentType = data.Type;
+		} else {
+			uData.DamageEquipmentType = data.Type;
+		}
+
+		saveUserDataLocal(uData);
 		return true;
 	}
 

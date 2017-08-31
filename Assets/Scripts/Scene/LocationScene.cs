@@ -19,7 +19,7 @@ public class LocationScene : BaseScene {
 	public GameObject FortunaAttention;
 	public GameObject BlathataAttention;
 	public GameObject KachalkaAttention;
-	public GameObject ShopAttention;
+	public GameObject GoodsAttention;
 
 	private GameObject currentTouchObject;
 	private GameObject currentLocationMap;
@@ -52,7 +52,7 @@ public class LocationScene : BaseScene {
 	}
 
 	void Start () {
-
+		
 		currentLocationMap = Instantiate(LocationMaps[App.CurrentLocation - 1], Vector3.zero, Quaternion.identity);
 
 		locationData = GameResources.Instance.GetMapData().CityData[App.CurrentCity-1].LocationData[App.CurrentLocation-1];	
@@ -112,6 +112,7 @@ public class LocationScene : BaseScene {
 		UpdateQuestAttention();
 		UpdateBlathataAttention();
 		UpdateKachalkaAttention();
+		UpdateGoodsAttention();
 
 		Invoke("ShowAdditionScenes", 2);
 	}
@@ -233,6 +234,11 @@ public class LocationScene : BaseScene {
 		KachalkaAttention.SetActive(uData.IsKachalkaAvaliable());
 	}
 
+	void UpdateGoodsAttention() {
+		UserData uData = GameResources.Instance.GetUserData();
+		GoodsAttention.SetActive(uData.IsGoodsAvaliable());
+	}
+
 	void OnCompleteQuest(QuestItem quest) {
 		QuestAttention.SetActive(true);
 	}
@@ -262,6 +268,8 @@ public class LocationScene : BaseScene {
 			UpdateBlathataAttention();
 		} else if(name == KachalkaScene.SceneName) {
 			UpdateKachalkaAttention();
+		} else if(name == GoodsScene.SceneName) {
+			UpdateGoodsAttention();
 		}
 	}
 

@@ -5,7 +5,8 @@ using UnityEngine.EventSystems;
 
 public class PanCamera : MonoBehaviour {
 	public Vector2 Speed = Vector2.zero;
-	public float AnimateTime = 0.1f;
+	public Vector2 ShowdownSpeed = Vector2.zero;
+	public float AnimateTime = 1f;
 
 	public bool FixX = false;
 	public bool FixY = false;
@@ -15,6 +16,7 @@ public class PanCamera : MonoBehaviour {
 	public float MaxY = 0;
 
 	private bool animate = false;
+	private Vector2 touchDeltaPosition;
 
 	Camera curCamera;
 
@@ -40,11 +42,11 @@ public class PanCamera : MonoBehaviour {
 			if(EventSystem.current.IsPointerOverGameObject(InputController.GetFingerId())) {
 				return;
 			}
-			Vector2 touchDeltaPosition = touches[0].deltaPosition;
+			touchDeltaPosition = touches[0].deltaPosition;
 			float height = GetCamera().orthographicSize;
 			float width = height * GetCamera().aspect;
 
-			if(FixX || 2*width > (MaxX - MinX)) {
+			if(FixX || 2 * width > (MaxX - MinX)) {
 				touchDeltaPosition.x = 0;
 			}
 			if(FixY) {
@@ -52,6 +54,8 @@ public class PanCamera : MonoBehaviour {
 			}
 			Vector3 move = transform.position + new Vector3(-touchDeltaPosition.x * Speed.x, -touchDeltaPosition.y * Speed.y, 0);
 			SetPosition(move);
+		} else if(touches.Length > 0 && touches[0].phase == TouchPhase.Ended) {
+			//StartCoroutine(SetPositionInternal());
 		}
 	}
 
@@ -81,9 +85,10 @@ public class PanCamera : MonoBehaviour {
 	//	StartCoroutine(SetPositionInternal(pos));
 	}
 
-	 IEnumerator SetPositionInternal(Vector3 pos) {
+	 IEnumerator SetPositionInternal() {
 		float curTime = 0;
 		Vector3 startPos = transform.position;
+		Vector3 pos = startPos + new Vector3(touchDeltaPosition.x, touchDeltaPosition.y, 0);
 		animate = true;
 
 		while(curTime < AnimateTime) {

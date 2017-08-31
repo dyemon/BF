@@ -59,7 +59,7 @@
 		"Description": "Забери 5 подарков от друзей и получи в награду 20 печаток и 20 очков крутости",
 		"TypeAsString": "SocialFB",
 		"ConditionTypeAsString":	"GetGift",
-		"ActionCount": 1,
+		"ActionCount": 5,
 		"RequiredQuestId": "sendGiftFB5",
 		"Award":  {"TypeAsString": "Ring", "Value":	20},
 		"ExperienceAward": 20,

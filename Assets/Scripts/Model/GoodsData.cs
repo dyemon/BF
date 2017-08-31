@@ -10,4 +10,7 @@ public class GoodsData {
 	public int Health;
 	public int Damage;
 	public int MinExperience;
+	public string PriceTypeAsString;
+	public UserAssetType PriceType;
+	public int PriceValue;
 }

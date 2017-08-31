@@ -13,6 +13,9 @@ public class QuestScene : WindowScene {
 	public UserAssetsPanel AssetsPanel;
 	public GameObject AwardItem;
 
+	public Sprite AllowBg;
+	public Sprite AllowIconBg;
+
 	private string questItemTag = "QuestItem";
 
 	private bool save;
@@ -50,6 +53,10 @@ public class QuestScene : WindowScene {
 			GameObject notAllow = questGO.transform.Find("NotAllow").gameObject;
 			allow.SetActive(questProg.IsComplete);
 			notAllow.SetActive(!questProg.IsComplete);
+			if(questProg.IsComplete) {
+				questGO.transform.GetComponent<Image>().sprite = AllowBg;
+				questGO.transform.Find("IconBg").GetComponent<Image>().sprite = AllowIconBg;
+			}
 
 			QuestItem questItem = qData.GetById(questProg.QuestId);
 			GameObject active = (questProg.IsComplete) ? allow : notAllow;

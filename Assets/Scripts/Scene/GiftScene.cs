@@ -171,9 +171,9 @@ public class GiftScene : WindowScene, IFBCallback {
 		if(!string.IsNullOrEmpty(filter) && user.Name.IndexOf(filter, System.StringComparison.OrdinalIgnoreCase) < 0) {
 			return false;
 		}
-	//	if(currentSceneType == Type.Send && ids.Contains(user.Id)) {
-	//		return false;
-	//	}
+		if(currentSceneType == Type.Send && ids.Contains(user.Id)) {
+			return false;
+		}
 	
 		GameObject friendGO = Instantiate(FriendItem, FriendsList.transform);
 		friendGO.name = user.Id;
@@ -274,6 +274,7 @@ public class GiftScene : WindowScene, IFBCallback {
 
 	void OnSuccessSendGift(HttpResponse response) {
 		GameResources.Instance.UpdateSendedGift(sendedIds);
+		QuestController.Instance.SendGift(QuestType.SocialFB, sendedIds.Count);
 		save = true;
 		sendedIds.Clear();
 		FriendsScrollRect.verticalNormalizedPosition = 1;
@@ -306,6 +307,8 @@ public class GiftScene : WindowScene, IFBCallback {
 
 		GameResources.Instance.ChangeUserAsset(award.Type, award.Value);
 		GameResources.Instance.TakeGift(id);
+
+		QuestController.Instance.ReceiveGift(QuestType.SocialFB, 1);
 
 		if(hasMore) {
 			fbController.RequestFriendsList();
@@ -362,6 +365,11 @@ public class GiftScene : WindowScene, IFBCallback {
 
 		}
 
+		if(awards.Count == 0) {
+			return;
+		}
+
+		QuestController.Instance.ReceiveGift(QuestType.SocialFB, awards.Count);
 		GameResources.Instance.ChangeUserAsset(awards);
 		GameResources.Instance.TakeAllGifts();
 		save = true;

@@ -11,6 +11,7 @@ public class DailyBonusScene : WindowScene {
 	public GameObject DailyButton;
 	public GameObject BonusesPanel;
 	public Sprite CurrentBonusBg;
+	public Sprite CurrentBonusIconBg;
 	public UserAssetsPanel AssetsPanel;
 	public GameObject AwardItem;
 
@@ -38,7 +39,7 @@ public class DailyBonusScene : WindowScene {
 		GameObject button = Instantiate(DailyButton, BonusesPanel.transform);
 
 		Image img = button.transform.Find("IconBg").GetComponent<Image>();
-		img.sprite = GOResources.GetIconBackground(item.Type);
+	//	img.sprite = GOResources.GetIconBackground(item.Type);
 		img.transform.Find("AwardType").GetComponent<Image>().sprite = GOResources.GetUserAssetIcone(item.Type);
 		Text text = img.transform.Find("AwardAmount").GetComponent<Text>();
 		text.text = item.Value.ToString();
@@ -52,6 +53,7 @@ public class DailyBonusScene : WindowScene {
 			active = button.transform.Find("NotAllow").gameObject;
 		} else if(number == dailyBonus) {
 			button.GetComponent<Image>().sprite = CurrentBonusBg;
+			button.transform.Find("IconBg").GetComponent<Image>().sprite = CurrentBonusIconBg;
 			active = button.transform.Find("Allow").gameObject;
 			active.transform.Find("Text Button").GetComponent<Button>()
 				.onClick.AddListener(() => {OnDailyBonus(button, item);});

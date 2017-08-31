@@ -56,14 +56,9 @@ public class UserData {
 	private string fbReceivedGiftUserIds;
 
 	public void Init() {
-		
 		foreach(UserAssetData data in assets) {
 			data.Init();
 		}
-
-		DamageEquipmentType = GoodsType.Espander;
-		HealthEquipmentType = GoodsType.Karti;
-
 	}
 
 	public void InitDefalt() {
@@ -97,11 +92,11 @@ public class UserData {
 	public void InitOnStart() {
 		InitTimestampOnStart();
 		GameTimers.Instance.Init(this);
-	
+	//	Experience = 100;
 //		for(int i = 0; i < 1000; i++) {
 //			fbReceivedGiftUserIds += "152536263325262,";
 //		}
-		//	Level = 5;
+		//	Level = 60;
 		App.InitLocationParams(this);
 	}
 
@@ -448,6 +443,27 @@ public class UserData {
 			}
 		}
 
+		return false;
+	}
+
+	public bool IsGoodsAvaliable() {
+		GameData gameData = GameResources.Instance.GetGameData();
+
+		GoodsData userHealth = gameData.GetGoodsData(HealthEquipmentType);
+		GoodsData userDamage = gameData.GetGoodsData(DamageEquipmentType);
+
+		foreach(GoodsData goodsData in gameData.GoodsData) {
+			bool isHealth = goodsData.Health > 0;
+
+			if(isHealth && userHealth != null && userHealth.Health >= goodsData.Health) {
+				continue;
+			}
+			if(!isHealth && userDamage != null && userDamage.Damage >= goodsData.Damage) {
+				continue;
+			}
+
+			return goodsData.MinExperience <= Experience;
+		}
 		return false;
 	}
 }

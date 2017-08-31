@@ -120,7 +120,7 @@ public class KachalkaScene : WindowScene {
 			Slider slider = itemGO.transform.Find("Slider").GetComponent<Slider>();
 			slider.value = slider.maxValue;
 
-			GameObject source = itemGO.transform.Find("IconBg/Effect").gameObject;
+			GameObject source = itemGO.transform.Find("IconBg/Effect/EffectType").gameObject;
 			GameObject aItem = Instantiate(source, transform);
 			Vector3 start = source.transform.position;
 			Vector3 end = kItem.Damage > 0 ? OwnUserDamage.transform.position : OwnUserHealth.transform.position;

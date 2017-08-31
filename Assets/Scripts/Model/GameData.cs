@@ -64,7 +64,11 @@ public class GameData {
 		*/
 		foreach(GoodsData item in GoodsData) {
 			item.Type = (GoodsType)Enum.Parse(typeof(GoodsType), item.TypeAsString);
+			item.PriceType = EnumUtill.Parse<UserAssetType>(item.PriceTypeAsString);
 		}
+		System.Array.Sort<GoodsData>(GoodsData, (x, y) => {
+			return x.MinExperience.CompareTo(y.MinExperience);
+		});
 
 		foreach(HeroSkillData item in HeroSkillData) {
 			item.init();
@@ -101,7 +105,7 @@ public class GameData {
 				return item;
 			}
 		}
-			return null;
+		return null;
 	}
 
 	public int CalculatePowerPoint(int itemCountSelect, int itemCountBomb, float ratio) {

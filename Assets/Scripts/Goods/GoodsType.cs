@@ -32,6 +32,5 @@ public enum GoodsType {
 	Barsetka = GoodsTypeGroup.IncreeseHealth + 10,
 	Chotki = GoodsTypeGroup.IncreeseHealth + 11,
 	Chasi = GoodsTypeGroup.IncreeseHealth + 12,
-	KrutayaBarsetka = GoodsTypeGroup.IncreeseHealth + 13,
-	Mashina = GoodsTypeGroup.IncreeseHealth + 14
+	Mashina = GoodsTypeGroup.IncreeseHealth + 13
 }

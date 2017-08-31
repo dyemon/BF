@@ -14,6 +14,9 @@ public class GameObjectResources : ScriptableObject {
 	public Sprite[] EnemyIcon;
 	public Sprite[] QuestIcon;
 
+	public Sprite[] GoodsDamage;
+	public Sprite[] GoodsHealth;
+
 	public Sprite DamageIcon;
 	public Sprite HealthIcon;
 	public Sprite ExperienceIcon;
@@ -116,5 +119,12 @@ public class GameObjectResources : ScriptableObject {
 		}
 
 		throw new System.Exception("Invalid quest icon for condition type: " + quest.ConditionType);
+	}
+
+	public Sprite GetGoodsIcon(GoodsType type) {
+		int groupType = (int)type / 100;
+		Sprite[] icons = groupType == 0 ? GoodsDamage : GoodsHealth;
+
+		return icons[(int)type % 100];
 	}
 }

@@ -11,6 +11,9 @@ public class LoadScene : MonoBehaviour, IFBCallback {
 		GameResources.Instance.LoadSettings();
 		GameResources.Instance.AddEventListeners();
 
+		UserData uData = GameResources.Instance.GetUserData();
+		uData.UpDateQuests(QuestType.SocialFB);
+
 		HttpRequester.Instance.SetBaseUrl(GameResources.Instance.Settings.ReadValue("net", "baseUrl", ""));
 	}
 

@@ -19,12 +19,15 @@ public class FBLoggedScene : WindowScene, IFBCallback {
 
 	void OnEnable() {
 		save = false;
+		QuestController.Instance.onQuestUpdate += OnQuestUpdate;
 	}
+
 
 	void OnDisable() {
 		if(save) {
 			GameResources.Instance.SaveUserData(null, false);
 		}
+		QuestController.Instance.onQuestUpdate -= OnQuestUpdate;
 	}
 
 	public void OnFBInit() {
@@ -199,4 +202,9 @@ public class FBLoggedScene : WindowScene, IFBCallback {
 		SceneController.Instance.LoadSceneAdditive(GiftScene.SceneName, GiftScene.Type.Receive);
 	}
 
+	void OnQuestUpdate() {
+		UserData uData = GameResources.Instance.GetUserData();
+		QuestProgressData pd = uData.GetActiveQuestOne(QuestType.SocialFB, false);
+		UpdateQuestInfo(pd);
+	}
 }

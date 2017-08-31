@@ -72,7 +72,7 @@ public class GameTimers {
 	public void StarGiftCach() {
 		Timer t = TimerController.Instance.GetTimer(GIFTCACHE_TIMER_CODE);
 		if(t == null) {
-			t = TimerController.Instance.AddTimer(GIFTCACHE_TIMER_CODE).SetPeriod(60 * 1)
+			t = TimerController.Instance.AddTimer(GIFTCACHE_TIMER_CODE).SetPeriod(60 * 10)
 				.SetCount(1);
 		}
 		t.Start();

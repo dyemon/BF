@@ -5,6 +5,14 @@ using UnityEngine;
 public class QuestController {
 	public static readonly QuestController Instance = new QuestController();
 
+	public delegate void OnQuestUpdate();
+	public event OnQuestUpdate onQuestUpdate;
+
+	void FireQuestUpdate() {
+		if(onQuestUpdate != null) {
+			onQuestUpdate();
+		}
+	}
 
 	public void OnCollectTileItem(TileItem ti) {
 		if(ti == null) {
@@ -88,5 +96,15 @@ public class QuestController {
 
 	public void UseBlathata() {
 		IncreaseActiveQuest(QuestType.Game, QuestConditionType.UseBlathata, 1);
+	}
+
+	public void SendGift(QuestType type, int count) {
+		IncreaseActiveQuest(type, QuestConditionType.SendGift, count);
+		FireQuestUpdate();
+	}
+
+	public void ReceiveGift(QuestType type, int count) {
+		IncreaseActiveQuest(type, QuestConditionType.GetGift, count);
+		FireQuestUpdate();
 	}
 }

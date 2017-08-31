@@ -5,23 +5,113 @@
 			"Health": 0,
 			"Damage": 10,
 			"MinExperience": 10,
-			"PriceTypeAsString": "Energy",
+			"PriceTypeAsString": "Mobile",
 			"PriceValue": 10
 	},{
 			"TypeAsString":	"Gruzilo",
 			"Name": "Грузило",
 			"Health": 0,
-			"Damage": 20,
+			"Damage": 15,
 			"MinExperience": 20,
-			"PriceTypeAsString": "Money",
+			"PriceTypeAsString": "Ring",
 			"PriceValue": 10
 	},{
+			"TypeAsString":	"Kluchi",
+			"Name": "Связка ключей",
+			"Health": 0,
+			"Damage": 20,
+			"MinExperience": 30,
+			"PriceTypeAsString": "Mobile",
+			"PriceValue": 15
+	},{
+			"TypeAsString":	"Rozochka",
+			"Name": "Розочка",
+			"Health": 0,
+			"Damage": 25,
+			"MinExperience": 40,
+			"PriceTypeAsString": "Ring",
+			"PriceValue": 15
+	},{
+			"TypeAsString":	"Cep",
+			"Name": "Цепь",
+			"Health": 0,
+			"Damage": 30,
+			"MinExperience": 50,
+			"PriceTypeAsString": "Mobile",
+			"PriceValue": 20
+	},{
+			"TypeAsString":	"Dereviashka",
+			"Name": "Деревяшка",
+			"Health": 0,
+			"Damage": 35,
+			"MinExperience": 60,
+			"PriceTypeAsString": "Ring",
+			"PriceValue": 20
+	},{
+			"TypeAsString":	"Truba",
+			"Name": "Труба",
+			"Health": 0,
+			"Damage": 40,
+			"MinExperience": 70,
+			"PriceTypeAsString": "Mobile",
+			"PriceValue": 25
+	},{
+			"TypeAsString":	"Molotok",
+			"Name": "Молоток",
+			"Health": 0,
+			"Damage": 50,
+			"MinExperience": 90,
+			"PriceTypeAsString": "Mobile",
+			"PriceValue": 30
+	},{
+			"TypeAsString":	"GaechniyKluch",
+			"Name": "Гаечный ключ",
+			"Health": 0,
+			"Damage": 55,
+			"MinExperience": 100,
+			"PriceTypeAsString": "Ring",
+			"PriceValue": 30
+	},{
+			"TypeAsString":	"Gvozdoder",
+			"Name": "Гвоздодёр",
+			"Health": 0,
+			"Damage": 60,
+			"MinExperience": 150,
+			"PriceTypeAsString": "Mobile",
+			"PriceValue": 50
+	},{
+			"TypeAsString":	"Kastet",
+			"Name": "Кастет",
+			"Health": 0,
+			"Damage": 65,
+			"MinExperience": 200,
+			"PriceTypeAsString": "Ring",
+			"PriceValue": 100
+	},{
+			"TypeAsString":	"Bita",
+			"Name": "Бита",
+			"Health": 0,
+			"Damage": 70,
+			"MinExperience": 500,
+			"PriceTypeAsString": "Mobile",
+			"PriceValue": 120
+	},{
+			"TypeAsString":	"Dubinka",
+			"Name": "Дубинка",
+			"Health": 0,
+			"Damage": 75,
+			"MinExperience": 1000,
+			"PriceTypeAsString": "Ring",
+			"PriceValue": 120
+	},
+
+	{
 			"TypeAsString":	"Zazhigalka",
 			"Name": "Зажигалка",
 			"Health": 10,
 			"Damage": 0,
 			"MinExperience": 10,
-			"PriceTypeAsString": "Ring",
+			"PriceTypeAsString": "Mobile",
 			"PriceValue": 10
 	},{
 			"TypeAsString":	"Karti",
@@ -29,8 +119,104 @@
 			"Health": 20,
 			"Damage": 0,
 			"MinExperience": 20,
-			"PriceTypeAsString": "Star",
+			"PriceTypeAsString": "Ring",
 			"PriceValue": 10
+	},{
+			"TypeAsString":	"Znachok",
+			"Name": "Значок",
+			"Health": 30,
+			"Damage": 0,
+			"MinExperience": 30,
+			"PriceTypeAsString": "Mobile",
+			"PriceValue": 20
+	},{
+			"TypeAsString":	"Baclazhka",
+			"Name": "Баклажка",
+			"Health": 40,
+			"Damage": 0,
+			"MinExperience": 40,
+			"PriceTypeAsString": "Ring",
+			"PriceValue": 25
+	},{
+			"TypeAsString":	"Stakan",
+			"Name": "Стакан",
+			"Health": 50,
+			"Damage": 0,
+			"MinExperience": 50,
+			"PriceTypeAsString": "Mobile",
+			"PriceValue": 30
+	},{
+			"TypeAsString":	"Krosovki",
+			"Name": "Кросовки",
+			"Health": 60,
+			"Damage": 0,
+			"MinExperience": 60,
+			"PriceTypeAsString": "Ring",
+			"PriceValue": 35
+	},{
+			"TypeAsString":	"Noski",
+			"Name": "Носки",
+			"Health": 70,
+			"Damage": 0,
+			"MinExperience": 70,
+			"PriceTypeAsString": "Mobile",
+			"PriceValue": 40
+	},{
+			"TypeAsString":	"Telogreyka",
+			"Name": "Телогрейка",
+			"Health": 80,
+			"Damage": 0,
+			"MinExperience": 80,
+			"PriceTypeAsString": "Ring",
+			"PriceValue": 45
+	},{
+			"TypeAsString":	"Shapka",
+			"Name": "Шапка",
+			"Health": 90,
+			"Damage": 0,
+			"MinExperience": 90,
+			"PriceTypeAsString": "Mobile",
+			"PriceValue": 50
+	},{
+			"TypeAsString":	"Botinki",
+			"Name": "Ботинки",
+			"Health": 100,
+			"Damage": 0,
+			"MinExperience": 100,
+			"PriceTypeAsString": "Ring",
+			"PriceValue": 55
+	},{
+			"TypeAsString":	"Barsetka",
+			"Name": "Барсетка",
+			"Health": 110,
+			"Damage": 0,
+			"MinExperience": 200,
+			"PriceTypeAsString": "Mobile",
+			"PriceValue": 60
+	},{
+			"TypeAsString":	"Chotki",
+			"Name": "Чотки",
+			"Health": 120,
+			"Damage": 0,
+			"MinExperience": 500,
+			"PriceTypeAsString": "Ring",
+			"PriceValue": 65
+	},{
+			"TypeAsString":	"Chasi",
+			"Name": "Часы",
+			"Health": 130,
+			"Damage": 0,
+			"MinExperience": 1000,
+			"PriceTypeAsString": "Mobile",
+			"PriceValue": 70
+	},{
+			"TypeAsString":	"Mashina",
+			"Name": "Машина",
+			"Health": 150,
+			"Damage": 0,
+			"MinExperience": 2000,
+			"PriceTypeAsString": "Mobile",
+			"PriceValue": 80
 	}],
 
 	"HeroSkillData": [{
