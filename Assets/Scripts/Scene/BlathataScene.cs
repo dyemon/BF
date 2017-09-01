@@ -15,6 +15,7 @@ public class BlathataScene : WindowScene {
 	public Text PriceText;
 	public Text StarCountText;
 	public GameObject BuyStarStartPos;
+	public GameObject BuyStartGO;
 
 	private int starPrice;
 	const int STAR_BUY_COUNT = 3;
@@ -38,10 +39,18 @@ public class BlathataScene : WindowScene {
 	}
 	
 	void OnSelectBox(GameObject box) {
+		if(box.GetComponent<CanvasGroup>().alpha != 1) {
+			return;
+		}
+
 		AwardItem award = GameResources.Instance.GetGameData().BlathataData.GetAward();
 
 		AssetsPanel.DisableUpdate(true);
 		if(!GameResources.Instance.ChangeUserAsset(UserAssetType.Star, -1)) {
+			BuyStartGO.GetComponent<AnimatedObject>()
+				.AddResize(null, new Vector3(1.3f, 1.3f, 1), 0.3f)
+				.AddResize(null, new Vector3(1f, 1f, 1), 0.3f)
+				.Build().Run();
 			
 			AssetsPanel.DisableUpdate(false);
 			return;
@@ -62,6 +71,7 @@ public class BlathataScene : WindowScene {
 			.OnStop(() => {CompleteTakeBox(animImg, box);} ).Run();
 
 		box.GetComponent<AnimatedObject>().AddFadeUI(null, 0, 1f).Build().Run();
+
 	}
 
 	void CompleteTakeBox(GameObject animGO, GameObject box) {
