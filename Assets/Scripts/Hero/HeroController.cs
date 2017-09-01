@@ -10,6 +10,7 @@ public class HeroController : MonoBehaviour {
 
 	UserData userData;
 	public int Health { get; set; }
+	public int Damage { get; set; }
 	public int CurrentPowerPoints { get; set; }
 
 	#region Inspector
@@ -44,15 +45,12 @@ public class HeroController : MonoBehaviour {
 	public HeroSkillController heroSkillController;
 
 	private int startHealth;
+	private int startDamage;
+
 	public int StartHealth {
 		get { return startHealth; }
 	}
-
-	public int Damage {
-		get { 
-			return userData.Damage; 
-		}
-	}
+		
 
 	public int PowerPointSuccess {
 		get { 
@@ -71,6 +69,7 @@ public class HeroController : MonoBehaviour {
 	void Awake() {
 		userData = GameResources.Instance.GetUserData();
 		startHealth = Health = userData.Health;
+		startDamage = Damage = userData.Damage;
 		ResetPowerPoints();
 	}
 
@@ -92,6 +91,12 @@ public class HeroController : MonoBehaviour {
 			startHealth = Health;
 		}
 	}
+	public void IncreaseDamage(int ratio, bool updateStart) {
+		Damage = CalcNewDamage(ratio);
+		if(updateStart) {
+			startDamage = Damage;
+		}
+	}
 
 	public void IncreaseHealthByValue(int value, bool updateStart) {
 		Health += value;
@@ -102,6 +107,9 @@ public class HeroController : MonoBehaviour {
 
 	public int CalcNewHealth(int ratio) {
 		return Health + (int)Mathf.Round(startHealth * ratio / 100f);
+	}
+	public int CalcNewDamage(int ratio) {
+		return Damage + (int)Mathf.Round(startDamage * ratio / 100f);
 	}
 
 	public void ResetPowerPoints() {

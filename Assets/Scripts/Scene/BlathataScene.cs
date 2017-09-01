@@ -42,7 +42,7 @@ public class BlathataScene : WindowScene {
 
 		AssetsPanel.DisableUpdate(true);
 		if(!GameResources.Instance.ChangeUserAsset(UserAssetType.Star, -1)) {
-			DisplayMessageController.DisplayMessage("Не хватает звёзд");
+			
 			AssetsPanel.DisableUpdate(false);
 			return;
 		}

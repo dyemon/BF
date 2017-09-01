@@ -60,7 +60,7 @@ public class LevelFailureHelpScene : WindowScene {
 		}
 
 		if(reason == LevelFailureType.HealthEnded) {
-			heroController.IncreaseHealth((int)Mathf.Round((float)heroController.StartHealth / helpData.Health), false);
+			heroController.Health = (int)Mathf.Round((float)heroController.StartHealth / helpData.Health);
 		} else {
 			restrictionsController.IncreaseCurrentTurns(helpData.Turns);
 		}

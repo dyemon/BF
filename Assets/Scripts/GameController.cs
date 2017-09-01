@@ -158,6 +158,8 @@ public class GameController : MonoBehaviour {
 
 	public EducationController educationController;
 
+	private bool ifFistTurn = true;
+
 	void OnEnable() {
 		if(SceneControllerHelper.instance != null) {
 			SceneControllerHelper.instance.onUnloadScene += OnUnloadScene;
@@ -1276,6 +1278,22 @@ public class GameController : MonoBehaviour {
 		educationController.StartStep();
 		if(educationController.HasCurrentEducationStep()) {
 			SetTileItemsRenderState(TileItemRenderState.Dark, null);
+		}
+
+		if(ifFistTurn) {
+			OnFirstTurn();
+			ifFistTurn = false;
+		}
+	}
+
+	void OnFirstTurn() {
+		if(!fightActive) {
+			return;
+		}
+		FightHelpData fd = gameData.FightHelpData;
+		if(heroController.Health + heroController.Health * fd.ConditionHealthRatio / 100f <= enemyController.Health ||
+		   heroController.Damage + heroController.Damage * fd.ConditionDamageRatio / 100f <= enemyController.Damage) {
+			SceneController.Instance.LoadSceneAdditive(FightHelpScene.SceneName, heroController);
 		}
 	}
 
@@ -2893,6 +2911,8 @@ public class GameController : MonoBehaviour {
 			IncreaseHeroSkillCount(-1);
 			QuestController.Instance.UseMagic();
 		} else if(name == LevelFailureHelpScene.SceneName) {
+			FPPanel.UpdateFightParams();
+		} else if(name == FightHelpScene.SceneName) {
 			FPPanel.UpdateFightParams();
 		}
 	}

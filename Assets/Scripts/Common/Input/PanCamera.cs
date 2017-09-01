@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class PanCamera : MonoBehaviour {
-	public Vector2 Speed = Vector2.zero;
-	public Vector2 ShowdownSpeed = Vector2.zero;
+	public float Speed = 1;
+	public float ShowdownSpeed = 0;
 	public float AnimateTime = 1f;
 
 	public bool FixX = false;
@@ -16,7 +16,7 @@ public class PanCamera : MonoBehaviour {
 	public float MaxY = 0;
 
 	private bool animate = false;
-	private Vector2 touchDeltaPosition;
+	private Vector3 moveDelta;
 
 	Camera curCamera;
 
@@ -42,7 +42,8 @@ public class PanCamera : MonoBehaviour {
 			if(EventSystem.current.IsPointerOverGameObject(InputController.GetFingerId())) {
 				return;
 			}
-			touchDeltaPosition = touches[0].deltaPosition;
+			Vector2 touchDeltaPosition = touches[0].deltaPosition;
+
 			float height = GetCamera().orthographicSize;
 			float width = height * GetCamera().aspect;
 
@@ -52,17 +53,17 @@ public class PanCamera : MonoBehaviour {
 			if(FixY) {
 				touchDeltaPosition.y = 0;
 			}
-			Vector3 move = transform.position + new Vector3(-touchDeltaPosition.x * Speed.x, -touchDeltaPosition.y * Speed.y, 0);
-			SetPosition(move);
+			Vector3 move = GetCamera().WorldToScreenPoint(transform.position) + new Vector3(-touchDeltaPosition.x, -touchDeltaPosition.y, 0);
+			moveDelta = GetCamera().ScreenToWorldPoint(move) - transform.position;
+			SetPosition(transform.position + moveDelta*Speed);
 		} else if(touches.Length > 0 && touches[0].phase == TouchPhase.Ended) {
-			//StartCoroutine(SetPositionInternal());
+			StartCoroutine(SetPositionInternal());
 		}
 	}
 
 	public void SetPosition(Vector3 pos) {
 		float height = GetCamera().orthographicSize;
 		float width = height * GetCamera().aspect;
-
 
 		if(!FixX && !(2*width > (MaxX - MinX))) {
 			if(pos.x - width < MinX) {
@@ -86,17 +87,14 @@ public class PanCamera : MonoBehaviour {
 	}
 
 	 IEnumerator SetPositionInternal() {
-		float curTime = 0;
-		Vector3 startPos = transform.position;
-		Vector3 pos = startPos + new Vector3(touchDeltaPosition.x, touchDeltaPosition.y, 0);
-		animate = true;
+		Vector3 pos = transform.position;
+		Vector3 delta = moveDelta;
+		float speed = ShowdownSpeed;
 
-		while(curTime < AnimateTime) {
-			curTime += Time.deltaTime;
-			float r = Mathf.Min(curTime/AnimateTime, 1);
-			transform.position = Vector3.Lerp(startPos, pos, r);
+		while(delta.magnitude > 0.001f) {
+			SetPosition(transform.position + delta);
+			delta *= speed;
 			yield return 0;
 		}
-		animate = false;
 	}
 }

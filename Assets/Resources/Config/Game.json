@@ -667,5 +667,14 @@
 				{"TypeAsString": "Money", "Value": 35}
 			]
 		}]																						
-	}]
+	}],
+
+	"FightHelpData": {
+		"ConditionDamageRatio" : 30,
+		"ConditionHealthRatio" : 50,
+		"IncreaceDamageRatio": 20,
+		"IncreaceHealthRatio": 40,
+		"PriceTypeAsString": "Money",
+		"PriceValue": 20 
+		}
 }

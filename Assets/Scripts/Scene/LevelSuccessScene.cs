@@ -37,7 +37,7 @@ public class LevelSuccessScene : MonoBehaviour {
 		LevelData levelData = GameResources.Instance.GetLevel(App.CurrentLevel);
 		LevelAwardData awardData = levelData.SuccessAwardData;
 		UserData uData = GameResources.Instance.GetUserData();
-		successCount = 1;//uData.GetSuccessCount(App.CurrentLevel); 
+		successCount = uData.GetSuccessCount(App.CurrentLevel); 
 		Preconditions.Check(successCount > 0, "Success level count for level {0} = 0", App.CurrentLevel);
 
 		Description.text = App.CurrentLevel + ": " + levelData.Name;

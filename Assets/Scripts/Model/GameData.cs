@@ -29,6 +29,7 @@ public class GameData {
 	public RandomAwardData GiftData;
 	public RandomAwardData BlathataData;
 	public KachalkaData[] KachalkaDataItems;
+	public FightHelpData FightHelpData;
 
 	public void Init() {
 		/*
@@ -84,6 +85,7 @@ public class GameData {
 		FortunaData.Init();
 		GiftData.Init();
 		BlathataData.Init();
+		FightHelpData.Init();
 
 		foreach(KachalkaData item in KachalkaDataItems) {
 			item.Init();
