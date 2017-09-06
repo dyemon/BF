@@ -25,7 +25,8 @@ public class LevelFailureHelpScene : WindowScene {
 
 	private LevelFailureHelpData helpData;
 
-	void Start () {
+	protected override void Start() {
+		base.Start();
 		if(SceneControllerHelper.instance != null) {
 			System.Object[] param = (System.Object[])SceneControllerHelper.instance.GetParameter(SceneName);
 			reason = (LevelFailureType)param[0];
@@ -66,6 +67,12 @@ public class LevelFailureHelpScene : WindowScene {
 		}
 
 		GameResources.Instance.SaveUserData(null, false);
-		Close();
+	//	SoundController.Play(SoundController.Instance.Kassa, 3);
+		Close(null, false);
+	}
+
+	public void OnCapitulate() {
+		SoundController.Play(SoundController.Instance.LevelFailure);
+		SceneController.Instance.LoadSceneAsync(LevelFailureScene.SceneName);
 	}
 }

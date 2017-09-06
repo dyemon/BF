@@ -21,7 +21,9 @@ public class DailyBonusScene : WindowScene {
 		GameResources.Instance.SaveUserData(null, false);
 	}
 
-	void Start() {
+	protected override void Start() {
+		base.Start();
+
 		UserData uData = GameResources.Instance.GetUserData();
 		Preconditions.Check(!uData.DailyBonusTaken, "Daily bonus alredy taken");
 

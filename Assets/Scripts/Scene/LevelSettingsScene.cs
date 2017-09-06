@@ -11,7 +11,9 @@ public class LevelSettingsScene : WindowScene {
 
 	private LocalData localData;
 
-	void Start() {
+	protected override void Start() {
+		base.Start();
+
 		LevelData levelData = GameResources.Instance.GetLevel(App.CurrentLevel);
 
 		localData = GameResources.Instance.GetLocalData();
@@ -26,6 +28,7 @@ public class LevelSettingsScene : WindowScene {
 
 	public void OnCapitulate () {
 		ParametersController.Instance.SetParameter(ParametersController.CAPITULATE_NOT_ENDED, true);
+		SoundController.Play(SoundController.Instance.LevelFailure);
 		SceneController.Instance.LoadSceneAsync(LevelFailureScene.SceneName);
 	}
 
@@ -40,5 +43,7 @@ public class LevelSettingsScene : WindowScene {
 		localData.MusicOn	= !localData.MusicOn;
 		MusicButton.Toggle(localData.MusicOn);
 		GameResources.Instance.SaveLocalData();
+		MusicController.Instance.Enable(localData.MusicOn);
+
 	}
 }

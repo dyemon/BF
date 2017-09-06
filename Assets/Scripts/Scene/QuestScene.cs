@@ -31,7 +31,9 @@ public class QuestScene : WindowScene {
 	}
 
 	// Use this for initialization
-	void Start () {
+	protected override void Start() {
+		base.Start();
+
 		UserData uData = GameResources.Instance.GetUserData();
 		uData.UpDateQuests(QuestType.Game);
 

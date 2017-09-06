@@ -19,7 +19,9 @@ public class HeroSkillScene : WindowScene {
 	private EducationController educationController;
 
 	// Use this for initialization
-	void Start () {
+	protected override void Start() {
+		base.Start();
+
 		if(SceneControllerHelper.instance != null) {
 			skills = (IList<HeroSkillData>)SceneControllerHelper.instance.GetParameter(SceneName);
 		} else {
@@ -77,7 +79,7 @@ public class HeroSkillScene : WindowScene {
 			return;
 		}
 
-		Close(skill);
+		Close(skill, false);
 	}
 
 	void OnUpdateUserAssets(UserAssetType? type, int value) {

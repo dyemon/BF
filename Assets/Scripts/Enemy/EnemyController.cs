@@ -115,8 +115,15 @@ public class EnemyController : MonoBehaviour {
 			tEntry = spineAnimationState.AddAnimation(0, damageAnimationName, false, 0);
 			tEntry.timeScale = 2.2f;
 			tEntry = spineAnimationState.AddAnimation(0, damageAnimationName, false, 0);
+
+
+			SoundController.Play(SoundController.Instance.Strike1, 1, 0.7f);
+			SoundController.Play(SoundController.Instance.Strike2, 1, 1.2f);
+			SoundController.Play(SoundController.Instance.Strike3, 1, 1.8f);
+		
 		} else {
 			spineAnimationState.AddAnimation(0, damageAnimationName, false, 0.7f);
+			SoundController.Play(SoundController.Instance.Strike4, 1, 0.7f);
 		}
 		spineAnimationState.AddAnimation(0, currentIdleAnimation, true, 0);
 	}
@@ -126,6 +133,7 @@ public class EnemyController : MonoBehaviour {
 			spineAnimationState.SetAnimation(0, currentIdleAnimation, false);
 			TrackEntry tEntry = spineAnimationState.AddAnimation(0, damageAnimationName, false, 0.7f);
 	//		tEntry.EndTime = 0.3f;
+			SoundController.Play(SoundController.Instance.Strike2, 1, 0.7f);
 		}
 		currentIdleAnimation = idl2eAnimationName;
 		spineAnimationState.AddAnimation(0, currentIdleAnimation, true, 0);

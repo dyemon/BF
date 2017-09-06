@@ -28,7 +28,8 @@ public class KachalkaScene : WindowScene {
 		}
 	}
 
-	void Start () {
+	protected override void Start() {
+		base.Start();
 		kachalkaDataItems = GameResources.Instance.GetGameData().KachalkaDataItems;
 
 		UpdateKachalkaItems();

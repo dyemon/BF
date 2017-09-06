@@ -61,7 +61,9 @@ public class FBLoggedScene : WindowScene, IFBCallback {
 	}
 		
 
-	void Start() {
+	protected override void Start() {
+		base.Start();
+	
 		TakenAwardBtn.gameObject.SetActive(false);
 		QuestDescription.SetActive(false);
 		UserName.text = Account.Instance.FBUser.Name;

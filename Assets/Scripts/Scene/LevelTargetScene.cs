@@ -12,7 +12,9 @@ public class LevelTargetScene : WindowScene {
 	public GameObject TargetIten;
 	public GameObject StartButton;
 
-	void Start () {
+	protected override void Start() {
+		base.Start();
+
 		int level = App.CurrentLevel;
 		LevelData levelData = GameResources.Instance.GetLevel(level);
 

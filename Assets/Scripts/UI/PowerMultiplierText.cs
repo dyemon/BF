@@ -12,6 +12,7 @@ public class PowerMultiplierText : FlashText {
 	public void SetValue(float val) {
 		if(val > value) {
 			SetText(string.Format("x{0}", val), true);
+			SoundController.Play(SoundController.Instance.ComboCollect);
 		}
 		value = val;
 	}

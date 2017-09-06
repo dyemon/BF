@@ -17,6 +17,10 @@ public class FBNotLoggedScene : WindowScene, IFBCallback {
 
 	}
 
+	protected override void Start() {
+		base.Start();
+	}
+
 	public void OnFBInit() {
 	}
 

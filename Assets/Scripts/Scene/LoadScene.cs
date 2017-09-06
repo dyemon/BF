@@ -17,6 +17,10 @@ public class LoadScene : MonoBehaviour, IFBCallback {
 		HttpRequester.Instance.SetBaseUrl(GameResources.Instance.Settings.ReadValue("net", "baseUrl", ""));
 	}
 
+	void Start() {
+		MusicController.Play(MusicController.Instance.Default);
+	}
+
 	void OnEnable() {
 		HttpRequester.Instance.AddEventListener(HttpRequester.URL_USER_LOAD, OnSuccessLoadUserData, OnErrorLoadUserData);
 	}

@@ -37,7 +37,9 @@ public class EnergyScene : WindowScene {
 		}
 	}
 
-	void Start () {
+	protected override void Start() {
+		base.Start();
+		
 		userDataPanel.SetCurrentScene(SceneName, this);
 		shopData = GameResources.Instance.GetGameData().UserAssetsShopData;
 		energyData = GameResources.Instance.GetGameData().EnergyData;
@@ -133,7 +135,7 @@ public class EnergyScene : WindowScene {
 		}
 
 		isBuy = true;
-
+		SoundController.Play(SoundController.Instance.Kassa, 3);
 		GameObject assetImg = UnityUtill.FindByName(Offers.transform, "BuyButton" + count)
 			.Find("Icon/Image").gameObject;
 

@@ -98,7 +98,10 @@ public class GameData {
 	}
 	
 	public float GetPowerMultiplier(int itemCount) {
-		return 1 + ((int) (itemCount / 6f)) *0.5f;
+		if(itemCount < 6) {
+			return 1;
+		}
+		return 0.5f + ((int) (itemCount / 3f)) *0.5f;
 	}
 
 	public GoodsData GetGoodsData(GoodsType type) {

@@ -24,7 +24,9 @@ public class BlathataScene : WindowScene {
 		GameResources.Instance.SaveUserData(null, false);
 	}
 
-	void Start () {
+	protected override void Start() {
+		base.Start();
+
 		foreach(GameObject item in awardBoxes) {
 			item.GetComponent<Button>().onClick
 				.AddListener(() => {OnSelectBox(item);});

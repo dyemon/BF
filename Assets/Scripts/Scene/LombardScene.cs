@@ -33,7 +33,8 @@ public class LombardScene : WindowScene {
 		}
 	}
 
-	void Start () {
+	protected override void Start() {
+		base.Start();
 		userDataPanel.SetCurrentScene(SceneName, this);
 
 		buttons.Add(UserAssetType.Money, BuyButtons[0]);
@@ -123,7 +124,7 @@ public class LombardScene : WindowScene {
 		}
 
 		isBuy = true;
-
+		SoundController.Play(SoundController.Instance.Kassa, 3);
 
 		GameObject assetImg = UnityUtill.FindByName(Offers.transform, "BuyButton" + count)
 			.Find("Icon/Image").gameObject;

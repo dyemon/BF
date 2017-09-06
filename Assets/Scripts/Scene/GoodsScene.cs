@@ -32,7 +32,8 @@ public class GoodsScene : WindowScene {
 	}
 
 	// Use this for initialization
-	void Start () {
+	protected override void Start() {
+		base.Start();
 		UpdateGoodsItems();
 		UpdateUserEquipment();
 	}

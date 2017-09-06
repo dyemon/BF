@@ -34,6 +34,8 @@ public class LevelFailureScene : MonoBehaviour {
 	}
 
 	void Start () {
+		MusicController.Play(MusicController.Instance.Default);
+
 		int i = 0;
 		LevelData levelData = GameResources.Instance.GetLevel(App.CurrentLevel);
 		UserData uData = GameResources.Instance.GetUserData();
@@ -131,6 +133,7 @@ public class LevelFailureScene : MonoBehaviour {
 
 	void StartAwardAnimate() {
 		AnimationGroup ag = GetComponent<AnimationGroup>();
+		float delay = 0;
 
 		foreach(GameObject item in awardItems) {
 			PriceItem pi = item.GetComponent<BuyButton>().GetPriceItem();
@@ -146,6 +149,8 @@ public class LevelFailureScene : MonoBehaviour {
 			animAward.GetComponent<AnimatedObject>().OnStop(() => {OnCompleteAward(animAward);} );
 
 			ag.Add(animAward.GetComponent<AnimatedObject>());
+			SoundController.Play(SoundController.Instance.Coins, 2, delay);
+			delay += 0.2f;
 		}
 
 		if(ag.AnimationExist()) {

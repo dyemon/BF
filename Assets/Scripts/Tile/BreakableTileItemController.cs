@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 public class BreakableTileItemController : TileItemController {
+	public static IList<AudioClip> PlayedAudio = new List<AudioClip>();
+
 	private int health = 1;
 	public Sprite[] StateSprites;
 	public Sprite BrokeSprite;
@@ -10,6 +13,7 @@ public class BreakableTileItemController : TileItemController {
 	private int startHealth = 0;
 	public GameObject Splinter;
 	public int SplintersCount;
+	public AudioClip DestroyAudio;
 
 	protected override void Start() {
 		base.Start();
@@ -32,6 +36,11 @@ public class BreakableTileItemController : TileItemController {
 
 		if(Splinter != null) {
 			displaySplinters();
+		}
+
+		if(DestroyAudio != null && !PlayedAudio.Contains(DestroyAudio)) {
+			PlayedAudio.Add(DestroyAudio);
+			SoundController.Play(DestroyAudio);
 		}
 
 		return health;

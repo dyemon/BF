@@ -160,6 +160,10 @@ public class GameController : MonoBehaviour {
 
 	private bool ifFistTurn = true;
 
+	private bool playCoinsSound = false;
+
+	private int prevSelectedItems = 0;
+
 	void OnEnable() {
 		if(SceneControllerHelper.instance != null) {
 			SceneControllerHelper.instance.onUnloadScene += OnUnloadScene;
@@ -179,6 +183,8 @@ public class GameController : MonoBehaviour {
 	}
 
 	void Start() {
+		MusicController.Play(MusicController.Instance.GameScene);
+
 		Instance = this;
 		QuestData qData = GameResources.Instance.GetQuestData();
 
@@ -437,20 +443,23 @@ public class GameController : MonoBehaviour {
 				tile = GetTile(hit.collider.gameObject);
 			}
 	
+			bool isCollect = false;
 			bool resetCurrentPowerPoint = false;
+			int selCount = selectedTiles.Count;
+
 			if(touch.phase == TouchPhase.Began) {
 				BeganTouch(tile);
 			} else if(touch.phase == TouchPhase.Moved) {
 				MoveTouch(tile);
 			} else if(touch.phase == TouchPhase.Ended) {
-				EndTouch(tile);
+				isCollect = EndTouch(tile);
 				resetCurrentPowerPoint = true;
 			} else if(touch.phase == TouchPhase.Canceled) {
 				ResetSelected();
 				resetCurrentPowerPoint = true;
 			}
 
-			UpdateCurrentPowerPoints(resetCurrentPowerPoint);
+			UpdateCurrentPowerPoints(resetCurrentPowerPoint, isCollect, selCount);
 		}
 		
 	}
@@ -614,20 +623,22 @@ public class GameController : MonoBehaviour {
 
 	}
 
-	private void EndTouch(Tile tile) {
+	private bool EndTouch(Tile tile) {
 		endTouchTile = tile;
 		if(educationController.IsStrict()) {
 			Vector2[] positions = educationController.GetPositions();
 			if(positions != null && positions.Length > selectedTiles.Count ) {
 				ResetSelected();
-				return;
+				return false;
 			}
 		}
 
 		if(selectedTiles.Count >= levelData.SuccessCount) {
 			CollectTileItems();
+			return true;
 		} else {
 			ResetSelected();
+			return false;
 		}
 	}
 
@@ -697,6 +708,9 @@ public class GameController : MonoBehaviour {
 
 	public void CollectTileItems() {
 		collectedTileItemsCount = 0;
+		playCoinsSound = false;
+		BreakableTileItemController.PlayedAudio.Clear();
+
 		damagedBarriers.Clear();
 		damagedTiles.Clear();
 
@@ -740,11 +754,19 @@ public class GameController : MonoBehaviour {
 			}
 		}
 
+		if(bombMarkTiles.Count > 0) {
+			SoundController.Play(SoundController.Instance.BombExplosion, 3); 
+		}
+
+		float soundDelay = 0;
 		foreach(Tile tile in selectedTiles) {
 			if(tile.GetTileItem() == null) {
 				continue;
 			}
 			InitTileItemCollectPS(tile);
+			SoundController.Play(SoundController.Instance.CollectTileItem, 1, soundDelay);
+			soundDelay += 0.04f;
+
 			bool isNotStatic = tile.GetTileItem().IsNotStatic;
 			CollectTileItem(tile);
 			if(BreakTileItems(tile.X, tile.Y, 1, isNotStatic)) {
@@ -825,10 +847,10 @@ public class GameController : MonoBehaviour {
 	
 
 		if(targetController.CheckSuccess()) {
-			Invoke("LevelSuccess", bombExplosionDelay + 0.5f);
+			LevelSuccess(bombExplosionDelay + 0.5f);
 			return;
 		} else if (!restrictionsController.CheckRestrictions()){
-			Invoke("LevelFailure", 0.5f);
+			LevelFailure(0.5f);
 		}
 
 		if(educationController.IsCurrentEducationType(EducationType.Collect)) {
@@ -2332,6 +2354,15 @@ public class GameController : MonoBehaviour {
 		}
 	}
 
+	private void LevelSuccess(float delay) {
+		SoundController.Play(SoundController.Instance.LevelSuccess);
+		Invoke("LevelSuccess", delay);
+	}
+	private void LevelFailure(float delay) {
+		
+		Invoke("LevelFailure", delay);
+	}
+
 	private void LevelSuccess() {
 		GameResources.Instance.LevelSuccess(App.CurrentLevel);
 		SceneController.Instance.LoadSceneAsync("LevelSuccess");
@@ -2339,6 +2370,7 @@ public class GameController : MonoBehaviour {
 
 	private void LevelFailure() {
 		if(imposibleCollect) {
+			SoundController.Play(SoundController.Instance.LevelFailure);
 			SceneController.Instance.LoadSceneAsync("LevelFailure");
 			return;
 		}
@@ -2356,7 +2388,8 @@ public class GameController : MonoBehaviour {
 	private void LevelFailureByColorCount() {
 		DisplayMessageController.DisplayMessage("Невозможно собрать цепочку", Color.red);
 		imposibleCollect = true;
-		Invoke("LevelFailure", 3);
+
+		LevelFailure(3);
 	}
 
 	private void OnCheckAutoDropOnDestroyData(TileItem tileItem) {
@@ -2505,14 +2538,26 @@ public class GameController : MonoBehaviour {
 		collectPS.GetComponent<Renderer>().sortingOrder = BOMB_EXPLOSION_SORTING_ORDER;
 	}
 
-	private void UpdateCurrentPowerPoints(bool reset) {
+	private void UpdateCurrentPowerPoints(bool reset, bool isCollect, int selCount) {
 		if(reset) {
 			evaluatePowerItems = 0;
 			powerMultiplier = 1;
 			evaluatePowerPoints = 0;
 			ShowCurrentPowerPoints();
+			prevSelectedItems = 0;
+			if(!isCollect && selCount > 0) {
+				SoundController.Instance.PlayTileItemCollect(0);
+			}
 			return;
 		}
+
+		if(prevSelectedItems == selectedTiles.Count) {
+			return;
+		}
+		if(prevSelectedItems < levelData.SuccessCount && selectedTiles.Count == levelData.SuccessCount) {
+			SoundController.Play(SoundController.Instance.ComboCollect);
+		}
+		prevSelectedItems = selectedTiles.Count;
 
 		int selectedItems = selectedTiles.Count;
 		int bombItems = 0;
@@ -2523,11 +2568,14 @@ public class GameController : MonoBehaviour {
 			}
 			bombItems++;
 		}
+			
 
 		evaluatePowerItems = selectedItems + bombItems;
 		powerMultiplier = gameData.GetPowerMultiplier(selectedItems) * heroSkillController.GetPowerPointMultiplier();
 		evaluatePowerPoints = gameData.CalculatePowerPoint(selectedItems, bombItems, powerMultiplier);
 		ShowCurrentPowerPoints();
+
+		SoundController.Instance.PlayTileItemCollect(selectedItems);
 	}
 
 	private void ShowCurrentPowerPoints() {
@@ -2554,7 +2602,7 @@ public class GameController : MonoBehaviour {
 			FPPanel.KillEnemy();
 			enemyController.Death();
 			if(targetController.CheckSuccess()) {
-				Invoke("LevelSuccess", 0.5f);
+				LevelSuccess(0.5f);
 				return;
 			} else if(skill == null) {
 				checkConsistencyConditions = 0;
@@ -2567,7 +2615,7 @@ public class GameController : MonoBehaviour {
 		}
 			
 		if(targetController.CheckSuccess()) {
-			Invoke("LevelSuccess", 0.5f);
+			LevelSuccess(0.5f);
 			return;
 		}
 
@@ -2578,14 +2626,14 @@ public class GameController : MonoBehaviour {
 
 		FPPanel.UpdateProgress();
 		if (!restrictionsController.CheckRestrictions()){
-			LevelFailure();
+			LevelFailure(0);
 		}
 			
 	}
 
 	private void OnEnemyStrike() {
 		if(targetController.CheckSuccess()) {
-			Invoke("LevelSuccess", 0.5f);
+			LevelSuccess(0.5f);
 			return;
 		}
 
@@ -2602,7 +2650,7 @@ public class GameController : MonoBehaviour {
 		}
 			
 		if(heroController.IsDeath(0) || !restrictionsController.CheckRestrictions()) {
-			LevelFailure();
+			LevelFailure(0);
 		}
 	}
 
@@ -2756,6 +2804,8 @@ public class GameController : MonoBehaviour {
 			animationGroup.Add(ao);
 			needUpdateAnawaliableTiles = true;
 		}
+
+		SoundController.Play(SoundController.Instance.Eater);
 	}
 		
 	public void ShowHeroSkillsWindow() {
@@ -2911,8 +2961,10 @@ public class GameController : MonoBehaviour {
 			IncreaseHeroSkillCount(-1);
 			QuestController.Instance.UseMagic();
 		} else if(name == LevelFailureHelpScene.SceneName) {
+			SoundController.Play(SoundController.Instance.Help);
 			FPPanel.UpdateFightParams();
 		} else if(name == FightHelpScene.SceneName) {
+			
 			FPPanel.UpdateFightParams();
 		}
 	}
@@ -3218,6 +3270,10 @@ public class GameController : MonoBehaviour {
 	//	GameResources.Instance.ChangeUserAsset(award.Type, award.Value);
 		GameResources.Instance.IncreaseTileItemCollect(tileItem.Type, App.CurrentLevel);
 
+		if(!playCoinsSound) {
+			SoundController.Play(SoundController.Instance.Coins, 4);
+			playCoinsSound = true;
+		}
 	//	saveUserData = true;
 	}
 

@@ -33,6 +33,8 @@ public class LevelSuccessScene : MonoBehaviour {
 	}
 
 	void Start () {
+		MusicController.Play(MusicController.Instance.Default);
+
 		int i = 0;
 		LevelData levelData = GameResources.Instance.GetLevel(App.CurrentLevel);
 		LevelAwardData awardData = levelData.SuccessAwardData;
@@ -93,6 +95,10 @@ public class LevelSuccessScene : MonoBehaviour {
 			ns.Run();
 		}
 
+		if(awardUpdat.Count > 0) {
+			SoundController.Play(SoundController.Instance.Cash);
+		}
+
 		Invoke("CompleteUpdateAward", awardUpdat.Count > 0? 1.2f : 0);
 	}
 
@@ -134,6 +140,7 @@ public class LevelSuccessScene : MonoBehaviour {
 
 	void StartAwardAnimate() {
 		AnimationGroup ag = GetComponent<AnimationGroup>();
+		float delay = 0;
 
 		foreach(GameObject item in awardItems) {
 			item.GetComponent<BuyButton>().UpdateAmountFromText();
@@ -150,6 +157,8 @@ public class LevelSuccessScene : MonoBehaviour {
 			animAward.GetComponent<AnimatedObject>().OnStop(() => {OnCompleteAward(animAward);} );
 
 			ag.Add(animAward.GetComponent<AnimatedObject>());
+			SoundController.Play(SoundController.Instance.Coins, 2, delay);
+			delay += 0.2f;
 		}
 
 		if(ag.AnimationExist()) {
@@ -186,6 +195,10 @@ public class LevelSuccessScene : MonoBehaviour {
 			} else {
 				GameResources.Instance.ChangeUserAsset(pi.Type, pi.Value);
 			}
+		}
+
+		if(awardItems.Count > 0) {
+			SoundController.Play(SoundController.Instance.Cash);
 		}
 
 		sumExperience *= 2;

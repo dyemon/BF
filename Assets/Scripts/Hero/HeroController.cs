@@ -143,6 +143,7 @@ public class HeroController : MonoBehaviour {
 			spineAnimationState.SetAnimation(0, idleAnimationName, false); 
 			spineAnimationState.AddAnimation(0, damageAnimationName, false, 0.7f);
 			spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
+			SoundController.Play(SoundController.Instance.Strike1, 1, 0.7f);
 		} else {
 			StartCoroutine(TemporarilyDeactivate(0.6f, 0.2f));
 		}
@@ -170,6 +171,7 @@ public class HeroController : MonoBehaviour {
 	public void UseSkill() {
 		spineAnimationState.SetAnimation(0, getCardAnimationName, false); 
 		spineAnimationState.AddAnimation(0, idleAnimationName, true, 0);
+		SoundController.Play(SoundController.Instance.HeroSkill, 1, 1.4f);
 	}
 
 	private IEnumerator TemporarilyDeactivate(float duration1, float duration2) {

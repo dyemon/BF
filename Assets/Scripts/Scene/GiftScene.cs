@@ -65,7 +65,9 @@ public class GiftScene : WindowScene, IFBCallback {
 		fbController.RequestFriendsList();
 	}
 
-	void Start () {
+	protected override void Start() {
+		base.Start();
+
 		if(SceneController.Instance != null) {
 			currentSceneType = (Type)SceneController.Instance.GetParameter(SceneName);
 		}

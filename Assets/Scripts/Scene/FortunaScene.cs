@@ -31,7 +31,9 @@ public class FortunaScene : WindowScene {
 		GameTimers.Instance.onTimerFortuna -= OnTimerFortuna;
 	}
 
-	void Start () {
+	protected override void Start() {
+		base.Start();
+
 		fData = GameResources.Instance.GetGameData().FortunaData;
 		UserData uData = GameResources.Instance.GetUserData();
 		UpdateTimerButton(uData.FortunaTryCount, GetTimerCount());

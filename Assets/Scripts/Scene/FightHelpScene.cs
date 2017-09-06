@@ -31,7 +31,9 @@ public class FightHelpScene : WindowScene {
 	}
 
 	// Use this for initialization
-	void Start () {
+	protected override void Start() {
+		base.Start();
+
 		if(SceneController.Instance != null) {
 			heroController = SceneController.Instance.GetParameter(SceneName) as HeroController;
 		}
@@ -68,6 +70,7 @@ public class FightHelpScene : WindowScene {
 		GameResources.Instance.SaveUserData(null, false);
 
 		isLock = true;
+		//SoundController.Play(SoundController.Instance.Kassa, 3);
 		Help(isHealth);
 	}
 
@@ -118,6 +121,12 @@ public class FightHelpScene : WindowScene {
 			}).Build().Run();
 
 		Destroy(animItem, 2f);
-		Invoke("Close", 0.5f);
+		Invoke("CloseWithHelp", 1f);
+
+	}
+
+	void CloseWithHelp() {
+		SoundController.Play(SoundController.Instance.Help, 3);
+		Close(null, false);
 	}
 }
