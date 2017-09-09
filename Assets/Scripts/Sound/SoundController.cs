@@ -5,6 +5,11 @@ using UnityEngine;
 public class SoundController : MonoBehaviour {
 	public static SoundController Instance;
 
+	public const int COINS_VOLUME = 3;
+	public const int KASSA_VOLUME = 3;
+	public const int STAT_VOLUME = 3;
+	public const int EXPERIENCE_VOLUME = 3;
+
 	public AudioClip[] TileItemCollect;
 	public AudioClip ComboCollect;
 	public AudioClip CollectTileItem;
@@ -12,8 +17,12 @@ public class SoundController : MonoBehaviour {
 	public AudioClip Coins;
 	public AudioClip Cash;
 	public AudioClip Eater;
-	public AudioClip Help;
+	public AudioClip Stat;
+	public AudioClip Experience;
 	public AudioClip Kassa;
+	public AudioClip Toggle;
+	public AudioClip FortunaRotate;
+	public AudioClip FaltAction;
 
 	public AudioClip Strike1;
 	public AudioClip Strike2;

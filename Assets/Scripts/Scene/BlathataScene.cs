@@ -55,6 +55,8 @@ public class BlathataScene : WindowScene {
 				.Build().Run();
 			
 			AssetsPanel.DisableUpdate(false);
+			SoundController.Play(SoundController.Instance.FaltAction);
+
 			return;
 		}
 		GameResources.Instance.ChangeUserAsset(award.Type, award.Value);
@@ -73,6 +75,7 @@ public class BlathataScene : WindowScene {
 			.OnStop(() => {CompleteTakeBox(animImg, box);} ).Run();
 
 		box.GetComponent<AnimatedObject>().AddFadeUI(null, 0, 1f).Build().Run();
+		SoundController.Play(SoundController.Instance.Coins, SoundController.COINS_VOLUME);
 
 	}
 
@@ -114,5 +117,7 @@ public class BlathataScene : WindowScene {
 		Animations.CreateAwardAnimation(animImg, start, end, icon, STAR_BUY_COUNT); 
 		animImg.GetComponent<AnimatedObject>()
 			.OnStop(() => {CompleteTakeBox(animImg, null);} ).Run();
+		SoundController.Play(SoundController.Instance.Kassa, SoundController.KASSA_VOLUME);
+
 	}
 }

@@ -133,6 +133,8 @@ public class KachalkaScene : WindowScene {
 			}).Run();
 		}
 
+		SoundController.Play(SoundController.Instance.Kassa, SoundController.KASSA_VOLUME);
+
 		save = true;
 	}
 
@@ -146,5 +148,7 @@ public class KachalkaScene : WindowScene {
 		Destroy(aItemGO);
 		UpdateKachalkaItems();
 		UpdateOwnUserData();
+		SoundController.Play(SoundController.Instance.Stat, SoundController.STAT_VOLUME);
+
 	}
 }

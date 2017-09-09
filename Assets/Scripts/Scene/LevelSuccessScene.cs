@@ -157,8 +157,13 @@ public class LevelSuccessScene : MonoBehaviour {
 			animAward.GetComponent<AnimatedObject>().OnStop(() => {OnCompleteAward(animAward);} );
 
 			ag.Add(animAward.GetComponent<AnimatedObject>());
-			SoundController.Play(SoundController.Instance.Coins, 2, delay);
-			delay += 0.2f;
+
+			if(pi != null) {
+				SoundController.Play(SoundController.Instance.Coins, SoundController.COINS_VOLUME, delay);
+				delay += 0.2f;
+			} else {
+				SoundController.Play(SoundController.Instance.Experience, SoundController.EXPERIENCE_VOLUME, delay);
+			}
 		}
 
 		if(ag.AnimationExist()) {

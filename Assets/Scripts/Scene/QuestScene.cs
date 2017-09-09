@@ -114,6 +114,7 @@ public class QuestScene : WindowScene {
 			.OnStop(() => {CompleteTakeQuest(animImg, button);} ).Run();
 
 
+		SoundController.Play(SoundController.Instance.Coins, SoundController.COINS_VOLUME);
 
 		save = true;
 	}

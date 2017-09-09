@@ -89,6 +89,8 @@ public class DailyBonusScene : WindowScene {
 		button.transform.Find("Allow").gameObject.SetActive(false);
 		button.transform.Find("Taken").gameObject.SetActive(true);
 
+		SoundController.Play(SoundController.Instance.Coins, SoundController.COINS_VOLUME);
+
 		isGetBonus = true;
 	}
 

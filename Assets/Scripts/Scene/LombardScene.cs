@@ -48,9 +48,6 @@ public class LombardScene : WindowScene {
 				currentAsset = (UserAssetType)param;
 			}
 		}
-		if(currentAsset == null) {
-			currentAsset = UserAssetType.Money;
-		}
 
 		ToggleUserAsset(currentAsset);
 	}
@@ -87,6 +84,7 @@ public class LombardScene : WindowScene {
 		GameObject obj = GameObject.Find(type.ToString());
 		Toggle tg =	obj.GetComponent<Toggle>();
 		tg.isOn = true;
+
 	}
 
 	GameObject GetButtonPrefab() {
@@ -102,6 +100,8 @@ public class LombardScene : WindowScene {
 
 		string name = UserAssetTypeToggleGroup.ActiveToggles().FirstOrDefault().name;
 		currentAsset = EnumUtill.Parse<UserAssetType>(name);
+
+		SoundController.Play(SoundController.Instance.Toggle);
 
 		UpdateOffers();
 	}
@@ -124,7 +124,7 @@ public class LombardScene : WindowScene {
 		}
 
 		isBuy = true;
-		SoundController.Play(SoundController.Instance.Kassa, 3);
+		SoundController.Play(SoundController.Instance.Kassa, SoundController.KASSA_VOLUME);
 
 		GameObject assetImg = UnityUtill.FindByName(Offers.transform, "BuyButton" + count)
 			.Find("Icon/Image").gameObject;

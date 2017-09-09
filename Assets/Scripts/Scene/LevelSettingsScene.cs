@@ -37,6 +37,7 @@ public class LevelSettingsScene : WindowScene {
 		localData.SoundOn	= !localData.SoundOn;
 		SoundButton.Toggle(localData.SoundOn);
 		GameResources.Instance.SaveLocalData();
+		SoundController.Instance.Enable(localData.SoundOn);
 	}
 
 	public void OnMusicButton() {

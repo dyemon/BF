@@ -8,6 +8,7 @@ namespace Common.Animation {
 public class AnimatedObject : MonoBehaviour {
 	public delegate void OnStopAnimation(System.Object[] param);
 	public delegate void OnStopAnimationSimple();
+	public delegate void OnStepAnimation(AnimationType t, GameObject go);
 
 	private bool isPlay = false;
 
@@ -23,6 +24,7 @@ public class AnimatedObject : MonoBehaviour {
 
 	private OnStopAnimation onStop;
 	private OnStopAnimationSimple onStopSimple;
+	private OnStepAnimation onStep;
 	private System.Object[] onStopParam;
 
 	public bool IsDone {
@@ -97,6 +99,7 @@ public class AnimatedObject : MonoBehaviour {
 		}
 		onStop = null;
 		onStopSimple = null;
+		onStep = null;
 		onStopParam = null;
 		destroyOnStop = false;
 		clearOnStop = true;
@@ -232,6 +235,11 @@ public class AnimatedObject : MonoBehaviour {
 		return this;
 	}
 
+	public AnimatedObject OnStep(OnStepAnimation onStep) {
+		this.onStep = onStep;
+		return this;
+	}
+
 	private bool PlayAnimation(AnimationType type) {
 		Animation animation = getCurrentPlayAnimation();
 		if(animation == null) {
@@ -243,7 +251,13 @@ public class AnimatedObject : MonoBehaviour {
 			return false;
 		}
 			
+
 		a.Animate(gameObject);
+
+		if(onStep != null) {
+			onStep(type, gameObject);
+		}
+
 		return true;
 	}
 }

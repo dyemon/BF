@@ -126,7 +126,7 @@ public class FightHelpScene : WindowScene {
 	}
 
 	void CloseWithHelp() {
-		SoundController.Play(SoundController.Instance.Help, 3);
+		SoundController.Play(SoundController.Instance.Stat, SoundController.STAT_VOLUME);
 		Close(null, false);
 	}
 }

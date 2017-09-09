@@ -135,7 +135,7 @@ public class EnergyScene : WindowScene {
 		}
 
 		isBuy = true;
-		SoundController.Play(SoundController.Instance.Kassa, 3);
+		SoundController.Play(SoundController.Instance.Kassa, SoundController.KASSA_VOLUME);
 		GameObject assetImg = UnityUtill.FindByName(Offers.transform, "BuyButton" + count)
 			.Find("Icon/Image").gameObject;
 

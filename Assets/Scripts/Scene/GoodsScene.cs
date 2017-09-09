@@ -181,6 +181,7 @@ public class GoodsScene : WindowScene {
 		ao.OnStop(() => {
 			OnCompleteAnimate(aItem);
 		}).Run();
+		SoundController.Play(SoundController.Instance.Kassa, SoundController.KASSA_VOLUME);
 
 	}
 
@@ -189,5 +190,7 @@ public class GoodsScene : WindowScene {
 		AssetPanel.UpdateUserAssets();
 		UpdateUserEquipment();
 		UpdateGoodsItems();
+		SoundController.Play(SoundController.Instance.Stat, SoundController.STAT_VOLUME);
+
 	}
 }

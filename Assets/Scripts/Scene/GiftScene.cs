@@ -242,6 +242,7 @@ public class GiftScene : WindowScene, IFBCallback {
 			GameObject mark = item.Find("Mark").gameObject;
 			mark.SetActive(state);
 		}
+		SoundController.Play(SoundController.Instance.Toggle);
 	}
 
 	public void OnSend() {
@@ -299,6 +300,7 @@ public class GiftScene : WindowScene, IFBCallback {
 		currentSceneType = isSend ? Type.Send : Type.Receive;
 		UpdateSceneItems();
 		fbController.RequestFriendsList();
+		SoundController.Play(SoundController.Instance.Toggle);
 	}
 
 	void OnTakeGift(GameObject friendGO) {
@@ -316,6 +318,7 @@ public class GiftScene : WindowScene, IFBCallback {
 			fbController.RequestFriendsList();
 		}
 		save = true;
+		SoundController.Play(SoundController.Instance.Coins, SoundController.COINS_VOLUME);
 	}
 
 	void AnimateAward(AwardItem award, GameObject friendGO, AnimationGroup aGroup, bool destroy) {
@@ -355,6 +358,7 @@ public class GiftScene : WindowScene, IFBCallback {
 	public void OnTakeAll() {
 		IList<AwardItem> awards = new List<AwardItem>();
 		AnimationGroup aGroup = GetComponent<AnimationGroup>();
+		float delay = 0;
 
 		foreach(Transform item in FriendsList.transform) {
 			if(item.transform.tag != friendItemTag) {
@@ -365,6 +369,10 @@ public class GiftScene : WindowScene, IFBCallback {
 			AnimateAward(award, item.gameObject, aGroup, false);
 			awards.Add(award);
 
+			if(delay < 1) {
+				SoundController.Play(SoundController.Instance.Coins, SoundController.COINS_VOLUME, delay);
+				delay += 0.2f;
+			}
 		}
 
 		if(awards.Count == 0) {

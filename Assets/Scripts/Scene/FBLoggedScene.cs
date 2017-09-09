@@ -123,6 +123,7 @@ public class FBLoggedScene : WindowScene, IFBCallback {
 
 		StartCoroutine(AnimateAward(questItem, false));
 		if(questItem.ExperienceAward > 0) {
+			SoundController.Play(SoundController.Instance.Experience, SoundController.EXPERIENCE_VOLUME);
 			StartCoroutine(AnimateAward(questItem, true));
 		}
 
@@ -133,6 +134,7 @@ public class FBLoggedScene : WindowScene, IFBCallback {
 
 		save = true;
 
+		SoundController.Play(SoundController.Instance.Coins, SoundController.COINS_VOLUME);
 		Invoke("UpdateQuest", 2);
 	}
 

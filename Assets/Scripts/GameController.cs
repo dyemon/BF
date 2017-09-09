@@ -2961,7 +2961,7 @@ public class GameController : MonoBehaviour {
 			IncreaseHeroSkillCount(-1);
 			QuestController.Instance.UseMagic();
 		} else if(name == LevelFailureHelpScene.SceneName) {
-			SoundController.Play(SoundController.Instance.Help);
+			SoundController.Play(SoundController.Instance.Stat, SoundController.STAT_VOLUME);
 			FPPanel.UpdateFightParams();
 		} else if(name == FightHelpScene.SceneName) {
 			
@@ -3271,7 +3271,7 @@ public class GameController : MonoBehaviour {
 		GameResources.Instance.IncreaseTileItemCollect(tileItem.Type, App.CurrentLevel);
 
 		if(!playCoinsSound) {
-			SoundController.Play(SoundController.Instance.Coins, 4);
+			SoundController.Play(SoundController.Instance.Coins, SoundController.COINS_VOLUME + 1);
 			playCoinsSound = true;
 		}
 	//	saveUserData = true;
@@ -3308,6 +3308,7 @@ public class GameController : MonoBehaviour {
 
 		//GameResources.Instance.IncreaseExperience(exp);
 		CollectLevelAward.Experience += exp;
+		SoundController.Play(SoundController.Instance.Experience, SoundController.EXPERIENCE_VOLUME);
 	}
 
 	void OnEducationComplete() {

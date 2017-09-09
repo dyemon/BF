@@ -22,6 +22,8 @@ public class FortunaScene : WindowScene {
 	private FortunaPrizeItem[] prizeItems = new FortunaPrizeItem[10];
 	private FortunaData fData;
 
+	private const int deg = 36;
+
 	void OnEnable() {
 		GameTimers.Instance.onTimerFortuna += OnTimerFortuna; 
 	}
@@ -65,12 +67,34 @@ public class FortunaScene : WindowScene {
 
 	public void OnRuletkaStart() {
 		Vector3 rotate = Vector3.zero;
-		rotate.z = Random.Range(1800, 1800 + 360);
+		rotate.z = Random.Range(1440, 1440 + 360);
 
+		float az = Ruletka.transform.eulerAngles.z - deg / 2;
+		if(az < 0) {
+			az = 360 + az;
+		}
+		float curAngle = Mathf.Round(az)%deg;
+		 
+		float prevAngle = Ruletka.transform.eulerAngles.z;
+		Debug.Log("Start " + az + " " + curAngle + " " + prevAngle);
 		AnimatedObject ao = Ruletka.GetComponent<AnimatedObject>();
-		ao.AddRotate(null, rotate, 5, new ABase.BezierPoints(0.5f, 0.9f, 0.8f, 1f))
+		ao.AddRotate(null, rotate, 5, new ABase.BezierPoints(0.8f, 0.9f, 0.9f, 0.999f))
 			.OnStop(() => {
 				OnRuletkaStop();
+			})
+			.OnStep((t, go) => {
+				float zr = go.transform.eulerAngles.z;
+				if(prevAngle > zr) {
+					zr += 360;
+				}
+				curAngle += (zr - prevAngle);
+
+				if(curAngle >= deg) {
+					Debug.Log(zr + " " + prevAngle + " " + curAngle);
+					SoundController.Play(SoundController.Instance.FortunaRotate);
+					curAngle = curAngle - deg;
+				}
+				prevAngle = go.transform.eulerAngles.z;;
 			})
 			.Build().Run();	
 
@@ -89,7 +113,7 @@ public class FortunaScene : WindowScene {
 	}
 
 	void OnRuletkaStop() {
-		int deg = 36;
+		
 		float angle = Ruletka.transform.rotation.eulerAngles.z + deg/2;
 	//	Debug.Log(angle);
 		if(angle >= 360) {
@@ -101,6 +125,11 @@ public class FortunaScene : WindowScene {
 		FortunaPrizeItem pItem = prizeItems[index] == null? fData.GetJackpotItem() : prizeItems[index];
 		if(pItem.IsUserAssetPrize()) {
 			AwardUserAsset(pItem.UserAssetType, pItem.GetPrizeAmount());
+
+			if(prizeItems[index] == null) {
+				SoundController.Play(SoundController.Instance.FortunaJackpot);
+			}
+			SoundController.Play(SoundController.Instance.Coins, SoundController.COINS_VOLUME);
 		}
 
 		int tryCount = GameResources.Instance.DecreaseFortunaTryCount(1);
