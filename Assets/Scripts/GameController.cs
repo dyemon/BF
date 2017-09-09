@@ -9,7 +9,8 @@ using Common.Animation;
 [RequireComponent(typeof(AnimationGroup))]
 public class GameController : MonoBehaviour {
 	public const string SceneName = "Game";
-	private static float TILESYOFFSET = 0.25f;
+	private const float TILESYOFFSET = 0.25f;
+	private const float TILEBORDROFFSET = 0.02f;
 
 	public static GameController Instance;
 
@@ -307,10 +308,13 @@ public class GameController : MonoBehaviour {
 	}
 
 	public static Vector3 IndexToPosition(float x, float y) {
-		return new Vector3(x - GameData.NumColumns / 2f + 0.5f, y + 0.5f + TILESYOFFSET, 0);
+		float dx = x - GameData.NumColumns / 2f;
+		return new Vector3(x - GameData.NumColumns / 2f + 0.5f + dx*TILEBORDROFFSET, y + 0.5f + TILESYOFFSET + (y +0.5f)*TILEBORDROFFSET, 0);
 	}
 	public static Vector2 PositionToIndex(Vector3 pos) {
-		return new Vector2(pos.x + GameData.NumColumns / 2f - 0.5f, pos.y - 0.5f - TILESYOFFSET);
+		float x = (pos.x + GameData.NumColumns / 2f - 0.5f + TILEBORDROFFSET * GameData.NumColumns / 2f) / (1f + TILEBORDROFFSET);
+		float y = (pos.y - 0.5f - TILESYOFFSET - 0.5f * TILEBORDROFFSET) / (1f + TILEBORDROFFSET);
+		return new Vector2(x,y );
 	}
 
 	private TileItem InstantiateColorOrSpecialTileItem(int column) {
@@ -3218,6 +3222,10 @@ public class GameController : MonoBehaviour {
 
 		if(skill != null && success) {
 			IncreaseExperience(skill.Experience);
+
+			if(HeroSkillData.HealthEffects.Contains(skill.Type)) {
+				SoundController.Play(SoundController.Instance.Stat);
+			}
 		}
 	}
 

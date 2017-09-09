@@ -174,6 +174,7 @@ public class LocationScene : BaseScene {
 			return;
 		}
 
+		DisableAdditiveScenes();
 		SceneController.Instance.LoadSceneAdditive(LevelTargetScene.SceneName);
 	}
 

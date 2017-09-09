@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SoundController : MonoBehaviour {
-	public static SoundController Instance;
+	public static SoundController Instance = new SoundController();
 
 	public const int COINS_VOLUME = 3;
 	public const int KASSA_VOLUME = 3;
@@ -76,10 +76,15 @@ public class SoundController : MonoBehaviour {
 	}
 
 	public static void Play(AudioClip clip, float volume = 1, float delay = 0) {
-		Instance.PlayClip(clip, volume, delay);
+		if(clip != null) {
+			Instance.PlayClip(clip, volume, delay);
+		}
 	}
 
 	public void PlayTileItemCollect(int index) {
+		if(TileItemCollect == null) {
+			return;
+		}
 		if(index > TileItemCollect.Length - 1) {
 			index = TileItemCollect.Length - 1;
 		}

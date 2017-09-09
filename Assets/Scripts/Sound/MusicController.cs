@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MusicController : MonoBehaviour {
-	public static MusicController Instance;
+	public static MusicController Instance = new MusicController();
 
 	private bool enable;
 
@@ -44,6 +44,8 @@ public class MusicController : MonoBehaviour {
 	}
 
 	public static void Play(AudioClip clip) {
-		Instance.PlayClip(clip);
+		if(clip != null) {
+			Instance.PlayClip(clip);
+		}
 	}
 }

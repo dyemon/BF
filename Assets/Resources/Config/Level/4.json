@@ -156,13 +156,13 @@
             "Y1": 2, 
             "X2": 5, 
             "Y2": 3, 
-            "TypeAsString": "Barrier_1"
+            "TypeAsString": "Barrier_2"
         }, {
             "X1": 6, 
             "Y1": 4, 
             "X2": 6, 
             "Y2": 5, 
-            "TypeAsString": "Barrier_1"
+            "TypeAsString": "Barrier_2"
         }, {
             "X1": 4, 
             "Y1": 5, 

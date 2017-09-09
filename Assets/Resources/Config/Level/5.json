@@ -155,7 +155,7 @@
 
 	"EnemyData": {
 		"Health": 80,
-		"Damage": 180,
+		"Damage": 80,
 		"SkillRatio": 1,
 		"SkillData": [{
 				"TypeAsString": "Eater",

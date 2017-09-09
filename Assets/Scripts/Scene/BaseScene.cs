@@ -3,8 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BaseScene : MonoBehaviour {
+	private bool enableAdditiveScene = true;
 
 	void ShowAdditionScenes() {
+		if(!enableAdditiveScene) {
+			return;
+		}
+
 		if(SceneController.Instance.HasLoadedAdditiveScene()) {
 			Invoke("ShowAdditionScenes", 3);
 			return;
@@ -36,5 +41,9 @@ public class BaseScene : MonoBehaviour {
 			SceneController.Instance.LoadSceneAdditive(BlathataScene.SceneName);
 			return;
 		}
+	}
+
+	public void DisableAdditiveScenes() {
+		enableAdditiveScene = false;
 	}
 }
