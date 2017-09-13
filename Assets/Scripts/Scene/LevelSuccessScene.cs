@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using Common.Animation;
+using UnityEngine.Advertisements;
 
 public class LevelSuccessScene : MonoBehaviour {
 	public GameObjectResources GOResources;
@@ -88,6 +89,8 @@ public class LevelSuccessScene : MonoBehaviour {
 		ParametersController.Instance.SetParameter(ParametersController.CAN_SHOW_DAILYBONUS, true);
 		ParametersController.Instance.SetParameter(ParametersController.CAN_SHOW_FORTUNA, true);
 		ParametersController.Instance.SetParameter(ParametersController.CAN_SHOW_BLATHATA, true);
+
+		App.InitAds();
 	}
 	
 	void UpdateAward() {
@@ -133,9 +136,22 @@ public class LevelSuccessScene : MonoBehaviour {
 	}
 
 	public void OnDoubleClick() {
+		if(Advertisement.IsReady()) {
+			Advertisement.Show(new ShowOptions() { resultCallback = AdsCallback });
+		} else {
+			ModalPanels.Show(ModalPanelName.ErrorPanel, "Сервис не доступен. Проверте соединение с сетью", () => {App.InitAds(); });
+		}
+	}
+
+	void AdsCallback(ShowResult res) {
 		DoubleButton.gameObject.SetActive(false);
 		NotDoubleButton.gameObject.SetActive(false);
-		DoubleAward();
+
+		if(res == ShowResult.Finished) {
+			DoubleAward();
+		} else {
+			StartAwardAnimate();
+		}
 	}
 
 	void StartAwardAnimate() {

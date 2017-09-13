@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Common.Animation;
+using UnityEngine.Advertisements;
 
 public class App {
 	public static readonly float moveTileItemDelay = 0.0f;
@@ -81,5 +82,10 @@ public class App {
 		CurrentCity = (int)param.x;
 		CurrentLocation = (int)param.y;
 		CurrentLocationLevel = (int)param.z;
+	}
+
+	public static void InitAds() {
+		string id = Application.platform == RuntimePlatform.Android ? "1538371" : "1538372";
+		Advertisement.Initialize(id, false);
 	}
 }

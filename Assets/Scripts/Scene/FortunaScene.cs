@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Common.Timer;
 using Common.Animation;
+using UnityEngine.Advertisements;
 
 public class FortunaScene : WindowScene {
 	public const string SceneName = "Fortuna";
@@ -55,6 +56,7 @@ public class FortunaScene : WindowScene {
 		prizeItems[8] = null;
 		prizeItems[9] = fData.GetItem(UserAssetType.Energy);
 
+		App.InitAds();
 	}
 
 	int GetTimerCount() {
@@ -63,6 +65,20 @@ public class FortunaScene : WindowScene {
 		}
 		Timer timer = TimerController.Instance.GetTimer(GameTimers.FORTUNA_TIMER_CODE);
 		return (timer == null) ? 0 : timer.GetCurCount();
+	}
+
+	public void OnStartClick() {
+		if(Advertisement.IsReady()) {
+			Advertisement.Show(new ShowOptions() { resultCallback = AdsCallback });
+		} else {
+			ModalPanels.Show(ModalPanelName.ErrorPanel, "Сервис не доступен. Проверте соединение с сетью", () => {App.InitAds(); });
+		}
+	}
+
+	void AdsCallback(ShowResult res) {
+		if(res == ShowResult.Finished) {
+			OnRuletkaStart();
+		}
 	}
 
 	public void OnRuletkaStart() {

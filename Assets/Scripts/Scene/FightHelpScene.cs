@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Common.Animation;
+using UnityEngine.Advertisements;
 
 public class FightHelpScene : WindowScene {
 	public const string SceneName = "FightHelp";
@@ -53,6 +54,8 @@ public class FightHelpScene : WindowScene {
 
 		HealthRatioText.text = "+" + fd.IncreaceHealthRatio + "%";
 		DamageRatioText.text = "+" + fd.IncreaceDamageRatio + "%";
+
+		App.InitAds();
 	}
 	
 	public void OnClickBuy(bool isHealth) {
@@ -80,7 +83,18 @@ public class FightHelpScene : WindowScene {
 		}
 		isLock = true;
 
-		Help(isHealth);
+		if(Advertisement.IsReady()) {
+			Advertisement.Show(new ShowOptions() { resultCallback = (r) => {AdsCallback(r, isHealth);} });
+		} else {
+			ModalPanels.Show(ModalPanelName.ErrorPanel, "Сервис не доступен. Проверте соединение с сетью", () => {App.InitAds(); });
+		}
+	}
+
+
+	void AdsCallback(ShowResult res, bool isHealth) {
+		if(res == ShowResult.Finished) {
+			Help(isHealth);
+		}
 	}
 
 	void OnUpdateUserAssets(UserAssetType? type, int value) {
