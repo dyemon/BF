@@ -4,9 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using Common.Animation;
+using UnityEngine.Purchasing;
 
 public class LombardScene : WindowScene {
 	public static string SceneName = "Lombard";
+
+	public IAPController IAPController;
 
 	public RectTransform Offers;
 	public string BuyButtonTag;
@@ -23,14 +26,22 @@ public class LombardScene : WindowScene {
 
 	private bool isBuy = false;
 
+	private bool lockBuyMone = false;
+
 	void OnEnable() {
 		isBuy = false;
+		IAPController.onPurchaseSuccess += OnPurchaseSuccess;
+		IAPController.onPurchaseFail += OnPurchaseFail;
+		IAPController.onPurchasesInit += OnPurchasesInit;
 	}
 
 	void OnDisable() {
 		if(isBuy) {
 			GameResources.Instance.SaveUserData(null, false);
 		}
+		IAPController.onPurchaseSuccess -= OnPurchaseSuccess;
+		IAPController.onPurchaseFail -= OnPurchaseFail;
+		IAPController.onPurchasesInit -= OnPurchasesInit;
 	}
 
 	protected override void Start() {
@@ -69,7 +80,12 @@ public class LombardScene : WindowScene {
 			UnityUtill.FindByName(button.transform, "Purchase Count").GetComponent<Text>().text = count.ToString();
 			Transform priceTr = UnityUtill.FindByName(button.transform, "Price Text");
 			if(priceTr != null) {
-				priceTr.GetComponent<Text>().text = (count * gameData.GetPriceValue(currentAsset)).ToString();
+				if(currentAsset == UserAssetType.Money) {
+					Product p = IAPController.GetProduct(GetProductId(count));
+					priceTr.GetComponent<Text>().text = p == null ? "Загрузить" : p.metadata.localizedPriceString; 
+				} else {
+					priceTr.GetComponent<Text>().text = (count * gameData.GetPriceValue(currentAsset)).ToString();
+				}
 			}
 			Button btn = UnityUtill.FindByName(button.transform, "BuyButton").GetComponent<Button>();
 			btn.onClick.AddListener(delegate{ OnClickBuy(count); });
@@ -107,24 +123,46 @@ public class LombardScene : WindowScene {
 	}
 
 	void OnClickBuy(int count) {
-	//	if(currentAsset == UserAssetType.Money) {
-	//		return;
-	//	}
+		if(currentAsset == UserAssetType.Money) {
+			if(lockBuyMone) {
+				return;
+			}
+			if(IAPController.BuyProductID(GetProductId(count))) {
+			//	lockBuyMone = true;
+			}
+			return;
+		}
 
 		BuyUserAsset(count);
 	}
 
-	void BuyUserAsset(int count) {
+	string GetProductId(int count) {
+		return count + "_coins";
+	}
+
+	void BuyUserAsset(int count, bool buyMoney = false) {
 		userDataPanel.DisableUpdate(true);
-		if(!GameResources.Instance.Buy(currentAsset, count)) {
-			DisplayMessageController.DisplayNotEnoughMessage(UserAssetType.Money);
-			ToggleUserAsset(UserAssetType.Money);
-			userDataPanel.DisableUpdate(false);
-			return;
+		if(!buyMoney) {
+			if(!GameResources.Instance.Buy(currentAsset, count)) {
+				DisplayMessageController.DisplayNotEnoughMessage(UserAssetType.Money);
+				ToggleUserAsset(UserAssetType.Money);
+				userDataPanel.DisableUpdate(false);
+				return;
+			}
+		} else {
+			GameResources.Instance.ChangeUserAsset(UserAssetType.Money, count);
+			GameResources.Instance.SaveUserData(null, true);
 		}
 
-		isBuy = true;
-		SoundController.Play(SoundController.Instance.Kassa, SoundController.KASSA_VOLUME);
+		if(!buyMoney) {
+			isBuy = true;
+		}
+
+		if(!buyMoney) {
+			SoundController.Play(SoundController.Instance.Kassa, SoundController.KASSA_VOLUME);
+		} else {
+			SoundController.Play(SoundController.Instance.Coins, SoundController.KASSA_VOLUME);
+		}
 
 		GameObject assetImg = UnityUtill.FindByName(Offers.transform, "BuyButton" + count)
 			.Find("Icon/Image").gameObject;
@@ -145,5 +183,31 @@ public class LombardScene : WindowScene {
 		Destroy(animImg);
 		userDataPanel.DisableUpdate(false);
 		userDataPanel.UpdateUserAssets();
+	}
+		
+	void OnPurchaseSuccess(PurchaseEventArgs args, int index) {
+		lockBuyMone = false;
+
+		int count = int.Parse(args.purchasedProduct.definition.id.Replace("_coins", ""));
+		BuyUserAsset(count, true);
+	}
+
+	void OnPurchaseFail(Product product, PurchaseFailureReason failureReason) {
+		lockBuyMone = false;
+	}
+
+	void OnPurchasesInit() {
+		if(currentAsset != UserAssetType.Money) {
+			return;
+		}
+
+		foreach(Transform tr in UnityUtill.FindByTag(Offers.transform, BuyButtonTag)) {
+			Transform priceTr = UnityUtill.FindByName(tr, "Price Text");
+			if(priceTr != null) {
+				int count = int.Parse(tr.gameObject.name.Replace("BuyButton", ""));
+				Product p = IAPController.GetProduct(GetProductId(count));
+				priceTr.GetComponent<Text>().text = p == null ? "Загрузить" : p.metadata.localizedPriceString; 
+			}
+		}
 	}
 }

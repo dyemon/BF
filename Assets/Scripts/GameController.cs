@@ -2685,6 +2685,7 @@ public class GameController : MonoBehaviour {
 		}
 
 		StartCoroutine( CompleteEnemySkillWithDelay(tileRes, tiRes, EnemySkillPS.main.duration/2));
+		SoundController.Play(SoundController.Instance.EnamySkill, 1);
 		return true;
 	}
 

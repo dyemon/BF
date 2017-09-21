@@ -298,7 +298,7 @@
 			"PriceValue": 20,
 			"Experience": 1
 		},{
-			"Name": "Удар с ноги ",
+			"Name": "Удар с ноги",
 			"Description": "Урон врагу {0}%",
 			"TypeAsString": "Damage2",
 			"Damage":	100,
@@ -307,7 +307,7 @@
 			"PriceValue": 70,
 			"Experience": 2
 		},{
-			"Name": "Двойной удар",
+			"Name": "Тройной удар",
 			"Description": "Урон врагу {0}%",
 			"TypeAsString": "Damage3",
 			"Damage":	200,

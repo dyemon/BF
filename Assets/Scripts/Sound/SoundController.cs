@@ -23,6 +23,7 @@ public class SoundController : MonoBehaviour {
 	public AudioClip Toggle;
 	public AudioClip FortunaRotate;
 	public AudioClip FaltAction;
+	public AudioClip EnamySkill;
 
 	public AudioClip Strike1;
 	public AudioClip Strike2;
