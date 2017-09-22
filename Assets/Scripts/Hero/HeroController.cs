@@ -113,7 +113,13 @@ public class HeroController : MonoBehaviour {
 	}
 
 	public void ResetPowerPoints() {
-		CurrentPowerPoints = 0;
+		CurrentPowerPoints = CurrentPowerPoints - PowerPointSuccess;
+		if(CurrentPowerPoints > PowerPointSuccess - 1) {
+			CurrentPowerPoints = PowerPointSuccess - 1;
+		}
+		if(CurrentPowerPoints < 0) {
+			CurrentPowerPoints = 0;
+		}
 	}
 
 	public void Strike(HeroSkillData skill, OnStrike onStrike) {

@@ -37,8 +37,8 @@ public class ProgressBar : MonoBehaviour {
 		}
 		curValue = i;
 
-		if(i == 0 || !isAnimate) {
-			Progress.GetComponent<Renderer>().material.SetFloat("_Progress", i);
+		if(i <= oldValue || !isAnimate) {
+			Progress.GetComponent<Renderer>().material.SetFloat("_Progress", (float)i/MaxValue);
 			UpdateText();
 		} else {
 			StartCoroutine(AnimateProgress(oldValue));

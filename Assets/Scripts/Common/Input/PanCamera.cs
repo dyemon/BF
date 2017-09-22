@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class PanCamera : MonoBehaviour {
 	public float Speed = 1;
 	public float ShowdownSpeed = 0;
-	public float AnimateTime = 1f;
+//	public float AnimateTime = 1f;
 
 	public bool FixX = false;
 	public bool FixY = false;
@@ -91,7 +91,7 @@ public class PanCamera : MonoBehaviour {
 		Vector3 delta = moveDelta;
 		float speed = ShowdownSpeed;
 
-		while(delta.magnitude > 0.001f) {
+		while(delta.magnitude > 0.01f) {
 			SetPosition(transform.position + delta);
 			delta *= speed;
 			yield return 0;

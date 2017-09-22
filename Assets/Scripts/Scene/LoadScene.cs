@@ -19,6 +19,7 @@ public class LoadScene : MonoBehaviour, IFBCallback {
 
 	void Start() {
 		MusicController.Play(MusicController.Instance.Default);
+		App.InitAds();
 	}
 
 	void OnEnable() {
