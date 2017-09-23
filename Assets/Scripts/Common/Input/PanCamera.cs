@@ -37,11 +37,12 @@ public class PanCamera : MonoBehaviour {
 		}
 
 		InputController.Touch[] touches = InputController.getTouches();
+		if(EventSystem.current.IsPointerOverGameObject(InputController.GetFingerId())) {
+			return;
+		}
 
 		if(touches.Length > 0 && touches[0].phase == TouchPhase.Moved) {
-			if(EventSystem.current.IsPointerOverGameObject(InputController.GetFingerId())) {
-				return;
-			}
+	
 			Vector2 touchDeltaPosition = touches[0].deltaPosition;
 
 			float height = GetCamera().orthographicSize;
@@ -96,5 +97,7 @@ public class PanCamera : MonoBehaviour {
 			delta *= speed;
 			yield return 0;
 		}
+
+		moveDelta = Vector3.zero;
 	}
 }
