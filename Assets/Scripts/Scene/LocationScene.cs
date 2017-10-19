@@ -11,7 +11,7 @@ public class LocationScene : BaseScene {
 	public GameObjectResources GOResources;
 	public UserAssetsPanel AssetPanel;
 	public GameObject[] LocationMaps;
-	public Sprite QuestionMark;
+	//public Sprite QuestionMark;
 	public PanCamera mCamera;
 
 	public GameObject GiftAttention;
@@ -86,7 +86,7 @@ public class LocationScene : BaseScene {
 			if(levelData.EnemyType != null && (!levelData.Hidden || curLevel <= uData.Level)) {
 				icon = GOResources.GetEnemyIcon(levelData.EnemyType.Value);
 			} else if(levelData.Hidden && curLevel > uData.Level) {
-				icon = QuestionMark;
+	//			icon = QuestionMark;
 			}
 			sr.sprite = icon;
 
