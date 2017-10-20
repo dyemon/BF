@@ -276,6 +276,7 @@ public class LocationScene : BaseScene {
 
 	public void OnClose() {
 		//GameResources.Instance.SaveUserData(null, true);
+		DisableAdditiveScenes();
 		SceneController.Instance.LoadSceneAsync(CityScene.SceneName);
 	}
 

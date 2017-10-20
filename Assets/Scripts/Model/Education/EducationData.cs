@@ -29,5 +29,8 @@ public class EducationData {
 
 	public void Reset() {
 		index = 0;
+		foreach(EducationStep item in Steps) {
+			item.Reset();
+		}
 	}
 }

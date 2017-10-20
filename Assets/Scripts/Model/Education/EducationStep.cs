@@ -31,6 +31,10 @@ public class EducationStep {
 		return (index == 1)? Positions1 : (Vector2[])Positions1.Concat(Positions2).ToArray();
 	}
 
+	public void Reset() {
+		ResetPositionIndex();
+	}
+
 	public Vector2[] GetHandPositions() {
 		return (index == 1)? Positions1 : Positions2;
 	}

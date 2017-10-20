@@ -163,7 +163,7 @@ public class EducationController : MonoBehaviour {
 			ao.AddMoveByTime(null, pos3, 0.8f);
 		}
 
-		ao.AddMoveByTime(null, start, 0.3f).Build();
+		ao.AddMoveByTime(null, start, 0.1f).Build();
 		ao.Loop(true).Run();
 	}
 
